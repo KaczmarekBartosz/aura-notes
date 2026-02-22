@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const crypto = require('crypto');
 
 function json(statusCode, body) {
@@ -36,11 +34,15 @@ exports.handler = async (event) => {
   }
 
   try {
-    const p = path.join(__dirname, 'data', 'notes-index.json');
-    const raw = fs.readFileSync(p, 'utf8');
-    const data = JSON.parse(raw);
+    // Use static require so Netlify bundle always includes the JSON asset.
+    // eslint-disable-next-line global-require, import/no-dynamic-require
+    const data = require('./data/notes-index.json');
     return json(200, { ok: true, data });
   } catch (e) {
-    return json(500, { ok: false, error: 'Failed to load notes' });
+    return json(500, {
+      ok: false,
+      error: 'Failed to load notes',
+      detail: e && e.message ? e.message : 'unknown error',
+    });
   }
 };
