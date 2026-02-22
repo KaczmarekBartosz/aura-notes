@@ -58,6 +58,7 @@ for (const src of sources) {
     const rel = path.relative(root, f).replace(/\\/g, '/');
     const content = fs.readFileSync(f, 'utf8');
     const stat = fs.statSync(f);
+    const words = content.replace(/```[\s\S]*?```/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
     notes.push({
       id: crypto.createHash('sha1').update(rel).digest('hex').slice(0, 12),
       path: rel,
@@ -66,6 +67,8 @@ for (const src of sources) {
       title: titleFrom(content, path.basename(f)),
       excerpt: excerptFrom(content),
       updatedAt: stat.mtime.toISOString(),
+      readingMinutes: Math.max(1, Math.round(words / 220)),
+      words,
       tags: detectTags(rel, content),
       content
     });

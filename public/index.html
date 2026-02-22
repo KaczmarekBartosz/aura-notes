@@ -5,125 +5,183 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Aura Notes</title>
     <style>
-      :root{--bg:#f3f7ff;--glass:#ffffffcf;--glass2:#fffffff3;--text:#0f1b33;--muted:#5f6f8c;--line:#d9e4ff;--chip:#ecf2ff;--chipOn:#dfeaff;--accent:#4f7cff}
+      :root{
+        --bg:#eef4ff; --bg2:#f8fbff; --glass:#ffffffd6; --glassStrong:#fffffff2;
+        --text:#0f1b33; --muted:#607294; --line:#d7e4ff; --accent:#3771ff;
+        --chip:#edf3ff; --chipOn:#dce9ff; --ok:#1f9d61;
+      }
       *{box-sizing:border-box;max-width:100%}
-      html,body{margin:0;width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none}
-      body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);background:radial-gradient(1100px 500px at -10% -20%,#dbe8ff 0%,transparent 60%),radial-gradient(1100px 500px at 120% 10%,#e8ddff 0%,transparent 60%),linear-gradient(180deg,#f8fbff 0%,#eef4ff 100%)}
-      .wrap{max-width:1240px;width:100%;margin:0 auto;padding:12px;overflow-x:clip}
-      .glass{background:var(--glass);border:1px solid var(--line);border-radius:16px;backdrop-filter:blur(14px) saturate(150%);-webkit-backdrop-filter:blur(14px) saturate(150%);box-shadow:0 12px 34px rgba(76,104,168,.10)}
-      .top{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
-      .pill{font-size:12px;padding:6px 10px;border-radius:999px;background:var(--chip);border:1px solid var(--line);color:#2f4678}
-      .row-scroll{display:flex;gap:8px;max-width:100%;overflow-x:auto;overflow-y:hidden;padding-bottom:4px;scrollbar-width:none;overscroll-behavior-x:contain}.row-scroll::-webkit-scrollbar{display:none}
-      .chip,.viewBtn{white-space:nowrap;padding:10px 13px;border-radius:999px;border:1px solid var(--line);background:var(--chip);color:#2f4678;font-size:12px;cursor:pointer}
-      .chip.on,.viewBtn.on{background:var(--chipOn);border-color:#b9ccff;color:#1f3470;font-weight:700}
-      .grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;min-width:0}
-      .panel{padding:10px;min-width:0}
-      input,select,button{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--glass2);font-size:16px;color:var(--text)}
+      html,body{margin:0;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none}
+      body{
+        font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+        color:var(--text);
+        background:
+          radial-gradient(1200px 600px at -10% -20%, #dfeaff 0%, transparent 62%),
+          radial-gradient(1200px 600px at 110% 0%, #ece2ff 0%, transparent 60%),
+          linear-gradient(180deg,var(--bg2) 0%, var(--bg) 100%);
+      }
+      .app{max-width:1280px;margin:0 auto;padding:12px;overflow-x:clip}
+      .glass{background:var(--glass);border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:0 16px 42px rgba(69,97,160,.10)}
+      .top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+      .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--chip);font-size:12px;color:#2c4679}
+      .title{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0}
+
+      .dashboard{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
+      .card{padding:10px 12px}
+      .kpi{font-size:20px;font-weight:800;line-height:1.1}
+      .label{font-size:12px;color:var(--muted)}
+
+      .scrollRow{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding-bottom:4px;scrollbar-width:none;overscroll-behavior-x:contain}
+      .scrollRow::-webkit-scrollbar{display:none}
+      .chip,.viewBtn{white-space:nowrap;padding:10px 13px;border-radius:999px;border:1px solid var(--line);background:var(--chip);font-size:12px;color:#2d4779;cursor:pointer}
+      .chip.on,.viewBtn.on{background:var(--chipOn);border-color:#b9cfff;font-weight:700;color:#1f3c73}
+
+      .layout{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;min-width:0}
+      .left,.right{min-width:0}
+      .panel{padding:10px}
       .controls{display:grid;gap:8px}
-      .list{margin-top:10px;max-height:52vh;overflow:auto;border-top:1px solid var(--line)}
-      .item{padding:12px;border-bottom:1px solid var(--line);cursor:pointer}.item.active{background:#eef4ff}
-      .item h4{margin:0 0 4px;font-size:15px}.item p{margin:0;color:var(--muted);font-size:12px}
-      .meta{font-size:11px;color:var(--muted);margin-top:6px;word-break:break-word}
-      .viewer{padding:0;max-height:62vh;overflow:auto;min-width:0}
-      .readerTop{position:sticky;top:0;z-index:2;background:var(--glass2);border-bottom:1px solid var(--line);padding:10px;display:flex;gap:8px;align-items:center}
+      input,select,button{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--glassStrong);font-size:16px;color:var(--text)}
+      button{cursor:pointer}
+      .controls2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+      .list{margin-top:10px;max-height:50vh;overflow:auto;border-top:1px solid var(--line)}
+      .item{padding:12px;border-bottom:1px solid var(--line);cursor:pointer}
+      .item.active{background:#edf4ff}
+      .itemTop{display:flex;gap:8px;align-items:center}
+      .item h4{margin:0;font-size:15px;flex:1;min-width:0}
+      .item p{margin:4px 0 0;color:var(--muted);font-size:12px}
+      .meta{margin-top:6px;font-size:11px;color:var(--muted);word-break:break-word}
+      .mini{font-size:11px;padding:2px 8px;border-radius:999px;background:#edf3ff;border:1px solid var(--line);color:#31548f}
+
+      .reader{padding:0;max-height:68vh;overflow:auto;min-width:0}
+      .readerTop{position:sticky;top:0;z-index:5;background:var(--glassStrong);border-bottom:1px solid var(--line);padding:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
       .readerTop button{width:auto;padding:8px 10px;font-size:13px}
-      .contentWrap{padding:14px}
-      .md{font-size:16px;line-height:1.6;word-break:break-word;overflow-wrap:anywhere}
+      .progress{height:4px;background:#dbe7ff;position:relative}
+      .progress > span{position:absolute;left:0;top:0;bottom:0;background:var(--accent);width:0%}
+      .content{padding:14px}
+      .md{font-size:17px;line-height:1.65;word-break:break-word;overflow-wrap:anywhere}
       .md *{max-width:100%;overflow-wrap:anywhere}
-      .md h1,.md h2,.md h3{line-height:1.25}
-      .md pre{background:#eef3ff;padding:10px;border-radius:10px;overflow-x:auto;overflow-y:hidden}
-      .md code{background:#eef3ff;padding:2px 6px;border-radius:6px}
+      .md h1,.md h2,.md h3{line-height:1.25;letter-spacing:-.01em}
+      .md pre{background:#edf3ff;padding:10px;border-radius:10px;overflow-x:auto;overflow-y:hidden}
+      .md code{background:#edf3ff;padding:2px 6px;border-radius:6px}
+      .md blockquote{border-left:3px solid #a8c3ff;padding-left:10px;color:#36507f}
       .md table{display:block;overflow-x:auto}
-      .md blockquote{border-left:3px solid #aac2ff;padding-left:10px;color:#405780}
-      .mobileTabs{display:flex;gap:8px;margin-top:10px}.tabBtn{flex:1;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--chip);font-weight:700}.tabBtn.on{background:var(--chipOn)}
-      .mobileOnly{display:block}.hidden{display:none!important}
-      .lock{position:fixed;inset:0;background:#eff4ffcc;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(8px)}
-      @media (min-width:980px){.mobileOnly{display:none}.grid{grid-template-columns:390px 1fr}.list{max-height:74vh}.viewer{max-height:80vh}}
+
+      .mobileTabs{display:flex;gap:8px;margin-top:10px}
+      .tab{flex:1;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--chip);font-weight:700}
+      .tab.on{background:var(--chipOn)}
+      .mobileOnly{display:block}
+      .hidden{display:none!important}
+
+      .fab{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:20;width:auto;padding:12px 14px;border-radius:999px;background:var(--accent);color:#fff;border:0;box-shadow:0 12px 26px rgba(55,113,255,.35)}
+
+      .lock{position:fixed;inset:0;background:#eef5ffcc;backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:16px}
+
+      @media (min-width:1000px){
+        .dashboard{grid-template-columns:repeat(4,minmax(0,1fr))}
+        .mobileOnly{display:none}
+        .layout{grid-template-columns:410px 1fr}
+        .list{max-height:73vh}
+        .reader{max-height:82vh}
+      }
     </style>
   </head>
   <body>
-    <div id="lock" class="lock hidden"><div class="glass panel" style="width:min(420px,100%)"><h2 style="margin:0 0 8px">Aura Notes — prywatny dostęp</h2><p style="color:var(--muted);margin-top:0">Podaj hasło, żeby odblokować notatnik.</p><input id="pw" type="password" placeholder="Hasło" /><div style="height:8px"></div><button id="unlock" style="background:var(--accent);color:#fff;border-color:#4a75f0">Odblokuj</button><p id="pwErr" style="color:#cc3b3b;font-size:12px;display:none">Nieprawidłowe hasło.</p></div></div>
+    <div id="lock" class="lock hidden">
+      <div class="glass panel" style="width:min(420px,100%)">
+        <h2 style="margin:0 0 8px">Aura Notes — prywatny dostęp</h2>
+        <p style="margin-top:0;color:var(--muted)">Podaj hasło, żeby odblokować notatnik.</p>
+        <input id="pw" type="password" placeholder="Hasło" />
+        <div style="height:8px"></div>
+        <button id="unlock" style="background:var(--accent);border-color:#2e63ea;color:white">Odblokuj</button>
+        <p id="pwErr" style="display:none;color:#c83a3a;font-size:12px">Nieprawidłowe hasło.</p>
+      </div>
+    </div>
 
-    <div class="wrap">
+    <div class="app">
       <div class="top">
-        <h1 style="margin:0;font-size:20px">Aura Notes</h1>
-        <span id="count" class="pill">0 notatek</span>
-        <span id="latestGlobal" class="pill">Najnowsza aktualizacja: —</span>
-        <span id="newSince" class="pill">Nowe od ostatniej wizyty: 0</span>
+        <h1 class="title">Aura Notes</h1>
+        <span id="latest" class="pill">Najnowsza aktualizacja: —</span>
       </div>
 
-      <div class="row-scroll" id="views">
-        <button class="viewBtn" data-view="gold">🔥 Golden Protocols</button>
-        <button class="viewBtn" data-view="fitness">💪 Fitness + Peptydy</button>
+      <section class="dashboard">
+        <div class="glass card"><div id="kpiAll" class="kpi">0</div><div class="label">Wszystkie notatki</div></div>
+        <div class="glass card"><div id="kpiNew" class="kpi">0</div><div class="label">Nowe od ostatniej wizyty</div></div>
+        <div class="glass card"><div id="kpiGold" class="kpi">0</div><div class="label">Golden Protocols</div></div>
+        <div class="glass card"><div id="kpiFav" class="kpi">0</div><div class="label">Ulubione</div></div>
+      </section>
+
+      <div class="scrollRow" id="views">
+        <button class="viewBtn" data-view="gold">🔥 Golden</button>
+        <button class="viewBtn" data-view="fitness">💪 Fitness</button>
         <button class="viewBtn" data-view="taste">🧠 Taste</button>
-        <button class="viewBtn" data-view="recent">🆕 Ostatnie 7 dni</button>
+        <button class="viewBtn" data-view="recent">🆕 7 dni</button>
+        <button class="viewBtn" data-view="favorites">⭐ Favorites</button>
         <button class="viewBtn" data-view="all">📚 Wszystko</button>
       </div>
 
-      <div class="row-scroll" id="categories"></div>
+      <div class="scrollRow" id="categories"></div>
 
       <div class="mobileTabs mobileOnly">
-        <button id="tabList" class="tabBtn on">Lista</button>
-        <button id="tabRead" class="tabBtn">Czytnik</button>
+        <button id="tabList" class="tab on">Lista</button>
+        <button id="tabRead" class="tab">Czytnik</button>
       </div>
 
-      <div class="grid">
-        <section id="listPane" class="glass panel">
+      <div class="layout">
+        <section id="listPane" class="left glass panel">
           <div class="controls">
-            <input id="q" placeholder="Szukaj: gold, peptydy, taste, cron..." />
-            <select id="folder"><option value="">Wszystkie foldery</option><option value="memory">memory</option><option value="outputs">outputs</option></select>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><select id="tag"><option value="">Wszystkie tagi</option></select><select id="sort"><option value="new">Sort: najnowsze</option><option value="old">Sort: najstarsze</option><option value="az">Sort: A-Z</option></select></div>
+            <input id="q" placeholder="Szukaj: gold, peptide, taste, cron..." />
+            <div class="controls2">
+              <select id="folder"><option value="">Folder: wszystkie</option><option value="memory">memory</option><option value="outputs">outputs</option></select>
+              <select id="tag"><option value="">Tag: wszystkie</option></select>
+            </div>
+            <div class="controls2">
+              <select id="sort"><option value="new">Sort: najnowsze</option><option value="old">Sort: najstarsze</option><option value="az">Sort: A-Z</option></select>
+              <select id="font"><option value="17">Czytnik: standard</option><option value="19">Czytnik: większy</option><option value="21">Czytnik: max</option></select>
+            </div>
           </div>
           <div class="list" id="list"></div>
         </section>
 
-        <section id="readPane" class="glass viewer">
+        <section id="readPane" class="right glass reader">
           <div class="readerTop">
-            <button id="prevBtn">◀ Poprzednia</button>
-            <button id="nextBtn">Następna ▶</button>
-            <button id="focusBtn">Tryb focus</button>
+            <button id="prev">◀</button>
+            <button id="next">▶</button>
+            <button id="fav">⭐ Ulubione</button>
+            <button id="focus">Focus</button>
+            <button id="copyLink">Kopiuj link</button>
+            <span id="noteMeta" class="pill">—</span>
           </div>
-          <div class="contentWrap">
-            <div id="meta" class="meta">Wybierz notatkę z lewej.</div>
+          <div class="progress"><span id="pbar"></span></div>
+          <div class="content">
+            <div id="meta" class="meta">Wybierz notatkę z listy.</div>
             <article id="content" class="md"></article>
           </div>
         </section>
       </div>
     </div>
 
+    <button id="fabTop" class="fab mobileOnly">Lista</button>
+
     <script>
-      const CAT={all:'Wszystko','golden-protocols':'Golden Protocols','fitness-health':'Fitness / Health',taste:'Taste','cron-sync':'Cron / Sync','daily-log':'Daily log',other:'Inne'};
-      const LS='aura_notes_state_v2';
-      const state={notes:[],filtered:[],selected:null,category:'golden-protocols',forceRecent:false,view:'gold',focus:false,auth:{enabled:false,sha256:null}};
-      const els={list:by('list'),q:by('q'),folder:by('folder'),tag:by('tag'),sort:by('sort'),content:by('content'),meta:by('meta'),count:by('count'),latestGlobal:by('latestGlobal'),newSince:by('newSince'),lock:by('lock'),unlock:by('unlock'),pw:by('pw'),pwErr:by('pwErr'),categories:by('categories'),views:by('views'),listPane:by('listPane'),readPane:by('readPane'),tabList:by('tabList'),tabRead:by('tabRead'),prevBtn:by('prevBtn'),nextBtn:by('nextBtn'),focusBtn:by('focusBtn')};
-      function by(id){return document.getElementById(id)}
-      const fmt=d=>new Date(d).toLocaleString('pl-PL',{dateStyle:'short',timeStyle:'short'}); const daysAgo=n=>new Date(Date.now()-n*86400000); const isMobile=()=>window.matchMedia('(max-width: 979px)').matches;
+      const CAT={all:'Wszystko','golden-protocols':'Golden','fitness-health':'Fitness','taste':'Taste','cron-sync':'Cron','daily-log':'Daily','other':'Inne'};
+      const LS='aura_notes_premium_v1';
+      const state={notes:[],filtered:[],selected:null,category:'golden-protocols',view:'gold',forceRecent:false,focus:false,favorites:{},auth:{enabled:false,sha256:null}};
+      const el=id=>document.getElementById(id);
+      const els={latest:el('latest'),kpiAll:el('kpiAll'),kpiNew:el('kpiNew'),kpiGold:el('kpiGold'),kpiFav:el('kpiFav'),views:el('views'),categories:el('categories'),
+        list:el('list'),q:el('q'),folder:el('folder'),tag:el('tag'),sort:el('sort'),font:el('font'),
+        readPane:el('readPane'),listPane:el('listPane'),tabList:el('tabList'),tabRead:el('tabRead'),fabTop:el('fabTop'),
+        prev:el('prev'),next:el('next'),fav:el('fav'),focus:el('focus'),copyLink:el('copyLink'),noteMeta:el('noteMeta'),pbar:el('pbar'),meta:el('meta'),content:el('content'),
+        lock:el('lock'),pw:el('pw'),unlock:el('unlock'),pwErr:el('pwErr')};
+      const fmt=d=>new Date(d).toLocaleString('pl-PL',{dateStyle:'short',timeStyle:'short'});
+      const daysAgo=n=>new Date(Date.now()-n*86400000);
+      const isMobile=()=>window.matchMedia('(max-width: 999px)').matches;
+
       async function sha256(text){const data=new TextEncoder().encode(text);const hash=await crypto.subtle.digest('SHA-256',data);return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');}
+      const esc=s=>s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
 
-      function saveState(){localStorage.setItem(LS,JSON.stringify({q:els.q.value,folder:els.folder.value,tag:els.tag.value,sort:els.sort.value,category:state.category,view:state.view,selected:state.selected,focus:state.focus}))}
-      function loadState(){try{const s=JSON.parse(localStorage.getItem(LS)||'{}'); if(s.q!=null)els.q.value=s.q; if(s.folder!=null)els.folder.value=s.folder; if(s.tag!=null)els.tag.value=s.tag; if(s.sort)els.sort.value=s.sort; if(s.category)state.category=s.category; if(s.view)state.view=s.view; if(s.selected)state.selected=s.selected; state.focus=!!s.focus;}catch{}}
-
-      function setMobileTab(tab){if(!isMobile())return; const listOn=tab==='list'; els.tabList.classList.toggle('on',listOn); els.tabRead.classList.toggle('on',!listOn); els.listPane.classList.toggle('hidden',!listOn); els.readPane.classList.toggle('hidden',listOn)}
-      function setFocus(on){state.focus=on; document.body.classList.toggle('focus',on); els.listPane.classList.toggle('hidden',on); if(on) setMobileTab('read'); els.focusBtn.textContent=on?'Wyłącz focus':'Tryb focus'; saveState()}
-
-      function renderCategories(){const av=new Set(state.notes.map(n=>n.category)); const order=['all','golden-protocols','fitness-health','taste','cron-sync','daily-log','other']; els.categories.innerHTML=order.filter(c=>c==='all'||av.has(c)).map(c=>`<button class="chip ${state.category===c?'on':''}" data-cat="${c}">${CAT[c]||c}</button>`).join(''); els.categories.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{state.category=b.dataset.cat;state.forceRecent=false;state.selected=null;state.view='custom'; setActiveView(); renderCategories(); renderList(); saveState();})}
-      function setActiveView(){els.views.querySelectorAll('.viewBtn').forEach(btn=>btn.classList.toggle('on',btn.dataset.view===state.view))}
-
-      function applyView(view){state.view=view; state.forceRecent=false; if(view==='gold'){state.category='golden-protocols';els.q.value='';els.folder.value='';els.tag.value=''} if(view==='fitness'){state.category='fitness-health';els.q.value='peptyd peptide fitness';els.folder.value='';els.tag.value=''} if(view==='taste'){state.category='taste';els.q.value='';els.folder.value='';els.tag.value=''} if(view==='all'){state.category='all';els.q.value='';els.folder.value='';els.tag.value=''} if(view==='recent'){state.category='all';state.forceRecent=true;els.q.value='';els.folder.value='';els.tag.value=''} state.selected=null; setActiveView(); renderCategories(); renderList(); saveState()}
-
-      function renderList(){
-        const q=els.q.value.trim().toLowerCase(),folder=els.folder.value,tag=els.tag.value; let base=state.notes; if(state.forceRecent) base=base.filter(n=>new Date(n.updatedAt)>=daysAgo(7));
-        state.filtered=base.filter(n=>{if(!state.forceRecent&&state.category!=='all'&&n.category!==state.category)return false; if(folder&&n.folder!==folder)return false; if(tag&&!(n.tags||[]).includes(tag))return false; if(!q)return true; return (n.title+' '+n.path+' '+(n.excerpt||'')+' '+(n.tags||[]).join(' ')+' '+(n.category||'')).toLowerCase().includes(q)});
-        if(els.sort.value==='new') state.filtered.sort((a,b)=>a.updatedAt<b.updatedAt?1:-1); if(els.sort.value==='old') state.filtered.sort((a,b)=>a.updatedAt>b.updatedAt?1:-1); if(els.sort.value==='az') state.filtered.sort((a,b)=>a.title.localeCompare(b.title,'pl'));
-        els.list.innerHTML=state.filtered.map(n=>`<div class="item ${state.selected===n.id?'active':''}" data-id="${n.id}"><h4>${n.title}</h4><p>${n.excerpt||''}</p><div class="meta">${n.path} • ${fmt(n.updatedAt)} • ${CAT[n.category]||n.category}</div></div>`).join('');
-        els.count.textContent=`${state.filtered.length} / ${state.notes.length} notatek`;
-        els.list.querySelectorAll('.item').forEach(el=>el.onclick=()=>openNote(el.dataset.id));
-        if(state.filtered.length&&!state.selected) openNote(state.filtered[0].id,false); if(!state.filtered.length){els.meta.textContent='Brak wyników dla aktualnych filtrów.';els.content.innerHTML='';}
-      }
-
-      function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
       function mdToHtml(md){
-        let t=escapeHtml(md);
+        let t=esc(md);
         t=t.replace(/^###\s(.+)$/gm,'<h3>$1</h3>').replace(/^##\s(.+)$/gm,'<h2>$1</h2>').replace(/^#\s(.+)$/gm,'<h1>$1</h1>');
         t=t.replace(/^>\s(.+)$/gm,'<blockquote>$1</blockquote>');
         t=t.replace(/```([\s\S]*?)```/g,'<pre><code>$1</code></pre>');
@@ -134,27 +192,90 @@
         return '<p>'+t+'</p>';
       }
 
-      function openNote(id,autoSwitch=true){const n=state.notes.find(x=>x.id===id); if(!n)return; state.selected=n.id; els.meta.textContent=`Plik: ${n.path} • Ostatnia aktualizacja: ${fmt(n.updatedAt)} • ${CAT[n.category]||n.category}${(n.tags||[]).length?' • #'+n.tags.join(' #'):''}`; els.content.innerHTML=mdToHtml(n.content); if(isMobile()&&autoSwitch)setMobileTab('read'); renderList(); saveState()}
-      function goRel(delta){if(!state.filtered.length)return; const i=state.filtered.findIndex(n=>n.id===state.selected); const ni=Math.max(0,Math.min(state.filtered.length-1,i+delta)); openNote(state.filtered[ni].id,false)}
+      function save(){localStorage.setItem(LS,JSON.stringify({q:els.q.value,folder:els.folder.value,tag:els.tag.value,sort:els.sort.value,font:els.font.value,category:state.category,view:state.view,selected:state.selected,focus:state.focus,favorites:state.favorites}))}
+      function load(){try{const s=JSON.parse(localStorage.getItem(LS)||'{}'); if(s.q!=null)els.q.value=s.q; if(s.folder!=null)els.folder.value=s.folder; if(s.tag!=null)els.tag.value=s.tag; if(s.sort)els.sort.value=s.sort; if(s.font)els.font.value=s.font; if(s.category)state.category=s.category; if(s.view)state.view=s.view; if(s.selected)state.selected=s.selected; state.focus=!!s.focus; state.favorites=s.favorites||{};}catch{}}
+
+      function setMobileTab(tab){if(!isMobile())return; const listOn=tab==='list'; els.tabList.classList.toggle('on',listOn); els.tabRead.classList.toggle('on',!listOn); els.listPane.classList.toggle('hidden',!listOn); els.readPane.classList.toggle('hidden',listOn)}
+      function setFocus(on){state.focus=on; els.listPane.classList.toggle('hidden',on); els.focus.textContent=on?'Wyłącz focus':'Focus'; if(on&&isMobile())setMobileTab('read'); save()}
+      function setReaderFont(px){els.content.style.fontSize=px+'px'; save()}
+
+      function renderCategories(){const set=new Set(state.notes.map(n=>n.category)); const order=['all','golden-protocols','fitness-health','taste','cron-sync','daily-log','other']; els.categories.innerHTML=order.filter(c=>c==='all'||set.has(c)).map(c=>`<button class="chip ${state.category===c?'on':''}" data-cat="${c}">${CAT[c]||c}</button>`).join(''); els.categories.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{state.category=b.dataset.cat;state.forceRecent=false;state.view='custom';renderViews();renderCategories();renderList();save()})}
+      function renderViews(){els.views.querySelectorAll('.viewBtn').forEach(b=>b.classList.toggle('on',b.dataset.view===state.view));}
+
+      function applyView(v){state.view=v; state.forceRecent=false; if(v==='gold'){state.category='golden-protocols';els.q.value='';els.folder.value='';els.tag.value=''} if(v==='fitness'){state.category='fitness-health';els.q.value='peptyd peptide fitness';els.folder.value='';els.tag.value=''} if(v==='taste'){state.category='taste';els.q.value='';els.folder.value='';els.tag.value=''} if(v==='all'){state.category='all';els.q.value='';els.folder.value='';els.tag.value=''} if(v==='recent'){state.category='all';state.forceRecent=true;els.q.value='';els.folder.value='';els.tag.value=''} if(v==='favorites'){state.category='all';els.q.value='';els.folder.value='';els.tag.value=''} state.selected=null; renderViews(); renderCategories(); renderList(); save();}
+
+      function currentBase(){let base=[...state.notes]; if(state.forceRecent) base=base.filter(n=>new Date(n.updatedAt)>=daysAgo(7)); if(state.view==='favorites') base=base.filter(n=>state.favorites[n.id]); return base;}
+
+      function renderList(){
+        const q=els.q.value.trim().toLowerCase(), folder=els.folder.value, tag=els.tag.value;
+        state.filtered=currentBase().filter(n=>{
+          if(!state.forceRecent&&state.view!=='favorites'&&state.category!=='all'&&n.category!==state.category) return false;
+          if(folder&&n.folder!==folder) return false;
+          if(tag&&!(n.tags||[]).includes(tag)) return false;
+          if(!q) return true;
+          return (n.title+' '+n.path+' '+(n.excerpt||'')+' '+(n.tags||[]).join(' ')+' '+(n.category||'')).toLowerCase().includes(q);
+        });
+        if(els.sort.value==='new') state.filtered.sort((a,b)=>a.updatedAt<b.updatedAt?1:-1);
+        if(els.sort.value==='old') state.filtered.sort((a,b)=>a.updatedAt>b.updatedAt?1:-1);
+        if(els.sort.value==='az') state.filtered.sort((a,b)=>a.title.localeCompare(b.title,'pl'));
+
+        els.list.innerHTML=state.filtered.map(n=>`<div class="item ${state.selected===n.id?'active':''}" data-id="${n.id}"><div class="itemTop"><h4>${n.title}</h4>${state.favorites[n.id]?'<span class="mini">★</span>':''}</div><p>${n.excerpt||''}</p><div class="meta">${n.path} • ${fmt(n.updatedAt)} • ${n.readingMinutes} min • ${CAT[n.category]||n.category}</div></div>`).join('');
+        els.list.querySelectorAll('.item').forEach(it=>it.onclick=()=>openNote(it.dataset.id,true));
+        if(state.filtered.length&&!state.selected) openNote(state.filtered[0].id,false);
+        if(!state.filtered.length){els.meta.textContent='Brak wyników dla aktualnych filtrów.'; els.content.innerHTML='';}
+        updateKPI();
+      }
+
+      function openNote(id,switchMobile){const n=state.notes.find(x=>x.id===id); if(!n) return; state.selected=n.id; location.hash=n.id; els.meta.textContent=`${n.path} • Ostatnia aktualizacja: ${fmt(n.updatedAt)} • ${n.words} słów`; els.noteMeta.textContent=`${n.readingMinutes} min`; els.content.innerHTML=mdToHtml(n.content); els.fav.textContent=state.favorites[n.id]?'★ Ulubione':'☆ Ulubione'; if(isMobile()&&switchMobile) setMobileTab('read'); renderList(); save();}
+      function move(delta){if(!state.filtered.length) return; const i=state.filtered.findIndex(n=>n.id===state.selected); const ni=Math.max(0,Math.min(state.filtered.length-1,(i<0?0:i)+delta)); openNote(state.filtered[ni].id,false)}
+
+      function updateKPI(){
+        els.kpiAll.textContent=String(state.notes.length);
+        els.kpiGold.textContent=String(state.notes.filter(n=>n.category==='golden-protocols').length);
+        els.kpiFav.textContent=String(Object.keys(state.favorites).filter(k=>state.favorites[k]).length);
+      }
+
+      function bindReaderProgress(){
+        const target=els.readPane;
+        target.addEventListener('scroll',()=>{
+          const h=target.scrollHeight-target.clientHeight;
+          const pct=h<=0?0:(target.scrollTop/h)*100;
+          els.pbar.style.width=pct.toFixed(1)+'%';
+        },{passive:true});
+      }
 
       async function boot(){
-        const res=await fetch('./notes-index.json',{cache:'no-store'}); const data=await res.json(); state.auth=data.auth||{enabled:false};
-        els.latestGlobal.textContent=`Najnowsza aktualizacja: ${data.latestUpdatedAt?fmt(data.latestUpdatedAt):'—'}`;
-        const lastSeen=localStorage.getItem('aura_last_seen'); const newCount=(data.notes||[]).filter(n=>!lastSeen||new Date(n.updatedAt)>new Date(lastSeen)).length; els.newSince.textContent=`Nowe od ostatniej wizyty: ${newCount}`; localStorage.setItem('aura_last_seen',new Date().toISOString());
-        if(state.auth.enabled){els.lock.classList.remove('hidden'); els.unlock.onclick=async()=>{const a=await sha256(els.pw.value); if(a===state.auth.sha256){sessionStorage.setItem('aura_ok','1'); els.lock.classList.add('hidden')} else els.pwErr.style.display='block'}; if(sessionStorage.getItem('aura_ok')==='1')els.lock.classList.add('hidden');}
+        const res=await fetch('./notes-index.json',{cache:'no-store'}); const data=await res.json(); state.auth=data.auth||{enabled:false}; state.notes=data.notes||[];
+        els.latest.textContent=`Najnowsza aktualizacja: ${data.latestUpdatedAt?fmt(data.latestUpdatedAt):'—'}`;
 
-        state.notes=data.notes||[]; const tags=[...new Set(state.notes.flatMap(n=>n.tags||[]))].sort(); for(const t of tags){const o=document.createElement('option'); o.value=t; o.textContent=`#${t}`; els.tag.appendChild(o)}
-        loadState();
-        [els.q,els.folder,els.tag,els.sort].forEach(el=>el.addEventListener('input',()=>{renderList();saveState()}));
-        els.views.querySelectorAll('.viewBtn').forEach(btn=>btn.addEventListener('click',()=>applyView(btn.dataset.view)));
-        els.tabList.onclick=()=>setMobileTab('list'); els.tabRead.onclick=()=>setMobileTab('read'); els.prevBtn.onclick=()=>goRel(-1); els.nextBtn.onclick=()=>goRel(1); els.focusBtn.onclick=()=>setFocus(!state.focus);
+        if(state.auth.enabled){
+          els.lock.classList.remove('hidden');
+          els.unlock.onclick=async()=>{const at=await sha256(els.pw.value); if(at===state.auth.sha256){sessionStorage.setItem('aura_ok','1'); els.lock.classList.add('hidden')} else els.pwErr.style.display='block';};
+          if(sessionStorage.getItem('aura_ok')==='1') els.lock.classList.add('hidden');
+        }
 
-        let startX=0; els.readPane.addEventListener('touchstart',e=>startX=e.changedTouches[0].clientX,{passive:true}); els.readPane.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-startX; if(Math.abs(dx)>60){if(dx<0)goRel(1); else goRel(-1)}});
-        window.addEventListener('resize',()=>{if(!isMobile()){els.listPane.classList.remove('hidden');els.readPane.classList.remove('hidden')}else if(!state.focus){setMobileTab('list')}});
+        const lastSeen=localStorage.getItem('aura_last_seen'); const newCount=state.notes.filter(n=>!lastSeen||new Date(n.updatedAt)>new Date(lastSeen)).length; els.kpiNew.textContent=String(newCount); localStorage.setItem('aura_last_seen',new Date().toISOString());
 
+        const tags=[...new Set(state.notes.flatMap(n=>n.tags||[]))].sort(); for(const t of tags){const o=document.createElement('option'); o.value=t; o.textContent='#'+t; els.tag.appendChild(o)}
+        load();
+
+        [els.q,els.folder,els.tag,els.sort].forEach(i=>i.addEventListener('input',()=>{renderList();save()}));
+        els.font.addEventListener('input',()=>setReaderFont(Number(els.font.value)||17));
+        els.views.querySelectorAll('.viewBtn').forEach(b=>b.onclick=()=>applyView(b.dataset.view));
+        els.tabList.onclick=()=>setMobileTab('list'); els.tabRead.onclick=()=>setMobileTab('read'); els.fabTop.onclick=()=>setMobileTab('list');
+        els.prev.onclick=()=>move(-1); els.next.onclick=()=>move(1);
+        els.fav.onclick=()=>{if(!state.selected)return; state.favorites[state.selected]=!state.favorites[state.selected]; renderList(); openNote(state.selected,false); save();};
+        els.focus.onclick=()=>setFocus(!state.focus);
+        els.copyLink.onclick=async()=>{if(!state.selected)return; const url=location.origin+location.pathname+'#'+state.selected; try{await navigator.clipboard.writeText(url); els.copyLink.textContent='Skopiowano'; setTimeout(()=>els.copyLink.textContent='Kopiuj link',1200);}catch{}};
+
+        let startX=0; els.readPane.addEventListener('touchstart',e=>startX=e.changedTouches[0].clientX,{passive:true}); els.readPane.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-startX; if(Math.abs(dx)>70){if(dx<0)move(1); else move(-1);}});
+        window.addEventListener('resize',()=>{if(!isMobile()){els.listPane.classList.remove('hidden'); els.readPane.classList.remove('hidden')} else if(!state.focus) setMobileTab('list')});
+
+        bindReaderProgress();
         renderCategories();
-        if(state.view&&state.view!=='custom') applyView(state.view); else {setActiveView(); renderList();}
-        if(state.selected) openNote(state.selected,false);
+        if(state.view&&state.view!=='custom') applyView(state.view); else {renderViews(); renderList();}
+        if(location.hash){const id=location.hash.slice(1); if(state.notes.some(n=>n.id===id)) openNote(id,false);} else if(state.selected){openNote(state.selected,false)}
+        setReaderFont(Number(els.font.value)||17);
         setFocus(state.focus);
         if(isMobile()&&!state.focus) setMobileTab('list');
       }
