@@ -346,7 +346,6 @@
         { id:'gold', label:'Protokoły GOLD' },
         { id:'fitness', label:'Fitness/Peptydy' },
         { id:'taste', label:'Taste' },
-        { id:'cron', label:'Cron' },
         { id:'daily', label:'Daily' },
         { id:'recent', label:'Ostatnie 7 dni' },
         { id:'fav', label:'Ulubione' },
@@ -461,7 +460,6 @@
           case 'gold': return n.category === 'golden-protocols' || /gold|protocol/.test(blob);
           case 'fitness': return /fitness|peptyd|peptide|workout|nutrition|retatrutide|mots-c|hcg|cjc|ipamorelin/.test(blob);
           case 'taste': return n.category === 'taste' || /taste|design|ui|ux/.test(blob);
-          case 'cron': return n.category === 'cron-sync';
           case 'daily': return n.category === 'daily-log';
           case 'recent': return new Date(n.updatedAt) >= daysAgo(7);
           case 'fav': return !!state.favorites[n.id];
