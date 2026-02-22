@@ -102,7 +102,7 @@
         <p style="margin-top:0;color:var(--muted)">Podaj hasło, żeby odblokować notatnik.</p>
         <input id="pw" type="password" placeholder="Hasło" />
         <div style="height:8px"></div>
-        <button id="unlock" style="background:#111111;border-color:#111111;color:#ffffff">Odblokuj</button>
+        <button type="button" id="unlock" style="background:#111111;border-color:#111111;color:#ffffff">Odblokuj</button>
         <p id="pwErr" style="display:none;color:#c83a3a;font-size:12px">Nieprawidłowe hasło.</p>
       </div>
     </div>
@@ -283,21 +283,30 @@
           startApp(second.data);
           return;
         }
+        if(second.error){
+          // continue to standard auth path
+        }
 
         const ok=await authenticate(pw);
         if(!ok){ showLogin('Nieprawidłowe hasło.'); return; }
         second=await fetchNotes(pw);
-        if(second.authRequired||!second.data){ showLogin('Logowanie nieudane — odśwież i spróbuj ponownie.'); return; }
+        if(second.authRequired||!second.data){ showLogin('Logowanie nieudane: '+(second.error||'spróbuj ponownie')); return; }
         hideLogin();
         startApp(second.data);
       }
 
       async function fetchNotes(password=''){
-        const res=await fetch('/.netlify/functions/notes',{cache:'no-store',credentials:'include',headers:{'x-aura-token':state.authToken||'','x-aura-pass':password||''}});
-        if(res.status===401) return {authRequired:true};
-        const payload=await res.json();
-        if(!payload.ok) throw new Error(payload.error||'Fetch failed');
-        return {authRequired:false,data:payload.data};
+        try {
+          const res=await fetch('/.netlify/functions/notes',{cache:'no-store',credentials:'include',headers:{'x-aura-token':state.authToken||'','x-aura-pass':password||''}});
+          let payload={};
+          try { payload=await res.json(); } catch {}
+          if(res.status===401) return {authRequired:true,error:payload.error||'Unauthorized'};
+          if(!res.ok) return {authRequired:false,error:payload.error||('HTTP '+res.status)};
+          if(!payload.ok) return {authRequired:false,error:payload.error||'Bad payload'};
+          return {authRequired:false,data:payload.data};
+        } catch (e) {
+          return {authRequired:false,error:'Network error'};
+        }
       }
 
       async function authenticate(password){
@@ -312,11 +321,18 @@
           first = await fetchNotes();
         } catch (e) {
           showLogin('Brak połączenia z autoryzacją. Kliknij Zaloguj.');
+          els.unlock.onclick=loginAndLoad;
           return;
         }
 
         if(first.authRequired){
           showLogin();
+          els.unlock.onclick=loginAndLoad;
+          return;
+        }
+
+        if(first.error && !first.data){
+          showLogin('Wymagane logowanie. Kliknij Odblokuj.');
           els.unlock.onclick=loginAndLoad;
           return;
         }
