@@ -111,6 +111,7 @@
       <div class="top">
         <h1 class="title">Aura Notes</h1>
         <span id="latest" class="pill">Najnowsza aktualizacja: —</span>
+        <button id="loginBtn" class="pill" style="width:auto;background:#111;color:#fff;border-color:#111">Zaloguj</button>
       </div>
 
       <section class="dashboard">
@@ -177,7 +178,7 @@
       const LS='aura_notes_premium_v1';
       const state={notes:[],filtered:[],selected:null,category:'golden-protocols',view:'gold',forceRecent:false,focus:false,favorites:{},authToken:localStorage.getItem('aura_auth_token')||''};
       const el=id=>document.getElementById(id);
-      const els={appRoot:el('appRoot'),latest:el('latest'),kpiAll:el('kpiAll'),kpiNew:el('kpiNew'),kpiGold:el('kpiGold'),kpiFav:el('kpiFav'),views:el('views'),categories:el('categories'),
+      const els={appRoot:el('appRoot'),latest:el('latest'),loginBtn:el('loginBtn'),kpiAll:el('kpiAll'),kpiNew:el('kpiNew'),kpiGold:el('kpiGold'),kpiFav:el('kpiFav'),views:el('views'),categories:el('categories'),
         list:el('list'),q:el('q'),folder:el('folder'),tag:el('tag'),sort:el('sort'),font:el('font'),
         readPane:el('readPane'),listPane:el('listPane'),tabList:el('tabList'),tabRead:el('tabRead'),fabTop:el('fabTop'),
         prev:el('prev'),next:el('next'),fav:el('fav'),focus:el('focus'),copyLink:el('copyLink'),noteMeta:el('noteMeta'),pbar:el('pbar'),meta:el('meta'),content:el('content'),
@@ -257,6 +258,31 @@
         },{passive:true});
       }
 
+      function showLogin(message=''){
+        if(message){ els.pwErr.textContent=message; els.pwErr.style.display='block'; }
+        else { els.pwErr.style.display='none'; }
+        els.lock.classList.remove('hidden');
+        els.appRoot.classList.add('is-locked');
+        els.fabTop.classList.add('hidden');
+      }
+
+      function hideLogin(){
+        els.lock.classList.add('hidden');
+        els.appRoot.classList.remove('is-locked');
+        els.fabTop.classList.remove('hidden');
+        els.pwErr.style.display='none';
+      }
+
+      async function loginAndLoad(){
+        els.pwErr.style.display='none';
+        const ok=await authenticate(els.pw.value||'');
+        if(!ok){ showLogin('Nieprawidłowe hasło.'); return; }
+        const second=await fetchNotes();
+        if(second.authRequired||!second.data){ showLogin('Logowanie nieudane — odśwież i spróbuj ponownie.'); return; }
+        hideLogin();
+        startApp(second.data);
+      }
+
       async function fetchNotes(){
         const res=await fetch('/.netlify/functions/notes',{cache:'no-store',credentials:'include',headers:{'x-aura-token':state.authToken||''}});
         if(res.status===401) return {authRequired:true};
@@ -272,32 +298,22 @@
       }
 
       async function boot(){
-        let bootData=null;
-        let first=await fetchNotes();
-        if(first.authRequired){
-          els.lock.classList.remove('hidden');
-          els.appRoot.classList.add('is-locked');
-          els.fabTop.classList.add('hidden');
-          els.unlock.onclick=async()=>{
-            els.pwErr.style.display='none';
-            const ok=await authenticate(els.pw.value||'');
-            if(!ok){els.pwErr.textContent='Nieprawidłowe hasło.';els.pwErr.style.display='block'; return;}
-            const second=await fetchNotes();
-            if(second.authRequired||!second.data){els.pwErr.textContent='Logowanie nieudane — sprawdź hasło i spróbuj ponownie.';els.pwErr.style.display='block'; return;}
-            bootData=second.data;
-            els.lock.classList.add('hidden');
-            els.appRoot.classList.remove('is-locked');
-            els.fabTop.classList.remove('hidden');
-            startApp(bootData);
-          };
+        let first;
+        try {
+          first = await fetchNotes();
+        } catch (e) {
+          showLogin('Brak połączenia z autoryzacją. Kliknij Zaloguj.');
           return;
         }
-        bootData=first.data;
-        els.appRoot.classList.remove('is-locked');
-        els.fabTop.classList.remove('hidden');
-        els.lock.classList.add('hidden');
-        els.pwErr.style.display='none';
-        startApp(bootData);
+
+        if(first.authRequired){
+          showLogin();
+          els.unlock.onclick=loginAndLoad;
+          return;
+        }
+
+        hideLogin();
+        startApp(first.data || { notes: [], latestUpdatedAt: null });
       }
 
       function startApp(data){
@@ -312,6 +328,7 @@
         [els.q,els.folder,els.tag,els.sort].forEach(i=>i.addEventListener('input',()=>{renderList();save()}));
         els.font.addEventListener('input',()=>setReaderFont(Number(els.font.value)||17));
         els.views.querySelectorAll('.viewBtn').forEach(b=>b.onclick=()=>applyView(b.dataset.view));
+        els.loginBtn.onclick=()=>{ showLogin(); els.unlock.onclick=loginAndLoad; setTimeout(()=>els.pw.focus(),50); };
         els.tabList.onclick=()=>setMobileTab('list'); els.tabRead.onclick=()=>setMobileTab('read'); els.fabTop.onclick=()=>setMobileTab('list');
         els.prev.onclick=()=>move(-1); els.next.onclick=()=>move(1);
         els.fav.onclick=()=>{if(!state.selected)return; state.favorites[state.selected]=!state.favorites[state.selected]; renderList(); openNote(state.selected,false); save();};
