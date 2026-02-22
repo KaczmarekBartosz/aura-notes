@@ -67,6 +67,7 @@ for (const src of sources) {
   if (!fs.existsSync(srcDir)) continue;
   for (const f of walk(srcDir)) {
     const rel = path.relative(root, f).replace(/\\/g, '/');
+    if (rel.includes('/_archive/')) continue;
     const content = fs.readFileSync(f, 'utf8');
     const stat = fs.statSync(f);
     const words = content.replace(/```[\s\S]*?```/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
