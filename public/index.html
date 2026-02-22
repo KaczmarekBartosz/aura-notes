@@ -118,21 +118,20 @@
       <section class="dashboard">
         <div class="glass card"><div id="kpiAll" class="kpi">0</div><div class="label">Wszystkie notatki</div></div>
         <div class="glass card"><div id="kpiNew" class="kpi">0</div><div class="label">Nowe od ostatniej wizyty</div></div>
-        <div class="glass card"><div id="kpiGold" class="kpi">0</div><div class="label">Golden Protocols</div></div>
+        <div class="glass card"><div id="kpiGold" class="kpi">0</div><div class="label">Protokoły GOLD</div></div>
         <div class="glass card"><div id="kpiFav" class="kpi">0</div><div class="label">Ulubione</div></div>
       </section>
 
       <div class="scrollRow" id="views">
-        <button class="viewBtn" data-view="gold">Golden</button>
-        <button class="viewBtn" data-view="fitness">Fitness</button>
+        <button class="viewBtn" data-view="gold">Protokoły GOLD</button>
+        <button class="viewBtn" data-view="fitness">Fitness/Peptydy</button>
         <button class="viewBtn" data-view="taste">Taste</button>
-        <button class="viewBtn" data-view="recent">7 dni</button>
+        <button class="viewBtn" data-view="recent">Ostatnie 7 dni</button>
         <button class="viewBtn" data-view="favorites">Favorites</button>
         <button class="viewBtn" data-view="all">Wszystko</button>
       </div>
 
-      <div class="scrollRow" id="categories"></div>
-
+      
       <div class="mobileTabs mobileOnly">
         <button id="tabList" class="tab on">Lista</button>
         <button id="tabRead" class="tab">Czytnik</button>
@@ -141,7 +140,7 @@
       <div class="layout">
         <section id="listPane" class="left glass panel">
           <div class="controls">
-            <input id="q" placeholder="Szukaj: gold, peptide, taste, cron..." />
+            <input id="q" placeholder="Szukaj po tytule/treści, np. retatrutide, protocol, taste..." />
             <div class="controls2">
               <select id="folder"><option value="">Folder: wszystkie</option><option value="memory">memory</option><option value="outputs">outputs</option></select>
               <select id="tag"><option value="">Tag: wszystkie</option></select>
@@ -175,11 +174,11 @@
     <button id="fabTop" class="fab mobileOnly">Lista</button>
 
     <script>
-      const CAT={all:'Wszystko','golden-protocols':'Golden','fitness-health':'Fitness','taste':'Taste','cron-sync':'Cron','daily-log':'Daily','other':'Inne'};
+      const CAT={all:'Wszystko','golden-protocols':'Protokoły GOLD','fitness-health':'Fitness/Peptydy','taste':'Taste','cron-sync':'Cron','daily-log':'Daily','other':'Inne'};
       const LS='aura_notes_premium_v1';
       const state={notes:[],filtered:[],selected:null,category:'golden-protocols',view:'gold',forceRecent:false,focus:false,favorites:{},authToken:localStorage.getItem('aura_auth_token')||''};
       const el=id=>document.getElementById(id);
-      const els={appRoot:el('appRoot'),latest:el('latest'),loginBtn:el('loginBtn'),kpiAll:el('kpiAll'),kpiNew:el('kpiNew'),kpiGold:el('kpiGold'),kpiFav:el('kpiFav'),views:el('views'),categories:el('categories'),
+      const els={appRoot:el('appRoot'),latest:el('latest'),loginBtn:el('loginBtn'),kpiAll:el('kpiAll'),kpiNew:el('kpiNew'),kpiGold:el('kpiGold'),kpiFav:el('kpiFav'),views:el('views'),
         list:el('list'),q:el('q'),folder:el('folder'),tag:el('tag'),sort:el('sort'),font:el('font'),
         readPane:el('readPane'),listPane:el('listPane'),tabList:el('tabList'),tabRead:el('tabRead'),fabTop:el('fabTop'),
         prev:el('prev'),next:el('next'),fav:el('fav'),focus:el('focus'),copyLink:el('copyLink'),noteMeta:el('noteMeta'),pbar:el('pbar'),meta:el('meta'),content:el('content'),
@@ -209,10 +208,10 @@
       function setFocus(on){state.focus=on; els.listPane.classList.toggle('hidden',on); els.focus.textContent=on?'Wyłącz focus':'Focus'; if(on&&isMobile())setMobileTab('read'); save()}
       function setReaderFont(px){els.content.style.fontSize=px+'px'; save()}
 
-      function renderCategories(){const set=new Set(state.notes.map(n=>n.category)); const order=['all','golden-protocols','fitness-health','taste','cron-sync','daily-log','other']; els.categories.innerHTML=order.filter(c=>c==='all'||set.has(c)).map(c=>`<button class="chip ${state.category===c?'on':''}" data-cat="${c}">${CAT[c]||c}</button>`).join(''); els.categories.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{state.category=b.dataset.cat;state.forceRecent=false;state.view='custom';renderViews();renderCategories();renderList();save()})}
+      function renderCategories(){ /* removed duplicate category chips for cleaner UX */ }
       function renderViews(){els.views.querySelectorAll('.viewBtn').forEach(b=>b.classList.toggle('on',b.dataset.view===state.view));}
 
-      function applyView(v){state.view=v; state.forceRecent=false; if(v==='gold'){state.category='golden-protocols';els.q.value='';els.folder.value='';els.tag.value=''} if(v==='fitness'){state.category='all';els.q.value='';els.folder.value='';els.tag.value=''} if(v==='taste'){state.category='taste';els.q.value='';els.folder.value='';els.tag.value=''} if(v==='all'){state.category='all';els.q.value='';els.folder.value='';els.tag.value=''} if(v==='recent'){state.category='all';state.forceRecent=true;els.q.value='';els.folder.value='';els.tag.value=''} if(v==='favorites'){state.category='all';els.q.value='';els.folder.value='';els.tag.value=''} state.selected=null; renderViews(); renderCategories(); renderList(); save();}
+      function applyView(v){state.view=v; state.forceRecent=false; if(v==='gold'){state.category='golden-protocols';els.q.value='';els.folder.value='';els.tag.value=''} if(v==='fitness'){state.category='all';els.q.value='';els.folder.value='';els.tag.value=''} if(v==='taste'){state.category='taste';els.q.value='';els.folder.value='';els.tag.value=''} if(v==='all'){state.category='all';els.q.value='';els.folder.value='';els.tag.value=''} if(v==='recent'){state.category='all';state.forceRecent=true;els.q.value='';els.folder.value='';els.tag.value=''} if(v==='favorites'){state.category='all';els.q.value='';els.folder.value='';els.tag.value=''} state.selected=null; renderViews(); renderList(); save();}
 
       function currentBase(){let base=[...state.notes]; if(state.forceRecent) base=base.filter(n=>new Date(n.updatedAt)>=daysAgo(7)); if(state.view==='favorites') base=base.filter(n=>state.favorites[n.id]); return base;}
 
@@ -223,7 +222,7 @@
           if(state.view==='fitness'){
             const blob=(n.title+' '+n.path+' '+(n.excerpt||'')+' '+(n.tags||[]).join(' ')+' '+(n.category||'')).toLowerCase();
             const isFitness = /fitness|peptyd|peptide|workout|nutrition|retatrutide|mots-c|protocol/.test(blob);
-            if(!isFitness) return false;
+            if(!isFitness/Peptydy) return false;
           }
           if(folder&&n.folder!==folder) return false;
           if(tag&&!(n.tags||[]).includes(tag)) return false;
@@ -381,7 +380,6 @@
         window.addEventListener('resize',()=>{if(!isMobile()){els.listPane.classList.remove('hidden'); els.readPane.classList.remove('hidden')} else if(!state.focus) setMobileTab('list')});
 
         bindReaderProgress();
-        renderCategories();
         if(state.view&&state.view!=='custom') applyView(state.view); else {renderViews(); renderList();}
         if(location.hash){const id=location.hash.slice(1); if(state.notes.some(n=>n.id===id)) openNote(id,false);} else if(state.selected){openNote(state.selected,false)}
         setReaderFont(Number(els.font.value)||17);
