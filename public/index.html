@@ -37,17 +37,22 @@
       .layout{display:grid;grid-template-columns:1fr;gap:10px}
       .pane{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:10px}
 
-      .filters{display:grid;gap:8px}
+      .filters{display:grid;gap:8px;position:sticky;top:0;z-index:2;background:#fff;padding-bottom:8px;border-bottom:1px solid var(--line)}
       .f2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
       input,select,button{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#fff;font-size:16px;color:#111}
 
-      .cards{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;max-height:54vh;overflow-y:auto;overflow-x:hidden;padding-right:2px;max-width:100%}
+      .cards{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;max-height:54vh;overflow-y:auto;overflow-x:hidden;padding-right:2px;max-width:100%;scroll-behavior:smooth}
       .note{display:grid;grid-template-columns:56px 1fr;gap:10px;padding:10px;border:1px solid var(--line);border-radius:16px;background:#fff;cursor:pointer;max-width:100%;overflow:hidden}
       .note.active{outline:2px solid #111;outline-offset:0}
       .thumb{width:56px;height:56px;border-radius:12px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(160deg,#fafafa,#efefef)}
       .nt{font-size:15px;font-weight:650;line-height:1.25;word-break:break-word;overflow-wrap:anywhere}
       .nx{margin-top:4px;font-size:12px;color:var(--muted);word-break:break-word;overflow-wrap:anywhere}
       .nm{margin-top:6px;font-size:11px;color:var(--muted);word-break:break-word;overflow-wrap:anywhere}
+
+      .sectionHead{font-size:12px;color:#666;margin:8px 2px 2px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+      .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+      .tag{font-size:10px;padding:2px 7px;border-radius:999px;background:#f4f4f4;border:1px solid var(--line);color:#555}
+      .empty{padding:14px;border:1px dashed #ccc;border-radius:14px;text-align:center;color:#666;background:#fafafa}
 
       .reader{padding:0;max-height:70vh;overflow:auto}
       .readerTop{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:10px;display:flex;gap:8px;flex-wrap:wrap;z-index:3}
@@ -151,6 +156,7 @@
         { id:'daily', label:'Daily' },
         { id:'recent', label:'Ostatnie 7 dni' },
         { id:'fav', label:'Ulubione' },
+        { id:'unread', label:'Nieprzeczytane' },
       ];
 
       const ICON = {
@@ -160,7 +166,7 @@
       const state = {
         notes: [], filtered: [], selected: null,
         mode: 'all', folder: '', q: '', sort: 'new',
-        favorites: {}, authPass: localStorage.getItem('aura_auth_pass') || ''
+        favorites: {}, readMap: {}, authPass: localStorage.getItem('aura_auth_pass') || '', listScroll:0, readScroll:0
       };
 
       const $ = (id) => document.getElementById(id);
@@ -177,7 +183,7 @@
       const daysAgo = n => new Date(Date.now() - n*86400000);
 
       function save() {
-        localStorage.setItem('aura_notes_state', JSON.stringify({ mode:state.mode, folder:state.folder, q:state.q, sort:state.sort, selected:state.selected, favorites:state.favorites }));
+        localStorage.setItem('aura_notes_state', JSON.stringify({ mode:state.mode, folder:state.folder, q:state.q, sort:state.sort, selected:state.selected, favorites:state.favorites, readMap:state.readMap, listScroll:state.listScroll, readScroll:state.readScroll }));
       }
 
       function load() {
@@ -189,6 +195,9 @@
           state.sort = s.sort || 'new';
           state.selected = s.selected || null;
           state.favorites = s.favorites || {};
+          state.readMap = s.readMap || {};
+          state.listScroll = s.listScroll || 0;
+          state.readScroll = s.readScroll || 0;
           els.q.value = state.q;
           els.folder.value = state.folder;
           els.sort.value = state.sort;
@@ -218,7 +227,7 @@
           });
           const payload = await res.json().catch(() => ({}));
           if (res.status === 401) return { authRequired:true };
-          if (!res.ok || !payload.ok) return { authRequired:false, error: payload.error || ('HTTP ' + res.status) };
+          if (!res.ok || !payload.ok) return { authRequired:false, error: (payload.error || ('HTTP ' + res.status)) + (payload.detail?(' — '+payload.detail):'') };
           return { authRequired:false, data: payload.data };
         } catch {
           return { authRequired:false, error:'Network error' };
@@ -257,6 +266,7 @@
           case 'daily': return n.category === 'daily-log';
           case 'recent': return new Date(n.updatedAt) >= daysAgo(7);
           case 'fav': return !!state.favorites[n.id];
+          case 'unread': return !state.readMap[n.id];
           default: return true;
         }
       }
@@ -281,24 +291,41 @@
         if (els.sort.value==='old') state.filtered.sort((a,b)=>a.updatedAt>b.updatedAt?1:-1);
         if (els.sort.value==='az') state.filtered.sort((a,b)=>a.title.localeCompare(b.title,'pl'));
 
-        els.cards.innerHTML = state.filtered.map(n => `
-          <article class="note ${state.selected===n.id?'active':''}" data-id="${n.id}">
+        const groups={today:[],week:[],older:[]};
+        const now=Date.now();
+        for(const n of state.filtered){
+          const age=(now-new Date(n.updatedAt).getTime())/86400000;
+          if(age<1) groups.today.push(n); else if(age<7) groups.week.push(n); else groups.older.push(n);
+        }
+
+        function card(n){
+          const tags=(n.tags||[]).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('');
+          return `<article class="note ${state.selected===n.id?'active':''}" data-id="${n.id}">
             <div class="thumb">${ICON[n.category] || '📄'}</div>
             <div>
               <div class="nt">${n.title}</div>
               <div class="nx">${n.excerpt || ''}</div>
-              <div class="nm">${n.path} • ${fmt(n.updatedAt)} • ${n.readingMinutes||1} min</div>
+              <div class="tags">${tags}</div>
+              <div class="nm">${n.path} • ${fmt(n.updatedAt)} • ${n.readingMinutes||1} min ${state.readMap[n.id]?'• przeczytane':''}</div>
             </div>
-          </article>
-        `).join('');
-
-        els.cards.querySelectorAll('.note').forEach(c => c.onclick = () => openNote(c.dataset.id, true));
-        if (state.filtered.length && !state.selected) openNote(state.filtered[0].id, false);
-        if (!state.filtered.length) {
-          els.meta.textContent = 'Brak wyników dla aktualnych filtrów.';
-          els.content.innerHTML = '';
+          </article>`;
         }
 
+        let html='';
+        if(groups.today.length){ html += `<div class="sectionHead">Dziś</div>` + groups.today.map(card).join(''); }
+        if(groups.week.length){ html += `<div class="sectionHead">Ten tydzień</div>` + groups.week.map(card).join(''); }
+        if(groups.older.length){ html += `<div class="sectionHead">Starsze</div>` + groups.older.map(card).join(''); }
+
+        if(!html){
+          html = `<div class="empty">Brak wyników. <br><button id="clearFilters" style="margin-top:8px;width:auto">Wyczyść filtry</button></div>`;
+        }
+
+        els.cards.innerHTML = html;
+        els.cards.querySelectorAll('.note').forEach(c => c.onclick = () => openNote(c.dataset.id, true));
+        const cf= document.getElementById('clearFilters');
+        if(cf) cf.onclick=()=>{ state.mode='all'; els.q.value=''; els.folder.value=''; els.sort.value='new'; renderModes(); renderList(); save(); };
+
+        if (state.filtered.length && !state.selected) openNote(state.filtered[0].id, false);
         updateKpi();
       }
 
@@ -323,6 +350,7 @@
         els.readMin.textContent = `${n.readingMinutes||1} min`;
         els.content.innerHTML = mdToHtml(n.content);
         els.fav.textContent = state.favorites[n.id] ? '★ Ulubione' : '☆ Ulubione';
+        state.readMap[n.id] = Date.now();
         if (isMobile() && switchMobile) setMobileTab('read');
         renderList();
         save();
@@ -364,10 +392,15 @@
         els.fsBtn.textContent = on ? 'Wyjdz fullscreen' : 'Fullscreen';
       }
 
+      function debounce(fn,ms=200){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; }
+
       function bind(){
-        els.q.addEventListener('input', ()=>{ state.q=els.q.value; renderList(); save(); });
+        els.q.addEventListener('input', debounce(()=>{ state.q=els.q.value; renderList(); save(); },180));
         els.folder.addEventListener('input', ()=>{ state.folder=els.folder.value; renderList(); save(); });
         els.sort.addEventListener('input', ()=>{ state.sort=els.sort.value; renderList(); save(); });
+
+        els.cards.addEventListener('scroll', ()=>{ state.listScroll = els.cards.scrollTop; }, {passive:true});
+        els.readPane.addEventListener('scroll', ()=>{ state.readScroll = els.readPane.scrollTop; }, {passive:true});
 
         els.prev.onclick=()=>move(-1);
         els.next.onclick=()=>move(1);
@@ -387,6 +420,12 @@
         els.readPane.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>70){ if(dx<0) move(1); else move(-1); }});
 
         window.addEventListener('resize',()=>{ if(!isMobile()){ els.listPane.classList.remove('hidden'); els.readPane.classList.remove('hidden'); } else setMobileTab('list'); });
+
+        document.addEventListener('keydown',(e)=>{
+          if(e.key==='/' && document.activeElement!==els.q){ e.preventDefault(); els.q.focus(); }
+          if(e.key==='n') move(1);
+          if(e.key==='p') move(-1);
+        });
       }
 
       function startApp(data){
@@ -402,6 +441,7 @@
         }
 
         if(isMobile()) setMobileTab('list');
+        requestAnimationFrame(()=>{ els.cards.scrollTop = state.listScroll || 0; els.readPane.scrollTop = state.readScroll || 0; });
       }
 
       async function boot(){
