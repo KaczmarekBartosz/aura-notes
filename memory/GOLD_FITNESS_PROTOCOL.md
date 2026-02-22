@@ -516,6 +516,40 @@ Podstawy + Konsekwencja + Czas = Wyniki.
 
 ---
 
+## 11. AKTUALIZACJA BATCH: X BOOKMARKS (2026-02-14 → 2026-02-22)
+
+### 11.1 Co realnie doszło (samo mięso)
+
+1. **Retatrutide = mocny sygnał metaboliczny, nie tylko „appetite drug”.**
+   - Wątki powtarzają: redukcja BF, efekt na glukozę/insulinę, potencjalnie lepsze utrzymanie lean mass przy dobrze ustawionym treningu.
+   - Wniosek praktyczny: traktować jako narzędzie warstwy metabolicznej, nie zamiennik fundamentów (dieta/trening/sen).
+
+2. **MOTS-C wraca jako „mitochondrial/performance support”.**
+   - Narracja: wsparcie wydolności/metabolic flexibility, ale dużo marketingu i mało twardych danych RCT dla każdego use-case.
+   - Wniosek: stosować ostrożnie jako opcjonalny layer po opanowaniu podstaw i monitoringu.
+
+3. **TRT + GLP/peptydy pojawia się regularnie jako stack.**
+   - W socialach łączone pod recomposition (waga↓, forma↑).
+   - Wniosek: przy takim stacku monitoring hematokrytu, ciśnienia, HRV/RHR i regeneracji jest obowiązkowy.
+
+4. **„Hype claims” są agresywne — filtr jakości musi być twardy.**
+   - Dużo wpisów miesza protokół kliniczny z contentem sprzedażowym.
+   - Wniosek: oddzielać sygnał od sprzedaży; w decyzjach opierać się na: bezpieczeństwo → tolerancja → trend biomarkerów → efekt sylwetkowy.
+
+### 11.2 Aktualizacja praktyczna protokołu (wdrożenie)
+
+- **Reta/GLP lane:** tylko przy równoległym utrzymaniu treningu oporowego + wysokiego białka (ochrona lean mass).
+- **Hydration lane:** zwiększona kontrola elektrolitów i nawodnienia (szczególnie przy deficycie).
+- **Recovery lane:** gdy WHOOP/recovery spada, priorytet ma redukcja objętości treningu zamiast „dociskania” intensywności.
+- **Safety lane:** każdy wzrost obciążeń farmakologicznych = obowiązkowe częstsze checki markerów.
+
+### 11.3 Linki źródłowe (batch fitness)
+
+- `memory/BOOKMARKS_FITNESS_PEPTIDES_2026-02-14_to_2026-02-22.md`
+- `memory/X_BOOKMARKS_CATEGORIZED_2026-02-14_to_2026-02-22.md`
+
+---
+
 *Dokument skompilowany z zakładek X/Twitter przez Aura/OpenClaw*  
 *Wszystkie protokoły są kompilacją wiedzy publicznej i nie stanowią porady medycznej*  
 *Przed rozpoczęciem jakiegokolwiek protokołu skonsultuj się z lekarzem*

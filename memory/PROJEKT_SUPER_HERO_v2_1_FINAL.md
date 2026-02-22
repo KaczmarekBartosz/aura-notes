@@ -205,5 +205,17 @@
 
 ---
 
+## 15) Aktualizacja z nowych zakładek (2026-02-14 → 2026-02-22)
+
+- Potwierdzony trend: **Upper/Lower + arm emphasis** działa dobrze przy napiętym tygodniu (dużo wpisów z podobnym rozkładem).
+- Priorytet zachowany: **wysokie białko + trening oporowy** jako ochrona mięśni przy redukcji.
+- Dla Twojego planu oznacza to: zostawiamy rdzeń bez rewolucji, robimy tylko mikroregulacje objętości wg WHOOP.
+
+Źródła batch:
+- `memory/BOOKMARKS_FITNESS_PEPTIDES_2026-02-14_to_2026-02-22.md`
+- `memory/X_BOOKMARKS_CATEGORIZED_2026-02-14_to_2026-02-22.md`
+
+---
+
 **Plan aktywny od:** _____  
 **Następna rewizja:** po 6 tygodniach
