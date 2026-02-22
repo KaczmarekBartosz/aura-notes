@@ -353,9 +353,7 @@
           .replace(/>/g,'&gt;')
           .replace(/"/g,'&quot;')
           .replace(/'/g,'&#39;');
-        return '<p>' + esc(raw).replace(/
-{2,}/g,'</p><p>').replace(/
-/g,'<br>') + '</p>';
+        return '<p>' + esc(raw).replace(/\n{2,}/g,'</p><p>').replace(/\n/g,'<br>') + '</p>';
       }
 
       function openNote(id, switchMobile){
