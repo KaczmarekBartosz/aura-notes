@@ -4,7 +4,7 @@ import crypto from 'crypto';
 
 const root = process.cwd();
 const sources = ['memory', 'outputs'];
-const outDir = path.join(root, 'public');
+const outDir = path.join(root, 'netlify/functions/data');
 const outPath = path.join(outDir, 'notes-index.json');
 
 function walk(dir) {
@@ -77,20 +77,12 @@ for (const src of sources) {
 
 notes.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
 
-const password = process.env.NOTEBOOK_PASSWORD || '';
-const passwordHash = password ? crypto.createHash('sha256').update(password).digest('hex') : null;
-
 const latestUpdatedAt = notes.length ? notes[0].updatedAt : null;
 
 const payload = {
   generatedAt: new Date().toISOString(),
   latestUpdatedAt,
   count: notes.length,
-  auth: {
-    enabled: Boolean(passwordHash),
-    hint: passwordHash ? 'Set NOTEBOOK_PASSWORD in Netlify env' : 'No password configured',
-    sha256: passwordHash
-  },
   notes
 };
 

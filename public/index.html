@@ -166,7 +166,7 @@
     <script>
       const CAT={all:'Wszystko','golden-protocols':'Golden','fitness-health':'Fitness','taste':'Taste','cron-sync':'Cron','daily-log':'Daily','other':'Inne'};
       const LS='aura_notes_premium_v1';
-      const state={notes:[],filtered:[],selected:null,category:'golden-protocols',view:'gold',forceRecent:false,focus:false,favorites:{},auth:{enabled:false,sha256:null}};
+      const state={notes:[],filtered:[],selected:null,category:'golden-protocols',view:'gold',forceRecent:false,focus:false,favorites:{}};
       const el=id=>document.getElementById(id);
       const els={latest:el('latest'),kpiAll:el('kpiAll'),kpiNew:el('kpiNew'),kpiGold:el('kpiGold'),kpiFav:el('kpiFav'),views:el('views'),categories:el('categories'),
         list:el('list'),q:el('q'),folder:el('folder'),tag:el('tag'),sort:el('sort'),font:el('font'),
@@ -177,7 +177,6 @@
       const daysAgo=n=>new Date(Date.now()-n*86400000);
       const isMobile=()=>window.matchMedia('(max-width: 999px)').matches;
 
-      async function sha256(text){const data=new TextEncoder().encode(text);const hash=await crypto.subtle.digest('SHA-256',data);return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');}
       const esc=s=>s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
 
       function mdToHtml(md){
@@ -244,15 +243,44 @@
         },{passive:true});
       }
 
-      async function boot(){
-        const res=await fetch('./notes-index.json',{cache:'no-store'}); const data=await res.json(); state.auth=data.auth||{enabled:false}; state.notes=data.notes||[];
-        els.latest.textContent=`Najnowsza aktualizacja: ${data.latestUpdatedAt?fmt(data.latestUpdatedAt):'—'}`;
+      async function fetchNotes(){
+        const res=await fetch('/.netlify/functions/notes',{cache:'no-store',credentials:'include'});
+        if(res.status===401) return {authRequired:true};
+        const payload=await res.json();
+        if(!payload.ok) throw new Error(payload.error||'Fetch failed');
+        return {authRequired:false,data:payload.data};
+      }
 
-        if(state.auth.enabled){
+      async function authenticate(password){
+        const res=await fetch('/.netlify/functions/auth',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({password})});
+        const payload=await res.json().catch(()=>({ok:false}));
+        return Boolean(res.ok && payload.ok);
+      }
+
+      async function boot(){
+        let bootData=null;
+        let first=await fetchNotes();
+        if(first.authRequired){
           els.lock.classList.remove('hidden');
-          els.unlock.onclick=async()=>{const at=await sha256(els.pw.value); if(at===state.auth.sha256){sessionStorage.setItem('aura_ok','1'); els.lock.classList.add('hidden')} else els.pwErr.style.display='block';};
-          if(sessionStorage.getItem('aura_ok')==='1') els.lock.classList.add('hidden');
+          els.unlock.onclick=async()=>{
+            els.pwErr.style.display='none';
+            const ok=await authenticate(els.pw.value||'');
+            if(!ok){els.pwErr.style.display='block'; return;}
+            const second=await fetchNotes();
+            if(second.authRequired||!second.data){els.pwErr.style.display='block'; return;}
+            bootData=second.data;
+            els.lock.classList.add('hidden');
+            startApp(bootData);
+          };
+          return;
         }
+        bootData=first.data;
+        startApp(bootData);
+      }
+
+      function startApp(data){
+        state.notes=data.notes||[];
+        els.latest.textContent=`Najnowsza aktualizacja: ${data.latestUpdatedAt?fmt(data.latestUpdatedAt):'—'}`;
 
         const lastSeen=localStorage.getItem('aura_last_seen'); const newCount=state.notes.filter(n=>!lastSeen||new Date(n.updatedAt)>new Date(lastSeen)).length; els.kpiNew.textContent=String(newCount); localStorage.setItem('aura_last_seen',new Date().toISOString());
 
