@@ -11,7 +11,7 @@
         --chip:#edf3ff; --chipOn:#dce9ff; --ok:#1f9d61;
       }
       *{box-sizing:border-box;max-width:100%}
-      html,body{margin:0;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none}
+      html,body{margin:0;width:100%;max-width:100%;overflow-x:hidden!important;overscroll-behavior-x:none}
       body{
         font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
         color:var(--text);
@@ -20,7 +20,7 @@
           radial-gradient(1200px 600px at 110% 0%, #ece2ff 0%, transparent 60%),
           linear-gradient(180deg,var(--bg2) 0%, var(--bg) 100%);
       }
-      .app{max-width:1280px;margin:0 auto;padding:12px;overflow-x:clip}
+      .app{max-width:1280px;width:100%;margin:0 auto;padding:12px;overflow-x:clip;min-width:0}
       .glass{background:var(--glass);border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:0 16px 42px rgba(69,97,160,.10)}
       .top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
       .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--chip);font-size:12px;color:#2c4679}
@@ -36,13 +36,13 @@
       .chip,.viewBtn{white-space:nowrap;padding:10px 13px;border-radius:999px;border:1px solid var(--line);background:var(--chip);font-size:12px;color:#2d4779;cursor:pointer}
       .chip.on,.viewBtn.on{background:var(--chipOn);border-color:#b9cfff;font-weight:700;color:#1f3c73}
 
-      .layout{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;min-width:0}
+      .layout{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;min-width:0;max-width:100%}
       .left,.right{min-width:0}
       .panel{padding:10px}
       .controls{display:grid;gap:8px}
-      input,select,button{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--glassStrong);font-size:16px;color:var(--text)}
+      input,select,button{width:100%;min-width:0;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--glassStrong);font-size:16px;color:var(--text)}
       button{cursor:pointer}
-      .controls2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+      .controls2{display:grid;grid-template-columns:1fr 1fr;gap:8px;min-width:0}.controls2>*{min-width:0}
 
       .list{margin-top:10px;max-height:50vh;overflow:auto;border-top:1px solid var(--line)}
       .item{padding:12px;border-bottom:1px solid var(--line);cursor:pointer}
@@ -50,11 +50,11 @@
       .itemTop{display:flex;gap:8px;align-items:center}
       .item h4{margin:0;font-size:15px;flex:1;min-width:0}
       .item p{margin:4px 0 0;color:var(--muted);font-size:12px}
-      .meta{margin-top:6px;font-size:11px;color:var(--muted);word-break:break-word}
+      .meta{margin-top:6px;font-size:11px;color:var(--muted);word-break:break-word;overflow-wrap:anywhere}
       .mini{font-size:11px;padding:2px 8px;border-radius:999px;background:#edf3ff;border:1px solid var(--line);color:#31548f}
 
       .reader{padding:0;max-height:68vh;overflow:auto;min-width:0}
-      .readerTop{position:sticky;top:0;z-index:5;background:var(--glassStrong);border-bottom:1px solid var(--line);padding:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+      .readerTop{position:sticky;top:0;z-index:5;background:var(--glassStrong);border-bottom:1px solid var(--line);padding:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0;overflow-x:hidden}
       .readerTop button{width:auto;padding:8px 10px;font-size:13px}
       .progress{height:4px;background:#dbe7ff;position:relative}
       .progress > span{position:absolute;left:0;top:0;bottom:0;background:var(--accent);width:0%}
@@ -67,7 +67,7 @@
       .md blockquote{border-left:3px solid #a8c3ff;padding-left:10px;color:#36507f}
       .md table{display:block;overflow-x:auto}
 
-      .mobileTabs{display:flex;gap:8px;margin-top:10px}
+      .mobileTabs{display:flex;gap:8px;margin-top:10px;max-width:100%;overflow:hidden}
       .tab{flex:1;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--chip);font-weight:700}
       .tab.on{background:var(--chipOn)}
       .mobileOnly{display:block}
@@ -77,6 +77,7 @@
 
       .lock{position:fixed;inset:0;background:#eef5ffcc;backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:16px}
 
+      @media (max-width: 999px){#noteMeta{display:none}}
       @media (min-width:1000px){
         .dashboard{grid-template-columns:repeat(4,minmax(0,1fr))}
         .mobileOnly{display:none}
@@ -307,6 +308,18 @@
         setFocus(state.focus);
         if(isMobile()&&!state.focus) setMobileTab('list');
       }
+      // Defensive anti-horizontal-scroll guard for iOS Safari
+      function clampHorizontal(){
+        const overflow = document.documentElement.scrollWidth - window.innerWidth;
+        if(overflow > 0){
+          document.body.style.overflowX = 'hidden';
+          document.documentElement.style.overflowX = 'hidden';
+        }
+      }
+      window.addEventListener('resize', clampHorizontal, {passive:true});
+      window.addEventListener('orientationchange', clampHorizontal, {passive:true});
+      setTimeout(clampHorizontal, 50);
+
       boot();
     </script>
   </body>
