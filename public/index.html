@@ -46,10 +46,17 @@
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 999px; }
 
-      .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-      .title{font-size:clamp(24px, 3vw, 32px);font-weight:800;letter-spacing:-0.03em;margin:0}
-      .pill{font-size:13px;font-weight:500;padding:6px 14px;border:1px solid var(--line);background:var(--chip);border-radius:var(--radius-btn);color:var(--muted);transition:all 0.2s}
-      .btn-login{border:0;background:var(--text);color:#fff;font-weight:600;}
+            .top{margin-bottom:16px}
+      .topBar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px 12px;box-shadow:var(--shadow-sm)}
+      .brand{display:flex;align-items:center;gap:10px;min-width:0}
+      .logoOrb{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#111,#3a3a3a);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;letter-spacing:.02em}
+      .brandText{min-width:0}
+      .title{font-size:18px;font-weight:750;letter-spacing:-0.02em;margin:0;line-height:1.1}
+      .subtitle{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .topActions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+      .pill{font-size:12px;font-weight:550;padding:7px 11px;border:1px solid var(--line);background:var(--chip);border-radius:999px;color:var(--muted);transition:all 0.2s;white-space:nowrap}
+      .btn-login{border:0;background:var(--text);color:#fff;font-weight:650;display:inline-flex;align-items:center;gap:6px}
+      .btn-login .dot{width:8px;height:8px;border-radius:999px;background:#22c55e;display:inline-block}
 
       .kpi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
       .k{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow-sm);transition:transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)}
@@ -200,6 +207,10 @@
       }
       @media (max-width:999px){
         .app{padding:12px}
+        .topBar{padding:10px}
+        .subtitle{display:none}
+        .topActions{gap:6px}
+        #latest{max-width:150px;overflow:hidden;text-overflow:ellipsis}
         .readerTop .hide-on-mobile {display:none!important}
       }
     </style>
@@ -249,9 +260,19 @@
 
     <div id="appRoot" class="app">
       <div class="top">
-        <h1 class="title">Aura Notes</h1>
-        <span id="latest" class="pill">Najnowsza aktualizacja: —</span>
-        <button id="loginBtn" class="pill btn-login">Zaloguj</button>
+        <div class="topBar">
+          <div class="brand">
+            <div class="logoOrb">A</div>
+            <div class="brandText">
+              <h1 class="title">Aura Notes</h1>
+              <div class="subtitle">Private Knowledge Vault</div>
+            </div>
+          </div>
+          <div class="topActions">
+            <span id="latest" class="pill">Aktualizacja: —</span>
+            <button id="loginBtn" class="pill btn-login"><span class="dot"></span>Zaloguj</button>
+          </div>
+        </div>
       </div>
 
       <section class="kpi">
