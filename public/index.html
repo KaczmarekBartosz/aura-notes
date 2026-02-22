@@ -275,7 +275,7 @@
           case 'gold': return n.category === 'golden-protocols' || /gold|protocol/.test(blob);
           case 'fitness': return /fitness|peptyd|peptide|workout|nutrition|retatrutide|mots-c|hcg|cjc|ipamorelin/.test(blob);
           case 'taste': return n.category === 'taste' || /taste|design|ui|ux/.test(blob);
-          case 'cron': return n.category === 'cron-sync' || /cron|sync|bookmark/.test(blob);
+          case 'cron': return n.category === 'cron-sync';
           case 'daily': return n.category === 'daily-log';
           case 'recent': return new Date(n.updatedAt) >= daysAgo(7);
           case 'fav': return !!state.favorites[n.id];
@@ -357,13 +357,28 @@
         return '<p>' + esc(raw).replace(/\n{2,}/g,'</p><p>').replace(/\n/g,'<br>') + '</p>';
       }
 
-      function openNote(id, switchMobile){
+      
+      function renderNoteContent(n, forceFull=false){
+        if(n.isHeavy && !forceFull){
+          const preview = (n.content || '').slice(0, 5000);
+          els.content.innerHTML =
+            `<div class="empty">To bardzo duża notatka (${n.words||0} słów).<br>` +
+            `Pokazuję podgląd dla płynności.<br><button id="loadFullNote" style="margin-top:8px;width:auto">Wczytaj pełną notatkę</button></div>` +
+            mdToHtml(preview + "\n\n[...] (podgląd skrócony)");
+          const btn=document.getElementById('loadFullNote');
+          if(btn) btn.onclick=()=>renderNoteContent(n,true);
+          return;
+        }
+        els.content.innerHTML = mdToHtml(n.content || '');
+      }
+
+function openNote(id, switchMobile){
         const n = state.notes.find(x=>x.id===id); if(!n) return;
         state.selected = n.id;
         location.hash = n.id;
         els.meta.textContent = `${n.path} • ${fmt(n.updatedAt)} • ${n.words||0} słów`;
         els.readMin.textContent = `${n.readingMinutes||1} min`;
-        els.content.innerHTML = mdToHtml(n.content);
+        renderNoteContent(n);
         els.fav.textContent = state.favorites[n.id] ? '★ Ulubione' : '☆ Ulubione';
         state.readMap[n.id] = Date.now();
         if (isMobile() && switchMobile) setMobileTab('read');

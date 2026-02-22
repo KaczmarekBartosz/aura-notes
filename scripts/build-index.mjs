@@ -36,12 +36,23 @@ function excerptFrom(content) {
 }
 
 function classify(rel, content) {
+  const lowerRel = rel.toLowerCase();
   const lower = (rel + ' ' + content.slice(0, 1200)).toLowerCase();
+
+  // 1) Path-first rules (most stable)
+  if (
+    lowerRel.includes('/cron-summaries/') ||
+    lowerRel.includes('/x-bookmarks-sync/') ||
+    /x-bookmarks-sync|sync-summary|glm-bookmark-sync|cron/.test(lowerRel)
+  ) return 'cron-sync';
+
+  if (/^memory\/\d{4}-\d{2}-\d{2}/.test(lowerRel)) return 'daily-log';
+
+  // 2) Semantic rules
   if (/gold(_|\s|-)?[a-z0-9]*_?protocol|golden protocol|gold protocols/.test(lower)) return 'golden-protocols';
   if (/user_tastes|knowledge_tips|taste/.test(lower)) return 'taste';
-  if (/peptyd|peptide|fitness|workout|nutrition/.test(lower)) return 'fitness-health';
-  if (/cron|sync|bookmarks/.test(lower)) return 'cron-sync';
-  if (/^memory\/\d{4}-\d{2}-\d{2}/.test(rel)) return 'daily-log';
+  if (/peptyd|peptide|fitness|workout|nutrition|trening/.test(lower)) return 'fitness-health';
+
   return 'other';
 }
 
@@ -70,6 +81,7 @@ for (const src of sources) {
       readingMinutes: Math.max(1, Math.round(words / 220)),
       words,
       tags: detectTags(rel, content),
+      isHeavy: content.length > 180000,
       content
     });
   }
