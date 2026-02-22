@@ -6,9 +6,9 @@
     <title>Aura Notes</title>
     <style>
       :root{
-        --bg:#eef4ff; --bg2:#f8fbff; --glass:#ffffffd6; --glassStrong:#fffffff2;
-        --text:#0f1b33; --muted:#607294; --line:#d7e4ff; --accent:#3771ff;
-        --chip:#edf3ff; --chipOn:#dce9ff; --ok:#1f9d61;
+        --bg:#f5f5f5; --bg2:#ffffff; --glass:#ffffffd9; --glassStrong:#fffffff5;
+        --text:#111111; --muted:#5f5f5f; --line:#e5e5e5; --accent:#111111;
+        --chip:#f2f2f2; --chipOn:#e9e9e9; --ok:#2c2c2c;
       }
       *{box-sizing:border-box;max-width:100%;min-width:0}
       html,body{margin:0;width:100%;max-width:100%;overflow-x:hidden!important;overscroll-behavior-x:none}
@@ -16,15 +16,15 @@
         font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
         color:var(--text);
         background:
-          radial-gradient(1200px 600px at -10% -20%, #dfeaff 0%, transparent 62%),
-          radial-gradient(1200px 600px at 110% 0%, #ece2ff 0%, transparent 60%),
+          radial-gradient(1200px 600px at -10% -20%, #f0f0f0 0%, transparent 62%),
+          radial-gradient(1200px 600px at 110% 0%, #fafafa 0%, transparent 60%),
           linear-gradient(180deg,var(--bg2) 0%, var(--bg) 100%);
       }
       .app{max-width:1280px;width:100%;margin:0 auto;padding:12px;overflow-x:clip;min-width:0}
-      .glass{background:var(--glass);border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:0 16px 42px rgba(69,97,160,.10)}
+      .glass{background:var(--glass);border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:0 14px 30px rgba(0,0,0,.08)}
       .top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
-      .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--chip);font-size:12px;color:#2c4679}
-      .title{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0}
+      .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--chip);font-size:12px;color:#3d3d3d}
+      .title{font-size:22px;font-weight:700;letter-spacing:-.01em;margin:0}
 
       .dashboard{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
       .card{padding:10px 12px}
@@ -33,8 +33,8 @@
 
       .scrollRow{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding-bottom:4px;scrollbar-width:none;overscroll-behavior-x:contain}
       .scrollRow::-webkit-scrollbar{display:none}
-      .chip,.viewBtn{white-space:nowrap;padding:10px 13px;border-radius:999px;border:1px solid var(--line);background:var(--chip);font-size:12px;color:#2d4779;cursor:pointer}
-      .chip.on,.viewBtn.on{background:var(--chipOn);border-color:#b9cfff;font-weight:700;color:#1f3c73}
+      .chip,.viewBtn{white-space:nowrap;padding:10px 13px;border-radius:999px;border:1px solid var(--line);background:var(--chip);font-size:12px;color:#2f2f2f;cursor:pointer}
+      .chip.on,.viewBtn.on{background:var(--chipOn);border-color:#d2d2d2;font-weight:700;color:#111111}
 
       .layout{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;min-width:0;max-width:100%}
       .left,.right{min-width:0}
@@ -46,25 +46,25 @@
 
       .list{margin-top:10px;max-height:50vh;overflow:auto;border-top:1px solid var(--line)}
       .item{padding:12px;border-bottom:1px solid var(--line);cursor:pointer}
-      .item.active{background:#edf4ff}
+      .item.active{background:#f0f0f0}
       .itemTop{display:flex;gap:8px;align-items:center}
       .item h4{margin:0;font-size:15px;flex:1;min-width:0}
       .item p{margin:4px 0 0;color:var(--muted);font-size:12px}
       .meta{margin-top:6px;font-size:11px;color:var(--muted);word-break:break-word;overflow-wrap:anywhere}
-      .mini{font-size:11px;padding:2px 8px;border-radius:999px;background:#edf3ff;border:1px solid var(--line);color:#31548f}
+      .mini{font-size:11px;padding:2px 8px;border-radius:999px;background:#f3f3f3;border:1px solid var(--line);color:#31548f}
 
       .reader{padding:0;max-height:68vh;overflow:auto;min-width:0}
       .readerTop{position:sticky;top:0;z-index:5;background:var(--glassStrong);border-bottom:1px solid var(--line);padding:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0;overflow-x:hidden}
       .readerTop button{width:auto;padding:8px 10px;font-size:13px}
-      .progress{height:4px;background:#dbe7ff;position:relative}
-      .progress > span{position:absolute;left:0;top:0;bottom:0;background:var(--accent);width:0%}
+      .progress{height:4px;background:#e9e9e9;position:relative}
+      .progress > span{position:absolute;left:0;top:0;bottom:0;background:#111111;width:0%}
       .content{padding:14px}
       .md{font-size:17px;line-height:1.65;word-break:break-word;overflow-wrap:anywhere}
       .md *{max-width:100%;overflow-wrap:anywhere}
       .md h1,.md h2,.md h3{line-height:1.25;letter-spacing:-.01em}
-      .md pre{background:#edf3ff;padding:10px;border-radius:10px;max-width:100%;overflow-x:auto;overflow-y:hidden}
-      .md code{background:#edf3ff;padding:2px 6px;border-radius:6px}
-      .md blockquote{border-left:3px solid #a8c3ff;padding-left:10px;color:#36507f}
+      .md pre{background:#f3f3f3;padding:10px;border-radius:10px;max-width:100%;overflow-x:auto;overflow-y:hidden}
+      .md code{background:#f3f3f3;padding:2px 6px;border-radius:6px}
+      .md blockquote{border-left:3px solid #cfcfcf;padding-left:10px;color:#4f4f4f}
       .md table{display:block;max-width:100%;overflow-x:auto}
 
       .mobileTabs{display:flex;gap:8px;margin-top:10px;max-width:100%;overflow:hidden}
@@ -73,9 +73,9 @@
       .mobileOnly{display:block}
       .hidden{display:none!important}
 
-      .fab{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:20;width:auto;padding:12px 14px;border-radius:999px;background:var(--accent);color:#fff;border:0;box-shadow:0 12px 26px rgba(55,113,255,.35)}
+      .fab{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:20;width:auto;padding:12px 14px;border-radius:999px;background:#111111;color:#fff;border:0;box-shadow:0 12px 26px rgba(55,113,255,.35)}
 
-      .lock{position:fixed;inset:0;background:#eef5ffec;backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:16px;z-index:99999;min-height:100dvh}
+      .lock{position:fixed;inset:0;background:#f4f4f4f2;backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:16px;z-index:99999;min-height:100dvh}
 
       @media (max-width: 999px){#noteMeta{display:none}}
             @media (max-width: 999px){
@@ -102,7 +102,7 @@
         <p style="margin-top:0;color:var(--muted)">Podaj hasło, żeby odblokować notatnik.</p>
         <input id="pw" type="password" placeholder="Hasło" />
         <div style="height:8px"></div>
-        <button id="unlock" style="background:var(--accent);border-color:#2e63ea;color:white">Odblokuj</button>
+        <button id="unlock" style="background:#111111;border-color:#2e63ea;color:#ffffff">Odblokuj</button>
         <p id="pwErr" style="display:none;color:#c83a3a;font-size:12px">Nieprawidłowe hasło.</p>
       </div>
     </div>
