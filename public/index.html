@@ -75,7 +75,7 @@
 
       .fab{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:20;width:auto;padding:12px 14px;border-radius:999px;background:var(--accent);color:#fff;border:0;box-shadow:0 12px 26px rgba(55,113,255,.35)}
 
-      .lock{position:fixed;inset:0;background:#eef5ffcc;backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:16px}
+      .lock{position:fixed;inset:0;background:#eef5ffec;backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:16px;z-index:99999;min-height:100dvh}
 
       @media (max-width: 999px){#noteMeta{display:none}}
             @media (max-width: 999px){
@@ -96,8 +96,8 @@
     </style>
   </head>
   <body>
-    <div id="lock" class="lock hidden">
-      <div class="glass panel" style="width:min(420px,100%)">
+    <div id="lock" class="lock hidden" aria-modal="true" role="dialog">
+      <div class="glass panel" style="width:min(420px,100%);position:relative;z-index:2">
         <h2 style="margin:0 0 8px">Aura Notes — prywatny dostęp</h2>
         <p style="margin-top:0;color:var(--muted)">Podaj hasło, żeby odblokować notatnik.</p>
         <input id="pw" type="password" placeholder="Hasło" />
@@ -107,7 +107,7 @@
       </div>
     </div>
 
-    <div class="app">
+    <div id="appRoot" class="app">
       <div class="top">
         <h1 class="title">Aura Notes</h1>
         <span id="latest" class="pill">Najnowsza aktualizacja: —</span>
@@ -177,7 +177,7 @@
       const LS='aura_notes_premium_v1';
       const state={notes:[],filtered:[],selected:null,category:'golden-protocols',view:'gold',forceRecent:false,focus:false,favorites:{}};
       const el=id=>document.getElementById(id);
-      const els={latest:el('latest'),kpiAll:el('kpiAll'),kpiNew:el('kpiNew'),kpiGold:el('kpiGold'),kpiFav:el('kpiFav'),views:el('views'),categories:el('categories'),
+      const els={appRoot:el('appRoot'),latest:el('latest'),kpiAll:el('kpiAll'),kpiNew:el('kpiNew'),kpiGold:el('kpiGold'),kpiFav:el('kpiFav'),views:el('views'),categories:el('categories'),
         list:el('list'),q:el('q'),folder:el('folder'),tag:el('tag'),sort:el('sort'),font:el('font'),
         readPane:el('readPane'),listPane:el('listPane'),tabList:el('tabList'),tabRead:el('tabRead'),fabTop:el('fabTop'),
         prev:el('prev'),next:el('next'),fav:el('fav'),focus:el('focus'),copyLink:el('copyLink'),noteMeta:el('noteMeta'),pbar:el('pbar'),meta:el('meta'),content:el('content'),
@@ -276,6 +276,8 @@
         let first=await fetchNotes();
         if(first.authRequired){
           els.lock.classList.remove('hidden');
+          els.appRoot.classList.add('is-locked');
+          els.fabTop.classList.add('hidden');
           els.unlock.onclick=async()=>{
             els.pwErr.style.display='none';
             const ok=await authenticate(els.pw.value||'');
@@ -284,11 +286,16 @@
             if(second.authRequired||!second.data){els.pwErr.style.display='block'; return;}
             bootData=second.data;
             els.lock.classList.add('hidden');
+            els.appRoot.classList.remove('is-locked');
+            els.fabTop.classList.remove('hidden');
             startApp(bootData);
           };
           return;
         }
         bootData=first.data;
+        els.appRoot.classList.remove('is-locked');
+        els.fabTop.classList.remove('hidden');
+        els.lock.classList.add('hidden');
         startApp(bootData);
       }
 
