@@ -72,6 +72,9 @@
       .tab.on{background:var(--chipOn)}
       .mobileOnly{display:block}
       .hidden{display:none!important}
+      .reading-fullscreen #listPane,.reading-fullscreen .mobileTabs,.reading-fullscreen .dashboard,.reading-fullscreen #views,.reading-fullscreen .top,.reading-fullscreen .fab{display:none!important}
+      .reading-fullscreen #readPane{position:fixed;inset:0;z-index:9999;max-height:100dvh;height:100dvh;border-radius:0;margin:0}
+      .reading-fullscreen .app{padding:0;max-width:none}
 
       .fab{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:20;width:auto;padding:12px 14px;border-radius:999px;background:#111111;color:#fff;border:0;box-shadow:0 12px 26px rgba(55,113,255,.35)}
 
@@ -159,6 +162,7 @@
             <button id="next">▶</button>
             <button id="fav">⭐ Ulubione</button>
             <button id="focus">Focus</button>
+            <button id="fsBtn">Fullscreen</button>
             <button id="copyLink">Kopiuj link</button>
             <span id="noteMeta" class="pill">—</span>
           </div>
@@ -181,7 +185,7 @@
       const els={appRoot:el('appRoot'),latest:el('latest'),loginBtn:el('loginBtn'),kpiAll:el('kpiAll'),kpiNew:el('kpiNew'),kpiGold:el('kpiGold'),kpiFav:el('kpiFav'),views:el('views'),
         list:el('list'),q:el('q'),folder:el('folder'),tag:el('tag'),sort:el('sort'),font:el('font'),
         readPane:el('readPane'),listPane:el('listPane'),tabList:el('tabList'),tabRead:el('tabRead'),fabTop:el('fabTop'),
-        prev:el('prev'),next:el('next'),fav:el('fav'),focus:el('focus'),copyLink:el('copyLink'),noteMeta:el('noteMeta'),pbar:el('pbar'),meta:el('meta'),content:el('content'),
+        prev:el('prev'),next:el('next'),fav:el('fav'),focus:el('focus'),fsBtn:el('fsBtn'),copyLink:el('copyLink'),noteMeta:el('noteMeta'),pbar:el('pbar'),meta:el('meta'),content:el('content'),
         lock:el('lock'),pw:el('pw'),unlock:el('unlock'),pwErr:el('pwErr'),loginStatus:el('loginStatus')};
       const fmt=d=>new Date(d).toLocaleString('pl-PL',{dateStyle:'short',timeStyle:'short'});
       const daysAgo=n=>new Date(Date.now()-n*86400000);
@@ -206,6 +210,11 @@
 
       function setMobileTab(tab){if(!isMobile())return; const listOn=tab==='list'; els.tabList.classList.toggle('on',listOn); els.tabRead.classList.toggle('on',!listOn); els.listPane.classList.toggle('hidden',!listOn); els.readPane.classList.toggle('hidden',listOn)}
       function setFocus(on){state.focus=on; els.listPane.classList.toggle('hidden',on); els.focus.textContent=on?'Wyłącz focus':'Focus'; if(on&&isMobile())setMobileTab('read'); save()}
+      function toggleReaderFullscreen(){
+        const on=document.body.classList.toggle('reading-fullscreen');
+        els.fsBtn.textContent=on?'Wyjdz fullscreen':'Fullscreen';
+      }
+
       function setReaderFont(px){els.content.style.fontSize=px+'px'; save()}
 
       function renderCategories(){ /* removed duplicate category chips for cleaner UX */ }
@@ -374,6 +383,7 @@
         els.prev.onclick=()=>move(-1); els.next.onclick=()=>move(1);
         els.fav.onclick=()=>{if(!state.selected)return; state.favorites[state.selected]=!state.favorites[state.selected]; renderList(); openNote(state.selected,false); save();};
         els.focus.onclick=()=>setFocus(!state.focus);
+        els.fsBtn.onclick=()=>toggleReaderFullscreen();
         els.copyLink.onclick=async()=>{if(!state.selected)return; const url=location.origin+location.pathname+'#'+state.selected; try{await navigator.clipboard.writeText(url); els.copyLink.textContent='Skopiowano'; setTimeout(()=>els.copyLink.textContent='Kopiuj link',1200);}catch{}};
 
         let startX=0; els.readPane.addEventListener('touchstart',e=>startX=e.changedTouches[0].clientX,{passive:true}); els.readPane.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-startX; if(Math.abs(dx)>70){if(dx<0)move(1); else move(-1);}});
