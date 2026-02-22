@@ -178,7 +178,7 @@
       const state = {
         notes: [], filtered: [], selected: null,
         mode: 'all', folder: '', q: '', sort: 'new',
-        favorites: {}, readMap: {}, authPass: localStorage.getItem('aura_auth_pass') || '', listScroll:0, readScroll:0
+        favorites: {}, readMap: {}, authPass: localStorage.getItem('aura_auth_pass') || '', listScroll:0, readScroll:0, mobileTab:'list'
       };
 
       const $ = (id) => document.getElementById(id);
@@ -195,7 +195,7 @@
       const daysAgo = n => new Date(Date.now() - n*86400000);
 
       function save() {
-        localStorage.setItem('aura_notes_state', JSON.stringify({ mode:state.mode, folder:state.folder, q:state.q, sort:state.sort, selected:state.selected, favorites:state.favorites, readMap:state.readMap, listScroll:state.listScroll, readScroll:state.readScroll }));
+        localStorage.setItem('aura_notes_state', JSON.stringify({ mode:state.mode, folder:state.folder, q:state.q, sort:state.sort, selected:state.selected, favorites:state.favorites, readMap:state.readMap, listScroll:state.listScroll, readScroll:state.readScroll, mobileTab:state.mobileTab }));
       }
 
       function load() {
@@ -210,6 +210,7 @@
           state.readMap = s.readMap || {};
           state.listScroll = s.listScroll || 0;
           state.readScroll = s.readScroll || 0;
+          state.mobileTab = s.mobileTab || 'list';
           els.q.value = state.q;
           els.folder.value = state.folder;
           els.sort.value = state.sort;
@@ -389,6 +390,7 @@
 
       function setMobileTab(tab){
         if(!isMobile()) return;
+        state.mobileTab = tab;
         const listOn = tab==='list';
         els.tabList.classList.toggle('on', listOn);
         els.tabRead.classList.toggle('on', !listOn);
@@ -449,7 +451,7 @@
           }
         });
 
-        window.addEventListener('resize',()=>{ if(!isMobile()){ els.listPane.classList.remove('hidden'); els.readPane.classList.remove('hidden'); } else setMobileTab('list'); });
+        window.addEventListener('resize',()=>{ if(!isMobile()){ els.listPane.classList.remove('hidden'); els.readPane.classList.remove('hidden'); } else setMobileTab(state.mobileTab || 'list'); });
 
         document.addEventListener('keydown',(e)=>{
           if(e.key==='/' && document.activeElement!==els.q){ e.preventDefault(); els.q.focus(); }
@@ -470,7 +472,7 @@
           if(state.notes.some(n=>n.id===id)) openNote(id, false);
         }
 
-        if(isMobile()) setMobileTab('list');
+        if(isMobile()) setMobileTab(state.mobileTab || 'list');
         requestAnimationFrame(()=>{ els.cards.scrollTop = state.listScroll || 0; els.readPane.scrollTop = state.readScroll || 0; });
       }
 
