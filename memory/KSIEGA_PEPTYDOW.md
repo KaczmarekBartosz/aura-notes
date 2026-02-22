@@ -16,6 +16,7 @@
 4. [Peptydy Metaboliczne](#4-peptydy-metaboliczne)
    - 4.1 [Retatrutide](#41-retatrutide)
    - 4.2 [Mots-C](#42-mots-c)
+   - 4.3 [GH Frag 176-191](#43-gh-frag-176-191)
 5. [Peptydy Kosmetyczne i Estetyczne](#5-peptydy-kosmetyczne-i-estetyczne)
    - 5.1 [GLOW](#51-glow)
    - 5.2 [MT-2 (Melanotan II)](#52-mt-2-melanotan-ii)
@@ -366,6 +367,36 @@ Mots-C → Aktywacja AMPK → Poprawa sensytywności na insulinę
 - **Brak dużych badań klinicznych**
 
 ---
+
+
+### 4.3 GH Frag 176-191 (AOD-9604)
+
+#### Identyfikacja
+- **Nazwa:** GH Frag 176-191, AOD-9604
+- **Typ:** fragment C-końcowy hormonu wzrostu (GH)
+- **Główny cel:** wsparcie redukcji tkanki tłuszczowej (efekt lipolityczny)
+
+#### Mechanizm (w skrócie)
+- Stymulacja **lipolizy** (uwalnianie tłuszczu)
+- Ograniczenie **lipogenezy** (odkładania nowego tłuszczu)
+- Bez typowych efektów anabolicznych pełnego GH (niższy potencjał „GH-like”)
+
+#### Praktyczne użycie (high-level)
+- Najczęściej używany w okresie redukcji jako dodatek do:
+  - deficytu kalorycznego,
+  - treningu oporowego,
+  - wysokiego białka.
+- **Nie zastępuje fundamentów** (dieta/sen/trening).
+
+#### Monitoring i bezpieczeństwo
+- Monitoruj: masę ciała, obwody, ciśnienie, glikemię, tolerancję wysiłku.
+- Ostrożność przy łączeniu wielu środków metabolicznych jednocześnie.
+- Jakość źródła i czystość preparatu krytyczna (duże ryzyko niskiej jakości rynku).
+
+#### Status / jakość dowodów
+- Częsty w obiegu biohackerskim/fitness.
+- Dane praktyczne są szerokie, ale jakość dowodów klinicznych bywa nierówna.
+- Traktować jako **opcjonalny layer**, nie rdzeń protokołu.
 
 ## 5. PEPTYDY KOSMETYCZNE I ESTETYCZNE
 
