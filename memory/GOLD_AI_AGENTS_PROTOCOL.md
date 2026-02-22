@@ -631,6 +631,39 @@ chain = (
 
 ---
 
+## 11. AKTUALIZACJA BATCH: X BOOKMARKS (2026-02-14 → 2026-02-22)
+
+### Najważniejsze sygnały (samo mięso)
+
+1. **Mission statement + role clarity** mocno korelują z jakością działania agentów.
+   - Powtarzalny wzorzec: gdy agent ma jasny cel, jest mniej „chatbotowy”, bardziej operacyjny.
+
+2. **Skills-first architecture** (manifest + dedykowane skille) to obecny standard high-leverage setupu.
+   - Użyteczne zwłaszcza przy powtarzalnych workflowach: research, monitoring, content, automatyzacje.
+
+3. **Memory protocol + compaction** wraca jako warunek skalowania.
+   - Bez trwałej pamięci i regularnej kompaktacji kontekstu agent traci ciągłość i jakość decyzji.
+
+4. **Multi-agent / nested subagents** są skuteczne, ale tylko przy mocnych guardrailach.
+   - Klucz: limity kosztów, zakres odpowiedzialności i kontrola uprawnień.
+
+5. **UI operacyjne > „fancy dashboard”**
+   - Najbardziej praktyczne setupy mają prosty panel decyzji i minimalny friction w obsłudze.
+
+### Co wdrażać u nas (operacyjnie)
+
+- Trzymać **role-specific agent design** (bez „jednego agenta do wszystkiego”).
+- Każdy powtarzalny proces zamieniać w **skill + checklistę jakości**.
+- Utrzymywać **pamięć trwałą + przegląd błędów** jako stały rytm.
+- Rozszerzać subagentów tylko tam, gdzie jest jasny zwrot czasu/kosztu.
+
+### Linki źródłowe (batch AI)
+
+- `memory/BOOKMARKS_AI_AGENTS_2026-02-14_to_2026-02-22.md`
+- `memory/X_BOOKMARKS_CATEGORIZED_2026-02-14_to_2026-02-22.md`
+
+---
+
 *Dokument skompilowany z zakładek X/Twitter przez Aura/OpenClaw*  
 *Źródła: @AlexFinn, @moritzkremb, @code_rams, Azure AI Patterns, Google ADK, AWS Best Practices*  
 *Wszystkie protokoły są kompilacją wiedzy publicznej*
