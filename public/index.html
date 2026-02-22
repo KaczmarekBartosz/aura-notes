@@ -180,7 +180,7 @@
     <script>
       const CAT={all:'Wszystko','golden-protocols':'Protokoły GOLD','fitness-health':'Fitness/Peptydy','taste':'Taste','cron-sync':'Cron','daily-log':'Daily','other':'Inne'};
       const LS='aura_notes_premium_v1';
-      const state={notes:[],filtered:[],selected:null,category:'golden-protocols',view:'gold',forceRecent:false,focus:false,favorites:{},authToken:localStorage.getItem('aura_auth_token')||''};
+      const state={notes:[],filtered:[],selected:null,category:'golden-protocols',view:'gold',forceRecent:false,focus:false,favorites:{},authPass:localStorage.getItem('aura_auth_pass')||''};
       const el=id=>document.getElementById(id);
       const els={appRoot:el('appRoot'),latest:el('latest'),loginBtn:el('loginBtn'),kpiAll:el('kpiAll'),kpiNew:el('kpiNew'),kpiGold:el('kpiGold'),kpiFav:el('kpiFav'),views:el('views'),
         list:el('list'),q:el('q'),folder:el('folder'),tag:el('tag'),sort:el('sort'),font:el('font'),
@@ -294,6 +294,8 @@
 
         try {
           const pw = els.pw.value||'';
+          state.authPass = pw;
+          if(pw) localStorage.setItem('aura_auth_pass', pw);
           if(!pw){ showLogin('Wpisz hasło.'); return; }
 
           let second = await fetchNotes(pw);
@@ -321,7 +323,7 @@
 
       async function fetchNotes(password=''){
         try {
-          const res=await fetch('/.netlify/functions/notes?v=2',{cache:'no-store',credentials:'include',headers:{'x-aura-token':state.authToken||'','x-aura-pass':password||''}});
+          const res=await fetch('/.netlify/functions/notes?v=2',{cache:'no-store',credentials:'include',headers:{'x-aura-pass':(password||state.authPass||'')}});
           let payload={};
           try { payload=await res.json(); } catch {}
           if(res.status===401) return {authRequired:true,error:payload.error||'Unauthorized'};
@@ -334,16 +336,17 @@
       }
 
       async function authenticate(password){
-        const res=await fetch('/.netlify/functions/auth?v=2',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({password})});
-        const payload=await res.json().catch(()=>({ok:false}));
-        if(res.ok && payload.ok){ state.authToken = payload.token || ''; if(state.authToken) localStorage.setItem('aura_auth_token', state.authToken); return true; } return false;
+        // local password cache for reliable re-auth after redeploy
+        state.authPass = password || '';
+        if(state.authPass) localStorage.setItem('aura_auth_pass', state.authPass);
+        return true;
       }
 
       async function boot(){
         els.unlock.onclick=loginAndLoad;
         let first;
         try {
-          first = await fetchNotes();
+          first = await fetchNotes(state.authPass||'');
         } catch (e) {
           showLogin('Brak połączenia z autoryzacją. Kliknij Zaloguj.');
           els.unlock.onclick=loginAndLoad;
@@ -351,7 +354,7 @@
         }
 
         if(first.authRequired){
-          showLogin();
+          showLogin('Wymagane logowanie po redeployu.');
           els.unlock.onclick=loginAndLoad;
           return;
         }
@@ -378,7 +381,7 @@
         [els.q,els.folder,els.tag,els.sort].forEach(i=>i.addEventListener('input',()=>{renderList();save()}));
         els.font.addEventListener('input',()=>setReaderFont(Number(els.font.value)||17));
         els.views.querySelectorAll('.viewBtn').forEach(b=>b.onclick=()=>applyView(b.dataset.view));
-        els.loginBtn.onclick=()=>{ showLogin(); els.unlock.onclick=loginAndLoad; setTimeout(()=>els.pw.focus(),50); };
+        els.loginBtn.onclick=()=>{ showLogin('Wymagane logowanie po redeployu.'); els.unlock.onclick=loginAndLoad; setTimeout(()=>els.pw.focus(),50); };
         els.tabList.onclick=()=>setMobileTab('list'); els.tabRead.onclick=()=>setMobileTab('read'); els.fabTop.onclick=()=>setMobileTab('list');
         els.prev.onclick=()=>move(-1); els.next.onclick=()=>move(1);
         els.fav.onclick=()=>{if(!state.selected)return; state.favorites[state.selected]=!state.favorites[state.selected]; renderList(); openNote(state.selected,false); save();};
