@@ -175,7 +175,7 @@
     <script>
       const CAT={all:'Wszystko','golden-protocols':'Golden','fitness-health':'Fitness','taste':'Taste','cron-sync':'Cron','daily-log':'Daily','other':'Inne'};
       const LS='aura_notes_premium_v1';
-      const state={notes:[],filtered:[],selected:null,category:'golden-protocols',view:'gold',forceRecent:false,focus:false,favorites:{}};
+      const state={notes:[],filtered:[],selected:null,category:'golden-protocols',view:'gold',forceRecent:false,focus:false,favorites:{},authToken:localStorage.getItem('aura_auth_token')||''};
       const el=id=>document.getElementById(id);
       const els={appRoot:el('appRoot'),latest:el('latest'),kpiAll:el('kpiAll'),kpiNew:el('kpiNew'),kpiGold:el('kpiGold'),kpiFav:el('kpiFav'),views:el('views'),categories:el('categories'),
         list:el('list'),q:el('q'),folder:el('folder'),tag:el('tag'),sort:el('sort'),font:el('font'),
@@ -258,7 +258,7 @@
       }
 
       async function fetchNotes(){
-        const res=await fetch('/.netlify/functions/notes',{cache:'no-store',credentials:'include'});
+        const res=await fetch('/.netlify/functions/notes',{cache:'no-store',credentials:'include',headers:{'x-aura-token':state.authToken||''}});
         if(res.status===401) return {authRequired:true};
         const payload=await res.json();
         if(!payload.ok) throw new Error(payload.error||'Fetch failed');
@@ -268,7 +268,7 @@
       async function authenticate(password){
         const res=await fetch('/.netlify/functions/auth',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({password})});
         const payload=await res.json().catch(()=>({ok:false}));
-        return Boolean(res.ok && payload.ok);
+        if(res.ok && payload.ok){ state.authToken = payload.token || ''; if(state.authToken) localStorage.setItem('aura_auth_token', state.authToken); return true; } return false;
       }
 
       async function boot(){
@@ -281,9 +281,9 @@
           els.unlock.onclick=async()=>{
             els.pwErr.style.display='none';
             const ok=await authenticate(els.pw.value||'');
-            if(!ok){els.pwErr.style.display='block'; return;}
+            if(!ok){els.pwErr.textContent='Nieprawidłowe hasło.';els.pwErr.style.display='block'; return;}
             const second=await fetchNotes();
-            if(second.authRequired||!second.data){els.pwErr.style.display='block'; return;}
+            if(second.authRequired||!second.data){els.pwErr.textContent='Logowanie nieudane — sprawdź hasło i spróbuj ponownie.';els.pwErr.style.display='block'; return;}
             bootData=second.data;
             els.lock.classList.add('hidden');
             els.appRoot.classList.remove('is-locked');
@@ -296,6 +296,7 @@
         els.appRoot.classList.remove('is-locked');
         els.fabTop.classList.remove('hidden');
         els.lock.classList.add('hidden');
+        els.pwErr.style.display='none';
         startApp(bootData);
       }
 

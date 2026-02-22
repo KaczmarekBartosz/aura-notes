@@ -26,5 +26,5 @@ exports.handler = async (event) => {
 
   const token = crypto.createHash('sha256').update(expected).digest('hex');
   const cookie = `aura_session=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${60 * 60 * 24 * 30}`;
-  return json(200, { ok: true }, { 'Set-Cookie': cookie });
+  return json(200, { ok: true, token }, { 'Set-Cookie': cookie });
 };

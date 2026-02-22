@@ -28,8 +28,9 @@ exports.handler = async (event) => {
   const expectedToken = crypto.createHash('sha256').update(expected).digest('hex');
   const cookie = event.headers.cookie || event.headers.Cookie || '';
   const session = cookieValue(cookie, 'aura_session');
+  const headerToken = event.headers['x-aura-token'] || event.headers['X-Aura-Token'] || '';
 
-  if (!session || session !== expectedToken) {
+  if ((!session || session !== expectedToken) && headerToken !== expectedToken) {
     return json(401, { ok: false, authRequired: true });
   }
 
