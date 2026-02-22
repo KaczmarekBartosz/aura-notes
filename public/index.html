@@ -10,7 +10,7 @@
         --text:#0f1b33; --muted:#607294; --line:#d7e4ff; --accent:#3771ff;
         --chip:#edf3ff; --chipOn:#dce9ff; --ok:#1f9d61;
       }
-      *{box-sizing:border-box;max-width:100%}
+      *{box-sizing:border-box;max-width:100%;min-width:0}
       html,body{margin:0;width:100%;max-width:100%;overflow-x:hidden!important;overscroll-behavior-x:none}
       body{
         font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
@@ -62,10 +62,10 @@
       .md{font-size:17px;line-height:1.65;word-break:break-word;overflow-wrap:anywhere}
       .md *{max-width:100%;overflow-wrap:anywhere}
       .md h1,.md h2,.md h3{line-height:1.25;letter-spacing:-.01em}
-      .md pre{background:#edf3ff;padding:10px;border-radius:10px;overflow-x:auto;overflow-y:hidden}
+      .md pre{background:#edf3ff;padding:10px;border-radius:10px;max-width:100%;overflow-x:auto;overflow-y:hidden}
       .md code{background:#edf3ff;padding:2px 6px;border-radius:6px}
       .md blockquote{border-left:3px solid #a8c3ff;padding-left:10px;color:#36507f}
-      .md table{display:block;overflow-x:auto}
+      .md table{display:block;max-width:100%;overflow-x:auto}
 
       .mobileTabs{display:flex;gap:8px;margin-top:10px;max-width:100%;overflow:hidden}
       .tab{flex:1;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--chip);font-weight:700}
@@ -78,7 +78,15 @@
       .lock{position:fixed;inset:0;background:#eef5ffcc;backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:16px}
 
       @media (max-width: 999px){#noteMeta{display:none}}
-      @media (min-width:1000px){
+            @media (max-width: 999px){
+        .scrollRow{display:grid;grid-template-columns:1fr 1fr;overflow:visible;gap:8px}
+        .scrollRow .viewBtn,.scrollRow .chip{white-space:normal;text-align:center;width:100%}
+        #views{grid-template-columns:1fr 1fr}
+        #categories{grid-template-columns:1fr 1fr}
+        .readerTop{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+        .readerTop button{width:100%}
+      }
+@media (min-width:1000px){
         .dashboard{grid-template-columns:repeat(4,minmax(0,1fr))}
         .mobileOnly{display:none}
         .layout{grid-template-columns:410px 1fr}
@@ -319,6 +327,7 @@
       window.addEventListener('resize', clampHorizontal, {passive:true});
       window.addEventListener('orientationchange', clampHorizontal, {passive:true});
       setTimeout(clampHorizontal, 50);
+      setInterval(clampHorizontal, 1200);
 
       boot();
     </script>
