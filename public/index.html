@@ -490,8 +490,11 @@
             return `<span class="tag ${cClass}">${t}</span>`;
           }).join('');
           
+          const pImg = { 'golden-protocols':'golden_protocols.png', 'fitness-health':'fitness_health.png', 'taste':'taste.png', 'cron-sync':'cron_sync.png', 'daily-log':'daily_log.png' }[n.category];
+          const thumbHTML = pImg ? `<img src="/p/${pImg}" alt="" loading="lazy"/>` : '📄';
+
           return `<article class="note ${state.selected===n.id?'active':''}" data-id="${n.id}">
-            <div class="thumb">${n.category==='golden-protocols'?'🏆':n.category==='fitness-health'?'💪':n.category==='taste'?'🧠':n.category==='cron-sync'?'🕒':n.category==='daily-log'?'📝':'📄'}</div>
+            <div class="thumb">${thumbHTML}</div>
             <div>
               <div class="nt">${n.title}</div>
               <div class="nx">${n.excerpt || ''}</div>
@@ -695,13 +698,16 @@ function openNote(id, switchMobile){
         }
         function updateCmdDOM(){
           if(!cmdData.length){ els.cmdResults.innerHTML = '<div class="empty" style="padding:20px;margin:0;border:none">Brak wyników.</div>'; return; }
-          els.cmdResults.innerHTML = cmdData.map((n, i) => `
+          els.cmdResults.innerHTML = cmdData.map((n, i) => {
+            const pImg = { 'golden-protocols':'golden_protocols.png', 'fitness-health':'fitness_health.png', 'taste':'taste.png', 'cron-sync':'cron_sync.png', 'daily-log':'daily_log.png' }[n.category];
+            const thumbHTML = pImg ? `<img src="/p/${pImg}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:4px" />` : '📄';
+            return `
             <div class="cmd-item ${i===cmdIndex?'selected':''}" data-idx="${i}">
-              <div class="cmd-item-icon">${n.category==='golden-protocols'?'🏆':n.category==='fitness-health'?'💪':n.category==='taste'?'🧠':n.category==='cron-sync'?'🕒':n.category==='daily-log'?'📝':'📄'}</div>
+              <div class="cmd-item-icon" style="padding:0;overflow:hidden">${thumbHTML}</div>
               <div class="cmd-item-title">${n.title}</div>
               <div class="cmd-item-path">${n.path}</div>
             </div>
-          `).join('');
+          `}).join('');
           els.cmdResults.querySelectorAll('.cmd-item').forEach(el => {
             el.onmouseenter=() => { cmdIndex=parseInt(el.dataset.idx); updateCmdDOMSelectedOnly(); };
             el.onclick=() => { openNote(cmdData[cmdIndex].id, true); toggleCmd(); els.q.value=''; state.q=''; renderList(); };
