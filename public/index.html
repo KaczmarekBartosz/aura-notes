@@ -7,29 +7,34 @@
     <style>
       :root{--bg:#f3f7ff;--glass:#ffffffcf;--glass2:#fffffff3;--text:#0f1b33;--muted:#5f6f8c;--line:#d9e4ff;--chip:#ecf2ff;--chipOn:#dfeaff;--accent:#4f7cff}
       *{box-sizing:border-box;max-width:100%}
-      html,body{margin:0;width:100%;overflow-x:hidden}
+      html,body{margin:0;width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none}
       body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);background:radial-gradient(1100px 500px at -10% -20%,#dbe8ff 0%,transparent 60%),radial-gradient(1100px 500px at 120% 10%,#e8ddff 0%,transparent 60%),linear-gradient(180deg,#f8fbff 0%,#eef4ff 100%)}
-      .wrap{max-width:1240px;margin:0 auto;padding:12px}
+      .wrap{max-width:1240px;width:100%;margin:0 auto;padding:12px;overflow-x:clip}
       .glass{background:var(--glass);border:1px solid var(--line);border-radius:16px;backdrop-filter:blur(14px) saturate(150%);-webkit-backdrop-filter:blur(14px) saturate(150%);box-shadow:0 12px 34px rgba(76,104,168,.10)}
       .top{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
       .pill{font-size:12px;padding:6px 10px;border-radius:999px;background:var(--chip);border:1px solid var(--line);color:#2f4678}
-      .row-scroll{display:flex;gap:8px;overflow:auto;padding-bottom:4px;scrollbar-width:none}.row-scroll::-webkit-scrollbar{display:none}
+      .row-scroll{display:flex;gap:8px;max-width:100%;overflow-x:auto;overflow-y:hidden;padding-bottom:4px;scrollbar-width:none;overscroll-behavior-x:contain}.row-scroll::-webkit-scrollbar{display:none}
       .chip,.viewBtn{white-space:nowrap;padding:10px 13px;border-radius:999px;border:1px solid var(--line);background:var(--chip);color:#2f4678;font-size:12px;cursor:pointer}
       .chip.on,.viewBtn.on{background:var(--chipOn);border-color:#b9ccff;color:#1f3470;font-weight:700}
-      .grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
-      .panel{padding:10px}
+      .grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;min-width:0}
+      .panel{padding:10px;min-width:0}
       input,select,button{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--glass2);font-size:16px;color:var(--text)}
       .controls{display:grid;gap:8px}
       .list{margin-top:10px;max-height:52vh;overflow:auto;border-top:1px solid var(--line)}
       .item{padding:12px;border-bottom:1px solid var(--line);cursor:pointer}.item.active{background:#eef4ff}
       .item h4{margin:0 0 4px;font-size:15px}.item p{margin:0;color:var(--muted);font-size:12px}
       .meta{font-size:11px;color:var(--muted);margin-top:6px;word-break:break-word}
-      .viewer{padding:0;max-height:62vh;overflow:auto}
+      .viewer{padding:0;max-height:62vh;overflow:auto;min-width:0}
       .readerTop{position:sticky;top:0;z-index:2;background:var(--glass2);border-bottom:1px solid var(--line);padding:10px;display:flex;gap:8px;align-items:center}
       .readerTop button{width:auto;padding:8px 10px;font-size:13px}
       .contentWrap{padding:14px}
       .md{font-size:16px;line-height:1.6;word-break:break-word;overflow-wrap:anywhere}
-      .md h1,.md h2,.md h3{line-height:1.25}.md pre{background:#eef3ff;padding:10px;border-radius:10px;overflow:auto}.md code{background:#eef3ff;padding:2px 6px;border-radius:6px}.md blockquote{border-left:3px solid #aac2ff;padding-left:10px;color:#405780}
+      .md *{max-width:100%;overflow-wrap:anywhere}
+      .md h1,.md h2,.md h3{line-height:1.25}
+      .md pre{background:#eef3ff;padding:10px;border-radius:10px;overflow-x:auto;overflow-y:hidden}
+      .md code{background:#eef3ff;padding:2px 6px;border-radius:6px}
+      .md table{display:block;overflow-x:auto}
+      .md blockquote{border-left:3px solid #aac2ff;padding-left:10px;color:#405780}
       .mobileTabs{display:flex;gap:8px;margin-top:10px}.tabBtn{flex:1;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--chip);font-weight:700}.tabBtn.on{background:var(--chipOn)}
       .mobileOnly{display:block}.hidden{display:none!important}
       .lock{position:fixed;inset:0;background:#eff4ffcc;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(8px)}
