@@ -41,13 +41,13 @@
       .f2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
       input,select,button{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#fff;font-size:16px;color:#111}
 
-      .cards{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;max-height:54vh;overflow:auto;padding-right:2px}
-      .note{display:grid;grid-template-columns:56px 1fr;gap:10px;padding:10px;border:1px solid var(--line);border-radius:16px;background:#fff;cursor:pointer}
+      .cards{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;max-height:54vh;overflow-y:auto;overflow-x:hidden;padding-right:2px;max-width:100%}
+      .note{display:grid;grid-template-columns:56px 1fr;gap:10px;padding:10px;border:1px solid var(--line);border-radius:16px;background:#fff;cursor:pointer;max-width:100%;overflow:hidden}
       .note.active{outline:2px solid #111;outline-offset:0}
       .thumb{width:56px;height:56px;border-radius:12px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(160deg,#fafafa,#efefef)}
-      .nt{font-size:15px;font-weight:650;line-height:1.25}
-      .nx{margin-top:4px;font-size:12px;color:var(--muted)}
-      .nm{margin-top:6px;font-size:11px;color:var(--muted)}
+      .nt{font-size:15px;font-weight:650;line-height:1.25;word-break:break-word;overflow-wrap:anywhere}
+      .nx{margin-top:4px;font-size:12px;color:var(--muted);word-break:break-word;overflow-wrap:anywhere}
+      .nm{margin-top:6px;font-size:11px;color:var(--muted);word-break:break-word;overflow-wrap:anywhere}
 
       .reader{padding:0;max-height:70vh;overflow:auto}
       .readerTop{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:10px;display:flex;gap:8px;flex-wrap:wrap;z-index:3}
@@ -60,12 +60,11 @@
 
       .hidden{display:none!important}
       .mobileOnly{display:block}
-      .fab{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:20;border:0;border-radius:999px;background:#111;color:#fff;padding:12px 14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 
       .lock{position:fixed;inset:0;background:#f6f6f6f2;backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:99999;padding:16px;min-height:100dvh}
       .lockCard{width:min(420px,100%);background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
 
-      .reading-fullscreen .top,.reading-fullscreen .kpi,.reading-fullscreen .modes,.reading-fullscreen .tabs,.reading-fullscreen #listPane,.reading-fullscreen .fab{display:none!important}
+      .reading-fullscreen .top,.reading-fullscreen .kpi,.reading-fullscreen .modes,.reading-fullscreen .tabs,.reading-fullscreen #listPane{display:none!important}
       .reading-fullscreen #readPane{position:fixed;inset:0;z-index:9999;max-height:100dvh;height:100dvh;border-radius:0}
       .reading-fullscreen .app{padding:0;max-width:none}
 
@@ -141,7 +140,6 @@
       </main>
     </div>
 
-    <button id="fabList" class="fab mobileOnly">Lista</button>
 
     <script>
       const MODES = [
@@ -168,7 +166,7 @@
       const $ = (id) => document.getElementById(id);
       const els = {
         appRoot:$('appRoot'), lock:$('lock'), pw:$('pw'), unlock:$('unlock'), pwErr:$('pwErr'), loginStatus:$('loginStatus'), loginBtn:$('loginBtn'),
-        latest:$('latest'), modes:$('modes'), tabList:$('tabList'), tabRead:$('tabRead'), fabList:$('fabList'),
+        latest:$('latest'), modes:$('modes'), tabList:$('tabList'), tabRead:$('tabRead'),
         listPane:$('listPane'), readPane:$('readPane'), q:$('q'), folder:$('folder'), sort:$('sort'), cards:$('cards'),
         prev:$('prev'), next:$('next'), fav:$('fav'), focus:$('focus'), fsBtn:$('fsBtn'), copyLink:$('copyLink'), readMin:$('readMin'), meta:$('meta'), content:$('content'),
         kAll:$('kAll'), kNew:$('kNew'), kGold:$('kGold'), kFav:$('kFav')
@@ -200,7 +198,6 @@
       function showLogin(msg='') {
         els.lock.classList.remove('hidden');
         els.appRoot.classList.add('is-locked');
-        els.fabList.classList.add('hidden');
         els.pwErr.style.display = msg ? 'block' : 'none';
         els.pwErr.textContent = msg || '';
         els.loginStatus.style.display = 'none';
@@ -209,7 +206,6 @@
       function hideLogin() {
         els.lock.classList.add('hidden');
         els.appRoot.classList.remove('is-locked');
-        els.fabList.classList.remove('hidden');
         els.pwErr.style.display = 'none';
         els.loginStatus.style.display = 'none';
       }
@@ -382,7 +378,6 @@
 
         els.tabList.onclick=()=>setMobileTab('list');
         els.tabRead.onclick=()=>setMobileTab('read');
-        els.fabList.onclick=()=>setMobileTab('list');
 
         els.loginBtn.onclick=()=>{ showLogin(); els.unlock.onclick=loginAndLoad; setTimeout(()=>els.pw.focus(),50); };
         els.unlock.onclick=loginAndLoad;
