@@ -314,3 +314,16 @@
 - **Camera:** "High-angle, top-down perspective (selfie style)... Wide-angle lens"
 - **Negative Prompt:** "anatomy normalization, plastic skin, airbrushed texture, editorial fashion proportions"
 **Key Insight:** Specify "natural gravitational weight" and "high-resolution pores" to escape the "AI look".
+
+
+---
+
+## 📌 Aktualizacja taste z X bookmarks (2026-02-14 → 2026-02-22)
+
+Nowe, powtarzalne sygnały estetyczne:
+- **Mobile card systems** (proste, mocny hierarchy-first, mało ozdobników)
+- **Black/white minimal + soft gray** (mniej kolorowego noise)
+- **Interface clarity over gimmicks** (czysta typografia, szybkie skanowanie)
+
+Plik referencyjny z linkami:
+- `memory/BOOKMARKS_UI_DESIGN_2026-02-14_to_2026-02-22.md`

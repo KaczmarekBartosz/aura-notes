@@ -641,3 +641,17 @@ KPV → Interakcje z komórkami odpornościowymi → Redukcja cytokin zapalnych
 ---
 
 *KSIĘGA PEPTYDÓW © 2026 | Na podstawie dostępnej literatury naukowej i raportów klinicznych. Nie stanowi porady medycznej.*
+
+
+---
+
+## 11. AKTUALIZACJA Z X BOOKMARKS (2026-02-14 → 2026-02-22)
+
+Najczęściej powtarzające się motywy w dyskusjach:
+- **Retatrutide**: mocny nacisk na efekt metaboliczny + appetite control, ale z regularnym podkreślaniem monitoringu RHR/HRV i tolerancji.
+- **MOTS-C**: pojawia się jako wsparcie mitochondrialne/metaboliczne, często w narracji „exercise-in-a-bottle” (wymaga ostrożnej interpretacji marketingowej).
+- **TRT + peptydy**: dużo treści łączących TRT z GLP/peptydami; sygnał, że trzeba trzymać wyraźny podział: praktyki kliniczne vs hype z social.
+
+Źródło shortlisty i linków:
+- `memory/BOOKMARKS_FITNESS_PEPTIDES_2026-02-14_to_2026-02-22.md`
+- `memory/X_BOOKMARKS_CATEGORIZED_2026-02-14_to_2026-02-22.md`
