@@ -254,7 +254,7 @@
     <div id="cmdOverlay" class="cmd-overlay">
       <div class="cmd-palette">
         <div class="cmd-header">
-          <svg><use href="#i-search"></use></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"></use></svg>
           <input id="cmdInput" class="cmd-input" type="text" placeholder="Szukaj notatek..." autocomplete="off" spellcheck="false" />
         </div>
         <div id="cmdResults" class="cmd-results"></div>
@@ -310,12 +310,12 @@
 
         <section id="readPane" class="pane reader">
           <div class="readerTop">
-            <button id="prev"><svg><use href="#i-chevron-l"></use></svg> Poprzednia</button>
-            <button id="next">Następna <svg><use href="#i-chevron-r"></use></svg></button>
-            <button id="fav"><svg><use href="#i-star"></use></svg> Ulubione</button>
-            <button id="focus" class="hide-on-mobile"><svg><use href="#i-eye"></use></svg> Focus</button>
-            <button id="fsBtn" class="hide-on-mobile"><svg><use href="#i-maximize"></use></svg> Fullscreen</button>
-            <button id="copyLink" class="hide-on-mobile"><svg><use href="#i-copy"></use></svg> Kopiuj</button>
+            <button id="prev"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-l"></use></svg> Poprzednia</button>
+            <button id="next">Następna <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-r"></use></svg></button>
+            <button id="fav"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"></use></svg> Ulubione</button>
+            <button id="focus" class="hide-on-mobile"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"></use></svg> Focus</button>
+            <button id="fsBtn" class="hide-on-mobile"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-maximize"></use></svg> Fullscreen</button>
+            <button id="copyLink" class="hide-on-mobile"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"></use></svg> Kopiuj</button>
             <span id="readMin" class="pill" style="margin-left:auto">—</span>
           </div>
           <div id="meta" class="meta">Wybierz notatkę, aby rozpocząć czytanie...</div>
@@ -527,7 +527,7 @@
 
         if(!html){
           html = `<div class="empty">
-            <svg><use href="#i-search"></use></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"></use></svg>
             <div>Brak wyników.</div>
             <button id="clearFilters" style="margin-top:8px;width:auto">Wyczyść filtry</button>
           </div>`;
@@ -571,7 +571,7 @@
           const preview = (n.content || '').slice(0, 5000);
           els.content.innerHTML =
             `<div class="empty">
-              <svg><use href="#i-eye"></use></svg>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"></use></svg>
               To bardzo duża notatka (${n.words||0} słów). Podgląd został zoptymalizowany.
               <button id="loadFullNote" style="margin-top:8px;width:auto" class="btn-login">Wczytaj pełną notatkę</button>
             </div>` +
@@ -595,7 +595,7 @@ function openNote(id, switchMobile){
           els.meta.textContent = `${n.path} • ${fmt(n.updatedAt)} • ${n.words||0} słów`;
           els.readMin.textContent = `${n.readingMinutes||1} min`;
           renderNoteContent(n);
-          els.fav.innerHTML = state.favorites[n.id] ? '<svg><use href="#i-star-filled"></use></svg> Ulubione' : '<svg><use href="#i-star"></use></svg> Ulubione';
+          els.fav.innerHTML = state.favorites[n.id] ? '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star-filled"></use></svg> Ulubione' : '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"></use></svg> Ulubione';
           state.readMap[n.id] = Date.now();
           if (isMobile() && switchMobile) setMobileTab('read');
           renderList();
@@ -635,7 +635,7 @@ function openNote(id, switchMobile){
 
       function setFocus(on){
         els.appRoot.classList.toggle('focus-mode', on);
-        els.focus.innerHTML = on ? '<svg><use href="#i-eye"></use></svg> Rozwiń' : '<svg><use href="#i-eye"></use></svg> Focus';
+        els.focus.innerHTML = on ? '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"></use></svg> Rozwiń' : '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"></use></svg> Focus';
         if(isMobile()) {
           els.listPane.classList.toggle('hidden', on);
         }
@@ -660,7 +660,7 @@ function openNote(id, switchMobile){
         els.next.onclick=()=>move(1);
         els.focus.onclick=()=>setFocus(!els.listPane.classList.contains('hidden'));
         els.fsBtn.onclick=()=>toggleFullscreenReader();
-        els.copyLink.onclick=async()=>{ if(!state.selected)return; const url=location.origin+location.pathname+'#'+state.selected; try{await navigator.clipboard.writeText(url); els.copyLink.innerHTML='<svg><use href="#i-copy"></use></svg> Skopiowano'; setTimeout(()=>els.copyLink.innerHTML='<svg><use href="#i-copy"></use></svg> Kopiuj',1200);}catch{} };
+        els.copyLink.onclick=async()=>{ if(!state.selected)return; const url=location.origin+location.pathname+'#'+state.selected; try{await navigator.clipboard.writeText(url); els.copyLink.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"></use></svg> Skopiowano'; setTimeout(()=>els.copyLink.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"></use></svg> Kopiuj',1200);}catch{} };
         els.fav.onclick=()=>{ if(!state.selected)return; state.favorites[state.selected]=!state.favorites[state.selected]; openNote(state.selected,false); save(); };
 
         els.tabList.onclick=()=>setMobileTab('list');
