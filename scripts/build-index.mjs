@@ -77,8 +77,11 @@ notes.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
 const password = process.env.NOTEBOOK_PASSWORD || '';
 const passwordHash = password ? crypto.createHash('sha256').update(password).digest('hex') : null;
 
+const latestUpdatedAt = notes.length ? notes[0].updatedAt : null;
+
 const payload = {
   generatedAt: new Date().toISOString(),
+  latestUpdatedAt,
   count: notes.length,
   auth: {
     enabled: Boolean(passwordHash),

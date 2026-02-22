@@ -5,27 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aura Notes</title>
     <style>
-      :root{--bg:#090d16;--card:#121826;--muted:#8ea0bf;--text:#e8eefc;--line:#1f2a44;--chip:#1a243b;--chipOn:#243a63}
-      *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+      :root{
+        --bg:#f3f7ff;
+        --glass:#ffffffc7;
+        --glass-strong:#fffffff0;
+        --text:#0f1b33;
+        --muted:#5f6f8c;
+        --line:#d9e4ff;
+        --chip:#ecf2ff;
+        --chip-on:#dfeaff;
+        --accent:#4f7cff;
+      }
+      *{box-sizing:border-box}
+      body{
+        margin:0;
+        font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+        color:var(--text);
+        background:
+          radial-gradient(1200px 500px at -10% -20%, #dbe8ff 0%, transparent 60%),
+          radial-gradient(1200px 500px at 120% 10%, #e8ddff 0%, transparent 60%),
+          linear-gradient(180deg,#f8fbff 0%, #eef4ff 100%);
+        min-height:100vh;
+      }
       .wrap{max-width:1240px;margin:0 auto;padding:12px}
-      .top{display:flex;gap:8px;align-items:center;margin-bottom:10px}
-      .count{font-size:12px;padding:4px 10px;border-radius:999px;background:var(--chip);border:1px solid #2b3f67}
+      .top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+      .pill{font-size:12px;padding:6px 10px;border-radius:999px;background:var(--chip);border:1px solid var(--line);color:#2f4678}
+      .glass{
+        background:var(--glass);
+        border:1px solid var(--line);
+        backdrop-filter: blur(14px) saturate(150%);
+        -webkit-backdrop-filter: blur(14px) saturate(150%);
+        box-shadow:0 12px 34px rgba(76,104,168,.10);
+        border-radius:18px;
+      }
       .grid{display:grid;grid-template-columns:1fr;gap:12px}
-      .card{background:var(--card);border:1px solid var(--line);border-radius:16px}
       .panel{padding:12px}
-      input,select,button{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:#0f1524;color:var(--text);font-size:15px}
+      input,select,button{
+        width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);
+        background:var(--glass-strong);color:var(--text);font-size:15px
+      }
+      button{cursor:pointer}
       .chips{display:flex;gap:8px;overflow:auto;padding-bottom:4px}
-      .chip{white-space:nowrap;padding:8px 12px;border-radius:999px;border:1px solid #2d4270;background:var(--chip);color:#bdd5ff;font-size:12px;cursor:pointer}
-      .chip.on{background:var(--chipOn);border-color:#4367a8}
+      .chip{white-space:nowrap;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--chip);color:#2f4678;font-size:12px;cursor:pointer}
+      .chip.on{background:var(--chip-on);border-color:#b9ccff;color:#1f3470;font-weight:600}
       .list{max-height:46vh;overflow:auto;border-top:1px solid var(--line);margin-top:10px}
       .item{padding:10px;border-bottom:1px solid var(--line);cursor:pointer}
-      .item.active{background:#101d34}
+      .item.active{background:#eef4ff}
       .item h4{margin:0 0 4px;font-size:14px}.item p{margin:0;color:var(--muted);font-size:12px}
       .meta{font-size:11px;color:var(--muted);margin-top:6px}
       .viewer{padding:14px;max-height:42vh;overflow:auto}
-      .viewer pre{white-space:pre-wrap;line-height:1.45;font-size:14px}
-      .lock{position:fixed;inset:0;background:#06090f;display:flex;align-items:center;justify-content:center;padding:16px}
+      .viewer pre{white-space:pre-wrap;line-height:1.45;font-size:14px;margin:8px 0 0}
+      .lock{position:fixed;inset:0;background:#eff4ffcc;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter: blur(8px)}
       .hidden{display:none}
+      .views{display:flex;gap:8px;overflow:auto;margin:8px 0 10px}
+      .viewBtn{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:white;font-size:12px;white-space:nowrap}
       @media (min-width: 980px){
         .grid{grid-template-columns:390px 1fr}
         .list{max-height:72vh}
@@ -35,26 +68,35 @@
   </head>
   <body>
     <div id="lock" class="lock hidden">
-      <div class="card panel" style="width:min(420px,100%)">
+      <div class="glass panel" style="width:min(420px,100%)">
         <h2 style="margin:0 0 8px">Aura Notes — prywatny dostęp</h2>
         <p style="color:var(--muted);margin-top:0">Podaj hasło, żeby odblokować notatnik.</p>
         <input id="pw" type="password" placeholder="Hasło" />
         <div style="height:8px"></div>
-        <button id="unlock">Odblokuj</button>
-        <p id="pwErr" style="color:#fca5a5;font-size:12px;display:none">Nieprawidłowe hasło.</p>
+        <button id="unlock" style="background:var(--accent);color:#fff;border-color:#4a75f0">Odblokuj</button>
+        <p id="pwErr" style="color:#cc3b3b;font-size:12px;display:none">Nieprawidłowe hasło.</p>
       </div>
     </div>
 
     <div class="wrap">
       <div class="top">
         <h1 style="margin:0;font-size:20px">Aura Notes</h1>
-        <span id="count" class="count">0 notatek</span>
+        <span id="count" class="pill">0 notatek</span>
+        <span id="latestGlobal" class="pill">Najnowsza aktualizacja: —</span>
+      </div>
+
+      <div class="views">
+        <button class="viewBtn" data-view="gold">🔥 Golden Protocols</button>
+        <button class="viewBtn" data-view="fitness">💪 Fitness + Peptydy</button>
+        <button class="viewBtn" data-view="taste">🧠 Taste</button>
+        <button class="viewBtn" data-view="recent">🆕 Ostatnie 7 dni</button>
+        <button class="viewBtn" data-view="all">📚 Wszystko</button>
       </div>
 
       <div class="chips" id="categories"></div>
 
       <div class="grid">
-        <section class="card panel">
+        <section class="glass panel">
           <input id="q" placeholder="Szukaj: gold, peptydy, taste, cron..." />
           <div style="height:8px"></div>
           <select id="folder">
@@ -67,9 +109,9 @@
           <div class="list" id="list"></div>
         </section>
 
-        <section class="card viewer">
+        <section class="glass viewer">
           <div id="meta" class="meta">Wybierz notatkę z lewej.</div>
-          <pre id="content" style="margin-top:10px"></pre>
+          <pre id="content"></pre>
         </section>
       </div>
     </div>
@@ -89,11 +131,13 @@
       const els = {
         list: document.getElementById('list'), q: document.getElementById('q'), folder: document.getElementById('folder'),
         tag: document.getElementById('tag'), content: document.getElementById('content'), meta: document.getElementById('meta'),
-        count: document.getElementById('count'), lock: document.getElementById('lock'), unlock: document.getElementById('unlock'),
-        pw: document.getElementById('pw'), pwErr: document.getElementById('pwErr'), categories: document.getElementById('categories')
+        count: document.getElementById('count'), latestGlobal: document.getElementById('latestGlobal'),
+        lock: document.getElementById('lock'), unlock: document.getElementById('unlock'), pw: document.getElementById('pw'),
+        pwErr: document.getElementById('pwErr'), categories: document.getElementById('categories')
       };
 
       const fmt = d => new Date(d).toLocaleString('pl-PL', {dateStyle:'short', timeStyle:'short'});
+      const daysAgo = n => new Date(Date.now() - n * 86400000);
 
       async function sha256(text){
         const data = new TextEncoder().encode(text);
@@ -107,17 +151,29 @@
         els.categories.innerHTML = order
           .filter(c => c === 'all' || available.has(c))
           .map(c => `<button class="chip ${state.category===c?'on':''}" data-cat="${c}">${CAT[c] || c}</button>`).join('');
-        els.categories.querySelectorAll('.chip').forEach(b => {
-          b.onclick = () => { state.category = b.dataset.cat; state.selected = null; renderList(); renderCategories(); };
-        });
+        els.categories.querySelectorAll('.chip').forEach(b => b.onclick = () => { state.category = b.dataset.cat; state.selected = null; renderList(); renderCategories(); });
       }
 
-      function renderList(){
+      function applyView(view){
+        if(view === 'gold'){ state.category='golden-protocols'; els.q.value=''; els.tag.value=''; els.folder.value=''; }
+        if(view === 'fitness'){ state.category='fitness-health'; els.q.value='peptyd peptide fitness'; els.tag.value=''; els.folder.value=''; }
+        if(view === 'taste'){ state.category='taste'; els.q.value=''; els.tag.value=''; els.folder.value=''; }
+        if(view === 'all'){ state.category='all'; els.q.value=''; els.tag.value=''; els.folder.value=''; }
+        if(view === 'recent'){ state.category='all'; els.q.value=''; els.tag.value=''; els.folder.value=''; state.filtered = state.notes.filter(n => new Date(n.updatedAt) >= daysAgo(7)); }
+        renderCategories();
+        renderList(view === 'recent');
+      }
+
+      function renderList(forceRecent = false){
         const q = els.q.value.trim().toLowerCase();
         const folder = els.folder.value;
         const tag = els.tag.value;
-        state.filtered = state.notes.filter(n => {
-          if(state.category !== 'all' && n.category !== state.category) return false;
+
+        let base = state.notes;
+        if(forceRecent) base = state.notes.filter(n => new Date(n.updatedAt) >= daysAgo(7));
+
+        state.filtered = base.filter(n => {
+          if(!forceRecent && state.category !== 'all' && n.category !== state.category) return false;
           if(folder && n.folder !== folder) return false;
           if(tag && !(n.tags||[]).includes(tag)) return false;
           if(!q) return true;
@@ -135,16 +191,13 @@
 
         els.list.querySelectorAll('.item').forEach(el => el.onclick = () => openNote(el.dataset.id));
         if(state.filtered.length && !state.selected) openNote(state.filtered[0].id);
-        if(!state.filtered.length){
-          els.meta.textContent = 'Brak wyników dla aktualnych filtrów.';
-          els.content.textContent = '';
-        }
+        if(!state.filtered.length){ els.meta.textContent = 'Brak wyników dla aktualnych filtrów.'; els.content.textContent = ''; }
       }
 
       function openNote(id){
         const n = state.notes.find(x => x.id === id); if(!n) return;
         state.selected = n.id;
-        els.meta.textContent = `${n.path} • ${fmt(n.updatedAt)} • ${CAT[n.category] || n.category}${(n.tags||[]).length ? ' • #' + n.tags.join(' #') : ''}`;
+        els.meta.textContent = `Plik: ${n.path} • Ostatnia aktualizacja: ${fmt(n.updatedAt)} • ${CAT[n.category] || n.category}${(n.tags||[]).length ? ' • #' + n.tags.join(' #') : ''}`;
         els.content.textContent = n.content;
         renderList();
       }
@@ -154,16 +207,14 @@
         const data = await res.json();
         state.auth = data.auth || {enabled:false};
 
+        els.latestGlobal.textContent = `Najnowsza aktualizacja: ${data.latestUpdatedAt ? fmt(data.latestUpdatedAt) : '—'}`;
+
         if(state.auth.enabled){
           els.lock.classList.remove('hidden');
           els.unlock.onclick = async () => {
             const attempt = await sha256(els.pw.value);
-            if(attempt === state.auth.sha256){
-              sessionStorage.setItem('aura_ok', '1');
-              els.lock.classList.add('hidden');
-            } else {
-              els.pwErr.style.display = 'block';
-            }
+            if(attempt === state.auth.sha256){ sessionStorage.setItem('aura_ok', '1'); els.lock.classList.add('hidden'); }
+            else { els.pwErr.style.display = 'block'; }
           };
           if(sessionStorage.getItem('aura_ok') === '1') els.lock.classList.add('hidden');
         }
@@ -171,11 +222,11 @@
         state.notes = data.notes || [];
 
         const tags = [...new Set(state.notes.flatMap(n => n.tags || []))].sort();
-        for(const t of tags){
-          const o = document.createElement('option'); o.value = t; o.textContent = `#${t}`; els.tag.appendChild(o);
-        }
+        for(const t of tags){ const o = document.createElement('option'); o.value=t; o.textContent=`#${t}`; els.tag.appendChild(o); }
 
-        [els.q, els.folder, els.tag].forEach(el => el.addEventListener('input', renderList));
+        [els.q, els.folder, els.tag].forEach(el => el.addEventListener('input', () => renderList()));
+        document.querySelectorAll('.viewBtn').forEach(btn => btn.addEventListener('click', () => applyView(btn.dataset.view)));
+
         renderCategories();
         renderList();
       }
