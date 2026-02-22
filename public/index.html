@@ -275,16 +275,25 @@
 
       async function loginAndLoad(){
         els.pwErr.style.display='none';
-        const ok=await authenticate(els.pw.value||'');
+        const pw = els.pw.value||'';
+
+        let second = await fetchNotes(pw);
+        if(second.data){
+          hideLogin();
+          startApp(second.data);
+          return;
+        }
+
+        const ok=await authenticate(pw);
         if(!ok){ showLogin('Nieprawidłowe hasło.'); return; }
-        const second=await fetchNotes();
+        second=await fetchNotes(pw);
         if(second.authRequired||!second.data){ showLogin('Logowanie nieudane — odśwież i spróbuj ponownie.'); return; }
         hideLogin();
         startApp(second.data);
       }
 
-      async function fetchNotes(){
-        const res=await fetch('/.netlify/functions/notes',{cache:'no-store',credentials:'include',headers:{'x-aura-token':state.authToken||''}});
+      async function fetchNotes(password=''){
+        const res=await fetch('/.netlify/functions/notes',{cache:'no-store',credentials:'include',headers:{'x-aura-token':state.authToken||'','x-aura-pass':password||''}});
         if(res.status===401) return {authRequired:true};
         const payload=await res.json();
         if(!payload.ok) throw new Error(payload.error||'Fetch failed');
