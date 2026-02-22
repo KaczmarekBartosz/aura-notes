@@ -47,14 +47,14 @@
       ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 999px; }
 
             .top{margin-bottom:16px}
-      .topBar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px 12px;box-shadow:var(--shadow-sm)}
+      .topBar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px 12px;box-shadow:var(--shadow-sm);flex-wrap:wrap}
       .brand{display:flex;align-items:center;gap:10px;min-width:0}
       .logoOrb{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#111,#3a3a3a);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;letter-spacing:.02em}
       .brandText{min-width:0}
       .title{font-size:18px;font-weight:750;letter-spacing:-0.02em;margin:0;line-height:1.1}
       .subtitle{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-      .topActions{display:flex;align-items:center;gap:8px;flex-shrink:0}
-      .pill{font-size:12px;font-weight:550;padding:7px 11px;border:1px solid var(--line);background:var(--chip);border-radius:999px;color:var(--muted);transition:all 0.2s;white-space:nowrap}
+      .topActions{display:flex;align-items:center;gap:8px;flex-shrink:0;max-width:100%}
+      .pill{font-size:12px;font-weight:550;padding:7px 11px;border:1px solid var(--line);background:var(--chip);border-radius:999px;color:var(--muted);transition:all 0.2s;white-space:nowrap;max-width:100%}
       .btn-login{border:0;background:var(--text);color:#fff;font-weight:650;display:inline-flex;align-items:center;gap:6px}
       .btn-login .dot{width:8px;height:8px;border-radius:999px;background:#22c55e;display:inline-block}
 
@@ -210,8 +210,15 @@
         .topBar{padding:10px}
         .subtitle{display:none}
         .topActions{gap:6px}
-        #latest{max-width:150px;overflow:hidden;text-overflow:ellipsis}
+        #latest{max-width:100%;white-space:normal;line-height:1.2;border-radius:12px}
         .readerTop .hide-on-mobile {display:none!important}
+      }
+      @media (max-width:640px){
+        .topBar{display:grid;grid-template-columns:1fr;gap:10px}
+        .brand{width:100%}
+        .topActions{width:100%;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:stretch}
+        #latest{display:block;padding:9px 10px}
+        #loginBtn{padding:9px 12px;justify-content:center}
       }
     </style>
   </head>
