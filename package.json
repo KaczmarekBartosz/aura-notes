@@ -1,0 +1,11 @@
+{
+  "name": "aura-notes",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Private markdown notebook for Aura notes",
+  "scripts": {
+    "build:index": "node scripts/build-index.mjs",
+    "build": "npm run build:index",
+    "dev": "python3 -m http.server 4173"
+  }
+}

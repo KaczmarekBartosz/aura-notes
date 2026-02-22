@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aura Notes</title>
+    <style>
+      :root{--bg:#0b0e14;--card:#121826;--muted:#8ea0bf;--text:#e8eefc;--accent:#7dd3fc;--line:#1f2a44}
+      *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+      .wrap{max-width:1200px;margin:0 auto;padding:16px}
+      .grid{display:grid;grid-template-columns:360px 1fr;gap:16px}
+      .card{background:var(--card);border:1px solid var(--line);border-radius:16px}
+      .panel{padding:14px}
+      .title{font-size:18px;font-weight:700;margin:0 0 10px}
+      input,select,button{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0f1524;color:var(--text)}
+      .list{max-height:70vh;overflow:auto}
+      .item{padding:10px;border-top:1px solid var(--line);cursor:pointer}
+      .item:hover{background:#0f1524}
+      .item h4{margin:0 0 4px;font-size:14px}.item p{margin:0;color:var(--muted);font-size:12px}
+      .meta{font-size:11px;color:var(--muted);margin-top:6px}
+      .viewer{padding:16px;max-height:84vh;overflow:auto}
+      .viewer pre{white-space:pre-wrap;line-height:1.45}
+      .top{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+      .tag{font-size:11px;padding:2px 8px;border-radius:999px;background:#1a243b;color:#9cc4ff;border:1px solid #26395e}
+      .lock{position:fixed;inset:0;background:#06090f;display:flex;align-items:center;justify-content:center;padding:16px}
+      .lock .box{width:min(420px,100%);padding:20px}
+      .hidden{display:none}
+      @media (max-width: 900px){.grid{grid-template-columns:1fr}.list{max-height:38vh}.viewer{max-height:none}}
+    </style>
+  </head>
+  <body>
+    <div id="lock" class="lock hidden">
+      <div class="card box">
+        <h2 class="title">Aura Notes — prywatny dostęp</h2>
+        <p style="color:var(--muted);margin-top:0">Podaj hasło, żeby odblokować notatnik.</p>
+        <input id="pw" type="password" placeholder="Hasło" />
+        <div style="height:8px"></div>
+        <button id="unlock">Odblokuj</button>
+        <p id="pwErr" style="color:#fca5a5;font-size:12px;display:none">Nieprawidłowe hasło.</p>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="top">
+        <h1 style="margin:0;font-size:20px">Aura Notes</h1>
+        <span id="count" class="tag">0 notatek</span>
+      </div>
+      <div class="grid">
+        <section class="card panel">
+          <input id="q" placeholder="Szukaj: gold, peptydy, taste, cron..." />
+          <div style="height:8px"></div>
+          <select id="folder">
+            <option value="">Wszystkie foldery</option>
+            <option value="memory">memory</option>
+            <option value="outputs">outputs</option>
+          </select>
+          <div style="height:8px"></div>
+          <select id="tag"><option value="">Wszystkie tagi</option></select>
+          <div class="list" id="list"></div>
+        </section>
+        <section class="card viewer">
+          <div id="meta" class="meta">Wybierz notatkę z lewej.</div>
+          <pre id="content" style="margin-top:10px"></pre>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const state = {notes:[], filtered:[], selected:null, auth:{enabled:false, sha256:null}};
+      const els = {
+        list: document.getElementById('list'), q: document.getElementById('q'), folder: document.getElementById('folder'),
+        tag: document.getElementById('tag'), content: document.getElementById('content'), meta: document.getElementById('meta'),
+        count: document.getElementById('count'), lock: document.getElementById('lock'), unlock: document.getElementById('unlock'),
+        pw: document.getElementById('pw'), pwErr: document.getElementById('pwErr')
+      };
+
+      const fmt = d => new Date(d).toLocaleString('pl-PL', {dateStyle:'short', timeStyle:'short'});
+
+      async function sha256(text){
+        const data = new TextEncoder().encode(text);
+        const hash = await crypto.subtle.digest('SHA-256', data);
+        return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2,'0')).join('');
+      }
+
+      function renderList(){
+        const q = els.q.value.trim().toLowerCase();
+        const folder = els.folder.value;
+        const tag = els.tag.value;
+        state.filtered = state.notes.filter(n => {
+          if(folder && n.folder !== folder) return false;
+          if(tag && !(n.tags||[]).includes(tag)) return false;
+          if(!q) return true;
+          return (n.title + ' ' + n.path + ' ' + (n.excerpt||'') + ' ' + (n.tags||[]).join(' ')).toLowerCase().includes(q);
+        });
+
+        els.list.innerHTML = state.filtered.map(n => `
+          <div class="item" data-id="${n.id}">
+            <h4>${n.title}</h4>
+            <p>${n.excerpt || ''}</p>
+            <div class="meta">${n.path} • ${fmt(n.updatedAt)}</div>
+          </div>
+        `).join('');
+        els.count.textContent = `${state.filtered.length} / ${state.notes.length} notatek`;
+
+        els.list.querySelectorAll('.item').forEach(el => el.onclick = () => openNote(el.dataset.id));
+        if(state.filtered.length && !state.selected) openNote(state.filtered[0].id);
+      }
+
+      function openNote(id){
+        const n = state.notes.find(x => x.id === id); if(!n) return;
+        state.selected = n.id;
+        els.meta.textContent = `${n.path} • ${fmt(n.updatedAt)}${(n.tags||[]).length ? ' • #' + n.tags.join(' #') : ''}`;
+        els.content.textContent = n.content;
+      }
+
+      async function boot(){
+        const res = await fetch('./notes-index.json', {cache:'no-store'});
+        const data = await res.json();
+        state.auth = data.auth || {enabled:false};
+
+        if(state.auth.enabled){
+          els.lock.classList.remove('hidden');
+          els.unlock.onclick = async () => {
+            const attempt = await sha256(els.pw.value);
+            if(attempt === state.auth.sha256){
+              sessionStorage.setItem('aura_ok', '1');
+              els.lock.classList.add('hidden');
+            } else {
+              els.pwErr.style.display = 'block';
+            }
+          };
+          if(sessionStorage.getItem('aura_ok') === '1') els.lock.classList.add('hidden');
+        }
+
+        state.notes = data.notes || [];
+        const tags = [...new Set(state.notes.flatMap(n => n.tags || []))].sort();
+        for(const t of tags){
+          const o = document.createElement('option'); o.value = t; o.textContent = `#${t}`; els.tag.appendChild(o);
+        }
+
+        [els.q, els.folder, els.tag].forEach(el => el.addEventListener('input', renderList));
+        renderList();
+      }
+      boot();
+    </script>
+  </body>
+</html>
