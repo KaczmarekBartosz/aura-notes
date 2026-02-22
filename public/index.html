@@ -555,7 +555,7 @@
               return code;
             }
           });
-          return window.marked.parse(raw, { gfm:true, breaks:true, headerIds:false, mangle:false });
+          return window.marked.parse(raw, { gfm:true, breaks:true, headerIds:true, mangle:false });
         }
         // fallback (minimal) if CDN unavailable
         const esc = (txt) => txt
@@ -769,6 +769,21 @@ function openNote(id, switchMobile){
         if(isMobile()) setMobileTab(state.mobileTab || 'list');
         requestAnimationFrame(()=>{ els.cards.scrollTop = state.listScroll || 0; els.readPane.scrollTop = state.readScroll || 0; });
       }
+
+
+      // Smooth in-note anchor navigation (TOC links)
+      document.addEventListener('click', (e) => {
+        const a = e.target.closest('a[href^="#"]');
+        if(!a) return;
+        const href = a.getAttribute('href');
+        if(!href || href.length < 2) return;
+        const id = href.slice(1);
+        const target = document.getElementById(id);
+        if(target){
+          e.preventDefault();
+          target.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+      });
 
       async function boot(){
         bind();
