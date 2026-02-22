@@ -35,6 +35,21 @@ function excerptFrom(content) {
   return plain.slice(0, 260);
 }
 
+function classify(rel, content) {
+  const lower = (rel + ' ' + content.slice(0, 1200)).toLowerCase();
+  if (/gold(_|\s|-)?[a-z0-9]*_?protocol|golden protocol|gold protocols/.test(lower)) return 'golden-protocols';
+  if (/user_tastes|knowledge_tips|taste/.test(lower)) return 'taste';
+  if (/peptyd|peptide|fitness|workout|nutrition/.test(lower)) return 'fitness-health';
+  if (/cron|sync|bookmarks/.test(lower)) return 'cron-sync';
+  if (/^memory\/\d{4}-\d{2}-\d{2}/.test(rel)) return 'daily-log';
+  return 'other';
+}
+
+function detectTags(rel, content) {
+  const hit = (rel + ' ' + content.slice(0, 1200)).match(/\b(gold|protocol|fitness|peptyd|peptide|taste|cron|bookmark|glm|aurafit|design|marketing|ai)\b/gi) || [];
+  return [...new Set(hit.map(t => t.toLowerCase()))];
+}
+
 const notes = [];
 for (const src of sources) {
   const srcDir = path.join(root, src);
@@ -47,10 +62,11 @@ for (const src of sources) {
       id: crypto.createHash('sha1').update(rel).digest('hex').slice(0, 12),
       path: rel,
       folder: src,
+      category: classify(rel, content),
       title: titleFrom(content, path.basename(f)),
       excerpt: excerptFrom(content),
       updatedAt: stat.mtime.toISOString(),
-      tags: [...new Set((rel + ' ' + content.slice(0, 500)).match(/\b(gold|protocol|fitness|peptyd|peptide|taste|cron|bookmark|glm|aurafit)\b/gi) || [])].map(t => t.toLowerCase()),
+      tags: detectTags(rel, content),
       content
     });
   }

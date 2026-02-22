@@ -5,33 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aura Notes</title>
     <style>
-      :root{--bg:#0b0e14;--card:#121826;--muted:#8ea0bf;--text:#e8eefc;--accent:#7dd3fc;--line:#1f2a44}
+      :root{--bg:#090d16;--card:#121826;--muted:#8ea0bf;--text:#e8eefc;--line:#1f2a44;--chip:#1a243b;--chipOn:#243a63}
       *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
-      .wrap{max-width:1200px;margin:0 auto;padding:16px}
-      .grid{display:grid;grid-template-columns:360px 1fr;gap:16px}
+      .wrap{max-width:1240px;margin:0 auto;padding:12px}
+      .top{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+      .count{font-size:12px;padding:4px 10px;border-radius:999px;background:var(--chip);border:1px solid #2b3f67}
+      .grid{display:grid;grid-template-columns:1fr;gap:12px}
       .card{background:var(--card);border:1px solid var(--line);border-radius:16px}
-      .panel{padding:14px}
-      .title{font-size:18px;font-weight:700;margin:0 0 10px}
-      input,select,button{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0f1524;color:var(--text)}
-      .list{max-height:70vh;overflow:auto}
-      .item{padding:10px;border-top:1px solid var(--line);cursor:pointer}
-      .item:hover{background:#0f1524}
+      .panel{padding:12px}
+      input,select,button{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:#0f1524;color:var(--text);font-size:15px}
+      .chips{display:flex;gap:8px;overflow:auto;padding-bottom:4px}
+      .chip{white-space:nowrap;padding:8px 12px;border-radius:999px;border:1px solid #2d4270;background:var(--chip);color:#bdd5ff;font-size:12px;cursor:pointer}
+      .chip.on{background:var(--chipOn);border-color:#4367a8}
+      .list{max-height:46vh;overflow:auto;border-top:1px solid var(--line);margin-top:10px}
+      .item{padding:10px;border-bottom:1px solid var(--line);cursor:pointer}
+      .item.active{background:#101d34}
       .item h4{margin:0 0 4px;font-size:14px}.item p{margin:0;color:var(--muted);font-size:12px}
       .meta{font-size:11px;color:var(--muted);margin-top:6px}
-      .viewer{padding:16px;max-height:84vh;overflow:auto}
-      .viewer pre{white-space:pre-wrap;line-height:1.45}
-      .top{display:flex;gap:8px;align-items:center;margin-bottom:10px}
-      .tag{font-size:11px;padding:2px 8px;border-radius:999px;background:#1a243b;color:#9cc4ff;border:1px solid #26395e}
+      .viewer{padding:14px;max-height:42vh;overflow:auto}
+      .viewer pre{white-space:pre-wrap;line-height:1.45;font-size:14px}
       .lock{position:fixed;inset:0;background:#06090f;display:flex;align-items:center;justify-content:center;padding:16px}
-      .lock .box{width:min(420px,100%);padding:20px}
       .hidden{display:none}
-      @media (max-width: 900px){.grid{grid-template-columns:1fr}.list{max-height:38vh}.viewer{max-height:none}}
+      @media (min-width: 980px){
+        .grid{grid-template-columns:390px 1fr}
+        .list{max-height:72vh}
+        .viewer{max-height:78vh}
+      }
     </style>
   </head>
   <body>
     <div id="lock" class="lock hidden">
-      <div class="card box">
-        <h2 class="title">Aura Notes — prywatny dostęp</h2>
+      <div class="card panel" style="width:min(420px,100%)">
+        <h2 style="margin:0 0 8px">Aura Notes — prywatny dostęp</h2>
         <p style="color:var(--muted);margin-top:0">Podaj hasło, żeby odblokować notatnik.</p>
         <input id="pw" type="password" placeholder="Hasło" />
         <div style="height:8px"></div>
@@ -43,8 +48,11 @@
     <div class="wrap">
       <div class="top">
         <h1 style="margin:0;font-size:20px">Aura Notes</h1>
-        <span id="count" class="tag">0 notatek</span>
+        <span id="count" class="count">0 notatek</span>
       </div>
+
+      <div class="chips" id="categories"></div>
+
       <div class="grid">
         <section class="card panel">
           <input id="q" placeholder="Szukaj: gold, peptydy, taste, cron..." />
@@ -58,6 +66,7 @@
           <select id="tag"><option value="">Wszystkie tagi</option></select>
           <div class="list" id="list"></div>
         </section>
+
         <section class="card viewer">
           <div id="meta" class="meta">Wybierz notatkę z lewej.</div>
           <pre id="content" style="margin-top:10px"></pre>
@@ -66,12 +75,22 @@
     </div>
 
     <script>
-      const state = {notes:[], filtered:[], selected:null, auth:{enabled:false, sha256:null}};
+      const CAT = {
+        all: 'Wszystko',
+        'golden-protocols': 'Golden Protocols',
+        'fitness-health': 'Fitness / Health',
+        taste: 'Taste',
+        'cron-sync': 'Cron / Sync',
+        'daily-log': 'Daily log',
+        other: 'Inne'
+      };
+
+      const state = {notes:[], filtered:[], selected:null, category:'golden-protocols', auth:{enabled:false, sha256:null}};
       const els = {
         list: document.getElementById('list'), q: document.getElementById('q'), folder: document.getElementById('folder'),
         tag: document.getElementById('tag'), content: document.getElementById('content'), meta: document.getElementById('meta'),
         count: document.getElementById('count'), lock: document.getElementById('lock'), unlock: document.getElementById('unlock'),
-        pw: document.getElementById('pw'), pwErr: document.getElementById('pwErr')
+        pw: document.getElementById('pw'), pwErr: document.getElementById('pwErr'), categories: document.getElementById('categories')
       };
 
       const fmt = d => new Date(d).toLocaleString('pl-PL', {dateStyle:'short', timeStyle:'short'});
@@ -82,35 +101,52 @@
         return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2,'0')).join('');
       }
 
+      function renderCategories(){
+        const available = new Set(state.notes.map(n => n.category));
+        const order = ['all','golden-protocols','fitness-health','taste','cron-sync','daily-log','other'];
+        els.categories.innerHTML = order
+          .filter(c => c === 'all' || available.has(c))
+          .map(c => `<button class="chip ${state.category===c?'on':''}" data-cat="${c}">${CAT[c] || c}</button>`).join('');
+        els.categories.querySelectorAll('.chip').forEach(b => {
+          b.onclick = () => { state.category = b.dataset.cat; state.selected = null; renderList(); renderCategories(); };
+        });
+      }
+
       function renderList(){
         const q = els.q.value.trim().toLowerCase();
         const folder = els.folder.value;
         const tag = els.tag.value;
         state.filtered = state.notes.filter(n => {
+          if(state.category !== 'all' && n.category !== state.category) return false;
           if(folder && n.folder !== folder) return false;
           if(tag && !(n.tags||[]).includes(tag)) return false;
           if(!q) return true;
-          return (n.title + ' ' + n.path + ' ' + (n.excerpt||'') + ' ' + (n.tags||[]).join(' ')).toLowerCase().includes(q);
+          return (n.title + ' ' + n.path + ' ' + (n.excerpt||'') + ' ' + (n.tags||[]).join(' ') + ' ' + (n.category||'')).toLowerCase().includes(q);
         });
 
         els.list.innerHTML = state.filtered.map(n => `
-          <div class="item" data-id="${n.id}">
+          <div class="item ${state.selected===n.id?'active':''}" data-id="${n.id}">
             <h4>${n.title}</h4>
             <p>${n.excerpt || ''}</p>
-            <div class="meta">${n.path} • ${fmt(n.updatedAt)}</div>
+            <div class="meta">${n.path} • ${fmt(n.updatedAt)} • ${CAT[n.category] || n.category}</div>
           </div>
         `).join('');
         els.count.textContent = `${state.filtered.length} / ${state.notes.length} notatek`;
 
         els.list.querySelectorAll('.item').forEach(el => el.onclick = () => openNote(el.dataset.id));
         if(state.filtered.length && !state.selected) openNote(state.filtered[0].id);
+        if(!state.filtered.length){
+          els.meta.textContent = 'Brak wyników dla aktualnych filtrów.';
+          els.content.textContent = '';
+        }
       }
 
       function openNote(id){
         const n = state.notes.find(x => x.id === id); if(!n) return;
         state.selected = n.id;
-        els.meta.textContent = `${n.path} • ${fmt(n.updatedAt)}${(n.tags||[]).length ? ' • #' + n.tags.join(' #') : ''}`;
+        els.meta.textContent = `${n.path} • ${fmt(n.updatedAt)} • ${CAT[n.category] || n.category}${(n.tags||[]).length ? ' • #' + n.tags.join(' #') : ''}`;
         els.content.textContent = n.content;
+        renderList();
       }
 
       async function boot(){
@@ -133,12 +169,14 @@
         }
 
         state.notes = data.notes || [];
+
         const tags = [...new Set(state.notes.flatMap(n => n.tags || []))].sort();
         for(const t of tags){
           const o = document.createElement('option'); o.value = t; o.textContent = `#${t}`; els.tag.appendChild(o);
         }
 
         [els.q, els.folder, els.tag].forEach(el => el.addEventListener('input', renderList));
+        renderCategories();
         renderList();
       }
       boot();
