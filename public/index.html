@@ -104,6 +104,7 @@
         <div style="height:8px"></div>
         <button type="button" id="unlock" style="background:#111111;border-color:#111111;color:#ffffff">Odblokuj</button>
         <p id="pwErr" style="display:none;color:#c83a3a;font-size:12px">Nieprawidłowe hasło.</p>
+        <p id="loginStatus" style="display:none;color:#5f5f5f;font-size:12px">Sprawdzam...</p>
       </div>
     </div>
 
@@ -182,7 +183,7 @@
         list:el('list'),q:el('q'),folder:el('folder'),tag:el('tag'),sort:el('sort'),font:el('font'),
         readPane:el('readPane'),listPane:el('listPane'),tabList:el('tabList'),tabRead:el('tabRead'),fabTop:el('fabTop'),
         prev:el('prev'),next:el('next'),fav:el('fav'),focus:el('focus'),copyLink:el('copyLink'),noteMeta:el('noteMeta'),pbar:el('pbar'),meta:el('meta'),content:el('content'),
-        lock:el('lock'),pw:el('pw'),unlock:el('unlock'),pwErr:el('pwErr')};
+        lock:el('lock'),pw:el('pw'),unlock:el('unlock'),pwErr:el('pwErr'),loginStatus:el('loginStatus')};
       const fmt=d=>new Date(d).toLocaleString('pl-PL',{dateStyle:'short',timeStyle:'short'});
       const daysAgo=n=>new Date(Date.now()-n*86400000);
       const isMobile=()=>window.matchMedia('(max-width: 999px)').matches;
@@ -260,7 +261,9 @@
 
       function showLogin(message=''){
         if(message){ els.pwErr.textContent=message; els.pwErr.style.display='block'; }
-        else { els.pwErr.style.display='none'; }
+        else { els.pwErr.style.display='none';
+        els.loginStatus.style.display='none'; }
+        els.loginStatus.style.display='none';
         els.lock.classList.remove('hidden');
         els.appRoot.classList.add('is-locked');
         els.fabTop.classList.add('hidden');
@@ -271,33 +274,46 @@
         els.appRoot.classList.remove('is-locked');
         els.fabTop.classList.remove('hidden');
         els.pwErr.style.display='none';
+        els.loginStatus.style.display='none';
       }
 
       async function loginAndLoad(){
         els.pwErr.style.display='none';
-        const pw = els.pw.value||'';
+        els.loginStatus.style.display='none';
+        els.loginStatus.style.display='block';
+        els.loginStatus.textContent='Sprawdzam hasło...';
+        els.unlock.disabled=true;
 
-        let second = await fetchNotes(pw);
-        if(second.data){
+        try {
+          const pw = els.pw.value||'';
+          if(!pw){ showLogin('Wpisz hasło.'); return; }
+
+          let second = await fetchNotes(pw);
+          if(second.data){
+            hideLogin();
+            startApp(second.data);
+            return;
+          }
+
+          const ok=await authenticate(pw);
+          if(!ok){ showLogin('Nieprawidłowe hasło.'); return; }
+          second=await fetchNotes(pw);
+          if(second.authRequired||!second.data){ showLogin('Logowanie nieudane: '+(second.error||'spróbuj ponownie')); return; }
           hideLogin();
           startApp(second.data);
-          return;
+        } catch (e) {
+          showLogin('Błąd logowania. Odśwież stronę i spróbuj ponownie.');
+        } finally {
+          els.unlock.disabled=false;
+          if(els.lock.classList.contains('hidden')){
+            els.loginStatus.style.display='none';
+          }
         }
-        if(second.error){
-          // continue to standard auth path
-        }
-
-        const ok=await authenticate(pw);
-        if(!ok){ showLogin('Nieprawidłowe hasło.'); return; }
-        second=await fetchNotes(pw);
-        if(second.authRequired||!second.data){ showLogin('Logowanie nieudane: '+(second.error||'spróbuj ponownie')); return; }
-        hideLogin();
-        startApp(second.data);
       }
 
       async function fetchNotes(password=''){
         try {
-          const res=await fetch('/.netlify/functions/notes',{cache:'no-store',credentials:'include',headers:{'x-aura-token':state.authToken||'','x-aura-pass':password||''}});
+          const res=await fetch('/.netlify/functions/notes?v=2',{cache:'no-store',credentials:'include',headers:{'x-aura-token':state.authToken||'','x-aura-pass':password||''}});
           let payload={};
           try { payload=await res.json(); } catch {}
           if(res.status===401) return {authRequired:true,error:payload.error||'Unauthorized'};
@@ -310,12 +326,13 @@
       }
 
       async function authenticate(password){
-        const res=await fetch('/.netlify/functions/auth',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({password})});
+        const res=await fetch('/.netlify/functions/auth?v=2',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({password})});
         const payload=await res.json().catch(()=>({ok:false}));
         if(res.ok && payload.ok){ state.authToken = payload.token || ''; if(state.authToken) localStorage.setItem('aura_auth_token', state.authToken); return true; } return false;
       }
 
       async function boot(){
+        els.unlock.onclick=loginAndLoad;
         let first;
         try {
           first = await fetchNotes();
