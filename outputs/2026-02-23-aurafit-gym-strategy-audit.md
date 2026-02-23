@@ -2,7 +2,7 @@
 
 **Data:** 2026-02-23  
 **Autor:** Aura  
-**Cel:** przygotowanie pełnej strategii biznesowo-produktowej dla pivotu z B2C do B2B2C (integracja z siecią siłowni, np. Stadium 8 Game)
+**Cel:** przygotowanie pełnej strategii biznesowo-produktowej dla pivotu z B2C do B2B2C (integracja z siecią siłowni, np. ST8 Gym)
 
 ---
 
@@ -198,7 +198,7 @@ Rekomendowany model: **B2B2C hybrid**.
 
 ---
 
-## 7) Strategia wejścia do Stadium 8 Game (praktyczna)
+## 7) Strategia wejścia do ST8 Gym (praktyczna)
 
 ## 7.1 Oferta pilota (6–8 tygodni)
 
@@ -311,7 +311,7 @@ Musi pokazać minimum:
 1. Zdefiniować i wdrożyć model multi-tenant (organizacja/klub/role).  
 2. Zbudować dashboard managera z 6 KPI.  
 3. Przygotować ofertę pilota + wzór umowy + kryteria sukcesu.  
-4. Odpalić pilota w 1 lokalizacji Stadium 8 Game.  
+4. Odpalić pilota w 1 lokalizacji ST8 Gym.  
 5. Po 6–8 tygodniach: decyzja o rollout na całą sieć.
 
 ---

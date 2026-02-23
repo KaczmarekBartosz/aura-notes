@@ -1,6 +1,6 @@
 # Oferta biznesowa B2B
 ## Wdrożenie aplikacji PWA **AuraFit** dla sieci siłowni
-### Przykład: **St8Gym Kępno**
+### Przykład: **ST8 Gym Kępno**
 
 **Wersja dokumentu:** 1.0  
 **Data:** 2026-02-23  
@@ -26,11 +26,11 @@
 
 ---
 
-## 2. Research: profil St8Gym (Kępno) — kontekst wdrożenia
+## 2. Research: profil ST8 Gym (Kępno) — kontekst wdrożenia
 
 Na podstawie dostępnych publicznie źródeł online:
 
-### Obserwacje o marce St8Gym
+### Obserwacje o marce ST8 Gym
 - marka pozycjonuje się jako **sieć klubów fitness 24/7**,
 - działa w modelu wielu lokalizacji (Kępno + okolice),
 - oferta obejmuje m.in.: siłownię, fitness, trening personalny, masaż i zajęcia specjalistyczne,
@@ -43,9 +43,9 @@ Na podstawie dostępnych publicznie źródeł online:
 - obecność w systemach kart sportowych (w źródłach agregujących obiekty).
 
 ### Wniosek biznesowy
-St8Gym ma profil idealny do wdrożenia AuraFit: **sieć lokalna + szeroka oferta + potrzeba standaryzacji doświadczenia członka** między oddziałami.
+ST8 Gym ma profil idealny do wdrożenia AuraFit: **sieć lokalna + szeroka oferta + potrzeba standaryzacji doświadczenia członka** między oddziałami.
 
-> Uwaga: dane pochodzą z publicznych stron i katalogów; finalny zakres wdrożenia powinien zostać doprecyzowany na warsztacie discovery z zespołem St8Gym.
+> Uwaga: dane pochodzą z publicznych stron i katalogów; finalny zakres wdrożenia powinien zostać doprecyzowany na warsztacie discovery z zespołem ST8 Gym.
 
 ---
 
@@ -171,7 +171,7 @@ Abonament obejmuje stałą opiekę produktowo-techniczną:
 
 ## 9. Podsumowanie i rekomendacja rozpoczęcia współpracy
 
-Wdrożenie AuraFit dla St8Gym to praktyczny krok do zbudowania:
+Wdrożenie AuraFit dla ST8 Gym to praktyczny krok do zbudowania:
 - silniejszej relacji z klientami,
 - wyższej retencji członków,
 - nowoczesnego i skalowalnego kanału cyfrowego sieci.
@@ -179,11 +179,11 @@ Wdrożenie AuraFit dla St8Gym to praktyczny krok do zbudowania:
 Model wdrożeniowy (21 000 zł + abonament) pozwala szybko uruchomić dedykowaną aplikację i od pierwszych tygodni mierzyć realny wpływ na biznes klubu.
 
 ## Rekomendowany kolejny krok
-**Start 7-dniowego etapu discovery** i podpisanie scope wdrożenia dla pierwszej lokalizacji pilotażowej St8Gym.
+**Start 7-dniowego etapu discovery** i podpisanie scope wdrożenia dla pierwszej lokalizacji pilotażowej ST8 Gym.
 
 ---
 
-## Załącznik A — Źródła researchu St8Gym (publiczne)
+## Załącznik A — Źródła researchu ST8 Gym (publiczne)
 - https://st8gym.pl/
 - https://www.facebook.com/st8gym/?locale=pl_PL
 - https://znanytrener.fit/katalog/silownia-kepno-st8gym-2/

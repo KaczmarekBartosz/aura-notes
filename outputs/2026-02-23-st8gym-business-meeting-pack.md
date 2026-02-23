@@ -1,4 +1,4 @@
-# ST8GYM × AURAFIT
+# ST8 Gym × AURAFIT
 ## Pełny dokument pod spotkanie biznesowe
 ### Wdrożenie dedykowanej aplikacji PWA dla sieci siłowni
 
@@ -11,16 +11,16 @@
 ## 0) Cel spotkania (co ma się wydarzyć)
 
 ### Główny cel
-Podjąć decyzję o uruchomieniu **płatnego wdrożenia AuraFit** dla ST8GYM (pilotaż + utrzymanie).
+Podjąć decyzję o uruchomieniu **płatnego wdrożenia AuraFit** dla ST8 Gym (pilotaż + utrzymanie).
 
 ### Cel minimalny
 Zamknąć zakres i warunki etapu **Discovery + Pilot** oraz ustalić datę startu.
 
 ### Decyzje, które muszą paść na spotkaniu
-1. Czy ST8GYM wdraża własną wersję AuraFit?  
+1. Czy ST8 Gym wdraża własną wersję AuraFit?  
 2. Jaki model rozliczenia wybieramy (A/B)?  
 3. Która lokalizacja (lub lokalizacje) startują jako pierwsze?  
-4. Kto jest właścicielem projektu po stronie ST8GYM (1 osoba decyzyjna)?
+4. Kto jest właścicielem projektu po stronie ST8 Gym (1 osoba decyzyjna)?
 
 ---
 
@@ -28,7 +28,7 @@ Zamknąć zakres i warunki etapu **Discovery + Pilot** oraz ustalić datę start
 
 1. **Otwarcie i kontekst biznesowy** (5 min)  
 2. **Problem, który rozwiązujemy** – retencja, zaangażowanie, monetyzacja (10 min)  
-3. **Demo / pokaz koncepcji AuraFit dla ST8GYM** (10–15 min)  
+3. **Demo / pokaz koncepcji AuraFit dla ST8 Gym** (10–15 min)  
 4. **Model personalizacji i wdrożenia** (10 min)  
 5. **Oferta cenowa + warianty** (10 min)  
 6. **KPI, harmonogram, ryzyka i zabezpieczenia** (10 min)  
@@ -38,7 +38,7 @@ Zamknąć zakres i warunki etapu **Discovery + Pilot** oraz ustalić datę start
 
 ## 2) One-liner wartości biznesowej
 
-**AuraFit to dedykowana aplikacja PWA dla ST8GYM, która zwiększa retencję członków, podnosi zaangażowanie między wizytami i buduje przewagę klubu dzięki własnemu kanałowi cyfrowemu pod marką ST8GYM.**
+**AuraFit to dedykowana aplikacja PWA dla ST8 Gym, która zwiększa retencję członków, podnosi zaangażowanie między wizytami i buduje przewagę klubu dzięki własnemu kanałowi cyfrowemu pod marką ST8 Gym.**
 
 ---
 
@@ -59,32 +59,32 @@ AuraFit to platforma PWA łącząca w jednym miejscu:
 
 ---
 
-## 4) Research ST8GYM – kontekst dla oferty
+## 4) Research ST8 Gym – kontekst dla oferty
 
-Na podstawie publicznych źródeł online ST8GYM:
+Na podstawie publicznych źródeł online ST8 Gym:
 - działa jako lokalna sieć klubów fitness (Kępno i okolice),
 - komunikuje model „multi-lokalizacyjny” i szeroką ofertę,
 - łączy różne formy aktywności (siłownia, fitness, trening personalny, dodatkowe usługi),
 - operuje w środowisku, gdzie lojalność klienta i doświadczenie członka są kluczowe.
 
 ### Wniosek
-ST8GYM ma profil idealny dla wdrożenia dedykowanej aplikacji:
+ST8 Gym ma profil idealny dla wdrożenia dedykowanej aplikacji:
 - wiele punktów styku z klientem,
 - potrzeba spójnego doświadczenia między lokalizacjami,
 - duży potencjał automatyzacji komunikacji i budowania retencji.
 
 ---
 
-## 5) Koncepcja personalizacji dla ST8GYM
+## 5) Koncepcja personalizacji dla ST8 Gym
 
 ## 5.1 Branding i UX
-- logo ST8GYM,
+- logo ST8 Gym,
 - kolory i stylistyka zgodna z identyfikacją,
 - grafiki i komunikaty pod brand,
 - dedykowane sekcje informacyjne i promocyjne.
 
 ## 5.2 Content i materiały klubowe
-- biblioteka wideo dopasowana do sprzętu i stref treningowych ST8GYM,
+- biblioteka wideo dopasowana do sprzętu i stref treningowych ST8 Gym,
 - instruktaże pod konkretne maszyny i standard pracy trenerów,
 - programy treningowe pod segmenty klientów (start, redukcja, sylwetka, moc).
 
@@ -122,7 +122,7 @@ ST8GYM ma profil idealny dla wdrożenia dedykowanej aplikacji:
 Obejmuje:
 - personalizację brandingu,
 - konfigurację i przygotowanie środowiska,
-- dostosowanie funkcji do modelu ST8GYM,
+- dostosowanie funkcji do modelu ST8 Gym,
 - testy,
 - uruchomienie produkcyjne PWA.
 
@@ -149,7 +149,7 @@ Obejmuje:
 
 ---
 
-## 9) Kluczowe benefity dla właściciela ST8GYM
+## 9) Kluczowe benefity dla właściciela ST8 Gym
 
 ### 9.1 Retencja i zaangażowanie
 - większa aktywność użytkowników między wizytami,
@@ -204,7 +204,7 @@ Obejmuje:
 ## 12) Plan wdrożenia (proponowany)
 
 ### Etap 1 — Discovery (1 tydzień)
-- warsztat z zespołem ST8GYM,
+- warsztat z zespołem ST8 Gym,
 - potwierdzenie zakresu i priorytetów,
 - finalizacja backlogu wdrożeniowego.
 
@@ -271,7 +271,7 @@ Wręcz odwrotnie — aplikacja porządkuje komunikację i automatyzuje część 
 ## 16) Kolejne kroki po akceptacji
 
 1. Podpisanie krótkiego scope i harmonogramu.  
-2. Wyznaczenie Project Ownera po stronie ST8GYM.  
+2. Wyznaczenie Project Ownera po stronie ST8 Gym.  
 3. Warsztat Discovery (online/on-site).  
 4. Uruchomienie etapu wdrożeniowego.  
 5. Go-live + raport startowy KPI.
@@ -280,12 +280,12 @@ Wręcz odwrotnie — aplikacja porządkuje komunikację i automatyzuje część 
 
 ## 17) Załącznik A — wersja skrócona oferty (do odczytu na końcu spotkania)
 
-**AuraFit dla ST8GYM** to dedykowana aplikacja PWA pod markę klubu, która zwiększa retencję i zaangażowanie członków oraz automatyzuje kluczowe procesy komunikacyjne.  
+**AuraFit dla ST8 Gym** to dedykowana aplikacja PWA pod markę klubu, która zwiększa retencję i zaangażowanie członków oraz automatyzuje kluczowe procesy komunikacyjne.  
 
 **Wdrożenie:** 21 000 zł netto  
 **Utrzymanie:** 4 000–5 000 zł netto / mies. **lub** 3 000 zł + 10 zł / aktywny użytkownik  
 
-W praktyce ST8GYM otrzymuje własny kanał cyfrowy do pracy z klientami, nowoczesny wizerunek i narzędzie do długoterminowego wzrostu lojalności oraz przychodu.
+W praktyce ST8 Gym otrzymuje własny kanał cyfrowy do pracy z klientami, nowoczesny wizerunek i narzędzie do długoterminowego wzrostu lojalności oraz przychodu.
 
 ---
 
