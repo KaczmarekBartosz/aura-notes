@@ -19,6 +19,7 @@
 8. [Codzienna Checklista](#8-codzienna-checklista)
 9. [Typowe Błędy](#9-typowe-błędy)
 10. [Hierarchia Priorytetów](#10-hierarchia-priorytetów)
+11. [Coach Kev: 39 tipów (snapshot 2026-02-23)](#11-coach-kev-39-tipów-snapshot-2026-02-23)
 
 ---
 
@@ -553,3 +554,40 @@ Podstawy + Konsekwencja + Czas = Wyniki.
 *Dokument skompilowany z zakładek X/Twitter przez Aura/OpenClaw*  
 *Wszystkie protokoły są kompilacją wiedzy publicznej i nie stanowią porady medycznej*  
 *Przed rozpoczęciem jakiegokolwiek protokołu skonsultuj się z lekarzem*
+
+---
+
+## 11. COACH KEV: 39 TIPÓW (SNAPSHOT 2026-02-23)
+
+**Źródło:** X thread @AskCoachKev, ID `2025934704868827627`  
+**Polskie tłumaczenie pełne:** `memory/BOOKMARKS_COACH_KEV_39_TIPS_PL_2026-02-23.md`
+
+### 11.1 Co wnieśliśmy do bazy holistycznej
+
+Te 39 punktów zostało zintegrowane z protokołem jako **warstwa behawioralna i compliance** — czyli to, co sprawia, że plan jest realnie wykonywany, a nie tylko „dobrze wygląda na papierze”.
+
+### 11.2 8 reguł nadrzędnych (destylat 39 tipów)
+
+1. **Alkohol minimalizować do zera** w fazie redukcji i recomposition.  
+2. **Białko jako główna kotwica** (wysokie białko w pierwszym posiłku + priorytet białka w każdym posiłku).  
+3. **Progresywne przeciążenie + tracking** (zero zgadywania).  
+4. **Sen 7–8 h i stała rutyna** jako fundament hormonów i regeneracji.  
+5. **Codzienny ruch/NEAT** (10k kroków jako prosty standard).  
+6. **Środowisko żywieniowe** (zdrowy „stock” w domu, gotowe opcje białkowe).  
+7. **Perspektywa 12 miesięcy, nie 12 dni** (cierpliwość > perfekcjonizm).  
+8. **Tożsamość i sprawczość** (robisz to dla siebie, nie dla uwagi zewnętrznej).
+
+### 11.3 Jak to mapuje się na ten protokół
+
+- Sekcje 2 i 3 (metabolizm + żywienie) ← tipy o białku, strukturze posiłków, tempie jedzenia.  
+- Sekcja 4 (trening) ← tipy o technice, progresji, doborze zakresów i regeneracji.  
+- Sekcja 7 (psychologia) ← tipy o konsekwencji, cierpliwości, unikaniu atencji i budowie nawyku.  
+- Sekcja 8 (checklista) ← tipy o krokach, śnie, alkoholu i codziennym rytmie.
+
+### 11.4 Uwaga jakościowa (evidence filter)
+
+Część tipów jest bardzo solidna (sen, białko, progres, compliance), a część wymaga kontekstu (np. 24h fast, skrajne uogólnienia). W bazie traktujemy je jako:
+
+- **HIGH CONFIDENCE:** białko, sen, trening oporowy, progres, tracking, kroki, długoterminowość,
+- **CONDITIONAL:** posty 24h, skrajne twierdzenia żywieniowe — stosować kontekstowo.
+
