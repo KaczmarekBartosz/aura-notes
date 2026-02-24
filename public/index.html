@@ -33,13 +33,13 @@
       html,body{margin:0;width:100%;max-width:100%;overflow-x:hidden!important;overscroll-behavior-x:none}
       body{font-family:'Inter', -apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;color:var(--text);background:
         radial-gradient(900px 500px at 0% -20%, rgba(255,255,255,0.98), rgba(255,255,255,0) 65%),
-        radial-gradient(780px 440px at 100% 0%, rgba(216,221,230,0.65), rgba(255,255,255,0) 70%),
-        linear-gradient(140deg,#fbfcfd 0%, #eef2f6 48%, #e5ebf2 100%);
+        radial-gradient(780px 440px at 100% 0%, rgba(236,238,242,0.66), rgba(255,255,255,0) 70%),
+        linear-gradient(140deg,#fbfbfc 0%, #f1f2f5 48%, #eceef2 100%);
         min-height:100vh;letter-spacing:-0.005em;}
       .bgfx{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-      .bgfx::before,.bgfx::after{content:"";position:absolute;border-radius:999px;filter:blur(42px);opacity:.55}
-      .bgfx::before{width:520px;height:520px;background:radial-gradient(circle at 30% 30%,#ffffff, #d8e5ff 70%);left:-150px;top:60px}
-      .bgfx::after{width:460px;height:460px;background:radial-gradient(circle at 60% 40%,#ffffff, #efe0ff 70%);right:-150px;top:170px}
+      .bgfx::before,.bgfx::after{content:"";position:absolute;border-radius:999px;filter:blur(42px);opacity:.45}
+      .bgfx::before{width:520px;height:520px;background:radial-gradient(circle at 30% 30%,#ffffff, #e5e7eb 70%);left:-150px;top:60px}
+      .bgfx::after{width:460px;height:460px;background:radial-gradient(circle at 60% 40%,#ffffff, #dfe3e8 70%);right:-150px;top:170px}
 
       .app{position:relative;z-index:1;max-width:1180px;width:100%;margin:0 auto;padding:16px 20px;overflow-x:clip;}
       .app.is-locked{pointer-events:none;filter:blur(2px)}
@@ -50,8 +50,8 @@
       ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 999px; }
 
             .top{margin-bottom:12px}
-      .glassHero{margin:0 0 16px;padding:16px 18px;border-radius:22px;border:1px solid rgba(255,255,255,.85);background:linear-gradient(135deg, rgba(232,243,255,.62), rgba(244,236,255,.36));backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);box-shadow:0 20px 42px -30px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.95);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#111827}
-      .topBar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(135deg, rgba(255,255,255,.72), rgba(244,248,255,.35));border:1px solid rgba(255,255,255,.92);border-radius:28px;padding:14px 16px;box-shadow:0 22px 40px -30px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.98);backdrop-filter:blur(22px) saturate(175%);-webkit-backdrop-filter:blur(22px) saturate(175%);flex-wrap:wrap}
+      .glassHero{margin:0 0 16px;padding:16px 18px;border-radius:22px;border:1px solid rgba(255,255,255,.9);background:linear-gradient(135deg, rgba(255,255,255,.76), rgba(238,240,244,.46));backdrop-filter:blur(20px) saturate(120%);-webkit-backdrop-filter:blur(20px) saturate(120%);box-shadow:0 20px 42px -30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.95);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#111827}
+      .topBar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(135deg, rgba(255,255,255,.82), rgba(245,246,248,.56));border:1px solid rgba(255,255,255,.96);border-radius:28px;padding:14px 16px;box-shadow:0 22px 40px -30px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.98);backdrop-filter:blur(20px) saturate(120%);-webkit-backdrop-filter:blur(20px) saturate(120%);flex-wrap:wrap}
       .brand{display:flex;align-items:center;gap:10px;min-width:0}
       .logoOrb{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg, rgba(255,255,255,.95), rgba(225,229,236,.68));border:1px solid rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:#111;font-weight:900;font-size:13px;letter-spacing:.02em;box-shadow:0 10px 20px -14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.95)}
       .brandText{min-width:0}
@@ -63,7 +63,7 @@
       .btn-login .dot{width:8px;height:8px;border-radius:var(--radius-chip);background:#22c55e;display:inline-block}
 
       .kpi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
-      .k{background:linear-gradient(145deg, rgba(255,255,255,.8), rgba(240,246,255,.45));border:1px solid rgba(255,255,255,.95);border-radius:22px;padding:16px;box-shadow:0 20px 34px -28px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.98);backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
+      .k{background:linear-gradient(145deg, rgba(255,255,255,.86), rgba(238,240,244,.52));border:1px solid rgba(255,255,255,.97);border-radius:22px;padding:16px;box-shadow:0 20px 34px -28px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.98);backdrop-filter:blur(16px) saturate(120%);-webkit-backdrop-filter:blur(16px) saturate(120%);transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
       .k .v{font-size:26px;font-weight:800;letter-spacing:-0.02em;line-height:1}
       .k .l{font-size:13px;color:var(--muted);font-weight:500;margin-top:6px}
 
@@ -76,16 +76,16 @@
       .tab.on{background:var(--text);color:#fff;border-color:var(--text);box-shadow:var(--shadow-md)}
 
       .layout{display:grid;grid-template-columns:1fr;gap:16px;min-width:0;max-width:100%;transition:grid-template-columns 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), gap 0.5s ease}
-      .pane{background:linear-gradient(155deg, rgba(255,255,255,.62), rgba(247,249,252,.34));border:1px solid rgba(255,255,255,.84);border-radius:var(--radius-card);padding:12px;box-shadow:0 24px 50px -34px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.95);backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%);transition:box-shadow .18s ease, border-color .18s ease;min-width:0;max-width:100%;overflow-x:hidden}
+      .pane{background:linear-gradient(155deg, rgba(255,255,255,.74), rgba(242,244,248,.46));border:1px solid rgba(255,255,255,.88);border-radius:var(--radius-card);padding:12px;box-shadow:0 24px 50px -34px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.95);backdrop-filter:blur(18px) saturate(110%);-webkit-backdrop-filter:blur(18px) saturate(110%);transition:box-shadow .18s ease, border-color .18s ease;min-width:0;max-width:100%;overflow-x:hidden}
 
-      .filters{display:grid;gap:10px;position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.62);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.75);margin:-12px -12px 0;padding-top:12px;padding-left:12px;padding-right:12px;border-top-left-radius:var(--radius-card);border-top-right-radius:var(--radius-card)}
+      .filters{display:grid;gap:10px;position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.72);backdrop-filter:blur(14px) saturate(110%);-webkit-backdrop-filter:blur(14px) saturate(110%);padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.82);margin:-12px -12px 0;padding-top:12px;padding-left:12px;padding-right:12px;border-top-left-radius:var(--radius-card);border-top-right-radius:var(--radius-card)}
       .f2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
       input,select,button{width:100%;padding:12px 14px;border-radius:var(--radius-control);border:1px solid rgba(255,255,255,.82);background:rgba(255,255,255,.62);font-size:14px;color:var(--text);font-family:inherit;font-weight:500;transition:all 0.2s}
       input:focus,select:focus{outline:none;border-color:#a1a1aa;background:var(--card);box-shadow:0 0 0 3px rgba(0,0,0,0.03)}
       button{cursor:pointer;background:var(--card)}
 
       .cards{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px;max-height:54vh;overflow-y:auto;overflow-x:hidden;padding-right:4px;max-width:100%;scroll-behavior:smooth}
-      .note{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:12px;border:1px solid rgba(255,255,255,.86);border-radius:var(--radius-card);background:linear-gradient(145deg, rgba(255,255,255,.72), rgba(245,247,250,.42));backdrop-filter:blur(16px) saturate(155%);-webkit-backdrop-filter:blur(16px) saturate(155%);cursor:pointer;max-width:100%;overflow:hidden;transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;position:relative}
+      .note{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:12px;border:1px solid rgba(255,255,255,.9);border-radius:var(--radius-card);background:linear-gradient(145deg, rgba(255,255,255,.82), rgba(241,243,247,.52));backdrop-filter:blur(14px) saturate(108%);-webkit-backdrop-filter:blur(14px) saturate(108%);cursor:pointer;max-width:100%;overflow:hidden;transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;position:relative}
       .note.active{outline:2px solid var(--text);outline-offset:-1px;background:var(--bg)}
       .thumb{width:64px;height:64px;border-radius:var(--radius-control);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;background:var(--bg);position:relative;overflow:hidden;}
       .thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0.9;transition:transform 0.5s ease}
@@ -106,7 +106,7 @@
       .empty svg{width:48px;height:48px;color:#d4d4d8}
 
       .reader{padding:0;max-height:70vh;overflow:auto;min-width:0;max-width:100%}
-      .readerTop{position:sticky;top:0;background:rgba(255,255,255,0.64);backdrop-filter:blur(18px) saturate(155%);-webkit-backdrop-filter:blur(18px) saturate(155%);border-bottom:1px solid rgba(255,255,255,.76);padding:12px;display:flex;gap:8px;flex-wrap:wrap;z-index:10;border-top-left-radius:var(--radius-card);border-top-right-radius:var(--radius-card);min-width:0;max-width:100%;overflow-x:hidden}
+      .readerTop{position:sticky;top:0;background:rgba(255,255,255,0.74);backdrop-filter:blur(16px) saturate(112%);-webkit-backdrop-filter:blur(16px) saturate(112%);border-bottom:1px solid rgba(255,255,255,.84);padding:12px;display:flex;gap:8px;flex-wrap:wrap;z-index:10;border-top-left-radius:var(--radius-card);border-top-right-radius:var(--radius-card);min-width:0;max-width:100%;overflow-x:hidden}
       .readerTop button{width:auto;padding:8px 12px;font-size:13px;font-weight:600;border-radius:var(--radius-control);display:flex;align-items:center;gap:6px}
       .readerTop button svg{width:16px;height:16px}
       .meta{font-size:13px;color:var(--muted);padding:8px 24px 0;font-family:'Inter',sans-serif;font-weight:500}
@@ -281,7 +281,7 @@
             <div class="logoOrb">A</div>
             <div class="brandText">
               <h1 class="title">Aura Notes</h1>
-              <div class="subtitle">Private Knowledge Vault • Neo Glass v5</div>
+              <div class="subtitle">Private Knowledge Vault • Monochrome Pro v1</div>
             </div>
           </div>
           <div class="topActions">
@@ -313,7 +313,13 @@
             <input id="q" placeholder="Szukaj np. retatrutide, protocol, taste..." />
             <div class="f2">
               <select id="folder"><option value="">Folder: wszystkie</option><option value="memory">memory</option><option value="outputs">outputs</option></select>
-              <select id="sort"><option value="new">Sort: najnowsze</option><option value="old">Sort: najstarsze</option><option value="az">Sort: A-Z</option></select>
+              <select id="sort">
+                <option value="updated_new">Sort: aktualizacja ↓</option>
+                <option value="updated_old">Sort: aktualizacja ↑</option>
+                <option value="created_new">Sort: utworzenie ↓</option>
+                <option value="created_old">Sort: utworzenie ↑</option>
+                <option value="az">Sort: A-Z</option>
+              </select>
             </div>
           </div>
           <div id="cards" class="cards"></div>
@@ -368,7 +374,7 @@
 
       const state = {
         notes: [], filtered: [], selected: null,
-        mode: 'all', folder: '', q: '', sort: 'new',
+        mode: 'all', folder: '', q: '', sort: 'updated_new',
         favorites: {}, readMap: {}, authPass: localStorage.getItem('aura_auth_pass') || '', listScroll:0, readScroll:0, mobileTab:'list',
         htmlCache: {}
       };
@@ -397,7 +403,8 @@
           state.mode = s.mode || state.mode;
           state.folder = s.folder || '';
           state.q = s.q || '';
-          state.sort = s.sort || 'new';
+          const legacySortMap = { new: 'updated_new', old: 'updated_old' };
+          state.sort = legacySortMap[s.sort] || s.sort || 'updated_new';
           state.selected = s.selected || null;
           state.favorites = s.favorites || {};
           state.readMap = s.readMap || {};
@@ -495,8 +502,10 @@
           return blob.includes(q);
         });
 
-        if (els.sort.value==='new') state.filtered.sort((a,b)=>a.updatedAt<b.updatedAt?1:-1);
-        if (els.sort.value==='old') state.filtered.sort((a,b)=>a.updatedAt>b.updatedAt?1:-1);
+        if (els.sort.value==='updated_new') state.filtered.sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt));
+        if (els.sort.value==='updated_old') state.filtered.sort((a,b)=>new Date(a.updatedAt)-new Date(b.updatedAt));
+        if (els.sort.value==='created_new') state.filtered.sort((a,b)=>new Date(b.createdAt||b.updatedAt)-new Date(a.createdAt||a.updatedAt));
+        if (els.sort.value==='created_old') state.filtered.sort((a,b)=>new Date(a.createdAt||a.updatedAt)-new Date(b.createdAt||b.updatedAt));
         if (els.sort.value==='az') state.filtered.sort((a,b)=>a.title.localeCompare(b.title,'pl'));
 
         const groups={today:[],week:[],older:[]};
@@ -526,7 +535,7 @@
               <div class="nt">${n.title}</div>
               <div class="nx">${n.excerpt || ''}</div>
               <div class="tags">${tags}</div>
-              <div class="nm">${n.path} • ${fmt(n.updatedAt)} • ${n.readingMinutes||1} min ${state.readMap[n.id]?'• przeczytane':''}</div>
+              <div class="nm">${n.path} • akt.: ${fmt(n.updatedAt)} • ${n.readingMinutes||1} min ${state.readMap[n.id]?'• przeczytane':''}</div>
             </div>
           </article>`;
         }
@@ -547,7 +556,7 @@
         els.cards.innerHTML = html;
         els.cards.querySelectorAll('.note').forEach(c => c.onclick = () => openNote(c.dataset.id, true));
         const cf= document.getElementById('clearFilters');
-        if(cf) cf.onclick=()=>{ state.mode='all'; els.q.value=''; els.folder.value=''; els.sort.value='new'; renderModes(); renderList(); save(); };
+        if(cf) cf.onclick=()=>{ state.mode='all'; els.q.value=''; els.folder.value=''; els.sort.value='updated_new'; renderModes(); renderList(); save(); };
 
         if (state.filtered.length && !state.selected) openNote(state.filtered[0].id, false);
         updateKpi();
@@ -612,7 +621,8 @@ function openNote(id, switchMobile){
         setTimeout(() => {
           state.selected = n.id;
           location.hash = n.id;
-          els.meta.textContent = `${n.path} • ${fmt(n.updatedAt)} • ${n.words||0} słów`;
+          const createdInfo = n.createdAt ? `utw.: ${fmt(n.createdAt)} • ` : '';
+          els.meta.textContent = `${n.path} • ${createdInfo}akt.: ${fmt(n.updatedAt)} • ${n.words||0} słów`;
           els.readMin.textContent = `${n.readingMinutes||1} min`;
           renderNoteContent(n);
           els.fav.innerHTML = state.favorites[n.id] ? '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star-filled"></use></svg> Ulubione' : '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"></use></svg> Ulubione';

@@ -1,17 +1,18 @@
-# aura-notes redesign + optimization
+# aura-notes — cleanup + redesign (bez półśrodków)
 
 ## Plan
-- [x] Audit current UI, UX friction points, and performance hotspots in `public/index.html`
-- [x] Apply premium minimal visual system refinements (spacing/radius/shadow/contrast)
-- [x] Harden markdown rendering security (sanitize HTML output)
-- [x] Optimize note open flow to avoid full list rerender on every read action
-- [x] Improve accessibility baseline (reduced motion support)
-- [x] Run build/index verification and basic smoke checks
+- [x] Przejrzeć nagłówki + pierwsze linie wszystkich notatek (`memory/` + `outputs/`)
+- [x] Zdefiniować twardą politykę: tylko notatki o realnej wartości w indeksie appki
+- [x] Wyciąć systemowe/logowe/sync-token notatki z indeksu
+- [x] Zachować kluczowe notatki fitness (w tym plan SUPER-HERO + WHOOP)
+- [x] Naprawić sortowanie pod dwie osie: data utworzenia i data aktualizacji
+- [x] Dodać czytelny kontekst dat w UI (utw. / akt.)
+- [x] Przebudować styl na spójny, top-tier monochrome glass (bez żółci i przypadkowych kolorów)
+- [x] Build + push na `main` i `master`
 
 ## Review
-- Removed parser typo in script include (`marked` tag had extra `>`).
-- Added DOMPurify sanitization for markdown HTML before render.
-- Added HTML render cache to reduce repeated parse cost.
-- Reduced unnecessary rerenders when opening notes (only rerender list when unread mode demands it).
-- Fixed focus toggle logic to be deterministic.
-- Added reduced-motion media query for accessibility and smoother UX.
+- Indeks został przełączony na curated-value mode: tylko wybrane, wartościowe notatki.
+- Systemowe logi/sync/tokens/perplexity i dzienne śmieci są poza appką.
+- Sortowanie ma teraz 5 trybów: aktualizacja↓/↑, utworzenie↓/↑, A-Z.
+- UI metadanych pokazuje jednocześnie datę utworzenia i aktualizacji.
+- Design został odkolorowany i ujednolicony do neutralnego monochrome glass.

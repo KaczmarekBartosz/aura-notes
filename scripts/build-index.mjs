@@ -62,23 +62,46 @@ function detectTags(rel, content) {
   return [...new Set(hit.map(t => t.toLowerCase()))];
 }
 
+function isCuratedValueNote(rel) {
+  const p = rel.toLowerCase();
+
+  // Keep explicit high-value collections
+  if (p.startsWith('outputs/')) return true;
+  if (p === 'memory/projekt_super_hero_v2_1_final.md') return true;
+  if (p === 'memory/ksiega_peptydow.md') return true;
+  if (p === 'memory/research_peptydy_bpc_cjc_tb500.md') return true;
+  if (p === 'memory/minimal-fatigue-maximum-growth-protocol.md') return true;
+  if (p === 'memory/knowledge_actionable.md') return true;
+  if (p === 'memory/knowledge_tips.md') return true;
+  if (p === 'memory/user_tastes.md') return true;
+  if (p === 'memory/user_tastes_deep.md') return true;
+  if (p === 'memory/llm_pozycjonowanie_playbook.md') return true;
+  if (p === 'memory/x-bookmarks.md') return true;
+  if (p === 'memory/recipes/high-protein-oreo-blizzard.md') return true;
+
+  if (p.startsWith('memory/gold-protocols/')) return true;
+  if (/^memory\/gold_.*_protocol\.md$/.test(p)) return true;
+
+  // Keep selected dated note with training context
+  if (p === 'memory/2026-02-23-whoop-training.md') return true;
+
+  return false;
+}
+
 function shouldSkipFromIndex(rel) {
   const p = rel.toLowerCase();
 
   if (p.includes('/_archive/')) return true;
+  if (!isCuratedValueNote(rel)) return true;
 
-  // System/logging notes excluded from end-user reader
-  const keepDated = [
-    'memory/2026-02-23-whoop-training.md'
-  ];
-  if (!keepDated.includes(p) && /^memory\/\d{4}-\d{2}-\d{2}([-.].*)?\.md$/.test(p)) return true;
-  if (p.startsWith('memory/cron-summaries/')) return true;
-  if (p.startsWith('memory/x-bookmarks-sync/')) return true;
-  if (p.startsWith('memory/state/')) return true;
-  if (p.startsWith('memory/token-usage/')) return true;
-  if (p.startsWith('memory/perplexity-searches/')) return true;
-  if (p === 'memory/token_history_full.md') return true;
-  if (/^memory\/x-bookmarks-sync-\d{4}-\d{2}-\d{2}.*\.md$/.test(p)) return true;
+  // Filter malformed/placeholder notes that add noise
+  if (p === 'memory/user_tastes_deep_glm.md') return true;
+  if (p === 'memory/knowledge_actionable_glm.md') return true;
+  if (p === 'memory/growth_tactics_glm.md') return true;
+  if (p === 'memory/psychology_triggers_glm.md') return true;
+  if (p === 'memory/code_recipes_glm.md') return true;
+  if (p === 'memory/gold_protocols_list.md') return true;
+  if (p === 'memory/operations_critical_access.md') return true;
 
   return false;
 }

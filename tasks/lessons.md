@@ -1,5 +1,5 @@
 # Lessons
 
-- For recurring tool-access workflows, never rely on chat-memory assumptions. Use deterministic wrappers and local checks first.
-- In UI-heavy single-file apps, avoid full rerenders on per-item selection; update only affected DOM where possible.
-- Always sanitize rendered markdown/HTML in client apps, even for "trusted" internal content.
+- Reader index musi być curated, nie „wszystko co .md”. Inaczej systemowe logi zabijają użyteczność.
+- Przy konfliktach "aktualizacja vs data treści" pokazuj obie osie dat (`createdAt`, `updatedAt`) i daj jawne tryby sortowania.
+- Design refresh ma być wyraźnie mierzalny i spójny z taste użytkownika (tu: monochrome premium, bez przypadkowych akcentów kolorystycznych).
