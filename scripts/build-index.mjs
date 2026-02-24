@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import { execSync } from 'child_process';
 
 const root = process.cwd();
 const sources = ['memory', 'outputs'];
@@ -61,6 +62,73 @@ function detectTags(rel, content) {
   return [...new Set(hit.map(t => t.toLowerCase()))];
 }
 
+function semanticDateFromContentOrPath(rel, content) {
+  const fm = content.slice(0, 1200);
+  const dateMatch = fm.match(/^(last_updated|updated_at|updated|date)\s*:\s*"?([0-9]{4}-[0-9]{2}-[0-9]{2}(?:[T ][0-9:.+\-Z]+)?)"?/im);
+  if (dateMatch?.[2]) {
+    const d = new Date(dateMatch[2]);
+    if (!Number.isNaN(d.getTime())) return d.toISOString();
+  }
+
+  const headingDate = content.match(/^#\s*(20\d{2}-\d{2}-\d{2})\b/m);
+  if (headingDate?.[1]) {
+    const d = new Date(`${headingDate[1]}T12:00:00Z`);
+    if (!Number.isNaN(d.getTime())) return d.toISOString();
+  }
+
+  const pathMatch = rel.match(/(20\d{2}-\d{2}-\d{2})(?:[^\d]|$)/);
+  if (pathMatch?.[1]) {
+    const d = new Date(`${pathMatch[1]}T12:00:00Z`);
+    if (!Number.isNaN(d.getTime())) return d.toISOString();
+  }
+
+  return null;
+}
+
+function latestDateMention(content) {
+  const sample = content.slice(0, 20000);
+  const matches = [...sample.matchAll(/\b(20\d{2}-\d{2}-\d{2})(?:[T ]([0-9:.+\-Z]{2,}))?\b/g)];
+  let best = null;
+  for (const m of matches) {
+    const isoCandidate = m[2] ? `${m[1]}T${m[2].replace(/^\s+/, '')}` : `${m[1]}T12:00:00Z`;
+    const d = new Date(isoCandidate);
+    if (Number.isNaN(d.getTime())) continue;
+    if (d.getTime() > Date.now() + 86400000) continue;
+    if (!best || d > best) best = d;
+  }
+  return best ? best.toISOString() : null;
+}
+
+const gitDateCache = new Map();
+
+function updatedAtFor(relPath, fallbackMtime, semanticIso = null, mentionIso = null) {
+  if (gitDateCache.has(relPath)) return gitDateCache.get(relPath);
+  try {
+    const iso = execSync(`git log -1 --format=%cI -- "${relPath.replace(/"/g, '\\"')}"`, {
+      cwd: root,
+      stdio: ['ignore', 'pipe', 'ignore']
+    }).toString().trim();
+
+    let val = semanticIso || iso || fallbackMtime.toISOString();
+
+    if (!semanticIso && mentionIso && iso) {
+      const gitDate = new Date(iso);
+      const mentionDate = new Date(mentionIso);
+      if (!Number.isNaN(gitDate.getTime()) && !Number.isNaN(mentionDate.getTime())) {
+        const diffDays = (gitDate.getTime() - mentionDate.getTime()) / 86400000;
+        if (diffDays > 2) val = mentionIso;
+      }
+    }
+
+    gitDateCache.set(relPath, val);
+    return val;
+  } catch {
+    const val = semanticIso || mentionIso || fallbackMtime.toISOString();
+    gitDateCache.set(relPath, val);
+    return val;
+  }
+}
+
 const notes = [];
 for (const src of sources) {
   const srcDir = path.join(root, src);
@@ -70,6 +138,8 @@ for (const src of sources) {
     if (rel.includes('/_archive/')) continue;
     const content = fs.readFileSync(f, 'utf8');
     const stat = fs.statSync(f);
+    const semanticIso = semanticDateFromContentOrPath(rel, content);
+    const mentionIso = latestDateMention(content);
     const words = content.replace(/```[\s\S]*?```/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
     notes.push({
       id: crypto.createHash('sha1').update(rel).digest('hex').slice(0, 12),
@@ -78,7 +148,7 @@ for (const src of sources) {
       category: classify(rel, content),
       title: titleFrom(content, path.basename(f)),
       excerpt: excerptFrom(content),
-      updatedAt: stat.mtime.toISOString(),
+      updatedAt: updatedAtFor(rel, stat.mtime, semanticIso, mentionIso),
       readingMinutes: Math.max(1, Math.round(words / 220)),
       words,
       tags: detectTags(rel, content),
