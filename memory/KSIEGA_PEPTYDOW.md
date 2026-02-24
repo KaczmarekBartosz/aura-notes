@@ -746,3 +746,59 @@ W praktyce redukcji tkanki tłuszczowej nadal pierwsza linia to:
 4) monitoring markerów zdrowia.  
 Substancje „advanced” są warstwą wtórną i wymagają medycznej oceny ryzyka.
 
+
+---
+
+## 13. TESAMORELIN + IPAMORELIN (POST X) — TŁUMACZENIE + ANALIZA
+
+**Źródło:** post social media (2026-02-23)  
+**Status źródła:** opinia edukacyjno-marketingowa, nie porada medyczna
+
+### 13.1 Tłumaczenie (PL, skrót wierny)
+
+**TESAMORELINA + IPAMORELINA: duet peptydów GH, który ma naśladować fizjologię zamiast zastępować ją egzogennym GH.**
+
+Autor twierdzi, że:
+- oba związki to sekretagogi (stymulują oś GH), a nie 191aa HGH,
+- **Ipamorelina** działa jak selektywny sekretagog (mimetyk greliny), zwykle z mniejszym wpływem na kortyzol/prolaktynę niż starsze związki,
+- **Tesamorelina** to stabilizowany analog GHRH, działający „wyżej” w osi,
+- razem mają dawać szerszy, bardziej fizjologiczny puls GH.
+
+Deklarowane efekty:
+- redukcja tkanki tłuszczowej trzewnej (najmocniejszy sygnał danych przypisany tesamorelinie),
+- lepsza regeneracja tkanek łącznych,
+- poprawa snu,
+- wzrost IGF-1 bez pełnego „replacement” egzogennym GH.
+
+Horyzont efektów wg autora:
+- nie 2 tygodnie, tylko raczej **3–6 miesięcy**.
+
+Niuanse/ryzyka wg autora:
+- „minimalny wpływ” ≠ „brak wpływu” (kortyzol/apetyt u wrażliwych),
+- tesamorelina wymaga dyscypliny podawania i chłodzenia,
+- monitorować glikemię (glukoza na czczo, HbA1c),
+- porównanie z GH egzogennym: inne narzędzia (replacement vs amplifikacja osi).
+
+### 13.2 Opracowanie (Aura)
+
+#### Co jest relatywnie mocne
+- Teza o różnicy „replacement (GH egzogenne) vs stymulacja osi (GHRH/GHS)” jest zasadniczo poprawna koncepcyjnie.
+- Wątek o **czasie 3–6 miesięcy** i braku szybkiej magii jest rozsądny.
+- Nacisk na monitoring glukozy/HbA1c jest trafiony.
+
+#### Co wymaga ostrożności
+- To nadal treść z social media z domieszką narracji sprzedażowej/autorytatywnej.
+- Przenoszenie wyników z określonych populacji klinicznych na „wszystkich” jest ryzykowne.
+- „Lepszy sen / lepsza regeneracja / mniej bólu stawów” bywa subiektywne i obciążone biasem oczekiwań.
+
+### 13.3 Wniosek praktyczny do tej księgi
+
+- **Tesamorelina + Ipamorelina**: kategoria „advanced / conditional”, nie fundament.
+- Fundament pozostaje bez zmian:
+  1) trening oporowy,
+  2) białko,
+  3) sen,
+  4) deficyt/zarządzanie energią,
+  5) regularny monitoring markerów.
+- Jeśli ktoś rozważa tę ścieżkę, to tylko z podejściem medycznym i metrykami, nie „na hype z X”.
+
