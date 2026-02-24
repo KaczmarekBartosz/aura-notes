@@ -49,10 +49,11 @@
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 999px; }
 
-            .top{margin-bottom:16px}
+            .top{margin-bottom:12px}
+      .glassHero{margin:0 0 16px;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.7);background:linear-gradient(135deg, rgba(255,255,255,.55), rgba(255,255,255,.22));backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);box-shadow:0 18px 40px -28px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.9);font-size:12px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;color:#202125}
       .topBar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.78);border-radius:var(--radius-card);padding:12px 14px;box-shadow:0 10px 30px -22px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.9);backdrop-filter:blur(16px) saturate(145%);-webkit-backdrop-filter:blur(16px) saturate(145%);flex-wrap:wrap}
       .brand{display:flex;align-items:center;gap:10px;min-width:0}
-      .logoOrb{width:32px;height:32px;border-radius:9px;background:#111;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;letter-spacing:.02em}
+      .logoOrb{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg, rgba(255,255,255,.95), rgba(225,229,236,.68));border:1px solid rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:#111;font-weight:900;font-size:13px;letter-spacing:.02em;box-shadow:0 10px 20px -14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.95)}
       .brandText{min-width:0}
       .title{font-size:18px;font-weight:750;letter-spacing:-0.02em;margin:0;line-height:1.1}
       .subtitle{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -75,7 +76,7 @@
       .tab.on{background:var(--text);color:#fff;border-color:var(--text);box-shadow:var(--shadow-md)}
 
       .layout{display:grid;grid-template-columns:1fr;gap:16px;min-width:0;max-width:100%;transition:grid-template-columns 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), gap 0.5s ease}
-      .pane{background:rgba(255,255,255,.52);border:1px solid rgba(255,255,255,.78);border-radius:var(--radius-card);padding:12px;box-shadow:0 16px 36px -26px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.9);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);transition:box-shadow .18s ease, border-color .18s ease;min-width:0;max-width:100%;overflow-x:hidden}
+      .pane{background:linear-gradient(155deg, rgba(255,255,255,.62), rgba(247,249,252,.34));border:1px solid rgba(255,255,255,.84);border-radius:var(--radius-card);padding:12px;box-shadow:0 24px 50px -34px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.95);backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%);transition:box-shadow .18s ease, border-color .18s ease;min-width:0;max-width:100%;overflow-x:hidden}
 
       .filters{display:grid;gap:10px;position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.62);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.75);margin:-12px -12px 0;padding-top:12px;padding-left:12px;padding-right:12px;border-top-left-radius:var(--radius-card);border-top-right-radius:var(--radius-card)}
       .f2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -84,7 +85,7 @@
       button{cursor:pointer;background:var(--card)}
 
       .cards{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px;max-height:54vh;overflow-y:auto;overflow-x:hidden;padding-right:4px;max-width:100%;scroll-behavior:smooth}
-      .note{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:12px;border:1px solid rgba(255,255,255,.78);border-radius:var(--radius-card);background:rgba(255,255,255,.58);backdrop-filter:blur(12px) saturate(140%);-webkit-backdrop-filter:blur(12px) saturate(140%);cursor:pointer;max-width:100%;overflow:hidden;transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;position:relative}
+      .note{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:12px;border:1px solid rgba(255,255,255,.86);border-radius:var(--radius-card);background:linear-gradient(145deg, rgba(255,255,255,.72), rgba(245,247,250,.42));backdrop-filter:blur(16px) saturate(155%);-webkit-backdrop-filter:blur(16px) saturate(155%);cursor:pointer;max-width:100%;overflow:hidden;transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;position:relative}
       .note.active{outline:2px solid var(--text);outline-offset:-1px;background:var(--bg)}
       .thumb{width:64px;height:64px;border-radius:var(--radius-control);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;background:var(--bg);position:relative;overflow:hidden;}
       .thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0.9;transition:transform 0.5s ease}
@@ -280,7 +281,7 @@
             <div class="logoOrb">A</div>
             <div class="brandText">
               <h1 class="title">Aura Notes</h1>
-              <div class="subtitle">Private Knowledge Vault • Build 2b7f8bf</div>
+              <div class="subtitle">Private Knowledge Vault • Neo Glass v4</div>
             </div>
           </div>
           <div class="topActions">
@@ -289,6 +290,8 @@
           </div>
         </div>
       </div>
+
+      <div class="glassHero">Aura Notes • Neo Glassmorphism Edition</div>
 
       <section class="kpi">
         <div class="k"><div id="kAll" class="v">0</div><div class="l">Wszystkie notatki</div></div>
