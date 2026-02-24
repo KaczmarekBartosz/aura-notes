@@ -280,11 +280,11 @@
             <div class="logoOrb">A</div>
             <div class="brandText">
               <h1 class="title">Aura Notes</h1>
-              <div class="subtitle">Private Knowledge Vault • Build d5ec995</div>
+              <div class="subtitle">Private Knowledge Vault • Build 2b7f8bf</div>
             </div>
           </div>
           <div class="topActions">
-            <span id="latest" class="pill">Aktualizacja: —</span>
+            <span id="latest" class="pill">Sync indeksu: —</span>
             <button id="loginBtn" class="pill btn-login"><span class="dot"></span>Zaloguj</button>
           </div>
         </div>
@@ -775,7 +775,9 @@ function openNote(id, switchMobile){
 
       function startApp(data){
         state.notes = data.notes || [];
-        els.latest.textContent = `Najnowsza aktualizacja: ${data.latestUpdatedAt ? fmt(data.latestUpdatedAt) : '—'}`;
+        const syncAt = data.generatedAt ? fmt(data.generatedAt) : '—';
+        const latestNoteAt = data.latestUpdatedAt ? fmt(data.latestUpdatedAt) : '—';
+        els.latest.textContent = `Sync indeksu: ${syncAt} • Najnowsza notatka: ${latestNoteAt}`;
         load();
         renderModes();
         renderList();
