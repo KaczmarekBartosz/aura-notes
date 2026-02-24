@@ -153,7 +153,7 @@ export default function Page() {
   return (
     <div className="min-h-dvh bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
       <div className="mx-auto flex h-dvh max-w-[1600px] gap-4 p-3 md:p-6">
-        <aside className={cn('glass-panel w-full md:w-[390px] md:shrink-0', mobileTab === 'read' && 'hidden md:flex')}>
+        <aside className={cn('glass-panel flex flex-col w-full md:w-[390px] md:shrink-0', mobileTab === 'read' && 'hidden md:flex')}>
           <div className="border-b border-zinc-200/70 p-4 dark:border-zinc-800/70">
             <div className="mb-3 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
@@ -215,7 +215,7 @@ export default function Page() {
           </div>
         </aside>
 
-        <main className={cn('glass-panel min-w-0 flex-1', mobileTab === 'list' && 'hidden md:flex')}>
+        <main className={cn('glass-panel flex flex-col min-w-0 flex-1', mobileTab === 'list' && 'hidden md:flex')}>
           {!selected ? (
             <div className="grid h-full place-items-center text-zinc-500">Wybierz notatkę</div>
           ) : (
@@ -233,7 +233,7 @@ export default function Page() {
                   <span>•</span>
                   <span>akt: {fmt(selected.updatedAt)}</span>
                   <span>•</span>
-                  <span>{selected.path}</span>
+                  <span className="break-all">{selected.path}</span>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {(selected.tags || []).map((t) => (
