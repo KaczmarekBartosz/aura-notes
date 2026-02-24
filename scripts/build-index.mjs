@@ -62,6 +62,27 @@ function detectTags(rel, content) {
   return [...new Set(hit.map(t => t.toLowerCase()))];
 }
 
+function shouldSkipFromIndex(rel) {
+  const p = rel.toLowerCase();
+
+  if (p.includes('/_archive/')) return true;
+
+  // System/logging notes excluded from end-user reader
+  const keepDated = [
+    'memory/2026-02-23-whoop-training.md'
+  ];
+  if (!keepDated.includes(p) && /^memory\/\d{4}-\d{2}-\d{2}([-.].*)?\.md$/.test(p)) return true;
+  if (p.startsWith('memory/cron-summaries/')) return true;
+  if (p.startsWith('memory/x-bookmarks-sync/')) return true;
+  if (p.startsWith('memory/state/')) return true;
+  if (p.startsWith('memory/token-usage/')) return true;
+  if (p.startsWith('memory/perplexity-searches/')) return true;
+  if (p === 'memory/token_history_full.md') return true;
+  if (/^memory\/x-bookmarks-sync-\d{4}-\d{2}-\d{2}.*\.md$/.test(p)) return true;
+
+  return false;
+}
+
 function semanticDateFromContentOrPath(rel, content) {
   const fm = content.slice(0, 1200);
   const dateMatch = fm.match(/^(last_updated|updated_at|updated|date)\s*:\s*"?([0-9]{4}-[0-9]{2}-[0-9]{2}(?:[T ][0-9:.+\-Z]+)?)"?/im);
@@ -163,7 +184,7 @@ for (const src of sources) {
   if (!fs.existsSync(srcDir)) continue;
   for (const f of walk(srcDir)) {
     const rel = path.relative(root, f).replace(/\\/g, '/');
-    if (rel.includes('/_archive/')) continue;
+    if (shouldSkipFromIndex(rel)) continue;
     const content = fs.readFileSync(f, 'utf8');
     const stat = fs.statSync(f);
     const semanticIso = semanticDateFromContentOrPath(rel, content);
