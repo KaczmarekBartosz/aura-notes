@@ -9,30 +9,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
     <style>
       :root {
-        /* Premium Color Palette (HSL) */
-        --bg-h: 0; --bg-s: 0%; --bg-l: 98%;
-        --bg: hsl(0,0%,97%);
-        --bg2: hsl(0,0%,100%);
-        
-        --text-h: 240; --text-s: 6%; --text-l: 10%;
-        --text: hsl(var(--text-h), var(--text-s), var(--text-l)); /* #18181b */
-        --muted: hsl(240, 5%, 45%); /* #6e6e73 */
-        --line: hsl(0,0%,89%);
-        
-        --chip: hsl(0,0%,95%);
-        --chipOn: hsl(240, 6%, 10%);
+        --bg: hsl(0 0% 97%);
+        --bg2: hsl(0 0% 100%);
+        --text: hsl(240 5% 9%);
+        --muted: hsl(240 3% 41%);
+        --line: hsl(240 6% 88%);
+        --chip: hsl(0 0% 95%);
+        --chipOn: hsl(240 5% 10%);
         --chipOnText: #fff;
         --card: #fff;
 
-        /* Shadows */
-        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
-        --shadow-card: 0 2px 12px rgba(0,0,0,0.05);
-        
-        /* Layout Variables */
-        --radius-card: 20px;
-        --radius-control: 12px;
+        --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.04);
+        --shadow-md: 0 8px 18px -8px rgb(0 0 0 / 0.12);
+        --shadow-lg: 0 20px 36px -20px rgb(0 0 0 / 0.2);
+        --shadow-card: 0 3px 18px rgb(0 0 0 / 0.06);
+
+        --radius-card: 24px;
+        --radius-control: 14px;
         --radius-chip: 9999px;
         --radius-btn: 9999px;
       }
@@ -147,6 +140,10 @@
       .token.operator, .token.entity, .token.url, .token.variable { color: #56b6c2; }
       .token.atrule, .token.keyword { color: #c678dd; }
       .token.regex, .token.important { color: #c678dd; }
+
+      @media (prefers-reduced-motion: reduce){
+        *, *::before, *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+      }
 
       @media (hover:hover) and (pointer:fine){
         .pill:hover{background:var(--card);color:var(--text);border-color:#ccc}
@@ -332,7 +329,8 @@
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
@@ -359,7 +357,8 @@
       const state = {
         notes: [], filtered: [], selected: null,
         mode: 'all', folder: '', q: '', sort: 'new',
-        favorites: {}, readMap: {}, authPass: localStorage.getItem('aura_auth_pass') || '', listScroll:0, readScroll:0, mobileTab:'list'
+        favorites: {}, readMap: {}, authPass: localStorage.getItem('aura_auth_pass') || '', listScroll:0, readScroll:0, mobileTab:'list',
+        htmlCache: {}
       };
 
       const $ = (id) => document.getElementById(id);
@@ -553,9 +552,12 @@
               return code;
             }
           });
-          return window.marked.parse(raw, { gfm:true, breaks:true, headerIds:true, mangle:false });
+          const html = window.marked.parse(raw, { gfm:true, breaks:true, headerIds:true, mangle:false });
+          if (window.DOMPurify) {
+            return window.DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
+          }
+          return html;
         }
-        // fallback (minimal) if CDN unavailable
         const esc = (txt) => txt
           .replace(/&/g,'&amp;')
           .replace(/</g,'&lt;')
@@ -580,15 +582,21 @@
           if(btn) btn.onclick=()=>renderNoteContent(n,true);
           return;
         }
-        els.content.innerHTML = mdToHtml(n.content || '');
+
+        const cacheKey = `${n.id}:${forceFull ? 'full' : 'preview'}`;
+        if (!state.htmlCache[cacheKey]) {
+          state.htmlCache[cacheKey] = mdToHtml(n.content || '');
+        }
+        els.content.innerHTML = state.htmlCache[cacheKey];
+        if (window.Prism) Prism.highlightAllUnder(els.content);
       }
 
 function openNote(id, switchMobile){
         const n = state.notes.find(x=>x.id===id); if(!n) return;
-        
-        // Fade out
+        const wasUnread = !state.readMap[n.id];
+
         els.content.classList.add('fading');
-        
+
         setTimeout(() => {
           state.selected = n.id;
           location.hash = n.id;
@@ -598,12 +606,16 @@ function openNote(id, switchMobile){
           els.fav.innerHTML = state.favorites[n.id] ? '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star-filled"></use></svg> Ulubione' : '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"></use></svg> Ulubione';
           state.readMap[n.id] = Date.now();
           if (isMobile() && switchMobile) setMobileTab('read');
-          renderList();
+
+          if (state.mode === 'unread' && wasUnread) {
+            renderList();
+          } else {
+            els.cards.querySelectorAll('.note').forEach(el => el.classList.toggle('active', el.dataset.id === n.id));
+          }
+
           save();
-          
-          // Fade in
           els.content.classList.remove('fading');
-        }, 150);
+        }, 110);
       }
 
       function move(delta){
@@ -658,7 +670,7 @@ function openNote(id, switchMobile){
 
         els.prev.onclick=()=>move(-1);
         els.next.onclick=()=>move(1);
-        els.focus.onclick=()=>setFocus(!els.listPane.classList.contains('hidden'));
+        els.focus.onclick=()=>setFocus(!els.appRoot.classList.contains('focus-mode'));
         els.fsBtn.onclick=()=>toggleFullscreenReader();
         els.copyLink.onclick=async()=>{ if(!state.selected)return; const url=location.origin+location.pathname+'#'+state.selected; try{await navigator.clipboard.writeText(url); els.copyLink.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"></use></svg> Skopiowano'; setTimeout(()=>els.copyLink.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"></use></svg> Kopiuj',1200);}catch{} };
         els.fav.onclick=()=>{ if(!state.selected)return; state.favorites[state.selected]=!state.favorites[state.selected]; openNote(state.selected,false); save(); };
