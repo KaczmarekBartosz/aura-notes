@@ -492,7 +492,7 @@
       .read-content-scroll {
         flex: 1;
         overflow-y: auto;
-        overflow-x: hidden;
+        overflow-x: auto;
         scrollbar-gutter: stable both-edges;
         padding: 40px;
       }
@@ -508,8 +508,8 @@
         line-height: 1.7;
         color: var(--text-primary);
         min-width: 0;
-        overflow-wrap: anywhere;
-        word-break: break-word;
+        overflow-wrap: break-word;
+        word-break: normal;
       }
       .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
         margin-top: 2em;
@@ -563,8 +563,20 @@
       }
       
       /* Markdown tables */
-      .markdown-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5em; display:block; overflow-x:auto; }
-      .markdown-body th, .markdown-body td { padding: 10px 14px; border: 1px solid var(--glass-border); }
+      .markdown-body table {
+        width: max-content;
+        min-width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1.5em;
+        table-layout: auto;
+      }
+      .markdown-body th, .markdown-body td {
+        padding: 10px 14px;
+        border: 1px solid var(--glass-border);
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: normal;
+      }
       .markdown-body th { background: var(--table-header); font-weight: 600; text-align: left; }
 
       /* Login Screen Overlay */
@@ -706,6 +718,13 @@
 
       @media (max-width: 900px) {
         #app { flex-direction: column; padding: 0; gap: 0; padding-bottom: 60px; }
+
+        .read-header { padding: 22px 18px 12px; }
+        .read-title { font-size: 2.05rem; padding-left: 28px; }
+        .read-content-scroll { padding: 18px 14px 24px; }
+        .markdown-body { font-size: 0.98rem; line-height: 1.62; }
+        .markdown-body table { min-width: 640px; }
+        .markdown-body th, .markdown-body td { padding: 9px 10px; font-size: 0.9rem; }
         .list-pane { width: 100%; height: 100%; border-radius: 0; border: none; border-bottom: 1px solid var(--glass-border); display: flex;}
         .list-pane.hidden { display: none; }
         
