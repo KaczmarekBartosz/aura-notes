@@ -1,11 +1,38 @@
 {
   "name": "aura-notes",
   "private": true,
-  "version": "1.0.0",
-  "description": "Private markdown notebook for Aura notes",
+  "version": "2.0.0",
+  "description": "Aura Notes — Next.js + TypeScript",
   "scripts": {
     "build:index": "node scripts/build-index.mjs",
-    "build": "npm run build:index",
-    "dev": "python3 -m http.server 4173"
+    "dev": "next dev",
+    "build": "npm run build:index && next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@radix-ui/react-select": "^2.1.2",
+    "@tailwindcss/postcss": "^4.1.12",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.542.0",
+    "next": "^15.5.0",
+    "next-themes": "^0.4.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-markdown": "^10.1.0",
+    "rehype-highlight": "^7.0.2",
+    "rehype-sanitize": "^6.0.0",
+    "remark-gfm": "^4.0.1",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "eslint": "^9.34.0",
+    "eslint-config-next": "^15.5.0",
+    "typescript": "^5.9.2"
   }
 }

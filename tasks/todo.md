@@ -1,18 +1,16 @@
-# aura-notes — cleanup + redesign (bez półśrodków)
+# Migration plan — aura-notes (HTML/JS → Next.js/TS)
 
-## Plan
-- [x] Przejrzeć nagłówki + pierwsze linie wszystkich notatek (`memory/` + `outputs/`)
-- [x] Zdefiniować twardą politykę: tylko notatki o realnej wartości w indeksie appki
-- [x] Wyciąć systemowe/logowe/sync-token notatki z indeksu
-- [x] Zachować kluczowe notatki fitness (w tym plan SUPER-HERO + WHOOP)
-- [x] Naprawić sortowanie pod dwie osie: data utworzenia i data aktualizacji
-- [x] Dodać czytelny kontekst dat w UI (utw. / akt.)
-- [x] Przebudować styl na spójny, top-tier monochrome glass (bez żółci i przypadkowych kolorów)
-- [x] Build + push na `main` i `master`
+1. [x] Scaffold Next.js + TypeScript app structure
+2. [x] Add Tailwind v4 pipeline + global tokens
+3. [x] Add shadcn-style UI primitives (Button/Input/Badge)
+4. [x] Port auth flow to Netlify function `/.netlify/functions/notes`
+5. [x] Port notes list: search, tags, sorting, stats
+6. [x] Port reader: markdown, tables, mobile responsiveness, back navigation
+7. [x] Add theme toggle (light/dark) with persistence
+8. [x] Keep existing index builder (`scripts/build-index.mjs`) in build pipeline
+9. [x] Update Netlify config for Next.js plugin
+10. [x] Build verification and production push (`main` + `master`)
 
-## Review
-- Indeks został przełączony na curated-value mode: tylko wybrane, wartościowe notatki.
-- Systemowe logi/sync/tokens/perplexity i dzienne śmieci są poza appką.
-- Sortowanie ma teraz 5 trybów: aktualizacja↓/↑, utworzenie↓/↑, A-Z.
-- UI metadanych pokazuje jednocześnie datę utworzenia i aktualizacji.
-- Design został odkolorowany i ujednolicony do neutralnego monochrome glass.
+## Notes
+- Legacy `public/index.html` archived to `public/_archive/index.legacy.html`.
+- App now runs from `app/page.tsx` (Next App Router).
