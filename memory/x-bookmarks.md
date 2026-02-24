@@ -12934,3 +12934,27 @@ Medical Mobile App Design https://t.co/as7jX0MZsl
 - [Image 1](https://pbs.twimg.com/media/HAPOsYvaIAALZnC.jpg)
 
 ---
+
+---
+
+## [@fba] Flavio Amiel (2026-02-24)
+**Link:** [Profil autora](https://x.com/fba) *(zrzut ekranu — brak pełnego URL posta)*
+
+If you run a SaaS and you haven't published an llms.txt file yet, it's time.
+
+Vercel did it.
+
+10% of their traffic from ChatGPT, Perplexity, and Claude.
+
+One file.
+
+Tells AI exactly what the product does, how it works, and when to recommend it.
+
+Go to `vercel.com/docs/llms-full.txt` and see what it looks like. Then build your own.
+
+This is the new SEO for SaaS.
+
+And almost nobody is doing it yet.
+
+**Źródło referencyjne:** https://vercel.com/docs/llms-full.txt
+**Notatka:** Wniosek strategiczny — wdrożyć `llms.txt` + proces aktualizacji pod widoczność w odpowiedziach LLM.
