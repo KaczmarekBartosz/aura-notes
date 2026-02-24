@@ -808,7 +808,7 @@
         }
       });
 
-      const WORKER_URL = 'https://aura-vault-api.nicons.workers.dev/';
+      const NOTES_API_URL = '/.netlify/functions/notes';
 
       let state = {
         authPass: '',
@@ -924,19 +924,21 @@
       async function fetchNotes(pass) {
         showSync();
         try {
-          const res = await fetch(WORKER_URL + 'read', {
-            method: 'POST',
-            headers: {'content-type':'application/json'},
-            body: JSON.stringify({ pass })
+          const res = await fetch(NOTES_API_URL, {
+            method: 'GET',
+            headers: {
+              'x-aura-pass': pass || ''
+            }
           });
+          const data = await res.json().catch(() => ({}));
           hideSync();
-          if(!res.ok) return { error: 'Bad pass' };
-          const data = await res.json();
-          if(!data.success) return { error: data.error };
-          return { data: data.data }; 
-        } catch(e) {
+
+          if (res.status === 401) return { error: 'INVALID_PASSWORD' };
+          if (!res.ok || !data.ok) return { error: data.error || 'SERVER_ERROR' };
+          return { data: data.data };
+        } catch (e) {
           hideSync();
-          return { error: 'Błąd sieci' };
+          return { error: 'NETWORK_ERROR' };
         }
       }
 
@@ -949,7 +951,9 @@
         if(!p) return;
         const out = await fetchNotes(p);
         if(out.error) {
-          showLogin('Błędne hasło.');
+          if (out.error === 'INVALID_PASSWORD') showLogin('Błędne hasło.');
+          else if (out.error === 'Password not configured') showLogin('Hasło aplikacji nie jest skonfigurowane w Netlify (NOTEBOOK_PASSWORD).');
+          else showLogin('Błąd połączenia z API notatek.');
         } else {
           state.authPass = p;
           hideLogin();
@@ -1116,8 +1120,12 @@
         const first = await fetchNotes(state.authPass || '');
         if(first.data){ 
           hideLogin(); startApp(first.data); 
-        } else {
+        } else if (first.error === 'INVALID_PASSWORD') {
           showLogin('Wymagane logowanie.');
+        } else if (first.error === 'Password not configured') {
+          showLogin('Brak NOTEBOOK_PASSWORD w Netlify.');
+        } else {
+          showLogin('API notatek chwilowo niedostępne.');
         }
       }
 
