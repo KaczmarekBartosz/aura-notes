@@ -9,6 +9,13 @@ import { ArrowLeft, Moon, Search, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import type { Note, NotesPayload } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -158,15 +165,16 @@ export default function Page() {
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
                 <Input className="pl-9" placeholder="Szukaj…" value={query} onChange={(e) => setQuery(e.target.value)} />
               </div>
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value as SortMode)}
-                className="h-10 rounded-xl border border-zinc-200 bg-white px-3 text-sm dark:border-zinc-700 dark:bg-zinc-900"
-              >
-                {Object.entries(SORT_LABELS).map(([k, v]) => (
-                  <option value={k} key={k}>{v}</option>
-                ))}
-              </select>
+              <Select value={sort} onValueChange={(v) => setSort(v as SortMode)}>
+                <SelectTrigger className="h-10 w-[112px] rounded-xl border-zinc-200 bg-white text-sm dark:border-zinc-700 dark:bg-zinc-900">
+                  <SelectValue placeholder="Sort" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(SORT_LABELS).map(([k, v]) => (
+                    <SelectItem value={k} key={k}>{v}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <p className="mt-2 text-xs text-zinc-500">
