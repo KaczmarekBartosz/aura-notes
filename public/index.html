@@ -469,7 +469,7 @@
         const blob = (n.title + ' ' + n.path + ' ' + (n.excerpt||'') + ' ' + (n.tags||[]).join(' ') + ' ' + (n.category||'')).toLowerCase();
         switch(state.mode){
           case 'gold': return n.category === 'golden-protocols' || /gold|protocol/.test(blob);
-          case 'fitness': return /fitness|peptyd|peptide|workout|nutrition|retatrutide|mots-c|hcg|cjc|ipamorelin/.test(blob);
+          case 'fitness': return /fitness|peptyd|peptide|workout|training|trening|nutrition|retatrutide|mots-c|hcg|cjc|ipamorelin|whoop|plan trening/.test(blob);
           case 'taste': return n.category === 'taste' || /taste|design|ui|ux/.test(blob);
           case 'daily': return n.category === 'daily-log';
           case 'recent': return new Date(n.updatedAt) >= daysAgo(7);

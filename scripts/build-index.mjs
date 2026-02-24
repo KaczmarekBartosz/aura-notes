@@ -52,7 +52,7 @@ function classify(rel, content) {
   // 2) Semantic rules
   if (/gold(_|\s|-)?[a-z0-9]*_?protocol|golden protocol|gold protocols/.test(lower)) return 'golden-protocols';
   if (/user_tastes|knowledge_tips|taste/.test(lower)) return 'taste';
-  if (/peptyd|peptide|fitness|workout|nutrition|trening/.test(lower)) return 'fitness-health';
+  if (/peptyd|peptide|fitness|workout|training|nutrition|trening|whoop|plan trening/.test(lower)) return 'fitness-health';
 
   return 'other';
 }
@@ -100,14 +100,42 @@ function latestDateMention(content) {
 }
 
 const gitDateCache = new Map();
+const gitCreatedCache = new Map();
+
+function gitCreatedAtFor(relPath, fallbackMtime) {
+  if (gitCreatedCache.has(relPath)) return gitCreatedCache.get(relPath);
+  try {
+    const iso = execSync(`git log --diff-filter=A --format=%aI -- "${relPath.replace(/"/g, '\\"')}" | tail -n 1`, {
+      cwd: root,
+      stdio: ['ignore', 'pipe', 'ignore']
+    }).toString().trim();
+    const val = iso || fallbackMtime.toISOString();
+    gitCreatedCache.set(relPath, val);
+    return val;
+  } catch {
+    const val = fallbackMtime.toISOString();
+    gitCreatedCache.set(relPath, val);
+    return val;
+  }
+}
 
 function updatedAtFor(relPath, fallbackMtime, semanticIso = null, mentionIso = null) {
   if (gitDateCache.has(relPath)) return gitDateCache.get(relPath);
   try {
-    const iso = execSync(`git log -1 --format=%cI -- "${relPath.replace(/"/g, '\\"')}"`, {
+    const logs = execSync(`git log --format=%cI%x09%s -- "${relPath.replace(/"/g, '\\"')}"`, {
       cwd: root,
       stdio: ['ignore', 'pipe', 'ignore']
-    }).toString().trim();
+    }).toString().trim().split('\n').filter(Boolean);
+
+    let iso = '';
+    for (const line of logs) {
+      const [d, ...msgParts] = line.split('\t');
+      const msg = (msgParts.join('\t') || '').toLowerCase();
+      if (/sync notes from clawd|sync notes|x-bookmarks-sync/.test(msg)) continue;
+      iso = d;
+      break;
+    }
+    if (!iso && logs[0]) iso = logs[0].split('\t')[0] || '';
 
     let val = semanticIso || iso || fallbackMtime.toISOString();
 
@@ -140,6 +168,7 @@ for (const src of sources) {
     const stat = fs.statSync(f);
     const semanticIso = semanticDateFromContentOrPath(rel, content);
     const mentionIso = latestDateMention(content);
+    const createdAt = gitCreatedAtFor(rel, stat.mtime);
     const words = content.replace(/```[\s\S]*?```/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
     notes.push({
       id: crypto.createHash('sha1').update(rel).digest('hex').slice(0, 12),
@@ -148,6 +177,7 @@ for (const src of sources) {
       category: classify(rel, content),
       title: titleFrom(content, path.basename(f)),
       excerpt: excerptFrom(content),
+      createdAt,
       updatedAt: updatedAtFor(rel, stat.mtime, semanticIso, mentionIso),
       readingMinutes: Math.max(1, Math.round(words / 220)),
       words,
