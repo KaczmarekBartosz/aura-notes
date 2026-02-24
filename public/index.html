@@ -167,6 +167,7 @@
         gap: 24px;
         max-width: 1600px;
         margin: 0 auto;
+        overflow-x: hidden;
       }
 
       /* Glass Panel Utility */
@@ -356,6 +357,8 @@
       .notes-list {
         flex: 1;
         overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-gutter: stable both-edges;
         padding: 16px;
         display: flex;
         flex-direction: column;
@@ -490,6 +493,7 @@
         flex: 1;
         overflow-y: auto;
         overflow-x: hidden;
+        scrollbar-gutter: stable both-edges;
         padding: 40px;
       }
       .read-content-scroll::-webkit-scrollbar { width: 8px; }
@@ -873,6 +877,8 @@
 
       const NOTES_API_URL = '/.netlify/functions/notes';
 
+      const APP_UI_VERSION = 'Visionary Frost r3';
+
       let state = {
         authPass: '',
         notes: [],
@@ -1030,6 +1036,10 @@
       });
 
       function buildTags() {
+        const hasArchived = state.notes.some(n => n.isArchived);
+        const archiveTab = document.querySelector('.mode-tab[data-mode="archive"]');
+        if (archiveTab) archiveTab.style.display = hasArchived ? '' : 'none';
+
         let all = new Set();
         state.notes.forEach(n => {
           if(!n.isArchived) (n.tags||[]).forEach(t => all.add(t));
@@ -1084,7 +1094,7 @@
         }
 
         const newest = list[0]?.updatedAt || state.notes[0]?.updatedAt || null;
-        els.listStats.textContent = `Notatki: ${list.length} • Aktualizacja: ${newest ? fmt(newest) : '—'}`;
+        els.listStats.textContent = `Notatki: ${list.length} • Aktualizacja treści: ${newest ? fmt(newest) : '—'} • UI: ${APP_UI_VERSION}`;
 
         if(list.length === 0){
           els.notesList.innerHTML = `<div style="padding:16px; color:var(--text-muted); text-align:center;">Brak notatek.</div>`;
@@ -1191,6 +1201,13 @@
 
       function startApp(data) {
         state.notes = data.notes || [];
+        if (state.mode === 'archive' && !state.notes.some(n => n.isArchived)) {
+          state.mode = 'all';
+          const allTab = document.querySelector('.mode-tab[data-mode="all"]');
+          const archiveTab = document.querySelector('.mode-tab[data-mode="archive"]');
+          if (allTab) allTab.classList.add('active');
+          if (archiveTab) archiveTab.classList.remove('active');
+        }
         const syncAt = data.generatedAt ? fmt(data.generatedAt) : '—';
         const latestNoteAt = data.latestUpdatedAt ? fmt(data.latestUpdatedAt) : '—';
         els.latestInfo.textContent = `Sync: ${syncAt} • Najnowsza: ${latestNoteAt} • Wczytano: ${state.notes.length}`;
