@@ -770,7 +770,7 @@
               <i data-lucide="boxes"></i> Aura Notes
             </div>
             <button id="themeToggle" class="theme-switch" title="Zmień motyw" aria-label="Toggle Theme">
-              <i data-lucide="sun" id="themeIcon"></i>
+              <span id="themeIcon" style="font-size:16px;line-height:1">☀️</span>
             </button>
           </div>
           <div class="list-tools">
@@ -921,8 +921,9 @@
       // Theme Logic
       // ----------------------------------------------------------------------
       function updateThemeIcon() {
-        els.themeIcon.setAttribute('data-lucide', state.theme === 'light' ? 'moon' : 'sun');
-        lucide.createIcons();
+        const isLight = state.theme === 'light';
+        els.themeIcon.textContent = isLight ? '🌙' : '☀️';
+        els.themeToggle.title = isLight ? 'Przełącz na ciemny' : 'Przełącz na jasny';
       }
       
       els.themeToggle.addEventListener('click', () => {
@@ -1092,7 +1093,7 @@
 
         let html = '';
         list.forEach(n => {
-          const act = (n.id === state.activeNoteId) ? 'active' : '';
+          const act = (!isMobile() && n.id === state.activeNoteId) ? 'active' : '';
           const tagsHtml = (n.tags||[]).map(t => `<span class="note-card-tag">${t}</span>`).join('');
           html += `
             <div class="note-card ${act}" data-id="${n.id}">
@@ -1132,9 +1133,13 @@
 
         Prism.highlightAllUnder(els.readBody);
 
-        renderList();
+        // Update active marker without full rerender (prevents flash on mobile)
+        els.notesList.querySelectorAll('.note-card').forEach(card => {
+          card.classList.toggle('active', card.dataset.id === idStr && !isMobile());
+        });
+
         els.readScroll.scrollTop = 0;
-        
+
         if(pushState) history.pushState(null, null, '#'+idStr);
         if(isMobile()) setMobileTab('read');
       }
