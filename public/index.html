@@ -295,6 +295,28 @@
       }
       .search-box input::placeholder { color: var(--text-muted); }
 
+      .list-tools {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .sort-select {
+        background: var(--input-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 10px 12px;
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 0.88rem;
+      }
+
+      .list-stats {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+
       /* Tag Filters */
       .tag-filters {
         display: flex;
@@ -354,6 +376,7 @@
         transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         position: relative;
         overflow: hidden;
+        box-sizing: border-box;
       }
       .note-card:hover {
         background: var(--note-hover-bg);
@@ -367,10 +390,11 @@
       .note-card.active::before {
         content: "";
         position: absolute;
-        left: 0; top: 0; bottom: 0;
+        left: 8px; top: 8px; bottom: 8px;
         width: 3px;
         background: var(--accent);
         box-shadow: var(--accent-glow);
+        border-radius: 999px;
       }
 
       .note-card-title {
@@ -387,8 +411,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
         font-size: 0.8rem;
         color: var(--text-muted);
+        min-width: 0;
       }
       .note-card-tags {
         display: flex;
@@ -404,11 +431,29 @@
         flex: 1;
         z-index: 5;
         overflow: hidden;
+        min-width: 0;
       }
 
       .read-header {
         padding: 32px 40px 16px;
         border-bottom: 1px solid var(--glass-border);
+        position: relative;
+      }
+
+      .back-to-list {
+        position: absolute;
+        left: 18px;
+        top: 16px;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        border: 1px solid var(--glass-border);
+        background: var(--input-bg);
+        color: var(--text-primary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
       }
       .read-title {
         font-size: 2.5rem;
@@ -416,6 +461,7 @@
         letter-spacing: -0.03em;
         margin-bottom: 12px;
         line-height: 1.1;
+        padding-left: 30px;
       }
       .read-meta {
         font-size: 0.9rem;
@@ -443,6 +489,7 @@
       .read-content-scroll {
         flex: 1;
         overflow-y: auto;
+        overflow-x: hidden;
         padding: 40px;
       }
       .read-content-scroll::-webkit-scrollbar { width: 8px; }
@@ -456,6 +503,9 @@
         font-size: 1.05rem;
         line-height: 1.7;
         color: var(--text-primary);
+        min-width: 0;
+        overflow-wrap: anywhere;
+        word-break: break-word;
       }
       .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
         margin-top: 2em;
@@ -509,7 +559,7 @@
       }
       
       /* Markdown tables */
-      .markdown-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5em; }
+      .markdown-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5em; display:block; overflow-x:auto; }
       .markdown-body th, .markdown-body td { padding: 10px 14px; border: 1px solid var(--glass-border); }
       .markdown-body th { background: var(--table-header); font-weight: 600; text-align: left; }
 
@@ -723,10 +773,20 @@
               <i data-lucide="sun" id="themeIcon"></i>
             </button>
           </div>
-          <div class="search-box">
-            <i data-lucide="search"></i>
-            <input type="text" id="searchInput" placeholder="Szukaj (tytuł, tag, treść)..." />
+          <div class="list-tools">
+            <div class="search-box">
+              <i data-lucide="search"></i>
+              <input type="text" id="searchInput" placeholder="Szukaj (tytuł, tag, treść)..." />
+            </div>
+            <select id="sortSelect" class="sort-select" aria-label="Sortowanie notatek">
+              <option value="updated_desc">Akt. ↓</option>
+              <option value="updated_asc">Akt. ↑</option>
+              <option value="created_desc">Utw. ↓</option>
+              <option value="created_asc">Utw. ↑</option>
+              <option value="title_asc">A-Z</option>
+            </select>
           </div>
+          <div id="listStats" class="list-stats">Notatki: 0 • Aktualizacja: —</div>
         </div>
         
         <div class="tag-filters" id="tagList">
@@ -752,6 +812,9 @@
           <div class="sync-info" id="latestInfo">Sync: — • Najnowsza: —</div>
 
           <header class="read-header">
+            <button id="backToList" class="back-to-list" title="Wróć do listy" aria-label="Wróć do listy">
+              <i data-lucide="arrow-left"></i>
+            </button>
             <h1 class="read-title" id="readTitle">Tytuł Notatki</h1>
             <div class="read-meta">
               <div class="read-meta-item">
@@ -816,6 +879,7 @@
         filterPhrase: '',
         activeTag: 'all',
         mode: 'all',
+        sort: 'updated_desc',
         activeNoteId: null,
         mobileTab: 'list',
         listScroll: 0,
@@ -831,6 +895,8 @@
         globalLoader: document.getElementById('globalLoader'),
         globalLoaderMsg: document.getElementById('globalLoaderMsg'),
         searchInput: document.getElementById('searchInput'),
+        sortSelect: document.getElementById('sortSelect'),
+        listStats: document.getElementById('listStats'),
         tagList: document.getElementById('tagList'),
         notesList: document.getElementById('notesList'),
         modeTabs: document.querySelectorAll('.mode-tab'),
@@ -846,6 +912,7 @@
         readPane: document.getElementById('readPane'),
         btnNavList: document.getElementById('btnNavList'),
         btnNavRead: document.getElementById('btnNavRead'),
+        backToList: document.getElementById('backToList'),
         themeToggle: document.getElementById('themeToggle'),
         themeIcon: document.getElementById('themeIcon')
       };
@@ -997,7 +1064,26 @@
           );
         }
 
-        list.sort((a,b) => new Date(b.updatedAt||0) - new Date(a.updatedAt||0));
+        switch (state.sort) {
+          case 'updated_asc':
+            list.sort((a,b) => new Date(a.updatedAt||0) - new Date(b.updatedAt||0));
+            break;
+          case 'created_desc':
+            list.sort((a,b) => new Date(b.createdAt||b.updatedAt||0) - new Date(a.createdAt||a.updatedAt||0));
+            break;
+          case 'created_asc':
+            list.sort((a,b) => new Date(a.createdAt||a.updatedAt||0) - new Date(b.createdAt||b.updatedAt||0));
+            break;
+          case 'title_asc':
+            list.sort((a,b) => (a.title||'').localeCompare((b.title||''), 'pl'));
+            break;
+          case 'updated_desc':
+          default:
+            list.sort((a,b) => new Date(b.updatedAt||0) - new Date(a.updatedAt||0));
+        }
+
+        const newest = list[0]?.updatedAt || state.notes[0]?.updatedAt || null;
+        els.listStats.textContent = `Notatki: ${list.length} • Aktualizacja: ${newest ? fmt(newest) : '—'}`;
 
         if(list.length === 0){
           els.notesList.innerHTML = `<div style="padding:16px; color:var(--text-muted); text-align:center;">Brak notatek.</div>`;
@@ -1059,6 +1145,20 @@
           renderList();
         });
 
+        els.sortSelect.addEventListener('change', e => {
+          state.sort = e.target.value;
+          renderList();
+        });
+
+        els.backToList.addEventListener('click', () => {
+          state.activeNoteId = null;
+          els.readEmpty.style.display = 'flex';
+          els.readActive.style.display = 'none';
+          location.hash = '';
+          if (isMobile()) setMobileTab('list');
+          renderList();
+        });
+
         els.modeTabs.forEach(t => {
           t.addEventListener('click', () => {
             els.modeTabs.forEach(x => x.classList.remove('active'));
@@ -1088,7 +1188,8 @@
         state.notes = data.notes || [];
         const syncAt = data.generatedAt ? fmt(data.generatedAt) : '—';
         const latestNoteAt = data.latestUpdatedAt ? fmt(data.latestUpdatedAt) : '—';
-        els.latestInfo.textContent = `Sync: ${syncAt} • Najnowsza: ${latestNoteAt}`;
+        els.latestInfo.textContent = `Sync: ${syncAt} • Najnowsza: ${latestNoteAt} • Wczytano: ${state.notes.length}`;
+        els.sortSelect.value = state.sort;
         
         buildTags();
         renderList();
