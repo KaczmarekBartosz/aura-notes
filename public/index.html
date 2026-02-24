@@ -1,807 +1,1094 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Aura Notes</title>
+    <title>Aura Notes - Obsidian & Visionary Frost</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
       :root {
-        --bg: hsl(0 0% 97%);
-        --bg2: hsl(0 0% 100%);
-        --text: hsl(240 5% 9%);
-        --muted: hsl(240 3% 41%);
-        --line: hsl(240 6% 88%);
-        --chip: hsl(0 0% 95%);
-        --chipOn: hsl(240 5% 10%);
-        --chipOnText: #fff;
-        --card: #fff;
-
-        --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.04);
-        --shadow-md: 0 8px 18px -8px rgb(0 0 0 / 0.12);
-        --shadow-lg: 0 20px 36px -20px rgb(0 0 0 / 0.2);
-        --shadow-card: 0 3px 18px rgb(0 0 0 / 0.06);
-
-        --radius-card: 24px;
-        --radius-control: 14px;
-        --radius-chip: 9999px;
-        --radius-btn: 9999px;
-      }
-      *{box-sizing:border-box;min-width:0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;}
-      html,body{margin:0;width:100%;max-width:100%;overflow-x:hidden!important;overscroll-behavior-x:none}
-      body{font-family:'Inter', -apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;color:var(--text);background:
-        radial-gradient(900px 500px at 0% -20%, rgba(255,255,255,0.98), rgba(255,255,255,0) 65%),
-        radial-gradient(780px 440px at 100% 0%, rgba(236,238,242,0.66), rgba(255,255,255,0) 70%),
-        linear-gradient(140deg,#fbfbfc 0%, #f1f2f5 48%, #eceef2 100%);
-        min-height:100vh;letter-spacing:-0.005em;}
-      .bgfx{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-      .bgfx::before,.bgfx::after{content:"";position:absolute;border-radius:999px;filter:blur(42px);opacity:.45}
-      .bgfx::before{width:520px;height:520px;background:radial-gradient(circle at 30% 30%,#ffffff, #e5e7eb 70%);left:-150px;top:60px}
-      .bgfx::after{width:460px;height:460px;background:radial-gradient(circle at 60% 40%,#ffffff, #dfe3e8 70%);right:-150px;top:170px}
-
-      .app{position:relative;z-index:1;max-width:1180px;width:100%;margin:0 auto;padding:16px 20px;overflow-x:clip;}
-      .app.is-locked{pointer-events:none;filter:blur(2px)}
-
-      /* Custom Scrollbars */
-      ::-webkit-scrollbar { width: 6px; height: 6px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 999px; }
-
-            .top{margin-bottom:12px}
-      .glassHero{margin:0 0 16px;padding:16px 18px;border-radius:22px;border:1px solid rgba(255,255,255,.9);background:linear-gradient(135deg, rgba(255,255,255,.76), rgba(238,240,244,.46));backdrop-filter:blur(20px) saturate(120%);-webkit-backdrop-filter:blur(20px) saturate(120%);box-shadow:0 20px 42px -30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.95);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#111827}
-      .topBar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(135deg, rgba(255,255,255,.82), rgba(245,246,248,.56));border:1px solid rgba(255,255,255,.96);border-radius:28px;padding:14px 16px;box-shadow:0 22px 40px -30px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.98);backdrop-filter:blur(20px) saturate(120%);-webkit-backdrop-filter:blur(20px) saturate(120%);flex-wrap:wrap}
-      .brand{display:flex;align-items:center;gap:10px;min-width:0}
-      .logoOrb{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg, rgba(255,255,255,.95), rgba(225,229,236,.68));border:1px solid rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:#111;font-weight:900;font-size:13px;letter-spacing:.02em;box-shadow:0 10px 20px -14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.95)}
-      .brandText{min-width:0}
-      .title{font-size:18px;font-weight:750;letter-spacing:-0.02em;margin:0;line-height:1.1}
-      .subtitle{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-      .topActions{display:flex;align-items:center;gap:8px;flex-shrink:0;max-width:100%}
-      .pill{font-size:12px;font-weight:550;padding:7px 11px;border:1px solid var(--line);background:var(--chip);border-radius:var(--radius-chip);color:var(--muted);transition:all 0.2s;white-space:nowrap;max-width:100%}
-      .btn-login{border:0;background:var(--text);color:#fff;font-weight:650;display:inline-flex;align-items:center;gap:6px}
-      .btn-login .dot{width:8px;height:8px;border-radius:var(--radius-chip);background:#22c55e;display:inline-block}
-
-      .kpi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
-      .k{background:linear-gradient(145deg, rgba(255,255,255,.86), rgba(238,240,244,.52));border:1px solid rgba(255,255,255,.97);border-radius:22px;padding:16px;box-shadow:0 20px 34px -28px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.98);backdrop-filter:blur(16px) saturate(120%);-webkit-backdrop-filter:blur(16px) saturate(120%);transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
-      .k .v{font-size:26px;font-weight:800;letter-spacing:-0.02em;line-height:1}
-      .k .l{font-size:13px;color:var(--muted);font-weight:500;margin-top:6px}
-
-      .modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:16px}
-      .mode{padding:10px 14px;border-radius:var(--radius-btn);border:1px solid var(--line);background:var(--chip);font-size:13px;font-weight:500;text-align:center;cursor:pointer;color:var(--muted);transition:all .18s ease}
-      .mode.on{background:var(--chipOn);color:var(--chipOnText);border-color:var(--chipOn);font-weight:600;box-shadow:var(--shadow-md)}
-
-      .tabs{display:flex;gap:8px;margin-bottom:16px}
-      .tab{flex:1;padding:12px;border-radius:var(--radius-control);border:1px solid var(--line);background:var(--chip);font-weight:600;color:var(--muted);transition:all 0.2s}
-      .tab.on{background:var(--text);color:#fff;border-color:var(--text);box-shadow:var(--shadow-md)}
-
-      .layout{display:grid;grid-template-columns:1fr;gap:16px;min-width:0;max-width:100%;transition:grid-template-columns 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), gap 0.5s ease}
-      .pane{background:linear-gradient(155deg, rgba(255,255,255,.74), rgba(242,244,248,.46));border:1px solid rgba(255,255,255,.88);border-radius:var(--radius-card);padding:12px;box-shadow:0 24px 50px -34px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.95);backdrop-filter:blur(18px) saturate(110%);-webkit-backdrop-filter:blur(18px) saturate(110%);transition:box-shadow .18s ease, border-color .18s ease;min-width:0;max-width:100%;overflow-x:hidden}
-
-      .filters{display:grid;gap:10px;position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.72);backdrop-filter:blur(14px) saturate(110%);-webkit-backdrop-filter:blur(14px) saturate(110%);padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.82);margin:-12px -12px 0;padding-top:12px;padding-left:12px;padding-right:12px;border-top-left-radius:var(--radius-card);border-top-right-radius:var(--radius-card)}
-      .f2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-      input,select,button{width:100%;padding:12px 14px;border-radius:var(--radius-control);border:1px solid rgba(255,255,255,.82);background:rgba(255,255,255,.62);font-size:14px;color:var(--text);font-family:inherit;font-weight:500;transition:all 0.2s}
-      input:focus,select:focus{outline:none;border-color:#a1a1aa;background:var(--card);box-shadow:0 0 0 3px rgba(0,0,0,0.03)}
-      button{cursor:pointer;background:var(--card)}
-
-      .cards{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px;max-height:54vh;overflow-y:auto;overflow-x:hidden;padding-right:4px;max-width:100%;scroll-behavior:smooth}
-      .note{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:12px;border:1px solid rgba(255,255,255,.9);border-radius:var(--radius-card);background:linear-gradient(145deg, rgba(255,255,255,.82), rgba(241,243,247,.52));backdrop-filter:blur(14px) saturate(108%);-webkit-backdrop-filter:blur(14px) saturate(108%);cursor:pointer;max-width:100%;overflow:hidden;transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;position:relative}
-      .note.active{outline:2px solid var(--text);outline-offset:-1px;background:var(--bg)}
-      .thumb{width:64px;height:64px;border-radius:var(--radius-control);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;background:var(--bg);position:relative;overflow:hidden;}
-      .thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0.9;transition:transform 0.5s ease}
-      .nt{font-size:15px;font-weight:700;line-height:1.3;word-break:break-word;overflow-wrap:anywhere;letter-spacing:-0.01em}
-      .nx{margin-top:6px;font-size:13px;color:var(--muted);word-break:break-word;overflow-wrap:anywhere;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-      .nm{margin-top:8px;font-size:11px;color:var(--muted);font-weight:500;display:flex;align-items:center;gap:6px}
-
-      .sectionHead{font-size:12px;color:var(--muted);margin:12px 2px 4px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em}
-      .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-      .tag{font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-btn);background:var(--chip);color:var(--muted)}
-      .tag.t-gold{background:hsl(45, 100%, 96%);color:hsl(45, 100%, 25%); border:1px solid hsl(45, 100%, 85%)}
-      .tag.t-fit{background:hsl(200, 100%, 96%);color:hsl(200, 100%, 25%); border:1px solid hsl(200, 100%, 85%)}
-      .tag.t-taste{background:hsl(270, 100%, 96%);color:hsl(270, 100%, 30%); border:1px solid hsl(270, 100%, 88%)}
-      .tag.t-cron{background:hsl(160, 60%, 96%);color:hsl(160, 100%, 20%); border:1px solid hsl(160, 60%, 85%)}
-      .tag.t-daily{background:hsl(30, 100%, 96%);color:hsl(30, 100%, 30%); border:1px solid hsl(30, 100%, 85%)}
-      
-      .empty{padding:40px 24px;border:1px dashed var(--line);border-radius:var(--radius-card);text-align:center;color:var(--muted);background:var(--bg);font-weight:500;display:flex;flex-direction:column;align-items:center;gap:12px}
-      .empty svg{width:48px;height:48px;color:#d4d4d8}
-
-      .reader{padding:0;max-height:70vh;overflow:auto;min-width:0;max-width:100%}
-      .readerTop{position:sticky;top:0;background:rgba(255,255,255,0.74);backdrop-filter:blur(16px) saturate(112%);-webkit-backdrop-filter:blur(16px) saturate(112%);border-bottom:1px solid rgba(255,255,255,.84);padding:12px;display:flex;gap:8px;flex-wrap:wrap;z-index:10;border-top-left-radius:var(--radius-card);border-top-right-radius:var(--radius-card);min-width:0;max-width:100%;overflow-x:hidden}
-      .readerTop button{width:auto;padding:8px 12px;font-size:13px;font-weight:600;border-radius:var(--radius-control);display:flex;align-items:center;gap:6px}
-      .readerTop button svg{width:16px;height:16px}
-      .meta{font-size:13px;color:var(--muted);padding:8px 24px 0;font-family:'Inter',sans-serif;font-weight:500}
-      .content{padding:16px 20px 34px;font-family:'Inter',sans-serif;font-size:16px;line-height:1.65;word-break:break-word;overflow-wrap:anywhere;text-align:left;color:#1f1f1f}
-      
-      /* Markdown Content Styling */
-      .content h1,.content h2,.content h3,.content h4{font-family:'Inter',sans-serif;color:var(--text);line-height:1.3;letter-spacing:-0.02em;margin:1.5em 0 0.5em;font-weight:800}
-      .content h1{font-size:1.6em;margin-top:0.5em}
-      .content h2{font-size:1.28em;border-bottom:1px solid var(--line);padding-bottom:8px}
-      .content h3{font-size:1.12em}
-      .content p{margin:1em 0}
-      .content ul,.content ol{padding-left:1.5em;margin:1em 0}
-      .content li{margin:0.4em 0;padding-left:0.2em}
-      .content li::marker{color:var(--muted)}
-      .content table{border-collapse:collapse;display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;margin:1.5em 0;font-family:'Inter',sans-serif;font-size:0.9em}
-      .content th,.content td{border:1px solid var(--line);padding:10px 14px;text-align:left;white-space:normal;word-break:break-word}
-      .content th{background:var(--chip);font-weight:600}
-      .content pre{overflow:auto;background:#f4f4f5;color:#222;border-radius:var(--radius-control);padding:14px;line-height:1.5;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:0.84em;box-shadow:none;margin:1.2em 0;border:1px solid var(--line)}
-      .content code{background:var(--chip);padding:3px 6px;border-radius:8px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:0.85em;color:#e11d48;border:1px solid var(--line)}
-      .content pre code{background:transparent;padding:0;border:none;color:inherit}
-      .content blockquote{border-left:4px solid #d4d4d8;padding:4px 0 4px 16px;color:#52525b;margin:1.5em 0;font-style:italic;background:linear-gradient(90deg, var(--bg) 0%, transparent 100%);border-top-right-radius:8px;border-bottom-right-radius:8px}
-      .content hr{border:none;border-top:1px solid var(--line);margin:2em 0}
-      .content img{max-width:100%;height:auto;border-radius:var(--radius-control);border:1px solid var(--line);margin:1.5em 0}
-
-      .hidden{display:none!important}
-      .mobileOnly{display:block}
-
-
-      /* PrismJS Atom Dark overrides */
-      code[class*="language-"], pre[class*="language-"] { color: #abb2bf; text-shadow: none; font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; font-size: 14px; line-height: 1.5; direction: ltr; text-align: left; white-space: pre; word-spacing: normal; word-break: normal; tab-size: 4; hyphens: none; }
-      pre[class*="language-"] { padding: 16px; margin: .5em 0; overflow: auto; background: #282c34; border-radius: 12px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); }
-      :not(pre) > code[class*="language-"] { padding: .1em .3em; border-radius: .3em; color: #e06c75; background: #282c34; }
-      .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #5c6370; font-style: italic; }
-      .token.punctuation { color: #abb2bf; }
-      .token.selector, .token.tag, .token.attr-name, .token.namespace, .token.deleted { color: #e06c75; }
-      .token.function-name { color: #61afef; }
-      .token.boolean, .token.number, .token.function { color: #d19a66; }
-      .token.property, .token.class-name, .token.constant, .token.symbol { color: #e5c07b; }
-      .token.string, .token.char, .token.attr-value, .token.builtin, .token.inserted { color: #98c379; }
-      .token.operator, .token.entity, .token.url, .token.variable { color: #56b6c2; }
-      .token.atrule, .token.keyword { color: #c678dd; }
-      .token.regex, .token.important { color: #c678dd; }
-
-      @media (prefers-reduced-motion: reduce){
-        *, *::before, *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-      }
-
-      @media (hover:hover) and (pointer:fine){
-        .pill:hover{background:rgba(255,255,255,.8);color:var(--text);border-color:rgba(255,255,255,.95)}
-        .btn-login:hover{background:#000;color:#fff;box-shadow:var(--shadow-md)}
-        .k:hover{transform:translateY(-1px);box-shadow:0 18px 34px -24px rgba(0,0,0,.35)}
-        .mode:hover{background:rgba(255,255,255,.8);color:var(--text);border-color:rgba(255,255,255,.95)}
-        button:hover{background:rgba(255,255,255,.78)}
-        .note:hover{transform:translateY(-1px);box-shadow:0 18px 30px -20px rgba(0,0,0,.35);border-color:rgba(255,255,255,.95);z-index:2}
-      }
-
-      @keyframes shake {
-        0%, 100% {transform: translateX(0);}
-        10%, 30%, 50%, 70%, 90% {transform: translateX(-4px);}
-        20%, 40%, 60%, 80% {transform: translateX(4px);}
-      }
-      .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
-      
-      .lock{position:fixed;inset:0;background:rgba(250,250,250,0.8);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;z-index:99999;padding:16px;min-height:100dvh;transition:opacity 0.3s}
-      .lockCard{width:min(420px,100%);background:var(--card);border:1px solid var(--line);border-radius:var(--radius-card);padding:32px;box-shadow:var(--shadow-lg);text-align:center}
-      .lockCard h2{margin:0 0 12px;font-size:24px;font-weight:800;letter-spacing:-0.03em}
-      
-      /* Smooth transitions for pane content */
-      #content { opacity: 1; transition: opacity 0.3s ease; }
-      #content.fading { opacity: 0; }
-
-      .reading-fullscreen .top,.reading-fullscreen .kpi,.reading-fullscreen .modes,.reading-fullscreen .tabs,.reading-fullscreen #listPane{display:none!important}
-      .reading-fullscreen #readPane{position:fixed;inset:0;z-index:9999;max-height:100dvh;height:100dvh;border-radius:0;border:none;padding:16px;max-width:800px;margin:0 auto;box-shadow:none}
-      .reading-fullscreen .app{padding:0;max-width:none;background:var(--bg)}
-      .reading-fullscreen .readerTop{border-top-left-radius:0;border-top-right-radius:0;margin:-16px -16px 0;padding:16px}
-
-      
-      /* Command Palette (Spotlight) */
-      .cmd-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:999999;display:flex;align-items:flex-start;justify-content:center;padding-top:10vh;opacity:0;pointer-events:none;transition:opacity 0.2s ease}
-      .cmd-overlay.active{opacity:1;pointer-events:auto}
-      .cmd-palette{width:100%;max-width:600px;background:var(--card);border-radius:var(--radius-card);box-shadow:var(--shadow-card), 0 0 0 1px rgba(0,0,0,0.05);overflow:hidden;transform:scale(0.98);transition:transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)}
-      .cmd-overlay.active .cmd-palette{transform:scale(1)}
-      .cmd-header{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
-      .cmd-header svg{color:var(--muted);width:20px;height:20px}
-      .cmd-input{border:none;background:transparent;font-size:18px;padding:0;width:100%;outline:none;box-shadow:none;font-weight:500}
-      .cmd-results{max-height:360px;overflow-y:auto;padding:8px}
-      .cmd-item{padding:12px 16px;border-radius:8px;display:flex;align-items:center;gap:12px;cursor:pointer;color:var(--text)}
-      .cmd-item.selected, .cmd-item:hover{background:var(--chip)}
-      .cmd-item-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:8px;border:1px solid var(--line);font-size:14px}
-      .cmd-item-title{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-      .cmd-item-path{font-size:11px;color:var(--muted);flex-shrink:0;margin-left:auto}
-      .cmd-footer{padding:8px 16px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);display:flex;justify-content:space-between}
-      .cmd-kbd{background:var(--chip);padding:2px 6px;border-radius:4px;border:1px solid var(--line);font-family:monospace;font-size:10px}
-
-      @media (min-width:1000px){
-        .mobileOnly{display:none}
-        .kpi{grid-template-columns:repeat(4,minmax(0,1fr))}
-        .modes{grid-template-columns:repeat(8,minmax(0,1fr))}
-        .layout{grid-template-columns:440px 1fr;gap:20px}
-        .cards{max-height:74vh}
-        .reader{max-height:84vh}
+        /* Default: Obsidian Glass (Dark) */
+        --bg-color: #050505;
+        --aura-purple: rgba(147, 51, 234, 0.15);
+        --aura-blue: rgba(59, 130, 246, 0.15);
         
-        .app.focus-mode .layout { grid-template-columns: 0px 1fr; gap:0px; }
-        .app.focus-mode #listPane { opacity: 0; padding: 0; border-width: 0; margin-right: 0; pointer-events: none; overflow: hidden; transform: translateX(-20px); }
-        .app.focus-mode #readPane { max-width: 900px; margin: 0 auto; width: 100%; }
+        --text-primary: #f3f4f6;
+        --text-secondary: #9ca3af;
+        --text-muted: #4b5563;
+        
+        --glass-bg: rgba(20, 20, 22, 0.65);
+        --glass-border: rgba(255, 255, 255, 0.05);
+        --glass-border-hover: rgba(255, 255, 255, 0.15);
+        --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        
+        --accent-glow: 0 0 20px rgba(168, 85, 247, 0.3);
+        
+        --radius-card: 16px;
+        --radius-button: 8px;
+        --radius-chip: 9999px;
+        
+        --accent: #a855f7;
+        --accent-hover: #c084fc;
+        --selection: rgba(168, 85, 247, 0.3);
+        
+        --input-bg: rgba(0, 0, 0, 0.3);
+        --input-bg-focus: rgba(0, 0, 0, 0.5);
+        
+        --tag-chip-bg: rgba(255, 255, 255, 0.03);
+        --tag-chip-border: rgba(255, 255, 255, 0.08);
+        --tag-chip-hover: rgba(255, 255, 255, 0.08);
+        
+        --note-hover-bg: rgba(255, 255, 255, 0.03);
+        --note-active-bg: rgba(255, 255, 255, 0.05);
+        
+        --loader-bg: rgba(0,0,0,0.8);
+        --loader-text: #f3f4f6;
+        
+        --markdown-headings: #ffffff;
+        --code-bg: #000;
+        --code-text: #e5e7eb;
+        --inline-code-bg: rgba(255, 255, 255, 0.08);
+        --inline-code-text: #f3f4f6;
+        --blockquote-bg: rgba(255, 255, 255, 0.02);
+        
+        --table-header: rgba(255,255,255,0.03);
+        --scroll-thumb: rgba(255,255,255,0.1);
+        
+        --login-box-bg: rgba(0,0,0,0.5);
       }
-      @media (max-width:999px){
-        .app{padding:12px}
-        .topBar{padding:10px}
-        .subtitle{display:none}
-        .topActions{gap:6px}
-        #latest{max-width:100%;white-space:normal;line-height:1.2;border-radius:12px}
-        .readerTop .hide-on-mobile {display:none!important}
+
+      [data-theme="light"] {
+        /* Visionary Frost (Light) */
+        --bg-color: #f8fafc; 
+        --aura-purple: rgba(168, 85, 247, 0.08);
+        --aura-blue: rgba(56, 189, 248, 0.08);
+        
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --text-muted: #94a3b8;
+        
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-border: rgba(255, 255, 255, 1);
+        --glass-border-hover: rgba(168, 85, 247, 0.4);
+        --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+        
+        --accent-glow: 0 0 20px rgba(168, 85, 247, 0.2);
+        
+        --accent: #9333ea;
+        --accent-hover: #7e22ce;
+        --selection: rgba(147, 51, 234, 0.2);
+        
+        --input-bg: rgba(255, 255, 255, 0.5);
+        --input-bg-focus: #ffffff;
+        
+        --tag-chip-bg: rgba(0, 0, 0, 0.02);
+        --tag-chip-border: rgba(0, 0, 0, 0.06);
+        --tag-chip-hover: rgba(0, 0, 0, 0.05);
+        
+        --note-hover-bg: rgba(255, 255, 255, 0.5);
+        --note-active-bg: rgba(255, 255, 255, 0.8);
+        
+        --loader-bg: rgba(255,255,255,0.9);
+        --loader-text: #0f172a;
+        
+        --markdown-headings: #0f172a;
+        --code-bg: #f1f5f9;
+        --code-text: #1e293b;
+        --inline-code-bg: rgba(0, 0, 0, 0.05);
+        --inline-code-text: #0f172a;
+        --blockquote-bg: rgba(0, 0, 0, 0.02);
+        
+        --table-header: rgba(0,0,0,0.03);
+        --scroll-thumb: rgba(0,0,0,0.15);
+        
+        --login-box-bg: rgba(255,255,255,0.5);
       }
-      @media (max-width:640px){
-        .topBar{display:grid;grid-template-columns:1fr;gap:10px}
-        .brand{width:100%}
-        .topActions{width:100%;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:stretch}
-        #latest{display:block;padding:9px 10px}
-        #loginBtn{padding:9px 12px;justify-content:center}
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      
+      ::selection {
+        background: var(--selection);
+        color: white;
+      }
+
+      body {
+        font-family: 'Inter', -apple-system, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-primary);
+        min-height: 100vh;
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+        position: relative;
+        transition: background-color 0.4s ease, color 0.4s ease;
+      }
+
+      /* Animated Background Aura */
+      .bg-aura {
+        position: fixed;
+        width: 150vw;
+        height: 150vh;
+        top: -25vh;
+        left: -25vw;
+        z-index: -1;
+        background: 
+          radial-gradient(circle at 20% 30%, var(--aura-purple) 0%, transparent 40%),
+          radial-gradient(circle at 80% 70%, var(--aura-blue) 0%, transparent 40%);
+        filter: blur(80px);
+        animation: pulseAura 20s ease-in-out infinite alternate;
+        pointer-events: none;
+      }
+
+      @keyframes pulseAura {
+        0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+        50% { transform: scale(1.1) translate(2%, -2%); opacity: 1; }
+        100% { transform: scale(0.95) translate(-2%, 2%); opacity: 0.8; }
+      }
+
+      /* Noise Overlay */
+      .noise-overlay {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      /* App Layout */
+      #app {
+        display: flex;
+        height: 100vh;
+        padding: 24px;
+        gap: 24px;
+        max-width: 1600px;
+        margin: 0 auto;
+      }
+
+      /* Glass Panel Utility */
+      .glass-panel {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-card);
+        backdrop-filter: blur(24px) saturate(140%);
+        -webkit-backdrop-filter: blur(24px) saturate(140%);
+        box-shadow: var(--glass-shadow);
+        transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Sidebar (List Pane) */
+      .list-pane {
+        width: 380px;
+        flex-shrink: 0;
+        z-index: 10;
+        position: relative;
+      }
+
+      /* Mode Tabs at top of list-pane */
+      .mode-tabs {
+        display: flex;
+        padding: 16px 24px 0;
+        gap: 16px;
+      }
+      .mode-tab {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-size: 1rem;
+        font-weight: 600;
+        padding-bottom: 8px;
+        cursor: pointer;
+        position: relative;
+        transition: color 0.2s;
+        font-family: inherit;
+      }
+      .mode-tab:hover { color: var(--text-primary); }
+      .mode-tab.active { color: var(--text-primary); }
+      .mode-tab.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 2px;
+        background: var(--accent);
+        border-radius: 2px 2px 0 0;
+        box-shadow: 0 -2px 8px rgba(168,85,247,0.4);
+      }
+
+      /* Header inside list */
+      .list-header {
+        padding: 20px 24px 16px;
+        border-bottom: 1px solid var(--glass-border);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .app-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+      }
+      .app-title i { color: var(--accent); }
+
+      .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Theme Switch Button */
+      .theme-switch {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+      .theme-switch:hover {
+        background: var(--tag-chip-hover);
+        color: var(--text-primary);
+      }
+
+      /* Search Bar */
+      .search-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+      .search-box input {
+        width: 100%;
+        background: var(--input-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-button);
+        padding: 12px 16px 12px 40px;
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+      }
+      .search-box input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
+        background: var(--input-bg-focus);
+      }
+      .search-box i {
+        position: absolute;
+        left: 12px;
+        color: var(--text-muted);
+        width: 18px; height: 18px;
+      }
+      .search-box input::placeholder { color: var(--text-muted); }
+
+      /* Tag Filters */
+      .tag-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--glass-border);
+        max-height: 120px;
+        overflow-y: auto;
+      }
+      .tag-filters::-webkit-scrollbar { width: 4px; }
+      .tag-filters::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 4px; }
+
+      .tag-chip {
+        background: var(--tag-chip-bg);
+        border: 1px solid var(--tag-chip-border);
+        border-radius: var(--radius-chip);
+        padding: 4px 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .tag-chip:hover {
+        background: var(--tag-chip-hover);
+        color: var(--text-primary);
+      }
+      .tag-chip.active {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent-hover);
+        box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
+      }
+
+      /* Note List */
+      .notes-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      /* Custom Scrollbar for list */
+      .notes-list::-webkit-scrollbar { width: 6px; }
+      .notes-list::-webkit-scrollbar-track { background: transparent; }
+      .notes-list::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 4px; }
+      
+      /* Note Card */
+      .note-card {
+        padding: 16px;
+        border-radius: 12px;
+        background: transparent;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      .note-card:hover {
+        background: var(--note-hover-bg);
+        border-color: var(--glass-border-hover);
+        transform: translateY(-2px);
+      }
+      .note-card.active {
+        background: var(--note-active-bg);
+        border-color: var(--accent);
+      }
+      .note-card.active::before {
+        content: "";
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 3px;
+        background: var(--accent);
+        box-shadow: var(--accent-glow);
+      }
+
+      .note-card-title {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 6px;
+        color: var(--text-primary);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .note-card-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+      .note-card-tags {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .note-card-tag {
+        color: var(--accent);
+      }
+
+      /* Main Reading Pane */
+      .read-pane {
+        flex: 1;
+        z-index: 5;
+        overflow: hidden;
+      }
+
+      .read-header {
+        padding: 32px 40px 16px;
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .read-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        margin-bottom: 12px;
+        line-height: 1.1;
+      }
+      .read-meta {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .read-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* Sync info floating */
+      .sync-info {
+        position: absolute;
+        top: 24px;
+        right: 40px;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        text-align: right;
+      }
+
+      .read-content-scroll {
+        flex: 1;
+        overflow-y: auto;
+        padding: 40px;
+      }
+      .read-content-scroll::-webkit-scrollbar { width: 8px; }
+      .read-content-scroll::-webkit-scrollbar-track { background: transparent; }
+      .read-content-scroll::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 4px; }
+
+      /* Markdown Content Styling */
+      .markdown-body {
+        max-width: 800px;
+        margin: 0 auto;
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: var(--text-primary);
+      }
+      .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
+        margin-top: 2em;
+        margin-bottom: 0.75em;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: var(--markdown-headings);
+      }
+      .markdown-body h2 {
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .markdown-body p { margin-bottom: 1.5em; }
+      .markdown-body a { color: var(--accent); text-decoration: none; transition: 0.2s; }
+      .markdown-body a:hover { text-decoration: underline; text-underline-offset: 4px; color: var(--accent-hover); }
+      .markdown-body ul, .markdown-body ol { margin-bottom: 1.5em; padding-left: 24px; }
+      .markdown-body li { margin-bottom: 0.5em; }
+      .markdown-body img { max-width: 100%; border-radius: 8px; }
+      
+      .markdown-body blockquote {
+        border-left: 3px solid var(--accent);
+        padding-left: 16px;
+        color: var(--text-secondary);
+        margin-bottom: 1.5em;
+        background: var(--blockquote-bg);
+        padding: 16px;
+        border-radius: 0 8px 8px 0;
+      }
+      
+      .markdown-body code {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85em;
+        background: var(--inline-code-bg);
+        padding: 4px 6px;
+        border-radius: 4px;
+        color: var(--inline-code-text);
+      }
+      
+      .markdown-body pre {
+        background: var(--code-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+        padding: 16px;
+        overflow-x: auto;
+        margin-bottom: 1.5em;
+      }
+      .markdown-body pre code {
+        background: transparent;
+        padding: 0;
+        color: var(--code-text);
+      }
+      
+      /* Markdown tables */
+      .markdown-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5em; }
+      .markdown-body th, .markdown-body td { padding: 10px 14px; border: 1px solid var(--glass-border); }
+      .markdown-body th { background: var(--table-header); font-weight: 600; text-align: left; }
+
+      /* Login Screen Overlay */
+      .login-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        background: var(--bg-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.4s ease;
+      }
+      .login-screen.hidden {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+      }
+      .login-box {
+        width: 100%;
+        max-width: 400px;
+        padding: 40px;
+        text-align: center;
+      }
+      .login-box h1 { margin-bottom: 24px; font-weight: 600; letter-spacing: -0.02em; }
+      .login-box input {
+        width: 100%;
+        background: var(--login-box-bg);
+        border: 1px solid var(--glass-border);
+        padding: 14px;
+        border-radius: var(--radius-button);
+        color: var(--text-primary);
+        margin-bottom: 16px;
+        font-size: 1rem;
+        text-align: center;
+        font-family: inherit;
+      }
+      .login-box input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      .login-box button {
+        width: 100%;
+        background: var(--text-primary);
+        color: var(--bg-color);
+        border: none;
+        padding: 14px;
+        border-radius: var(--radius-button);
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+        font-size: 1rem;
+        font-family: inherit;
+      }
+      .login-box button:hover {
+        background: var(--text-secondary);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      }
+      .login-err {
+        color: #ef4444;
+        margin-top: 16px;
+        font-size: 0.9rem;
+      }
+      
+      /* Global Loader */
+      .global-loader {
+        position: fixed;
+        top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px);
+        background: var(--loader-bg);
+        color: var(--loader-text);
+        padding: 8px 16px;
+        border-radius: var(--radius-chip);
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--glass-border);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 999;
+      }
+      .global-loader.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+      .loader-spinner {
+        width: 14px; height: 14px;
+        border: 2px solid var(--text-muted);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      /* Empty State */
+      .empty-state {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        text-align: center;
+      }
+      .empty-state i {
+        width: 64px; height: 64px;
+        margin-bottom: 24px;
+        opacity: 0.3;
+        color: var(--accent);
+      }
+      .empty-state h3 {
+        color: var(--text-primary);
+        font-weight: 500;
+        margin-bottom: 8px;
+        font-size: 1.25rem;
+      }
+
+      /* Mobile nav */
+      .mobile-nav {
+        display: none;
+        background: var(--glass-bg);
+        border-top: 1px solid var(--glass-border);
+        backdrop-filter: blur(24px) saturate(140%);
+        -webkit-backdrop-filter: blur(24px) saturate(140%);
+        padding: 12px 24px;
+        z-index: 100;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+      }
+      .nav-btn {
+        flex: 1;
+        display: flex; flex-direction: column; align-items: center; gap: 4px;
+        background: none; border: none; font-size: 0.75rem; font-weight: 500;
+        color: var(--text-muted); cursor: pointer; transition: 0.2s;
+        font-family: inherit;
+      }
+      .nav-btn.active { color: var(--accent); }
+
+      @media (max-width: 900px) {
+        #app { flex-direction: column; padding: 0; gap: 0; padding-bottom: 60px; }
+        .list-pane { width: 100%; height: 100%; border-radius: 0; border: none; border-bottom: 1px solid var(--glass-border); display: flex;}
+        .list-pane.hidden { display: none; }
+        
+        .read-pane { 
+          width: 100%; height: 100%; border-radius: 0; border: none; display: flex;
+        }
+        .read-pane.hidden { display: none; }
+
+        .mobile-nav { display: flex; justify-content: space-around; }
+        
+        .sync-info { display: none; }
       }
     </style>
   </head>
   <body>
-    <div class="bgfx" aria-hidden="true"></div>
-    <!-- SVG Definitions for Icons (Lucide) -->
-    <svg style="display:none">
-      <defs>
-        <g id="i-star"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
-        <g id="i-star-filled"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
-        <g id="i-chevron-l"><path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
-        <g id="i-chevron-r"><path d="m9 18 6-6-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
-        <g id="i-maximize"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
-        <g id="i-minimize"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
-        <g id="i-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
-        <g id="i-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
-        <g id="i-search"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="m21 21-4.3-4.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
-      </defs>
-    </svg>
+    <!-- Background Effects -->
+    <div class="bg-aura"></div>
+    <div class="noise-overlay"></div>
 
-    <div id="lock" class="lock hidden" role="dialog" aria-modal="true">
-      <div class="lockCard">
-        <h2 style="margin:0 0 8px">Aura Notes — logowanie</h2>
-        <p style="margin:0 0 10px;color:#666">Wpisz hasło i kliknij Odblokuj.</p>
-        <input id="pw" type="password" placeholder="Hasło" />
-        <div style="height:8px"></div>
-        <button id="unlock" type="button" class="btn-login" style="width:100%">Odblokuj</button>
-        <p id="pwErr" style="display:none;color:#c83a3a;font-size:13px;margin-top:12px;font-weight:600">Błąd logowania</p>
-        <p id="loginStatus" style="display:none;color:#666;font-size:13px;margin-top:12px">Sprawdzam...</p>
-      </div>
-    </div>
-    
-    <!-- Command Palette -->
-    <div id="cmdOverlay" class="cmd-overlay">
-      <div class="cmd-palette">
-        <div class="cmd-header">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"></use></svg>
-          <input id="cmdInput" class="cmd-input" type="text" placeholder="Szukaj notatek..." autocomplete="off" spellcheck="false" />
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+      <div class="login-box glass-panel">
+        <div style="display:flex; justify-content:center; margin-bottom:16px;">
+          <i data-lucide="boxes" style="width:48px;height:48px;color:var(--accent);"></i>
         </div>
-        <div id="cmdResults" class="cmd-results"></div>
-        <div class="cmd-footer">
-          <span>Użyj strzałek do nawigacji</span>
-          <div><span class="cmd-kbd">Enter</span> otwórz &nbsp; <span class="cmd-kbd">Esc</span> zamknij</div>
-        </div>
+        <h1>Aura Notes</h1>
+        <p style="color:var(--text-muted); margin-bottom:24px; font-size: 0.9rem;">Vault Access</p>
+        <form id="loginForm">
+          <input type="password" id="passInput" placeholder="Klucz deszyfrujący" autofocus />
+          <button type="submit">Odblokuj</button>
+          <div class="login-err" id="loginErr"></div>
+        </form>
       </div>
     </div>
 
-    <div id="appRoot" class="app">
-      <div class="top">
-        <div class="topBar">
-          <div class="brand">
-            <div class="logoOrb">A</div>
-            <div class="brandText">
-              <h1 class="title">Aura Notes</h1>
-              <div class="subtitle">Private Knowledge Vault • Monochrome Pro v1</div>
-            </div>
-          </div>
-          <div class="topActions">
-            <span id="latest" class="pill">Sync indeksu: —</span>
-            <button id="loginBtn" class="pill btn-login"><span class="dot"></span>Zaloguj</button>
-          </div>
-        </div>
-      </div>
+    <!-- Global Loader -->
+    <div class="global-loader" id="globalLoader">
+      <div class="loader-spinner"></div>
+      <span id="globalLoaderMsg">Synchronizacja...</span>
+    </div>
 
-      <div class="glassHero">Aura Notes • Neo Glassmorphism Edition</div>
+    <!-- Nav Mobile -->
+    <nav class="mobile-nav" id="mobileNav">
+      <button class="nav-btn active" id="btnNavList" onclick="setMobileTab('list')">
+        <i data-lucide="list"></i> Notatki
+      </button>
+      <button class="nav-btn" id="btnNavRead" onclick="setMobileTab('read')">
+        <i data-lucide="book-open"></i> Czytnik
+      </button>
+    </nav>
 
-      <section class="kpi">
-        <div class="k"><div id="kAll" class="v">0</div><div class="l">Wszystkie notatki</div></div>
-        <div class="k"><div id="kNew" class="v">0</div><div class="l">Nowe od wizyty</div></div>
-        <div class="k"><div id="kGold" class="v">0</div><div class="l">Protokoły GOLD</div></div>
-        <div class="k"><div id="kFav" class="v">0</div><div class="l">Ulubione</div></div>
-      </section>
-
-      <section id="modes" class="modes"></section>
-
-      <div class="tabs mobileOnly">
-        <button id="tabList" class="tab on">Lista</button>
-        <button id="tabRead" class="tab">Czytnik</button>
-      </div>
-
-      <main class="layout">
-        <section id="listPane" class="pane">
-          <div class="filters">
-            <input id="q" placeholder="Szukaj np. retatrutide, protocol, taste..." />
-            <div class="f2">
-              <select id="folder"><option value="">Folder: wszystkie</option><option value="memory">memory</option><option value="outputs">outputs</option></select>
-              <select id="sort">
-                <option value="updated_new">Sort: aktualizacja ↓</option>
-                <option value="updated_old">Sort: aktualizacja ↑</option>
-                <option value="created_new">Sort: utworzenie ↓</option>
-                <option value="created_old">Sort: utworzenie ↑</option>
-                <option value="az">Sort: A-Z</option>
-              </select>
-            </div>
-          </div>
-          <div id="cards" class="cards"></div>
-        </section>
-
-        <section id="readPane" class="pane reader">
-          <div class="readerTop">
-            <button id="prev"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-l"></use></svg> Poprzednia</button>
-            <button id="next">Następna <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-r"></use></svg></button>
-            <button id="fav"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"></use></svg> Ulubione</button>
-            <button id="focus" class="hide-on-mobile"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"></use></svg> Focus</button>
-            <button id="fsBtn" class="hide-on-mobile"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-maximize"></use></svg> Fullscreen</button>
-            <button id="copyLink" class="hide-on-mobile"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"></use></svg> Kopiuj</button>
-            <span id="readMin" class="pill" style="margin-left:auto">—</span>
-          </div>
-          <div id="meta" class="meta">Wybierz notatkę, aby rozpocząć czytanie...</div>
-          <article id="content" class="content">
-            <div class="empty" style="margin-top:40px; border:none; background:transparent">
-              <svg style="width:48px;height:48px;color:var(--line);margin-bottom:16px"><use href="#i-eye"></use></svg>
-              <br>Wybierz element z listy po lewej stronie.
-            </div>
-          </article>
-        </section>
-      </main>
-
-
-
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markdown.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
-    <script>
-      const MODES = [
-        { id:'all', label:'Wszystko' },
-        { id:'gold', label:'Protokoły GOLD' },
-        { id:'fitness', label:'Fitness/Peptydy' },
-        { id:'taste', label:'Taste' },
-        { id:'daily', label:'Daily' },
-        { id:'recent', label:'Ostatnie 7 dni' },
-        { id:'fav', label:'Ulubione' },
-        { id:'unread', label:'Nieprzeczytane' },
-      ];
-
-      const ICON = {
-        'golden-protocols':'🏆', 'fitness-health':'💪', taste:'🧠', 'cron-sync':'🕒', 'daily-log':'📝', other:'📄'
-      };
-
-      const STATE_VERSION = 2;
-      const state = {
-        notes: [], filtered: [], selected: null,
-        mode: 'all', folder: '', q: '', sort: 'updated_new',
-        favorites: {}, readMap: {}, authPass: localStorage.getItem('aura_auth_pass') || '', listScroll:0, readScroll:0, mobileTab:'list',
-        htmlCache: {}
-      };
-
-      const $ = (id) => document.getElementById(id);
-      const els = {
-        appRoot:$('appRoot'), lock:$('lock'), pw:$('pw'), unlock:$('unlock'), pwErr:$('pwErr'), loginStatus:$('loginStatus'), loginBtn:$('loginBtn'), lockCard: document.querySelector('.lockCard'),
-        latest:$('latest'), modes:$('modes'), tabList:$('tabList'), tabRead:$('tabRead'),
-        listPane:$('listPane'), readPane:$('readPane'), q:$('q'), folder:$('folder'), sort:$('sort'), cards:$('cards'),
-        prev:$('prev'), next:$('next'), fav:$('fav'), focus:$('focus'), fsBtn:$('fsBtn'), copyLink:$('copyLink'), readMin:$('readMin'), meta:$('meta'), content:$('content'),
-        kAll:$('kAll'), kNew:$('kNew'), kGold:$('kGold'), kFav:$('kFav'),
-        cmdOverlay:$('cmdOverlay'), cmdInput:$('cmdInput'), cmdResults:$('cmdResults')
-      };
-
-      const fmt = d => new Date(d).toLocaleString('pl-PL',{dateStyle:'short',timeStyle:'short'});
-      const isMobile = () => window.matchMedia('(max-width: 999px)').matches;
-      const daysAgo = n => new Date(Date.now() - n*86400000);
-
-      function save() {
-        localStorage.setItem('aura_notes_state', JSON.stringify({ version: STATE_VERSION, mode:state.mode, folder:state.folder, q:state.q, sort:state.sort, selected:state.selected, favorites:state.favorites, readMap:state.readMap, listScroll:state.listScroll, readScroll:state.readScroll, mobileTab:state.mobileTab }));
-      }
-
-      function load() {
-        try {
-          const s = JSON.parse(localStorage.getItem('aura_notes_state') || '{}');
-          if ((s.version || 0) < STATE_VERSION) {
-            localStorage.removeItem('aura_notes_state');
-            els.q.value = '';
-            els.folder.value = '';
-            els.sort.value = 'updated_new';
-            return;
-          }
-          state.mode = s.mode || state.mode;
-          state.folder = s.folder || '';
-          state.q = s.q || '';
-          const legacySortMap = { new: 'updated_new', old: 'updated_old' };
-          state.sort = legacySortMap[s.sort] || s.sort || 'updated_new';
-          state.selected = s.selected || null;
-          state.favorites = s.favorites || {};
-          state.readMap = s.readMap || {};
-          state.listScroll = s.listScroll || 0;
-          state.readScroll = s.readScroll || 0;
-          state.mobileTab = s.mobileTab || 'list';
-          els.q.value = state.q;
-          els.folder.value = state.folder;
-          els.sort.value = state.sort;
-        } catch {}
-      }
-
-      function showLogin(msg='') {
-        els.lock.classList.remove('hidden');
-        els.appRoot.classList.add('is-locked');
-        els.pwErr.style.display = msg ? 'block' : 'none';
-        els.pwErr.textContent = msg || '';
-        els.loginStatus.style.display = 'none';
-      }
-
-      function hideLogin() {
-        els.lock.classList.add('hidden');
-        els.appRoot.classList.remove('is-locked');
-        els.pwErr.style.display = 'none';
-        els.loginStatus.style.display = 'none';
-      }
-
-      async function fetchNotes(password='') {
-        try {
-          const res = await fetch('/.netlify/functions/notes?v=4', {
-            cache:'no-store', credentials:'include',
-            headers: { 'x-aura-pass': (password || state.authPass || '') }
-          });
-          const payload = await res.json().catch(() => ({}));
-          if (res.status === 401) return { authRequired:true };
-          if (!res.ok || !payload.ok) return { authRequired:false, error: (payload.error || ('HTTP ' + res.status)) + (payload.detail?(' — '+payload.detail):'') };
-          return { authRequired:false, data: payload.data };
-        } catch {
-          return { authRequired:false, error:'Network error' };
-        }
-      }
-
-      async function loginAndLoad() {
-        els.loginStatus.style.display = 'block';
-        els.loginStatus.textContent = 'Sprawdzam hasło...';
-        els.unlock.disabled = true;
-        const pw = els.pw.value || '';
-        if (!pw) { showLogin('Wpisz hasło.'); els.unlock.disabled=false; return; }
-
-        state.authPass = pw;
-        localStorage.setItem('aura_auth_pass', pw);
-
-        const result = await fetchNotes(pw);
-        els.unlock.disabled = false;
-
-        if (!result.data) {
-          showLogin(result.authRequired ? 'Nieprawidłowe hasło.' : ('Logowanie nieudane: ' + (result.error || 'spróbuj ponownie')));
-          els.lockCard.classList.remove('shake');
-          void els.lockCard.offsetWidth; // trigger reflow
-          els.lockCard.classList.add('shake');
-          return;
-        }
-
-        hideLogin();
-        startApp(result.data);
-      }
-
-      function modePredicate(n) {
-        const blob = (n.title + ' ' + n.path + ' ' + (n.excerpt||'') + ' ' + (n.tags||[]).join(' ') + ' ' + (n.category||'')).toLowerCase();
-        switch(state.mode){
-          case 'gold': return n.category === 'golden-protocols' || /gold|protocol/.test(blob);
-          case 'fitness': return /fitness|peptyd|peptide|workout|training|trening|nutrition|retatrutide|mots-c|hcg|cjc|ipamorelin|whoop|plan trening/.test(blob);
-          case 'taste': return n.category === 'taste' || /taste|design|ui|ux/.test(blob);
-          case 'daily': return n.category === 'daily-log';
-          case 'recent': return new Date(n.updatedAt) >= daysAgo(7);
-          case 'fav': return !!state.favorites[n.id];
-          case 'unread': return !state.readMap[n.id];
-          default: return true;
-        }
-      }
-
-      function renderModes(){
-        els.modes.innerHTML = MODES.map(m => `<button class="mode ${state.mode===m.id?'on':''}" data-mode="${m.id}">${m.label}</button>`).join('');
-        els.modes.querySelectorAll('.mode').forEach(b => b.onclick = () => { state.mode=b.dataset.mode; state.selected=null; renderModes(); renderList(); save(); });
-      }
-
-      function renderList(){
-        const q = (els.q.value || '').trim().toLowerCase();
-        const folder = els.folder.value;
-        state.filtered = state.notes.filter(n => {
-          if (!modePredicate(n)) return false;
-          if (folder && n.folder !== folder) return false;
-          if (!q) return true;
-          const blob = (n.title+' '+n.path+' '+(n.excerpt||'')+' '+(n.content||'').slice(0,700)).toLowerCase();
-          return blob.includes(q);
-        });
-
-        if (els.sort.value==='updated_new') state.filtered.sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt));
-        if (els.sort.value==='updated_old') state.filtered.sort((a,b)=>new Date(a.updatedAt)-new Date(b.updatedAt));
-        if (els.sort.value==='created_new') state.filtered.sort((a,b)=>new Date(b.createdAt||b.updatedAt)-new Date(a.createdAt||a.updatedAt));
-        if (els.sort.value==='created_old') state.filtered.sort((a,b)=>new Date(a.createdAt||a.updatedAt)-new Date(b.createdAt||b.updatedAt));
-        if (els.sort.value==='az') state.filtered.sort((a,b)=>a.title.localeCompare(b.title,'pl'));
-
-        const groups={today:[],week:[],older:[]};
-        const now=Date.now();
-        for(const n of state.filtered){
-          const age=(now-new Date(n.updatedAt).getTime())/86400000;
-          if(age<1) groups.today.push(n); else if(age<7) groups.week.push(n); else groups.older.push(n);
-        }
-
-        function card(n){
-          const tags=(n.tags||[]).slice(0,3).map(t=>{
-            const isFit = /fitness|workout|pept/.test(t);
-            const isTaste = /taste/.test(t);
-            const isGold = /gold|protocol/.test(t);
-            const isCron = /cron|sync|log/.test(t);
-            const isDaily = /daily/.test(t);
-            const cClass = isGold ? 't-gold' : isFit ? 't-fit' : isTaste ? 't-taste' : isCron ? 't-cron' : isDaily ? 't-daily' : '';
-            return `<span class="tag ${cClass}">${t}</span>`;
-          }).join('');
-          
-          const pImg = { 'golden-protocols':'golden_protocols.png', 'fitness-health':'fitness_health.png', 'taste':'taste.png', 'cron-sync':'cron_sync.png', 'daily-log':'daily_log.png' }[n.category];
-          const thumbHTML = pImg ? `<img src="/p/${pImg}" alt="" loading="lazy"/>` : '📄';
-
-          return `<article class="note ${state.selected===n.id?'active':''}" data-id="${n.id}">
-            <div class="thumb">${thumbHTML}</div>
-            <div>
-              <div class="nt">${n.title}</div>
-              <div class="nx">${n.excerpt || ''}</div>
-              <div class="tags">${tags}</div>
-              <div class="nm">${n.path} • akt.: ${fmt(n.updatedAt)} • ${n.readingMinutes||1} min ${state.readMap[n.id]?'• przeczytane':''}</div>
-            </div>
-          </article>`;
-        }
-
-        let html='';
-        if(groups.today.length){ html += `<div class="sectionHead">Dziś</div>` + groups.today.map(card).join(''); }
-        if(groups.week.length){ html += `<div class="sectionHead">Ten tydzień</div>` + groups.week.map(card).join(''); }
-        if(groups.older.length){ html += `<div class="sectionHead">Starsze</div>` + groups.older.map(card).join(''); }
-
-        if(!html){
-          html = `<div class="empty">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"></use></svg>
-            <div>Brak wyników.</div>
-            <button id="clearFilters" style="margin-top:8px;width:auto">Wyczyść filtry</button>
-          </div>`;
-        }
-
-        els.cards.innerHTML = html;
-        els.cards.querySelectorAll('.note').forEach(c => c.onclick = () => openNote(c.dataset.id, true));
-        const cf= document.getElementById('clearFilters');
-        if(cf) cf.onclick=()=>{ state.mode='all'; els.q.value=''; els.folder.value=''; els.sort.value='updated_new'; renderModes(); renderList(); save(); };
-
-        if (state.filtered.length && !state.selected) openNote(state.filtered[0].id, false);
-        updateKpi();
-      }
-
-      function mdToHtml(md){
-        const raw = md || '';
-        if (window.marked) {
-          window.marked.setOptions({
-            highlight: function(code, lang) {
-              if (window.Prism && lang && Prism.languages[lang]) {
-                try { return Prism.highlight(code, Prism.languages[lang], lang); } catch (e) {}
-              }
-              return code;
-            }
-          });
-          const html = window.marked.parse(raw, { gfm:true, breaks:true, headerIds:true, mangle:false });
-          if (window.DOMPurify) {
-            return window.DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
-          }
-          return html;
-        }
-        const esc = (txt) => txt
-          .replace(/&/g,'&amp;')
-          .replace(/</g,'&lt;')
-          .replace(/>/g,'&gt;')
-          .replace(/"/g,'&quot;')
-          .replace(/'/g,'&#39;');
-        return '<p>' + esc(raw).replace(/\n{2,}/g,'</p><p>').replace(/\n/g,'<br>') + '</p>';
-      }
-
+    <!-- Main App -->
+    <div id="app">
       
-      function renderNoteContent(n, forceFull=false){
-        if(n.isHeavy && !forceFull){
-          const preview = (n.content || '').slice(0, 5000);
-          els.content.innerHTML =
-            `<div class="empty">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"></use></svg>
-              To bardzo duża notatka (${n.words||0} słów). Podgląd został zoptymalizowany.
-              <button id="loadFullNote" style="margin-top:8px;width:auto" class="btn-login">Wczytaj pełną notatkę</button>
-            </div>` +
-            mdToHtml(preview + "\n\n[...] (podgląd skrócony)");
-          const btn=document.getElementById('loadFullNote');
-          if(btn) btn.onclick=()=>renderNoteContent(n,true);
+      <!-- List Sidebar -->
+      <aside class="list-pane glass-panel" id="listPane">
+        
+        <div class="mode-tabs">
+          <button class="mode-tab active" data-mode="all">Aktualne</button>
+          <button class="mode-tab" data-mode="archive">Archiwum</button>
+        </div>
+
+        <div class="list-header" style="border-bottom: none; padding-bottom: 0;">
+          <div class="header-actions">
+            <div class="app-title">
+              <i data-lucide="boxes"></i> Aura Notes
+            </div>
+            <button id="themeToggle" class="theme-switch" title="Zmień motyw" aria-label="Toggle Theme">
+              <i data-lucide="sun" id="themeIcon"></i>
+            </button>
+          </div>
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="searchInput" placeholder="Szukaj (tytuł, tag, treść)..." />
+          </div>
+        </div>
+        
+        <div class="tag-filters" id="tagList">
+          <div class="tag-chip active" data-tag="all">Wszystkie</div>
+        </div>
+
+        <div class="notes-list" id="notesList">
+          <!-- Populated by JS -->
+        </div>
+      </aside>
+
+      <!-- Reading Pane -->
+      <main class="read-pane glass-panel" id="readPane">
+
+        <div id="readEmpty" class="empty-state">
+          <i data-lucide="hexagons"></i>
+          <h3>Obsidian Vault</h3>
+          <p>Wybierz notatkę z menu by rozpocząć eksplorację.</p>
+        </div>
+
+        <div id="readActive" style="display: none; height: 100%; flex-direction: column; position: relative;">
+          
+          <div class="sync-info" id="latestInfo">Sync: — • Najnowsza: —</div>
+
+          <header class="read-header">
+            <h1 class="read-title" id="readTitle">Tytuł Notatki</h1>
+            <div class="read-meta">
+              <div class="read-meta-item">
+                <i data-lucide="calendar" style="width:14px;height:14px;"></i>
+                <span id="readDate"></span>
+              </div>
+              <div class="read-meta-item">
+                <i data-lucide="tag" style="width:14px;height:14px;"></i>
+                <span id="readTags"></span>
+              </div>
+            </div>
+          </header>
+          
+          <div class="read-content-scroll" id="readScroll">
+            <article class="markdown-body" id="readBody">
+              <!-- Rendered Markdown -->
+            </article>
+          </div>
+        </div>
+      </main>
+      
+    </div>
+
+    <!-- Required Libs -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+
+    <script>
+      // ----------------------------------------------------------------------
+      // Motyw Theme Switcher
+      // ----------------------------------------------------------------------
+      const savedTheme = localStorage.getItem('aura-theme') || 'dark';
+      if (savedTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+
+      // ----------------------------------------------------------------------
+      // Konfiguracja JS
+      // ----------------------------------------------------------------------
+      lucide.createIcons();
+
+      marked.setOptions({
+        breaks: true,
+        gfm: true,
+        highlight: function(code, lang) {
+          if (Prism.languages[lang]) {
+            return Prism.highlight(code, Prism.languages[lang], lang);
+          }
+          return code;
+        }
+      });
+
+      const WORKER_URL = 'https://aura-vault-api.nicons.workers.dev/';
+
+      let state = {
+        authPass: '',
+        notes: [],
+        filterPhrase: '',
+        activeTag: 'all',
+        mode: 'all',
+        activeNoteId: null,
+        mobileTab: 'list',
+        listScroll: 0,
+        readScroll: 0,
+        theme: savedTheme
+      };
+
+      const els = {
+        loginScreen: document.getElementById('loginScreen'),
+        loginForm: document.getElementById('loginForm'),
+        passInput: document.getElementById('passInput'),
+        loginErr: document.getElementById('loginErr'),
+        globalLoader: document.getElementById('globalLoader'),
+        globalLoaderMsg: document.getElementById('globalLoaderMsg'),
+        searchInput: document.getElementById('searchInput'),
+        tagList: document.getElementById('tagList'),
+        notesList: document.getElementById('notesList'),
+        modeTabs: document.querySelectorAll('.mode-tab'),
+        readEmpty: document.getElementById('readEmpty'),
+        readActive: document.getElementById('readActive'),
+        readTitle: document.getElementById('readTitle'),
+        readDate: document.getElementById('readDate'),
+        readTags: document.getElementById('readTags'),
+        readBody: document.getElementById('readBody'),
+        readScroll: document.getElementById('readScroll'),
+        latestInfo: document.getElementById('latestInfo'),
+        listPane: document.getElementById('listPane'),
+        readPane: document.getElementById('readPane'),
+        btnNavList: document.getElementById('btnNavList'),
+        btnNavRead: document.getElementById('btnNavRead'),
+        themeToggle: document.getElementById('themeToggle'),
+        themeIcon: document.getElementById('themeIcon')
+      };
+
+      // ----------------------------------------------------------------------
+      // Theme Logic
+      // ----------------------------------------------------------------------
+      function updateThemeIcon() {
+        els.themeIcon.setAttribute('data-lucide', state.theme === 'light' ? 'moon' : 'sun');
+        lucide.createIcons();
+      }
+      
+      els.themeToggle.addEventListener('click', () => {
+        state.theme = state.theme === 'light' ? 'dark' : 'light';
+        localStorage.setItem('aura-theme', state.theme);
+        if (state.theme === 'light') {
+          document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
+        updateThemeIcon();
+      });
+      // Initial render of icon
+      updateThemeIcon();
+
+      // ----------------------------------------------------------------------
+      // UI Utils
+      // ----------------------------------------------------------------------
+      function isMobile() { return window.innerWidth <= 900; }
+
+      function showLogin(err = '') {
+        els.loginScreen.classList.remove('hidden');
+        els.loginErr.textContent = err;
+        els.passInput.value = '';
+        els.passInput.focus();
+      }
+      function hideLogin() { els.loginScreen.classList.add('hidden'); }
+
+      function showSync() {
+        els.globalLoaderMsg.textContent = 'Synchronizacja...';
+        els.globalLoader.classList.add('show');
+      }
+      function hideSync() { els.globalLoader.classList.remove('show'); }
+
+      function setMobileTab(tab) {
+        state.mobileTab = tab;
+        if(isMobile()){
+          if(tab === 'list'){
+            els.listPane.classList.remove('hidden');
+            els.readPane.classList.add('hidden');
+            els.btnNavList.classList.add('active');
+            els.btnNavRead.classList.remove('active');
+          } else {
+            els.listPane.classList.add('hidden');
+            els.readPane.classList.remove('hidden');
+            els.btnNavList.classList.remove('active');
+            els.btnNavRead.classList.add('active');
+          }
+        } else {
+          els.listPane.classList.remove('hidden');
+          els.readPane.classList.remove('hidden');
+        }
+      }
+      window.addEventListener('resize', () => setMobileTab(state.mobileTab));
+
+      function fmt(iso) {
+        if(!iso) return '';
+        const d = new Date(iso);
+        const z = n => (n<10?'0':'')+n;
+        return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())} ${z(d.getHours())}:${z(d.getMinutes())}`;
+      }
+
+      // ----------------------------------------------------------------------
+      // API
+      // ----------------------------------------------------------------------
+      async function fetchNotes(pass) {
+        showSync();
+        try {
+          const res = await fetch(WORKER_URL + 'read', {
+            method: 'POST',
+            headers: {'content-type':'application/json'},
+            body: JSON.stringify({ pass })
+          });
+          hideSync();
+          if(!res.ok) return { error: 'Bad pass' };
+          const data = await res.json();
+          if(!data.success) return { error: data.error };
+          return { data: data.data }; 
+        } catch(e) {
+          hideSync();
+          return { error: 'Błąd sieci' };
+        }
+      }
+
+      // ----------------------------------------------------------------------
+      // Logika
+      // ----------------------------------------------------------------------
+      els.loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const p = els.passInput.value;
+        if(!p) return;
+        const out = await fetchNotes(p);
+        if(out.error) {
+          showLogin('Błędne hasło.');
+        } else {
+          state.authPass = p;
+          hideLogin();
+          startApp(out.data);
+        }
+      });
+
+      function buildTags() {
+        let all = new Set();
+        state.notes.forEach(n => {
+          if(!n.isArchived) (n.tags||[]).forEach(t => all.add(t));
+        });
+        const arr = Array.from(all).sort();
+        let html = `<div class="tag-chip ${state.activeTag==='all'?'active':''}" data-tag="all">Wszystkie</div>`;
+        arr.forEach(t => {
+          html += `<div class="tag-chip ${state.activeTag===t?'active':''}" data-tag="${t}">${t}</div>`;
+        });
+        els.tagList.innerHTML = html;
+        els.tagList.querySelectorAll('.tag-chip').forEach(el => {
+          el.addEventListener('click', () => {
+            state.activeTag = el.dataset.tag;
+            buildTags();
+            renderList();
+          });
+        });
+      }
+
+      function renderList() {
+        let q = state.filterPhrase.toLowerCase().trim();
+        let list = state.notes.filter(n => state.mode === 'all' ? !n.isArchived : n.isArchived);
+
+        if(state.activeTag !== 'all'){
+          list = list.filter(n => (n.tags||[]).includes(state.activeTag));
+        }
+
+        if(q) {
+          list = list.filter(n => 
+            (n.title||'').toLowerCase().includes(q) || 
+            (n.content||'').toLowerCase().includes(q) ||
+            (n.tags||[]).some(t=>t.toLowerCase().includes(q))
+          );
+        }
+
+        list.sort((a,b) => new Date(b.updatedAt||0) - new Date(a.updatedAt||0));
+
+        if(list.length === 0){
+          els.notesList.innerHTML = `<div style="padding:16px; color:var(--text-muted); text-align:center;">Brak notatek.</div>`;
           return;
         }
 
-        const cacheKey = `${n.id}:${forceFull ? 'full' : 'preview'}`;
-        if (!state.htmlCache[cacheKey]) {
-          state.htmlCache[cacheKey] = mdToHtml(n.content || '');
-        }
-        els.content.innerHTML = state.htmlCache[cacheKey];
-        if (window.Prism) Prism.highlightAllUnder(els.content);
-      }
-
-function openNote(id, switchMobile){
-        const n = state.notes.find(x=>x.id===id); if(!n) return;
-        const wasUnread = !state.readMap[n.id];
-
-        els.content.classList.add('fading');
-
-        setTimeout(() => {
-          state.selected = n.id;
-          location.hash = n.id;
-          const createdInfo = n.createdAt ? `utw.: ${fmt(n.createdAt)} • ` : '';
-          els.meta.textContent = `${n.path} • ${createdInfo}akt.: ${fmt(n.updatedAt)} • ${n.words||0} słów`;
-          els.readMin.textContent = `${n.readingMinutes||1} min`;
-          renderNoteContent(n);
-          els.fav.innerHTML = state.favorites[n.id] ? '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star-filled"></use></svg> Ulubione' : '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"></use></svg> Ulubione';
-          state.readMap[n.id] = Date.now();
-          if (isMobile() && switchMobile) setMobileTab('read');
-
-          if (state.mode === 'unread' && wasUnread) {
-            renderList();
-          } else {
-            els.cards.querySelectorAll('.note').forEach(el => el.classList.toggle('active', el.dataset.id === n.id));
-          }
-
-          save();
-          els.content.classList.remove('fading');
-        }, 110);
-      }
-
-      function move(delta){
-        if(!state.filtered.length) return;
-        const i = state.filtered.findIndex(n=>n.id===state.selected);
-        const ni = Math.max(0, Math.min(state.filtered.length-1, (i<0?0:i)+delta));
-        openNote(state.filtered[ni].id, false);
-      }
-
-      function updateKpi(){
-        const lastSeen = localStorage.getItem('aura_last_seen');
-        const newCount = state.notes.filter(n=>!lastSeen || new Date(n.updatedAt)>new Date(lastSeen)).length;
-        els.kAll.textContent = String(state.notes.length);
-        els.kNew.textContent = String(newCount);
-        els.kGold.textContent = String(state.notes.filter(n=>n.category==='golden-protocols').length);
-        els.kFav.textContent = String(Object.keys(state.favorites).filter(k=>state.favorites[k]).length);
-        localStorage.setItem('aura_last_seen', new Date().toISOString());
-      }
-
-      function setMobileTab(tab){
-        if(!isMobile()) return;
-        state.mobileTab = tab;
-        const listOn = tab==='list';
-        els.tabList.classList.toggle('on', listOn);
-        els.tabRead.classList.toggle('on', !listOn);
-        els.listPane.classList.toggle('hidden', !listOn);
-        els.readPane.classList.toggle('hidden', listOn);
-      }
-
-      function setFocus(on){
-        els.appRoot.classList.toggle('focus-mode', on);
-        els.focus.innerHTML = on ? '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"></use></svg> Rozwiń' : '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"></use></svg> Focus';
-        if(isMobile()) {
-          els.listPane.classList.toggle('hidden', on);
-        }
-      }
-
-      function toggleFullscreenReader(){
-        const on = document.body.classList.toggle('reading-fullscreen');
-        els.fsBtn.textContent = on ? 'Wyjdz fullscreen' : 'Fullscreen';
-      }
-
-      function debounce(fn,ms=200){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; }
-
-      function bind(){
-        els.q.addEventListener('input', debounce(()=>{ state.q=els.q.value; renderList(); save(); },180));
-        els.folder.addEventListener('input', ()=>{ state.folder=els.folder.value; renderList(); save(); });
-        els.sort.addEventListener('input', ()=>{ state.sort=els.sort.value; renderList(); save(); });
-
-        els.cards.addEventListener('scroll', ()=>{ state.listScroll = els.cards.scrollTop; }, {passive:true});
-        els.readPane.addEventListener('scroll', ()=>{ state.readScroll = els.readPane.scrollTop; }, {passive:true});
-
-        els.prev.onclick=()=>move(-1);
-        els.next.onclick=()=>move(1);
-        els.focus.onclick=()=>setFocus(!els.appRoot.classList.contains('focus-mode'));
-        els.fsBtn.onclick=()=>toggleFullscreenReader();
-        els.copyLink.onclick=async()=>{ if(!state.selected)return; const url=location.origin+location.pathname+'#'+state.selected; try{await navigator.clipboard.writeText(url); els.copyLink.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"></use></svg> Skopiowano'; setTimeout(()=>els.copyLink.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"></use></svg> Kopiuj',1200);}catch{} };
-        els.fav.onclick=()=>{ if(!state.selected)return; state.favorites[state.selected]=!state.favorites[state.selected]; openNote(state.selected,false); save(); };
-
-        els.tabList.onclick=()=>setMobileTab('list');
-        els.tabRead.onclick=()=>setMobileTab('read');
-
-        els.loginBtn.onclick=()=>{ showLogin(); els.unlock.onclick=loginAndLoad; setTimeout(()=>els.pw.focus(),50); };
-        els.unlock.onclick=loginAndLoad;
-
-        let sx=0, sy=0, swipeBlocked=false;
-        els.readPane.addEventListener('touchstart',e=>{
-          const t=e.changedTouches[0];
-          sx=t.clientX; sy=t.clientY; swipeBlocked=false;
-          const scroller = e.target.closest('table, pre, .content table, .content pre');
-          if(scroller && (scroller.scrollWidth > scroller.clientWidth + 2)) {
-            swipeBlocked = true;
-          }
-        },{passive:true});
-
-        els.readPane.addEventListener('touchend',e=>{
-          if(swipeBlocked) return;
-          const t=e.changedTouches[0];
-          const dx=t.clientX-sx;
-          const dy=t.clientY-sy;
-          if(Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)*1.2){
-            if(dx<0) move(1); else move(-1);
-          }
-        });
-
-        window.addEventListener('resize',()=>{ if(!isMobile()){ els.listPane.classList.remove('hidden'); els.readPane.classList.remove('hidden'); } else setMobileTab(state.mobileTab || 'list'); });
-
-        // Command Palette Logic
-        let cmdActive=false, cmdIndex=0, cmdData=[];
-        function toggleCmd(){
-          cmdActive=!cmdActive;
-          els.cmdOverlay.classList.toggle('active', cmdActive);
-          if(cmdActive){ els.cmdInput.value=''; renderCmd(); setTimeout(()=>els.cmdInput.focus(),50); }
-          else { els.cmdInput.blur(); }
-        }
-        function renderCmd(){
-          const q = els.cmdInput.value.toLowerCase().trim();
-          if(!q) { cmdData = state.notes.slice(0, 10); } 
-          else {
-            cmdData = state.notes.filter(n => (n.title+' '+n.path+' '+(n.excerpt||'')).toLowerCase().includes(q)).slice(0, 50);
-          }
-          cmdIndex = 0;
-          updateCmdDOM();
-        }
-        function updateCmdDOM(){
-          if(!cmdData.length){ els.cmdResults.innerHTML = '<div class="empty" style="padding:20px;margin:0;border:none">Brak wyników.</div>'; return; }
-          els.cmdResults.innerHTML = cmdData.map((n, i) => {
-            const pImg = { 'golden-protocols':'golden_protocols.png', 'fitness-health':'fitness_health.png', 'taste':'taste.png', 'cron-sync':'cron_sync.png', 'daily-log':'daily_log.png' }[n.category];
-            const thumbHTML = pImg ? `<img src="/p/${pImg}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:4px" />` : '📄';
-            return `
-            <div class="cmd-item ${i===cmdIndex?'selected':''}" data-idx="${i}">
-              <div class="cmd-item-icon" style="padding:0;overflow:hidden">${thumbHTML}</div>
-              <div class="cmd-item-title">${n.title}</div>
-              <div class="cmd-item-path">${n.path}</div>
+        let html = '';
+        list.forEach(n => {
+          const act = (n.id === state.activeNoteId) ? 'active' : '';
+          const tagsHtml = (n.tags||[]).map(t => `<span class="note-card-tag">${t}</span>`).join('');
+          html += `
+            <div class="note-card ${act}" data-id="${n.id}">
+              <div class="note-card-title">${n.title || 'Bez tytułu'}</div>
+              <div class="note-card-meta">
+                <span>${fmt(n.updatedAt)}</span>
+                <div class="note-card-tags">${tagsHtml}</div>
+              </div>
             </div>
-          `}).join('');
-          els.cmdResults.querySelectorAll('.cmd-item').forEach(el => {
-            el.onmouseenter=() => { cmdIndex=parseInt(el.dataset.idx); updateCmdDOMSelectedOnly(); };
-            el.onclick=() => { openNote(cmdData[cmdIndex].id, true); toggleCmd(); els.q.value=''; state.q=''; renderList(); };
-          });
-        }
-        function updateCmdDOMSelectedOnly(){
-          els.cmdResults.querySelectorAll('.cmd-item').forEach((el, i) => el.classList.toggle('selected', i===cmdIndex));
-          const sel = els.cmdResults.querySelector('.selected');
-          if(sel) sel.scrollIntoView({block:'nearest'});
-        }
-        
-        els.cmdInput.addEventListener('input', debounce(renderCmd, 150));
-        els.cmdOverlay.addEventListener('click', e => { if(e.target===els.cmdOverlay) toggleCmd(); });
+          `;
+        });
+        els.notesList.innerHTML = html;
 
-        document.addEventListener('keydown',(e)=>{
-          if(cmdActive){
-            if(e.key==='Escape'){ e.preventDefault(); toggleCmd(); }
-            else if(e.key==='ArrowDown'){ e.preventDefault(); cmdIndex=Math.min(cmdData.length-1, cmdIndex+1); updateCmdDOMSelectedOnly(); }
-            else if(e.key==='ArrowUp'){ e.preventDefault(); cmdIndex=Math.max(0, cmdIndex-1); updateCmdDOMSelectedOnly(); }
-            else if(e.key==='Enter' && cmdData[cmdIndex]){ e.preventDefault(); openNote(cmdData[cmdIndex].id, true); toggleCmd(); els.q.value=''; state.q=''; renderList(); }
-            return;
-          }
-          
-          if((e.ctrlKey || e.metaKey) && e.key==='k') { e.preventDefault(); toggleCmd(); }
-          if(!els.lock.classList.contains('hidden')) return; // ignore shortcuts if locked
-          
-          if(e.key==='/' && document.activeElement!==els.q){ e.preventDefault(); toggleCmd(); }
-          if(e.key==='n' && document.activeElement.tagName!=='INPUT') move(1);
-          if(e.key==='p' && document.activeElement.tagName!=='INPUT') move(-1);
+        els.notesList.querySelectorAll('.note-card').forEach(el => {
+          el.addEventListener('click', () => {
+            state.listScroll = els.notesList.scrollTop;
+            openNote(el.dataset.id);
+          });
         });
       }
 
-      function startApp(data){
+      function openNote(idStr, pushState=true) {
+        const note = state.notes.find(n => n.id === idStr);
+        if(!note) return;
+        state.activeNoteId = idStr;
+
+        els.readEmpty.style.display = 'none';
+        els.readActive.style.display = 'flex';
+
+        els.readTitle.textContent = note.title || 'Bez tytułu';
+        els.readDate.textContent = fmt(note.updatedAt);
+        els.readTags.innerHTML = (note.tags||[]).map(t => `<span class="note-card-tag" style="margin-right:6px;">${t}</span>`).join('');
+        
+        let raw = note.content || '';
+        const html = DOMPurify.sanitize(marked.parse(raw));
+        els.readBody.innerHTML = html;
+
+        Prism.highlightAllUnder(els.readBody);
+
+        renderList();
+        els.readScroll.scrollTop = 0;
+        
+        if(pushState) history.pushState(null, null, '#'+idStr);
+        if(isMobile()) setMobileTab('read');
+      }
+
+      function bind() {
+        els.searchInput.addEventListener('input', e => {
+          state.filterPhrase = e.target.value;
+          renderList();
+        });
+
+        els.modeTabs.forEach(t => {
+          t.addEventListener('click', () => {
+            els.modeTabs.forEach(x => x.classList.remove('active'));
+            t.classList.add('active');
+            state.mode = t.dataset.mode;
+            state.activeTag = 'all';
+            buildTags();
+            renderList();
+          });
+        });
+
+        window.addEventListener('popstate', () => {
+          if(location.hash) {
+            const h = location.hash.slice(1);
+            if(state.notes.some(n=>n.id===h)) openNote(h, false);
+          } else {
+            els.readEmpty.style.display = 'flex';
+            els.readActive.style.display = 'none';
+            state.activeNoteId = null;
+            renderList();
+            if(isMobile()) setMobileTab('list');
+          }
+        });
+      }
+
+      function startApp(data) {
         state.notes = data.notes || [];
         const syncAt = data.generatedAt ? fmt(data.generatedAt) : '—';
         const latestNoteAt = data.latestUpdatedAt ? fmt(data.latestUpdatedAt) : '—';
-        els.latest.textContent = `Sync indeksu: ${syncAt} • Najnowsza notatka: ${latestNoteAt}`;
-        load();
-        renderModes();
+        els.latestInfo.textContent = `Sync: ${syncAt} • Najnowsza: ${latestNoteAt}`;
+        
+        buildTags();
         renderList();
+        bind();
 
         if(location.hash){
           const id = location.hash.slice(1);
@@ -809,13 +1096,11 @@ function openNote(id, switchMobile){
         }
 
         if(isMobile()) setMobileTab(state.mobileTab || 'list');
-        requestAnimationFrame(()=>{ els.cards.scrollTop = state.listScroll || 0; els.readPane.scrollTop = state.readScroll || 0; });
+        requestAnimationFrame(() => { els.notesList.scrollTop = state.listScroll || 0; });
       }
 
-
-      // Smooth in-note anchor navigation (TOC links)
       document.addEventListener('click', (e) => {
-        const a = e.target.closest('a[href^="#"]');
+        const a = e.target.closest('.markdown-body a[href^="#"]');
         if(!a) return;
         const href = a.getAttribute('href');
         if(!href || href.length < 2) return;
@@ -827,11 +1112,13 @@ function openNote(id, switchMobile){
         }
       });
 
-      async function boot(){
-        bind();
+      async function boot() {
         const first = await fetchNotes(state.authPass || '');
-        if(first.data){ hideLogin(); startApp(first.data); return; }
-        showLogin('Wymagane logowanie.');
+        if(first.data){ 
+          hideLogin(); startApp(first.data); 
+        } else {
+          showLogin('Wymagane logowanie.');
+        }
       }
 
       boot();
