@@ -14,6 +14,12 @@ Purpose: eliminate "memory gaps" for recurring tool access.
 - Never persist raw tokens in repo memory files.
 - Always persist retrieval path/procedure.
 
+## Deploy branch guardrail (Netlify)
+
+- Before coding for deploy: confirm target branch (`main` or `master`).
+- After push: verify remote head SHA on deploy branch.
+- Treat task as done only after remote SHA matches expected commit.
+
 ## Triage sequence (must follow)
 
 1. Run with wrapper (`tools/birdx ...`).
