@@ -21,6 +21,8 @@ import { cn } from '@/lib/utils';
 
 type SortMode = 'updated_desc' | 'updated_asc' | 'created_desc' | 'created_asc' | 'title_asc';
 
+const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? 'local';
+
 const SORT_LABELS: Record<SortMode, string> = {
   updated_desc: 'Akt. ↓',
   updated_asc: 'Akt. ↑',
@@ -78,7 +80,7 @@ export default function Page() {
     }
   }
 
-  const notes = payload?.notes ?? [];
+  const notes = useMemo(() => payload?.notes ?? [], [payload]);
   const tags = useMemo(() => {
     const set = new Set<string>();
     notes.forEach((n) => (n.tags || []).forEach((t) => set.add(t)));
@@ -153,8 +155,11 @@ export default function Page() {
       <div className="mx-auto flex h-dvh max-w-[1600px] gap-4 p-3 md:p-6">
         <aside className={cn('glass-panel w-full md:w-[390px] md:shrink-0', mobileTab === 'read' && 'hidden md:flex')}>
           <div className="border-b border-zinc-200/70 p-4 dark:border-zinc-800/70">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Aura Notes</h2>
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-semibold">Aura Notes</h2>
+                <Badge className="font-mono text-[10px]">{APP_VERSION}</Badge>
+              </div>
               <Button variant="ghost" size="icon" onClick={toggleTheme}>
                 {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
               </Button>
