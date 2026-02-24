@@ -12938,7 +12938,7 @@ Medical Mobile App Design https://t.co/as7jX0MZsl
 ---
 
 ## [@fba] Flavio Amiel (2026-02-24)
-**Link:** [Profil autora](https://x.com/fba) *(zrzut ekranu — brak pełnego URL posta)*
+**Link:** [Otwórz Tweet](https://x.com/fba/status/2025926581546352900) (ID: 2025926581546352900)
 
 If you run a SaaS and you haven't published an llms.txt file yet, it's time.
 
