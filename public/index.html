@@ -372,6 +372,7 @@
         'golden-protocols':'🏆', 'fitness-health':'💪', taste:'🧠', 'cron-sync':'🕒', 'daily-log':'📝', other:'📄'
       };
 
+      const STATE_VERSION = 2;
       const state = {
         notes: [], filtered: [], selected: null,
         mode: 'all', folder: '', q: '', sort: 'updated_new',
@@ -394,12 +395,19 @@
       const daysAgo = n => new Date(Date.now() - n*86400000);
 
       function save() {
-        localStorage.setItem('aura_notes_state', JSON.stringify({ mode:state.mode, folder:state.folder, q:state.q, sort:state.sort, selected:state.selected, favorites:state.favorites, readMap:state.readMap, listScroll:state.listScroll, readScroll:state.readScroll, mobileTab:state.mobileTab }));
+        localStorage.setItem('aura_notes_state', JSON.stringify({ version: STATE_VERSION, mode:state.mode, folder:state.folder, q:state.q, sort:state.sort, selected:state.selected, favorites:state.favorites, readMap:state.readMap, listScroll:state.listScroll, readScroll:state.readScroll, mobileTab:state.mobileTab }));
       }
 
       function load() {
         try {
           const s = JSON.parse(localStorage.getItem('aura_notes_state') || '{}');
+          if ((s.version || 0) < STATE_VERSION) {
+            localStorage.removeItem('aura_notes_state');
+            els.q.value = '';
+            els.folder.value = '';
+            els.sort.value = 'updated_new';
+            return;
+          }
           state.mode = s.mode || state.mode;
           state.folder = s.folder || '';
           state.q = s.q || '';
