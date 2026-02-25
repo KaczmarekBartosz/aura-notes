@@ -309,7 +309,7 @@ export default function Page() {
             </div>
 
             <p className="mt-4 text-[12px] font-bold opacity-60 px-1 uppercase tracking-wider">
-              {filtered.length} notatek • Synchr.: {fmt(payload.generatedAt)}
+              {filtered.length} notatek • Synchr.: {fmt(payload?.generatedAt)}
             </p>
           </div>
 
