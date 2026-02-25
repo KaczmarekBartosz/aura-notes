@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeSanitize from 'rehype-sanitize';
-import { ArrowLeft, Moon, Search, Sun } from 'lucide-react';
+import { ArrowLeft, BookOpen, List, Moon, Search, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -16,8 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { Note, NotesPayload } from '@/lib/types';
+import type { NotesPayload } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { useDebounce, useScrollProgress } from '@/lib/hooks';
 
 type SortMode = 'updated_desc' | 'updated_asc' | 'created_desc' | 'created_asc' | 'title_asc';
 
@@ -51,11 +52,32 @@ export default function Page() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [mobileTab, setMobileTab] = useState<'list' | 'read'>('list');
   const [dogAnim, setDogAnim] = useState(false);
-  
+
   const [inkSpills, setInkSpills] = useState<{ id: number; x: number; y: number }[]>([]);
+
+  /* ── Optimization state ── */
+  const [unlocking, setUnlocking] = useState(false);
+  const [pullDistance, setPullDistance] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  /* ── Refs ── */
+  const readerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const touchStartY = useRef(0);
+  const pullActive = useRef(false);
+
+  /* ── Debounced search (opt #10) ── */
+  const debouncedQuery = useDebounce(query, 150);
+
+  /* ── Scroll progress for reader (opt #6) ── */
+  const { progress: readProgress, scrollY: readerScrollY } = useScrollProgress(readerRef);
+
+  /* ── Handlers ── */
 
   function handleSelectNote(id: string) {
     setSelectedId(id);
+    readerRef.current?.scrollTo(0, 0); // opt #2: scroll-to-top
     if (window.innerWidth < 768) setMobileTab('read');
   }
 
@@ -63,16 +85,19 @@ export default function Page() {
     setMobileTab(tab);
   }
 
+  /* ── Effects ── */
+
+  // Ink spill Easter egg
   useEffect(() => {
     let lastTime = 0;
-    
+
     function handleMotion(e: DeviceMotionEvent) {
       if (!e.accelerationIncludingGravity) return;
       const { x, y, z } = e.accelerationIncludingGravity;
       if (x === null || y === null || z === null) return;
-      
+
       const acceleration = Math.sqrt(x*x + y*y + z*z);
-      
+
       if (acceleration > 20) {
         const now = Date.now();
         if (now - lastTime > 1000) {
@@ -82,7 +107,7 @@ export default function Page() {
             x: Math.random() * 80 + 10,
             y: Math.random() * 80 + 10
           }]);
-          
+
           setTimeout(() => {
             setInkSpills(prev => prev.filter(spill => spill.id !== now));
           }, 2500);
@@ -96,11 +121,14 @@ export default function Page() {
     }
   }, []);
 
+  // Theme init
   useEffect(() => {
     const savedTheme = (localStorage.getItem('aura-theme') as 'light' | 'dark' | null) ?? 'dark';
     setTheme(savedTheme);
     document.documentElement.classList.toggle('dark', savedTheme === 'dark');
   }, []);
+
+  /* ── Data loading ── */
 
   async function loadNotes(password: string) {
     setLoading(true);
@@ -117,8 +145,11 @@ export default function Page() {
         setLoginError(json.error || 'Błąd API notatek');
         return;
       }
+      // opt #9: unlock transition
+      setUnlocking(true);
+      await new Promise(r => setTimeout(r, 400));
       setPass(password);
-      setToken(password); // Fix for token state
+      setToken(password);
       setPayload(json.data);
       if (json.data?.notes?.length) setSelectedId(json.data.notes[0].id);
     } catch {
@@ -128,9 +159,10 @@ export default function Page() {
     }
   }
 
+  /* ── Derived data ── */
+
   const notes = useMemo(() => payload?.notes ?? [], [payload]);
 
-  // Toggle favorite status mutując stan (symulacja)
   const toggleFavorite = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     if (payload) {
@@ -148,7 +180,7 @@ export default function Page() {
   }, [notes]);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = debouncedQuery.trim().toLowerCase(); // opt #10: debounced
     let out = notes.filter((n) => {
       if (activeTag === 'biurko' && !n.isFavorite) return false;
       if (activeTag !== 'all' && activeTag !== 'biurko' && !(n.tags || []).includes(activeTag)) return false;
@@ -178,7 +210,7 @@ export default function Page() {
     });
 
     return out;
-  }, [notes, activeTag, query, sort]);
+  }, [notes, activeTag, debouncedQuery, sort]);
 
   const selected = filtered.find((n) => n.id === selectedId) || notes.find((n) => n.id === selectedId) || null;
 
@@ -189,11 +221,96 @@ export default function Page() {
     document.documentElement.classList.toggle('dark', next === 'dark');
   }
 
+  // opt #11: keyboard shortcuts (must be after filtered is defined)
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+      if (e.key === 'Escape') {
+        if (mobileTab === 'read') setMobileTab('list');
+        return;
+      }
+      if (e.key === '/') {
+        e.preventDefault();
+        searchRef.current?.focus();
+        return;
+      }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const idx = filtered.findIndex(n => n.id === selectedId);
+        const next = e.key === 'ArrowDown' ? idx + 1 : idx - 1;
+        if (next >= 0 && next < filtered.length) {
+          setSelectedId(filtered[next].id);
+          readerRef.current?.scrollTo(0, 0);
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [filtered, selectedId, mobileTab]);
+
+  /* ── Search highlight helpers (opt #10) ── */
+
+  function highlightText(text: string, q: string): React.ReactNode {
+    if (!q.trim()) return text;
+    const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escaped})`, 'gi');
+    const parts = text.split(regex);
+    return parts.map((part, i) =>
+      regex.test(part) ? <mark key={i} className="bg-primary/30 text-foreground px-0.5 font-black">{part}</mark> : part
+    );
+  }
+
+  function getSnippet(content: string, q: string): string | null {
+    if (!q.trim()) return null;
+    const idx = content.toLowerCase().indexOf(q.toLowerCase());
+    if (idx === -1) return null;
+    const start = Math.max(0, idx - 40);
+    const end = Math.min(content.length, idx + q.length + 40);
+    return (start > 0 ? '…' : '') + content.slice(start, end).replace(/\n/g, ' ') + (end < content.length ? '…' : '');
+  }
+
+  /* ── Pull-to-refresh handlers (opt #7) ── */
+
+  function handlePullStart(e: React.TouchEvent) {
+    if (listRef.current && listRef.current.scrollTop <= 0) {
+      touchStartY.current = e.touches[0].clientY;
+      pullActive.current = true;
+    }
+  }
+
+  function handlePullMove(e: React.TouchEvent) {
+    if (!pullActive.current) return;
+    const dy = Math.max(0, e.touches[0].clientY - touchStartY.current);
+    if (dy > 0) setPullDistance(Math.min(dy * 0.5, 80));
+  }
+
+  function handlePullEnd() {
+    if (pullDistance > 50 && pass) {
+      setIsRefreshing(true);
+      loadNotes(pass).finally(() => {
+        setIsRefreshing(false);
+        setPullDistance(0);
+      });
+    } else {
+      setPullDistance(0);
+    }
+    pullActive.current = false;
+  }
+
+  /* ═══════════════════════════════════════════════
+     LOGIN SCREEN
+     ═══════════════════════════════════════════════ */
+
   if (!token) {
     return (
-      <div className="flex min-h-dvh w-full max-w-full flex-col items-center justify-center p-4 bg-background relative overflow-hidden box-border pt-safe">
-        {/* Pies z Duck Hunt jako PNG w telewizorze */}
-        <button 
+      <div className={cn(
+        "flex min-h-[100svh] min-h-dvh w-full max-w-full flex-col items-center justify-center p-4 bg-background relative overflow-hidden box-border pt-safe transition-all duration-[400ms]",
+        unlocking && "opacity-0 scale-95"
+      )}>
+        {/* Duck Hunt Dog in retro TV */}
+        <button
           onClick={() => {
             setDogAnim(true);
             setTimeout(() => setDogAnim(false), 300);
@@ -201,7 +318,7 @@ export default function Page() {
           className={cn(
             "absolute bottom-4 right-4 md:bottom-8 md:right-8 origin-bottom hover:scale-105 transition-transform duration-200 pointer-events-auto z-20 cursor-pointer border-none bg-transparent outline-none focus:outline-none flex flex-col items-center",
             dogAnim && "dog-clicked"
-          )} 
+          )}
           title="Duck Hunt Mascot!"
         >
           {/* Antena TV */}
@@ -209,17 +326,17 @@ export default function Page() {
             <div className="w-1.5 h-8 md:w-2 md:h-14 bg-foreground origin-bottom rotate-[30deg]"></div>
             <div className="w-1.5 h-6 md:w-2 md:h-10 bg-foreground origin-bottom -rotate-[20deg]"></div>
           </div>
-          
+
           {/* Obudowa TV */}
           <div className="relative w-48 h-40 md:w-72 md:h-64 bg-foreground p-3 md:p-5 shadow-[8px_8px_0_var(--foreground)/50] flex">
-            
+
             {/* Ekran TV */}
             <div className="relative flex-1 bg-[#8b9bb4] overflow-hidden border-2 md:border-4 border-background/20 rounded-sm flex items-center justify-center">
-              
+
               {/* Scanlines i cień kineskopu */}
               <div className="absolute inset-0 bg-black/10 rounded-full blur-md md:blur-xl z-10 pointer-events-none scale-110"></div>
               <div className="absolute inset-0 pointer-events-none z-10 opacity-20" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }}></div>
-              
+
               {/* Obraz Psa */}
               <img src="/duck_hunt_dog.png" alt="Duck Hunt Mascot" className="w-[130%] h-[130%] object-contain pointer-events-none relative z-0 pt-3 md:pt-6 drop-shadow-md" style={{ imageRendering: 'pixelated' }} />
             </div>
@@ -234,9 +351,9 @@ export default function Page() {
                 <div className="w-4 md:w-6 h-0.5 md:h-1 bg-background"></div>
               </div>
             </div>
-            
+
           </div>
-          
+
           {/* Nóżki TV */}
           <div className="flex w-full justify-between px-6 md:px-10 mt-[-2px] z-0">
             <div className="w-3 h-4 md:w-5 md:h-6 bg-foreground skew-x-12"></div>
@@ -255,11 +372,11 @@ export default function Page() {
               loadNotes(loginInput);
             }}
           >
-            <Input 
-              type="password" 
-              value={loginInput} 
-              onChange={(e) => setLoginInput(e.target.value)} 
-              placeholder="Wprowadź hasło..." 
+            <Input
+              type="password"
+              value={loginInput}
+              onChange={(e) => setLoginInput(e.target.value)}
+              placeholder="Wprowadź hasło..."
               className="h-12 text-center rounded-none bg-background border-2 border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[4px_4px_0_var(--primary)] transition-all font-mono"
             />
             <Button type="submit" className="w-full h-12 rounded-none border-2 border-transparent hover:border-foreground hover:shadow-[4px_4px_0_var(--foreground)] hover:-translate-y-1 hover:bg-primary transition-all font-black uppercase text-lg">{loading ? 'Odblokowywanie...' : 'Odblokuj'}</Button>
@@ -270,18 +387,30 @@ export default function Page() {
     );
   }
 
+  /* ═══════════════════════════════════════════════
+     MAIN APP
+     ═══════════════════════════════════════════════ */
+
   return (
-    <div className="h-[100dvh] w-full max-w-full overflow-hidden bg-background text-foreground font-sans relative overscroll-none box-border pt-safe">
+    <div className="h-[100dvh] min-h-[100svh] w-full max-w-full overflow-hidden bg-background text-foreground font-sans relative overscroll-none box-border pt-safe">
       <div className="absolute inset-0 opacity-[0.03] w-full h-full pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+
       <div className="mx-auto flex h-full w-full max-w-[1600px] gap-6 p-4 md:p-8 relative z-10 overflow-hidden">
-        <aside className={cn('bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] flex flex-col w-full md:w-[400px] md:shrink-0 hover:shadow-[12px_12px_0_var(--foreground)]', mobileTab === 'read' && 'hidden md:flex')}>
+
+        {/* ── SIDEBAR / NOTE LIST ── */}
+        <aside className={cn(
+          'bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] flex flex-col w-full md:w-[400px] md:shrink-0',
+          'hover:shadow-[12px_12px_0_var(--foreground)]',
+          mobileTab === 'read' && 'hidden md:flex'
+        )}>
           <div className="border-b-4 border-foreground p-4 md:p-5 bg-muted/30">
             <div className="mb-6 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-black uppercase tracking-tight">Aura Notes</h2>
                 <Badge variant="secondary" className="font-mono text-[10px] rounded-none border-2 border-foreground px-1.5">{APP_VERSION}</Badge>
               </div>
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-none border-2 border-foreground hover:bg-foreground hover:text-background transition-colors hover:shadow-[4px_4px_0_var(--foreground)] hover:-translate-y-1">
+              {/* opt #5: active:scale-90 micro-animation */}
+              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-none border-2 border-foreground hover:bg-foreground hover:text-background transition-colors hover:shadow-[4px_4px_0_var(--foreground)] hover:-translate-y-1 active:scale-90 active:shadow-none">
                 {theme === 'light' ? <Moon className="h-5 w-5" strokeWidth={2.5} /> : <Sun className="h-5 w-5" strokeWidth={2.5} />}
               </Button>
             </div>
@@ -289,11 +418,12 @@ export default function Page() {
             <div className="grid grid-cols-[1fr_auto] gap-3">
               <div className="relative group">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50 group-focus-within:opacity-100 transition-opacity" strokeWidth={3} />
-                <Input 
-                  className="pl-9 h-11 rounded-none bg-background border-2 border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[4px_4px_0_var(--primary)] transition-all font-bold" 
-                  placeholder="Szukaj notatek..." 
-                  value={query} 
-                  onChange={(e) => setQuery(e.target.value)} 
+                <Input
+                  ref={searchRef}
+                  className="pl-9 h-11 rounded-none bg-background border-2 border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[4px_4px_0_var(--primary)] transition-all font-bold"
+                  placeholder="Szukaj notatek... ( / )"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
                 />
               </div>
               <Select value={sort} onValueChange={(v) => setSort(v as SortMode)}>
@@ -313,6 +443,7 @@ export default function Page() {
             </p>
           </div>
 
+          {/* Tag chips — opt #3: touch targets improved via CSS media query */}
           <div className="flex flex-wrap gap-2 border-b-4 border-foreground p-3 bg-muted/10 shrink-0">
             <button className={cn('chip', activeTag === 'all' && 'chip-active')} onClick={() => setActiveTag('all')}>Wszystkie</button>
             <button className={cn('chip border-primary text-primary hover:bg-primary/10', activeTag === 'biurko' && 'chip-active bg-primary text-primary-foreground')} onClick={() => setActiveTag('biurko')}>★ Biurko</button>
@@ -323,63 +454,154 @@ export default function Page() {
             ))}
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scrollbar overscroll-y-contain touch-pan-y">
+          {/* Note list — opt #7: pull-to-refresh, pb-28 for bottom nav clearance */}
+          <div
+            ref={listRef}
+            className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-3 pb-28 md:pb-3 custom-scrollbar overscroll-y-contain touch-pan-y relative"
+            onTouchStart={handlePullStart}
+            onTouchMove={handlePullMove}
+            onTouchEnd={handlePullEnd}
+          >
+            {/* Pull-to-refresh indicator */}
+            {(pullDistance > 0 || isRefreshing) && (
+              <div
+                className="flex items-center justify-center text-foreground/60 transition-all overflow-hidden"
+                style={{ height: isRefreshing ? 40 : pullDistance }}
+              >
+                <span className={cn(
+                  "text-xl font-black transition-transform",
+                  isRefreshing && "animate-spin",
+                  pullDistance > 50 && "scale-125"
+                )}>★</span>
+              </div>
+            )}
+
             <div className="grid gap-1">
-              {filtered.map((n) => (
-                <button
-                  key={n.id}
-                  onClick={() => handleSelectNote(n.id)}
-                  className={cn('note-btn text-left group hover:px-5 border-b-2 border-foreground/10 flex flex-col', selectedId === n.id && 'note-btn-active bg-primary text-primary-foreground border-transparent border-l-8 border-l-foreground')}
-                >
-                  <div className="flex w-full justify-between items-start gap-2">
-                    <div className="line-clamp-2 font-black text-lg leading-snug uppercase tracking-tight group-hover:tracking-normal transition-all flex-1">{n.title}</div>
-                    <div onClick={(e) => toggleFavorite(e, n.id)} className={cn("shrink-0 cursor-pointer pt-1 opacity-20 hover:opacity-100 hover:scale-125 transition-transform", n.isFavorite && "opacity-100 text-[#D97A35]")}>★</div>
-                  </div>
-                  <div className="mt-2 flex items-center gap-2 text-[0.75rem] opacity-70 font-bold uppercase tracking-widest group-hover:opacity-100 w-full">
-                    <span>{fmt(n.updatedAt)}</span>
-                    <span className="w-1.5 h-1.5 bg-current opacity-40"></span>
-                    <span>{n.readingMinutes} min czytania</span>
-                  </div>
-                </button>
-              ))}
+              {filtered.map((n) => {
+                const snippet = debouncedQuery ? getSnippet(n.content, debouncedQuery.trim()) : null;
+                return (
+                  <button
+                    key={n.id}
+                    onClick={() => handleSelectNote(n.id)}
+                    className={cn(
+                      'note-btn text-left group hover:px-5 border-b-2 border-foreground/10 flex flex-col',
+                      'active:scale-[0.98] transition-all', // opt #5: micro-animation
+                      selectedId === n.id && 'note-btn-active bg-primary text-primary-foreground border-transparent border-l-8 border-l-foreground'
+                    )}
+                  >
+                    <div className="flex w-full justify-between items-start gap-2">
+                      {/* opt #10: highlighted title when searching */}
+                      <div className="line-clamp-2 font-black text-lg leading-snug uppercase tracking-tight group-hover:tracking-normal transition-all flex-1">
+                        {debouncedQuery ? highlightText(n.title, debouncedQuery.trim()) : n.title}
+                      </div>
+                      {/* opt #3: 44x44px touch target for favorite star */}
+                      <div
+                        onClick={(e) => toggleFavorite(e, n.id)}
+                        className={cn(
+                          "shrink-0 cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center text-lg",
+                          "hover:scale-125 transition-transform active:scale-90",
+                          n.isFavorite ? "opacity-100 text-[#D97A35]" : "opacity-20 hover:opacity-60"
+                        )}
+                      >★</div>
+                    </div>
+
+                    {/* opt #10: search snippet with highlight */}
+                    {snippet && (
+                      <p className="mt-1 text-[0.75rem] opacity-70 line-clamp-1 font-mono">
+                        {highlightText(snippet, debouncedQuery.trim())}
+                      </p>
+                    )}
+
+                    <div className="mt-2 flex items-center gap-2 text-[0.75rem] opacity-70 font-bold uppercase tracking-widest group-hover:opacity-100 w-full flex-wrap">
+                      <span>{fmt(n.updatedAt)}</span>
+                      <span className="w-1.5 h-1.5 bg-current opacity-40"></span>
+                      <span>{n.readingMinutes} min czytania</span>
+                      {/* opt #13: category badge */}
+                      {n.category && n.category !== 'other' && (
+                        <>
+                          <span className="w-1.5 h-1.5 bg-current opacity-40"></span>
+                          <span className="bg-foreground/10 px-1.5 py-0.5 text-[10px]">{n.category}</span>
+                        </>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </aside>
 
-        <main className={cn('bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] flex flex-col min-w-0 flex-1 relative overflow-hidden', mobileTab === 'list' && 'hidden md:flex')}>
+        {/* ── READER / MAIN CONTENT ── */}
+        <main className={cn(
+          'bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] flex flex-col min-w-0 flex-1 relative overflow-hidden',
+          mobileTab === 'list' && 'hidden md:flex'
+        )}>
+
+          {/* opt #6: reading progress bar */}
+          {selected && (
+            <div className="absolute top-0 left-0 right-0 h-[3px] z-30 bg-foreground/10">
+              <div
+                className="h-full bg-primary transition-[width] duration-150 ease-out"
+                style={{ width: `${readProgress * 100}%` }}
+              />
+            </div>
+          )}
+
+          {/* opt #4: typographic empty state */}
           {!selected ? (
-            <div className="flex flex-col items-center justify-center h-full opacity-80 bg-muted/10">
-              <img src="/sketchbook.png" alt="Empty Sketchbook" className="w-[300px] h-[300px] object-cover mb-8 filter grayscale contrast-125 border-4 border-foreground shadow-[8px_8px_0_var(--primary)] -rotate-2" />
-              <p className="font-black text-3xl uppercase tracking-[0.2em] bg-foreground text-background px-6 py-3 shadow-[8px_8px_0_var(--primary)] rotate-1">Nie wybrano notatki</p>
+            <div className="flex flex-col items-center justify-center h-full opacity-80 bg-muted/10 gap-6">
+              <BookOpen className="w-20 h-20 stroke-[1.5] opacity-30" />
+              <div className="text-center">
+                <p className="font-black text-3xl uppercase tracking-[0.2em] bg-foreground text-background px-6 py-3 shadow-[8px_8px_0_var(--primary)] rotate-1">Wybierz notatkę</p>
+                <p className="mt-4 text-sm font-bold opacity-50 uppercase tracking-widest">{filtered.length} notatek dostępnych</p>
+              </div>
             </div>
           ) : (
             <div className="flex flex-col h-full" key={selected.id}>
-              {/* Cienki nagłówek mobilny przypięty na stałe tylko w mobile */}
+              {/* Mobile back header — shows note title */}
               <div className="md:hidden border-b-4 border-foreground p-3 bg-muted/10 flex items-center justify-between shrink-0">
-                <Button variant="ghost" size="icon" onClick={() => handleTabChange('list')} className="rounded-none border-2 border-foreground hover:bg-foreground hover:text-background shadow-[4px_4px_0_var(--foreground)]">
+                <Button variant="ghost" size="icon" onClick={() => handleTabChange('list')} className="rounded-none border-2 border-foreground hover:bg-foreground hover:text-background shadow-[4px_4px_0_var(--foreground)] active:scale-90 active:shadow-none">
                   <ArrowLeft className="h-5 w-5" strokeWidth={3} />
                 </Button>
-                <span className="text-sm font-black uppercase tracking-wider bg-foreground text-background px-3 py-1.5 shadow-[4px_4px_0_var(--primary)] text-center">Notatki</span>
+                <span className="text-sm font-black uppercase tracking-wider bg-foreground text-background px-3 py-1.5 shadow-[4px_4px_0_var(--primary)] text-center line-clamp-1 max-w-[60%]">
+                  {selected.title}
+                </span>
               </div>
-              
-              <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-5 md:p-12 custom-scrollbar bg-background selection:bg-foreground selection:text-background overscroll-y-contain touch-pan-y">
+
+              {/* opt #6: sticky header on desktop (appears after scrolling 150px) */}
+              <div className={cn(
+                "hidden md:flex items-center justify-between border-b-4 border-foreground px-6 py-2 bg-muted/30 shrink-0 transition-all duration-200",
+                readerScrollY > 150 ? "opacity-100 max-h-16" : "opacity-0 max-h-0 overflow-hidden py-0 border-b-0"
+              )}>
+                <span className="font-black uppercase tracking-tight text-sm line-clamp-1 flex-1">{selected.title}</span>
+                <span className="text-[10px] font-bold opacity-50 ml-4 uppercase shrink-0">{Math.round(readProgress * 100)}%</span>
+              </div>
+
+              <div
+                ref={readerRef}
+                className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-5 md:p-12 custom-scrollbar bg-background selection:bg-foreground selection:text-background overscroll-y-contain touch-pan-y"
+              >
                 <article className="markdown-body mx-auto max-w-[750px] pb-24">
-                  
-                  {/* Nagłówek i tagi wklejone jako treść, by się przewijały! */}
+
+                  {/* Note header with metadata */}
                   <div className="mb-12 border-b-4 border-foreground pb-8 relative">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl mix-blend-multiply pointer-events-none"></div>
                     <h1 className="text-4xl font-black tracking-tighter md:text-[3rem] leading-[1.1] mb-6 uppercase break-words border-none pb-0 relative z-10 flex items-start gap-4">
                       {selected.title}
-                      <button onClick={(e) => toggleFavorite(e, selected.id)} className={cn("mt-2 text-2xl hover:scale-125 transition-transform opacity-30 hover:opacity-100 cursor-pointer", selected.isFavorite && "opacity-100 text-[#D97A35]")}>
+                      {/* opt #3: 44x44px touch target */}
+                      <button onClick={(e) => toggleFavorite(e, selected.id)} className={cn(
+                        "mt-2 text-2xl hover:scale-125 transition-transform active:scale-90 cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center",
+                        selected.isFavorite ? "opacity-100 text-[#D97A35]" : "opacity-30 hover:opacity-100"
+                      )}>
                         ★
                       </button>
                     </h1>
-                    
+
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-3 text-[11px] font-bold uppercase tracking-widest opacity-80 mb-6 relative z-10">
                       <span className="bg-foreground text-background px-2 py-1 shadow-[2px_2px_0_var(--primary)]">Utworzono: {fmt(selected.createdAt)}</span>
                       <span className="bg-foreground text-background px-2 py-1 shadow-[2px_2px_0_var(--primary)]">Akt: {fmt(selected.updatedAt)}</span>
                     </div>
-                    
+
                     {selected.tags && selected.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2 relative z-10">
                         {selected.tags.map((t) => (
@@ -388,7 +610,8 @@ export default function Page() {
                       </div>
                     )}
                   </div>
-                  
+
+                  {/* opt #12: inline code styling handled in globals.css */}
                   <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize, rehypeHighlight]}>
                     {selected.content}
                   </ReactMarkdown>
@@ -399,15 +622,45 @@ export default function Page() {
         </main>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-40 grid grid-cols-2 border-t-4 border-foreground bg-background p-4 px-safe pb-safe md:hidden gap-2 shadow-[0_-8px_0_var(--foreground)]">
-        <Button variant={mobileTab === 'list' ? 'default' : 'outline'} className={cn("rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]", mobileTab === 'list' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1')} onClick={() => handleTabChange('list')}>Notatki</Button>
-        <Button variant={mobileTab === 'read' ? 'default' : 'outline'} className={cn("rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]", mobileTab === 'read' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1')} onClick={() => handleTabChange('read')}>Czytnik</Button>
+      {/* opt #8: Bottom nav with icons, count badge, transition */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 border-t-4 border-foreground bg-background px-safe pb-safe md:hidden shadow-[0_-8px_0_var(--foreground)]">
+        <div className="grid grid-cols-2 gap-2 p-3">
+          <Button
+            variant={mobileTab === 'list' ? 'default' : 'outline'}
+            className={cn(
+              "rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]",
+              "transition-all duration-150 flex flex-col gap-0.5 items-center justify-center",
+              mobileTab === 'list' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1'
+            )}
+            onClick={() => handleTabChange('list')}
+          >
+            <List className="h-5 w-5" strokeWidth={2.5} />
+            <span className="text-[10px] flex items-center gap-1">
+              Notatki
+              {filtered.length > 0 && (
+                <span className="bg-foreground/20 px-1 text-[9px] font-mono">{filtered.length}</span>
+              )}
+            </span>
+          </Button>
+          <Button
+            variant={mobileTab === 'read' ? 'default' : 'outline'}
+            className={cn(
+              "rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]",
+              "transition-all duration-150 flex flex-col gap-0.5 items-center justify-center",
+              mobileTab === 'read' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1'
+            )}
+            onClick={() => handleTabChange('read')}
+          >
+            <BookOpen className="h-5 w-5" strokeWidth={2.5} />
+            <span className="text-[10px]">Czytnik</span>
+          </Button>
+        </div>
       </nav>
 
-      {/* Warstwa tekstury papieru (cinieta + grain) */}
+      {/* Paper texture overlay */}
       <div className="vignette-grain" />
 
-      {/* Wylewy atramentu (Easter Egg - Shake Device) */}
+      {/* Ink spill Easter Egg */}
       <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
         {inkSpills.map(spill => (
           <svg key={spill.id} className="absolute animate-ink-spill origin-center" style={{ left: `${spill.x}%`, top: `${spill.y}%`, width: '150px', height: '150px', fill: 'var(--foreground)', transform: 'translate(-50%, -50%)' }} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">

@@ -257,10 +257,25 @@
   text-transform: uppercase;
 }
 
+/* Inline code styling (not inside pre blocks) */
+.markdown-body :not(pre) > code {
+  background: var(--muted);
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--border);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
 @media (max-width: 768px) {
   .markdown-body {
     font-size: 1rem;
     line-height: 1.5;
+  }
+  /* Larger touch targets for tag chips on mobile */
+  .chip {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -392,16 +407,16 @@ html, body {
 }
 
 .pt-safe {
-  padding-top: max(env(safe-area-inset-top), 0px);
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .pb-safe {
-  padding-bottom: max(env(safe-area-inset-bottom), 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .px-safe {
-  padding-left: calc(1rem + max(env(safe-area-inset-left), 0px));
-  padding-right: calc(1rem + max(env(safe-area-inset-right), 0px));
+  padding-left: calc(1rem + env(safe-area-inset-left, 0px));
+  padding-right: calc(1rem + env(safe-area-inset-right, 0px));
 }
 
 @supports (-webkit-touch-callout: none) {
