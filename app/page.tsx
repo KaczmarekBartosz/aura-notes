@@ -191,7 +191,7 @@ export default function Page() {
 
   if (!token) {
     return (
-      <div className="flex min-h-dvh w-full max-w-full flex-col items-center justify-center p-4 bg-background relative overflow-hidden">
+      <div className="flex min-h-dvh w-full max-w-full flex-col items-center justify-center p-4 bg-background relative overflow-hidden box-border pt-safe">
         {/* Pies z Duck Hunt jako PNG w telewizorze */}
         <button 
           onClick={() => {
@@ -271,7 +271,7 @@ export default function Page() {
   }
 
   return (
-    <div className="h-[100dvh] w-full max-w-full overflow-hidden bg-background text-foreground font-sans relative overscroll-none">
+    <div className="h-[100dvh] w-full max-w-full overflow-hidden bg-background text-foreground font-sans relative overscroll-none box-border pt-safe">
       <div className="absolute inset-0 opacity-[0.03] w-full h-full pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
       <div className="mx-auto flex h-full w-full max-w-[1600px] gap-6 p-4 md:p-8 relative z-10 overflow-hidden">
         <aside className={cn('bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] flex flex-col w-full md:w-[400px] md:shrink-0 hover:shadow-[12px_12px_0_var(--foreground)]', mobileTab === 'read' && 'hidden md:flex')}>
@@ -399,7 +399,7 @@ export default function Page() {
         </main>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-40 grid grid-cols-2 border-t-4 border-foreground bg-background p-4 md:hidden pb-safe gap-2 shadow-[0_-8px_0_var(--foreground)]">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 grid grid-cols-2 border-t-4 border-foreground bg-background p-4 px-safe pb-safe md:hidden gap-2 shadow-[0_-8px_0_var(--foreground)]">
         <Button variant={mobileTab === 'list' ? 'default' : 'outline'} className={cn("rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]", mobileTab === 'list' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1')} onClick={() => handleTabChange('list')}>Notatki</Button>
         <Button variant={mobileTab === 'read' ? 'default' : 'outline'} className={cn("rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]", mobileTab === 'read' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1')} onClick={() => handleTabChange('read')}>Czytnik</Button>
       </nav>

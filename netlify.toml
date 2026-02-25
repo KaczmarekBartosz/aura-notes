@@ -9,6 +9,11 @@
   package = "@netlify/plugin-nextjs"
 
 [[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
