@@ -13012,3 +13012,165 @@ Długi case-study/lead magnet o **AEO (Answer Engine Optimization)** dla e-comme
 
 ### Opracowanie pełne
 - `memory/recipes/aeo-ecommerce-7-layer-playbook-2026-02-25.md`
+
+---
+
+# BATCH 346 — Przetworzone 2026-02-25
+
+## [@paoloanzn] 4nzn (2026-02-18)
+**Link:** [Otwórz Tweet](https://x.com/paoloanzn/status/2024248684385619992) (ID: 2024248684385619992)
+OpenClaw + MiniMax 2.5 + Obsidian = beast at $1/h. Skill Graphs > SKILL.md — struktura grafowa zamiast płaskich plików.
+
+**Tagi:** #openclaw #obsidian #skills #knowledge-management
+
+---
+
+## [@AlexFinn] Alex Finn (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/AlexFinn/status/2024280496503710174) (ID: 2024280496503710174)
+Biggest unlock for OpenClaw: Mission statement. Reverse prompt co 4h: "what is 1 task we can do to get closer to our mission?" Agent generuje zadania niewymyślone przez człowieka. Przykładowa misja: "Build an autonomous organization of AI agents that does work for me and produces value 24/7"
+
+**Tagi:** #openclaw #mission #productivity #automation
+
+---
+
+## [@alexcooldev] Alex Nguyen (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/alexcooldev/status/2024299055480979673) (ID: 2024299055480979673)
+Easy app ideas to make $10k/month: Rebuild a boring app that's already making over $100k, but add a mascot and gamification.
+
+**Tagi:** #growth #app-ideas #gamification #saas
+
+---
+
+## [@whotfiszackk] zack (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/whotfiszackk/status/2024340173975408828) (ID: 2024340173975408828)
+📰 Made $120k doing nothing — AI Leverage Model. ChatGPT writes tweets, Claude writes products, Midjourney makes graphics. 10 faceless pages, 10 niches. Człowiek: identyfikuje nisze, zatrudnia SME, feeduje AI, waliduje, publikuje. 15 min dziennie per brand = 140+ tweets/tydzień.
+
+**Tagi:** #growth #faceless #ai #monetization #content
+
+---
+
+## [@sohrabhossain39] PromptX (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/sohrabhossain39/status/2024340685030379664) (ID: 2024340685030379664)
+$3M selling ebooks online. System: 1) Znajdź problem na Reddit (unsexy, urgent), 2) ChatGPT outline 10 chapters, 3) Claude pisze 1000 słów/kap (80-150 pages), 4) Canva okładka, 5) Amazon KDP. 3-5 książek, scale winners. Koszt startu ~$0.
+
+**Tagi:** #growth #ebook #amazon-kdp #passive-income
+
+---
+
+## [@miroburn] miroburn (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/miroburn/status/2024389869720465864) (ID: 2024389869720465864)
+📰 Jak wygrać z AI? / 2026 Edition — 10 zasad: 1) Używaj codziennie, 2) Buduj coś prawdziwego, 3) Naucz AI kim jesteś, 4) Nie pytaj o radę — daj problem, 5) Zostaw AI odpowiadanie za Ciebie, 6) Uruchom kilka agentów naraz, 7) Buduj narzędzia pod siebie, 8) Jeden proces automatyzacji/tydzień, 9) Nie używaj AI do tego co lubisz, 10) Mierz czas nie tokeny.
+
+**Tagi:** #ai #productivity #polish #workflow #mindset
+**Analiza:** Pełna analiza w KNOWLEDGE_ACTIONABLE.md
+
+---
+
+## [@szarketh] szark.eth® (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/szarketh/status/2024451303423037697) (ID: 2024451303423037697)
+22 AI Agentów, 6 zespołów (IT, Marketing, Research, Operacje, Biznes, QC), Komunikacja przez Notion, Koszt: <$1/dzień. Pierwszych 7 zbudował ręcznie. Reszta buduje się sama.
+
+**Tagi:** #ai #agents #automation #organization
+
+---
+
+## [@bowtiedmeathead] BowTiedMeatHead (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/bowtiedmeathead/status/2024458249668346326) (ID: 2024458249668346326)
+TRT 3+ lat + peptydy (HGH, BPC-157, Tessamorelin, NAD+). 42 lata, 360 ng/dl → totalna transformacja. Lepszy ojciec, mąż, pracownik, business owner. 3 injekcje/tydzień: Pon/Wt/Pt.
+
+**Tagi:** #trt #peptides #hgh #bpc157 #health
+
+---
+
+## [@UiSavior] UI/UX Savior (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/UiSavior/status/2024477839953670149) (ID: 2024477839953670149)
+Go-to sites to learn UI design for free: Motion → motion.dev, Patterns → mobbin.com, AB Tests → baymard.com, Inspiration → dribbble.com/behance.net, Breakdowns → growth.design, UI components → ui8.net.
+
+**Tagi:** #design #ui #resources #learning #free
+
+---
+
+## [@morellifit] Michael Morelli (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/morellifit/status/2024519786005483817) (ID: 2024519786005483817)
+📰 Tested 10+ peptides over 5 years — 8 most viral ones. Peptydy = naturalne, ale wymagają edukacji przed użyciem.
+
+**Tagi:** #peptides #health #research #education
+
+---
+
+## [@nahidulislam404] NIJ Ruvos (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/nahidulislam404/status/2024524878419050594) (ID: 2024524878419050594)
+GOODBYE TO SOCIAL MEDIA MANAGERS IN 2026. Claude do designu, edycji i schedulowania 30 dni contentu w 2h. 7 promptów do pełnej automatyzacji.
+
+**Tagi:** #ai #social-media #automation #claude #content
+
+---
+
+## [@pcshipp] pc (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/pcshipp/status/2024533103965040753) (ID: 2024533103965040753)
+Hired 6 people for startup: 🤝 Co-founder: OpenClaw, 👨‍💻 Coding: Opus 4.6, 🐛 Debugging: GPT-5.2, 🔬 Research: Grok 4.1, ✍️ Writing: GPT-5 Mini, ⚡ Shipping: Codex. Work anytime. No leave. No drama.
+
+**Tagi:** #ai #team #workflow #models
+
+---
+
+## [@drmarlonperalta] Marlon (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/drmarlonperalta/status/2024544169218199904) (ID: 2024544169218199904)
+Modern health journey: 1) Retatrutide, 2) TRT, 3) MOTS-c + SLU-PP-332 + BPC-157 + GHK-Cu + TB500 + SS-31, 4) GH, 5) "use my discount code".
+
+**Tagi:** #health #peptides #stack #optimization
+
+---
+
+## [@corbin_braun] corbin (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/corbin_braun/status/2024560776049283545) (ID: 2024560776049283545)
+New coding model tier list: Gemini Pro 3.1 = Creative frontend code, GPT-Codex-5.3 = Planner & Bug Killer, Opus 4.6 = Coder.
+
+**Tagi:** #ai #coding #models #tier-list
+
+---
+
+## [@leojrr] leo (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/leojrr/status/2024563656911200698) (ID: 2024563656911200698)
+📰 App Ideation Specialist Prompt — Viral trends + gap analysis + scoring (vibe-codeability, trend-fit, monetization, virality). Only surface ideas scoring 16+/20.
+
+**Tagi:** #ai #prompt #ideation #app-ideas
+**Analiza:** Pełny prompt w CODE_RECIPES_GLM.md
+
+---
+
+## [@KacperTrzepiec1] Kacper Trzepieciński (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/KacperTrzepiec1/status/2024564112035106878) (ID: 2024564112035106878)
+Claude Code ma problem - amnezję. Kieran Klaassen zbudował plugin do persistence. Plugin zapamiętuje kontekst między sesjami.
+
+**Tagi:** #claude #claude-code #plugin #memory
+
+---
+
+## [@Motion_Viz] MotionViz (2026-02-19)
+**Link:** [Otwórz Tweet](https://x.com/Motion_Viz/status/2024599471120929026) (ID: 2024599471120929026)
+📰 Tested Gemini 3.1 Pro — SVG-based landing page using only prompts. No Figma. No code editor. Output cleaner than most devs ship manually.
+
+**Tagi:** #ai #gemini #svg #landing-page #design
+
+---
+
+## [@johann_sath] Johann Sathianathen (2026-02-20)
+**Link:** [Otwórz Tweet](https://x.com/johann_sath/status/2024662169300979786) (ID: 2024662169300979786)
+📰 OpenClaw RULES.md essentials: 1) "fix errors immediately. don't ask. don't wait." 2) "spawn subagents for all execution. never do inline work." 3) "never force push, delete branches, or rewrite git history." 4) "never guess config changes. read docs first. backup before editing."
+
+**Tagi:** #openclaw #rules #guardrails #best-practices
+**Analiza:** Pełna implementacja w CODE_RECIPES_GLM.md
+
+---
+
+## [@HealthyAlfred] alfred (2026-02-20)
+**Link:** [Otwórz Tweet](https://x.com/HealthyAlfred/status/2024789788054720950) (ID: 2024789788054720950)
+📰 Retatrutide reduces body fat by 24% in 24 weeks while PRESERVING muscle mass. Triple agonist: GLP-1 + GIP + glucagon receptor. Clinical trial 48 weeks: body weight -24.2%, fat loss significant, lean muscle preserved, metabolic markers improved.
+
+**Tagi:** #health #peptides #retatrutide #weight-loss #clinical
+**Analiza:** Szczegóły w KSIEGA_PEPTYDOW.md
+
+---
+
+*Koniec batch 346 — Przetworzono 212 zakładek*

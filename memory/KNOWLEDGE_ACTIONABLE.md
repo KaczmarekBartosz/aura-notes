@@ -364,9 +364,98 @@
 
 ---
 
-Każda pozycja zawiera:
-1. **Streszczenie** — konkret w 1-2 zdaniach
-2. **Akcja** — co zrobić
+# BATCH 346 UPDATE — 2026-02-25
+
+## AI / OpenClaw — Mission Statement Pattern
+
+### Mission Statement jako kontekst dla agentów
+- **Streszczenie:** Kluczowe dla OpenClaw: mission statement wstrzykiwany do każdego promptu. Reverse prompt: "co możemy zrobić aby przybliżyć się do misji?" → agent generuje zadania niewymyślone przez człowieka.
+- **Akcja:** Utworzyć mission statement dla OpenClaw, wstrzykiwać do każdej sesji, używać reverse prompt co 4h.
+- **Source:** @AlexFinn
+- **Tagi:** #openclaw #mission #context #productivity
+
+### Skill Graphs > SKILL.md
+- **Streszczenie:** OpenClaw + MiniMax 2.5 + Obsidian = potężny system zarządzania wiedzą. Skill graphs jako struktura zamiast flat SKILL.md.
+- **Akcja:** Rozważyć migrację SKILL.md do formatu graph-based z dependencies i outputs.
+- **Source:** @paoloanzn / @arscontexta
+- **Tagi:** #openclaw #skills #obsidian #knowledge-management
+
+## AI / Tooling — AI Team Setup
+
+### AI-First Team Composition
+- **Streszczenie:** Skład zespołu AI: Co-founder (Opus 4.6), Coding (Opus 4.6), Debugging (GPT-5.2), Research (Grok 4.1), Writing (GPT-5 Mini), Shipping (Codex). Działa 24/7, no leave, no drama.
+- **Akcja:** Przypisać konkretne modele do ról w workflow — nie używać jednego modelu do wszystkiego.
+- **Source:** @pcshipp
+- **Tagi:** #ai #team #workflow #models #roles
+
+## Growth / SaaS — Social Media Automation
+
+### Social Media Management via Claude
+- **Streszczenie:** Claude do designu, edycji i schedulowania 30 dni contentu w 2h. 7 promptów do pełnej automatyzacji.
+- **Akcja:** Zaimplementować Claude workflow dla social media — dokumentacja w GOLD_GROWTH_MARKETING_PROTOCOL.md
+- **Source:** @nahidulislam404
+- **Tagi:** #ai #social-media #automation #claude #content
+
+### Ebook Empire — $3M bez pisania
+- **Streszczenie:** System: 1) Znajdź problem na Reddit, 2) ChatGPT outline, 3) Claude pisze 1000 słów/kap, 4) Canva okładka, 5) Amazon KDP. 3-5 książek, scale winners. Koszt startu ~$0.
+- **Akcja:** Test systemu dla polskiego rynku (EbookPoint?) — znaleźć niszę "unsexy, urgent problem".
+- **Source:** @sohrabhossain39
+- **Tagi:** #growth #ebook #amazon-kdp #passive-income #content
+
+### $120k/miesiąc z Faceless Pages
+- **Streszczenie:** Stack: ChatGPT (content), Claude (produkty), Midjourney (grafiki). 10 faceless pages, 10 nisz. Człowiek: identyfikuje nisze, zatrudnia SME, feeduje AI, waliduje, publikuje.
+- **Akcja:** Wybrać 1-2 nisze do testu — zbudować faceless page z AI-generated content.
+- **Source:** @whotfiszackk
+- **Tagi:** #growth #faceless #content #ai #monetization
+
+## Design / AI — Gemini 3.1 Pro
+
+### One-Shot WebOS Generation
+- **Streszczenie:** Gemini 3.1 Pro one-shotuje Windows 11 WebOS z Python terminal, games, code runner. Różnica między generacjami modeli = ogromna.
+- **Akcja:** Test Gemini 3.1 Pro dla complex frontend apps — benchmark vs Claude/GPT.
+- **Source:** @chetaslua
+- **Tagi:** #ai #gemini #frontend #webos #coding
+
+### SVG Landing Pages via Prompts
+- **Streszczenie:** Gemini 3.1 Pro generuje SVG-based landing pages z samych promptów. No Figma, no code editor. Output cleaner niż większość devów.
+- **Akcja:** Przetestować dla szybkich landing page prototypes.
+- **Source:** @Motion_Viz
+- **Tagi:** #ai #gemini #svg #landing-page #design
+
+## AI / Polish — Jak Wygrać z AI (2026)
+
+### 10 Zasad Miroburn
+- **Streszczenie:** 1) Używaj codziennie, 2) Buduj coś prawdziwego, 3) Naucz AI kim jesteś, 4) Nie pytaj o radę — daj problem, 5) Zostaw AI odpowiadanie za Ciebie, 6) Uruchom kilka agentów naraz, 7) Buduj narzędzia pod siebie, 8) Jeden proces automatyzacji/tydzień, 9) Nie używaj AI do tego co lubisz, 10) Mierz czas nie tokeny.
+- **Akcja:** Wdrożyć zasadę #10 — track time saved nie token usage.
+- **Source:** @miroburn
+- **Tagi:** #ai #productivity #polish #workflow #mindset
+
+## Health / Peptydy — Retatrutide Deep Dive
+
+### Retatrutide: 24% Fat Loss w 24 tygodnie
+- **Streszczenie:** Triple agonist (GLP-1 + GIP + glucagon). W przeciwieństwie do Ozempic — aktywuje fat burning bez utraty mięśni. Clinical trial: -24.2% body weight, preserved lean mass.
+- **Akcja:** Research Retatrutide jako alternatywa dla obecnych GLP-1 — dodać do KSIEGA_PEPTYDOW.md.
+- **Source:** @HealthyAlfred
+- **Tagi:** #health #peptides #retatrutide #weight-loss #clinical
+
+### Modern Health Journey Stack
+- **Streszczenie:** Stack optymalizacji: 1) Retatrutide, 2) TRT, 3) MOTS-c + SLU-PP-332 + BPC-157 + GHK-Cu + TB500 + SS-31, 4) GH, 5) "use my discount code".
+- **Akcja:** Dokumentować stosy eksperymentalne — edukacyjnie, nie rekomendacyjnie.
+- **Source:** @drmarlonperalta
+- **Tagi:** #health #peptides #stack #optimization #experimental
+
+## Design / UI — Free Learning Resources
+
+### Go-To Sites for UI Design
+- **Streszczenie:** Motion → motion.dev, Patterns → mobbin.com, AB Tests → baymard.com, Inspiration → dribbble.com/behance.net, Breakdowns → growth.design, UI Components → ui8.net.
+- **Akcja:** Bookmark wszystkie — używać jako reference przy projektowaniu.
+- **Source:** @UiSavior
+- **Tagi:** #design #ui #resources #learning #free
+
+---
+
+*Batch 346 processed: 212 bookmarks*
+*Last Updated: 2026-02-25*
 3. **Source** — kto/autor
 4. **Tagi** — kategoria
 
