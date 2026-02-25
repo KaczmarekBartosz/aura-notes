@@ -12958,3 +12958,29 @@ And almost nobody is doing it yet.
 
 **Źródło referencyjne:** https://vercel.com/docs/llms-full.txt
 **Notatka:** Wniosek strategiczny — wdrożyć `llms.txt` + proces aktualizacji pod widoczność w odpowiedziach LLM.
+
+---
+
+## [@Nate_Google_] Nate.Google (2026-02-24)
+**Link:** [Otwórz Tweet](https://x.com/Nate_Google_/status/2026338035458056265?s=46) (ID: 2026338035458056265)
+
+Długi case-study/lead magnet o **AEO (Answer Engine Optimization)** dla e-commerce.
+
+### Kluczowy claim
+- Marka suplementów miała dojść do ~**$400k/mies.** z ruchu AI (ChatGPT/Perplexity/Gemini/Claude) dzięki byciu „odpowiedzią” zamiast „wynikiem wyszukiwania”.
+
+### 7-warstwowy framework z posta
+1. Answer Intent Map (mapa pytań zakupowych do AI)
+2. Answer Hub (`/guides/best-[category]-[year]`)
+3. Brand Facts page
+4. `/.well-known/brand-facts.json`
+5. Schema (`ItemList`, `FAQPage`, `Organization`, `Product`)
+6. Third-party citations
+7. GPT Shopping / Merchant Center readiness
+
+### Ocena (wewnętrzna)
+- Framework: **bardzo użyteczny operacyjnie**.
+- Liczby: **marketingowe, do ostrożnej interpretacji** (brak jawnej metodologii attribution).
+
+### Opracowanie pełne
+- `memory/recipes/aeo-ecommerce-7-layer-playbook-2026-02-25.md`

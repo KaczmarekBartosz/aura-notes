@@ -305,3 +305,12 @@ Każda pozycja zawiera:
 2. **Akcja** — co zrobić
 3. **Source** — kto/autor
 4. **Tagi** — kategoria
+
+## Growth / GEO-AEO — E-commerce Visibility in AI Answers
+
+### 7-Layer AEO Framework for E-commerce
+- **Streszczenie:** Praktyczny model zwiększania rekomendacji marki przez ChatGPT/Perplexity/Claude: Intent Map → Answer Hub → Brand Facts → `brand-facts.json` → schema → external citations → Merchant Center readiness.
+- **Akcja:** Wdrożyć pilot 14-dniowy dla 1 kategorii produktowej: (1) 50 pytań intent map, (2) 1 answer hub, (3) brand facts + json, (4) schema pass, (5) KPI loop tygodniowy.
+- **Source:** Nate.Google (@Nate_Google_) — https://x.com/Nate_Google_/status/2026338035458056265?s=46
+- **Tagi:** #growth #geo #aeo #ecommerce #llm-discovery #merchant-center
+
