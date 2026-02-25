@@ -13,6 +13,8 @@ export type Note = {
   isHeavy?: boolean;
   isArchived?: boolean;
   content: string;
+  isFavorite?: boolean;
+  plainText?: string;
 };
 
 export type NotesPayload = {

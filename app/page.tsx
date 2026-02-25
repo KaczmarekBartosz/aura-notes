@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -38,6 +38,7 @@ function fmt(iso?: string | null) {
 
 export default function Page() {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [token, setToken] = useState<string | null>(null);
   const [pass, setPass] = useState('');
   const [loginInput, setLoginInput] = useState('');
   const [loginError, setLoginError] = useState('');
@@ -49,6 +50,51 @@ export default function Page() {
   const [sort, setSort] = useState<SortMode>('updated_desc');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [mobileTab, setMobileTab] = useState<'list' | 'read'>('list');
+  const [dogAnim, setDogAnim] = useState(false);
+  
+  const [inkSpills, setInkSpills] = useState<{ id: number; x: number; y: number }[]>([]);
+
+  function handleSelectNote(id: string) {
+    setSelectedId(id);
+    if (window.innerWidth < 768) setMobileTab('read');
+  }
+
+  function handleTabChange(tab: 'list' | 'read') {
+    setMobileTab(tab);
+  }
+
+  useEffect(() => {
+    let lastTime = 0;
+    
+    function handleMotion(e: DeviceMotionEvent) {
+      if (!e.accelerationIncludingGravity) return;
+      const { x, y, z } = e.accelerationIncludingGravity;
+      if (x === null || y === null || z === null) return;
+      
+      const acceleration = Math.sqrt(x*x + y*y + z*z);
+      
+      if (acceleration > 20) {
+        const now = Date.now();
+        if (now - lastTime > 1000) {
+          lastTime = now;
+          setInkSpills(prev => [...prev, {
+            id: now,
+            x: Math.random() * 80 + 10,
+            y: Math.random() * 80 + 10
+          }]);
+          
+          setTimeout(() => {
+            setInkSpills(prev => prev.filter(spill => spill.id !== now));
+          }, 2500);
+        }
+      }
+    }
+
+    if (typeof window !== 'undefined' && window.DeviceMotionEvent && typeof (DeviceMotionEvent as any).requestPermission !== 'function') {
+      window.addEventListener('devicemotion', handleMotion);
+      return () => window.removeEventListener('devicemotion', handleMotion);
+    }
+  }, []);
 
   useEffect(() => {
     const savedTheme = (localStorage.getItem('aura-theme') as 'light' | 'dark' | null) ?? 'dark';
@@ -72,6 +118,7 @@ export default function Page() {
         return;
       }
       setPass(password);
+      setToken(password); // Fix for token state
       setPayload(json.data);
       if (json.data?.notes?.length) setSelectedId(json.data.notes[0].id);
     } catch {
@@ -82,6 +129,18 @@ export default function Page() {
   }
 
   const notes = useMemo(() => payload?.notes ?? [], [payload]);
+
+  // Toggle favorite status mutując stan (symulacja)
+  const toggleFavorite = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (payload) {
+      setPayload({
+        ...payload,
+        notes: payload.notes.map(n => n.id === id ? { ...n, isFavorite: !n.isFavorite } : n)
+      });
+    }
+  };
+
   const tags = useMemo(() => {
     const set = new Set<string>();
     notes.forEach((n) => (n.tags || []).forEach((t) => set.add(t)));
@@ -91,7 +150,8 @@ export default function Page() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     let out = notes.filter((n) => {
-      if (activeTag !== 'all' && !(n.tags || []).includes(activeTag)) return false;
+      if (activeTag === 'biurko' && !n.isFavorite) return false;
+      if (activeTag !== 'all' && activeTag !== 'biurko' && !(n.tags || []).includes(activeTag)) return false;
       if (!q) return true;
       return (
         n.title.toLowerCase().includes(q) ||
@@ -129,11 +189,62 @@ export default function Page() {
     document.documentElement.classList.toggle('dark', next === 'dark');
   }
 
-  if (!payload) {
+  if (!token) {
     return (
-      <div className="min-h-dvh flex items-center justify-center p-6 bg-background relative overflow-hidden">
-        {/* Dekoracyjna tekstura techniczna/szkicowa */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+      <div className="flex min-h-dvh w-full max-w-full flex-col items-center justify-center p-4 bg-background relative overflow-hidden">
+        {/* Pies z Duck Hunt jako PNG w telewizorze */}
+        <button 
+          onClick={() => {
+            setDogAnim(true);
+            setTimeout(() => setDogAnim(false), 300);
+          }}
+          className={cn(
+            "absolute bottom-4 right-4 md:bottom-8 md:right-8 origin-bottom hover:scale-105 transition-transform duration-200 pointer-events-auto z-20 cursor-pointer border-none bg-transparent outline-none focus:outline-none flex flex-col items-center",
+            dogAnim && "dog-clicked"
+          )} 
+          title="Duck Hunt Mascot!"
+        >
+          {/* Antena TV */}
+          <div className="flex gap-4 md:gap-8 mb-[-2px] z-0">
+            <div className="w-1.5 h-8 md:w-2 md:h-14 bg-foreground origin-bottom rotate-[30deg]"></div>
+            <div className="w-1.5 h-6 md:w-2 md:h-10 bg-foreground origin-bottom -rotate-[20deg]"></div>
+          </div>
+          
+          {/* Obudowa TV */}
+          <div className="relative w-48 h-40 md:w-72 md:h-64 bg-foreground p-3 md:p-5 shadow-[8px_8px_0_var(--foreground)/50] flex">
+            
+            {/* Ekran TV */}
+            <div className="relative flex-1 bg-[#8b9bb4] overflow-hidden border-2 md:border-4 border-background/20 rounded-sm flex items-center justify-center">
+              
+              {/* Scanlines i cień kineskopu */}
+              <div className="absolute inset-0 bg-black/10 rounded-full blur-md md:blur-xl z-10 pointer-events-none scale-110"></div>
+              <div className="absolute inset-0 pointer-events-none z-10 opacity-20" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }}></div>
+              
+              {/* Obraz Psa */}
+              <img src="/duck_hunt_dog.png" alt="Duck Hunt Mascot" className="w-[130%] h-[130%] object-contain pointer-events-none relative z-0 pt-3 md:pt-6 drop-shadow-md" style={{ imageRendering: 'pixelated' }} />
+            </div>
+
+            {/* Panel boczny TV */}
+            <div className="w-8 md:w-12 ml-2 md:ml-4 flex flex-col gap-2 md:gap-4 py-1 md:py-2 items-center">
+              <div className="w-4 h-4 md:w-6 md:h-6 bg-background rounded-full mb-1"></div>
+              <div className="w-4 h-4 md:w-6 md:h-6 bg-background rounded-full"></div>
+              <div className="w-full flex-1 flex flex-col gap-1.5 md:gap-2 justify-end items-center pb-1 md:pb-2 opacity-50">
+                <div className="w-4 md:w-6 h-0.5 md:h-1 bg-background"></div>
+                <div className="w-4 md:w-6 h-0.5 md:h-1 bg-background"></div>
+                <div className="w-4 md:w-6 h-0.5 md:h-1 bg-background"></div>
+              </div>
+            </div>
+            
+          </div>
+          
+          {/* Nóżki TV */}
+          <div className="flex w-full justify-between px-6 md:px-10 mt-[-2px] z-0">
+            <div className="w-3 h-4 md:w-5 md:h-6 bg-foreground skew-x-12"></div>
+            <div className="w-3 h-4 md:w-5 md:h-6 bg-foreground -skew-x-12"></div>
+          </div>
+        </button>
+
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
         <div className="w-full max-w-sm p-8 text-center bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] relative z-10 transition-transform duration-300 hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0_var(--foreground)]">
           <h1 className="text-4xl font-black tracking-tight mb-2 uppercase">Aura Notes</h1>
           <p className="text-sm font-bold opacity-60 mb-8 uppercase tracking-widest">Bezpieczny sejf</p>
@@ -160,10 +271,10 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-dvh bg-background text-foreground font-sans relative">
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
-      <div className="mx-auto flex h-dvh max-w-[1600px] gap-6 p-4 md:p-8 relative z-10">
-        <aside className={cn('bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] flex flex-col w-full md:w-[400px] md:shrink-0 transition-transform duration-300 hover:shadow-[12px_12px_0_var(--foreground)]', mobileTab === 'read' && 'hidden md:flex')}>
+    <div className="h-[100dvh] w-full max-w-full overflow-hidden bg-background text-foreground font-sans relative overscroll-none">
+      <div className="absolute inset-0 opacity-[0.03] w-full h-full pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+      <div className="mx-auto flex h-full w-full max-w-[1600px] gap-6 p-4 md:p-8 relative z-10 overflow-hidden">
+        <aside className={cn('bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] flex flex-col w-full md:w-[400px] md:shrink-0 hover:shadow-[12px_12px_0_var(--foreground)]', mobileTab === 'read' && 'hidden md:flex')}>
           <div className="border-b-4 border-foreground p-4 md:p-5 bg-muted/30">
             <div className="mb-6 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
@@ -202,8 +313,9 @@ export default function Page() {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-2 border-b-4 border-foreground p-3 bg-muted/10">
+          <div className="flex flex-wrap gap-2 border-b-4 border-foreground p-3 bg-muted/10 shrink-0">
             <button className={cn('chip', activeTag === 'all' && 'chip-active')} onClick={() => setActiveTag('all')}>Wszystkie</button>
+            <button className={cn('chip border-primary text-primary hover:bg-primary/10', activeTag === 'biurko' && 'chip-active bg-primary text-primary-foreground')} onClick={() => setActiveTag('biurko')}>★ Biurko</button>
             {tags.map((t) => (
               <button key={t} className={cn('chip', activeTag === t && 'chip-active')} onClick={() => setActiveTag(t)}>
                 {t}
@@ -211,19 +323,19 @@ export default function Page() {
             ))}
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scrollbar">
+          <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scrollbar overscroll-y-contain touch-pan-y">
             <div className="grid gap-1">
               {filtered.map((n) => (
                 <button
                   key={n.id}
-                  onClick={() => {
-                    setSelectedId(n.id);
-                    if (window.innerWidth < 768) setMobileTab('read');
-                  }}
-                  className={cn('note-btn text-left group hover:px-5 transition-all duration-200 border-b-2 border-foreground/10', selectedId === n.id && 'note-btn-active bg-primary text-primary-foreground border-transparent border-l-8 border-l-foreground')}
+                  onClick={() => handleSelectNote(n.id)}
+                  className={cn('note-btn text-left group hover:px-5 border-b-2 border-foreground/10 flex flex-col', selectedId === n.id && 'note-btn-active bg-primary text-primary-foreground border-transparent border-l-8 border-l-foreground')}
                 >
-                  <div className="line-clamp-2 font-black text-lg leading-snug uppercase tracking-tight group-hover:tracking-normal transition-all">{n.title}</div>
-                  <div className="mt-2 flex items-center gap-2 text-[0.75rem] opacity-70 font-bold uppercase tracking-widest group-hover:opacity-100">
+                  <div className="flex w-full justify-between items-start gap-2">
+                    <div className="line-clamp-2 font-black text-lg leading-snug uppercase tracking-tight group-hover:tracking-normal transition-all flex-1">{n.title}</div>
+                    <div onClick={(e) => toggleFavorite(e, n.id)} className={cn("shrink-0 cursor-pointer pt-1 opacity-20 hover:opacity-100 hover:scale-125 transition-transform", n.isFavorite && "opacity-100 text-[#D97A35]")}>★</div>
+                  </div>
+                  <div className="mt-2 flex items-center gap-2 text-[0.75rem] opacity-70 font-bold uppercase tracking-widest group-hover:opacity-100 w-full">
                     <span>{fmt(n.updatedAt)}</span>
                     <span className="w-1.5 h-1.5 bg-current opacity-40"></span>
                     <span>{n.readingMinutes} min czytania</span>
@@ -234,29 +346,34 @@ export default function Page() {
           </div>
         </aside>
 
-        <main className={cn('bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] flex flex-col min-w-0 flex-1 relative overflow-hidden transition-all duration-300', mobileTab === 'list' && 'hidden md:flex')}>
+        <main className={cn('bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] flex flex-col min-w-0 flex-1 relative overflow-hidden', mobileTab === 'list' && 'hidden md:flex')}>
           {!selected ? (
             <div className="flex flex-col items-center justify-center h-full opacity-80 bg-muted/10">
               <img src="/sketchbook.png" alt="Empty Sketchbook" className="w-[300px] h-[300px] object-cover mb-8 filter grayscale contrast-125 border-4 border-foreground shadow-[8px_8px_0_var(--primary)] -rotate-2" />
               <p className="font-black text-3xl uppercase tracking-[0.2em] bg-foreground text-background px-6 py-3 shadow-[8px_8px_0_var(--primary)] rotate-1">Nie wybrano notatki</p>
             </div>
           ) : (
-            <div className="animate-in slide-in-from-right-8 fade-in duration-500 fill-mode-both flex flex-col h-full" key={selected.id}>
+            <div className="flex flex-col h-full" key={selected.id}>
               {/* Cienki nagłówek mobilny przypięty na stałe tylko w mobile */}
               <div className="md:hidden border-b-4 border-foreground p-3 bg-muted/10 flex items-center justify-between shrink-0">
-                <Button variant="ghost" size="icon" onClick={() => setMobileTab('list')} className="rounded-none border-2 border-foreground hover:bg-foreground hover:text-background shadow-[4px_4px_0_var(--foreground)]">
+                <Button variant="ghost" size="icon" onClick={() => handleTabChange('list')} className="rounded-none border-2 border-foreground hover:bg-foreground hover:text-background shadow-[4px_4px_0_var(--foreground)]">
                   <ArrowLeft className="h-5 w-5" strokeWidth={3} />
                 </Button>
                 <span className="text-sm font-black uppercase tracking-wider bg-foreground text-background px-3 py-1.5 shadow-[4px_4px_0_var(--primary)] text-center">Notatki</span>
               </div>
               
-              <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-5 md:p-12 custom-scrollbar bg-background selection:bg-foreground selection:text-background">
+              <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-5 md:p-12 custom-scrollbar bg-background selection:bg-foreground selection:text-background overscroll-y-contain touch-pan-y">
                 <article className="markdown-body mx-auto max-w-[750px] pb-24">
                   
                   {/* Nagłówek i tagi wklejone jako treść, by się przewijały! */}
                   <div className="mb-12 border-b-4 border-foreground pb-8 relative">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl mix-blend-multiply pointer-events-none"></div>
-                    <h1 className="text-4xl font-black tracking-tighter md:text-[3rem] leading-[1.1] mb-6 uppercase break-words border-none pb-0 relative z-10">{selected.title}</h1>
+                    <h1 className="text-4xl font-black tracking-tighter md:text-[3rem] leading-[1.1] mb-6 uppercase break-words border-none pb-0 relative z-10 flex items-start gap-4">
+                      {selected.title}
+                      <button onClick={(e) => toggleFavorite(e, selected.id)} className={cn("mt-2 text-2xl hover:scale-125 transition-transform opacity-30 hover:opacity-100 cursor-pointer", selected.isFavorite && "opacity-100 text-[#D97A35]")}>
+                        ★
+                      </button>
+                    </h1>
                     
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-3 text-[11px] font-bold uppercase tracking-widest opacity-80 mb-6 relative z-10">
                       <span className="bg-foreground text-background px-2 py-1 shadow-[2px_2px_0_var(--primary)]">Utworzono: {fmt(selected.createdAt)}</span>
@@ -283,9 +400,23 @@ export default function Page() {
       </div>
 
       <nav className="fixed bottom-0 left-0 right-0 z-40 grid grid-cols-2 border-t-4 border-foreground bg-background p-4 md:hidden pb-safe gap-2 shadow-[0_-8px_0_var(--foreground)]">
-        <Button variant={mobileTab === 'list' ? 'default' : 'outline'} className={cn("rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]", mobileTab === 'list' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1')} onClick={() => setMobileTab('list')}>Notatki</Button>
-        <Button variant={mobileTab === 'read' ? 'default' : 'outline'} className={cn("rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]", mobileTab === 'read' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1')} onClick={() => setMobileTab('read')}>Czytnik</Button>
+        <Button variant={mobileTab === 'list' ? 'default' : 'outline'} className={cn("rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]", mobileTab === 'list' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1')} onClick={() => handleTabChange('list')}>Notatki</Button>
+        <Button variant={mobileTab === 'read' ? 'default' : 'outline'} className={cn("rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]", mobileTab === 'read' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1')} onClick={() => handleTabChange('read')}>Czytnik</Button>
       </nav>
+
+      {/* Warstwa tekstury papieru (cinieta + grain) */}
+      <div className="vignette-grain" />
+
+      {/* Wylewy atramentu (Easter Egg - Shake Device) */}
+      <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+        {inkSpills.map(spill => (
+          <svg key={spill.id} className="absolute animate-ink-spill origin-center" style={{ left: `${spill.x}%`, top: `${spill.y}%`, width: '150px', height: '150px', fill: 'var(--foreground)', transform: 'translate(-50%, -50%)' }} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 45,5 C 60,3 75,10 85,25 C 95,40 98,60 85,75 C 70,90 50,97 30,85 C 10,75 2,50 10,30 C 15,15 30,8 45,5 Z" />
+            <path d="M 15,65 C 5,75 -5,95 10,95 C 25,95 20,70 15,65 Z" />
+            <path d="M 85,15 C 95,5 105,10 95,25 C 85,35 75,25 85,15 Z" />
+          </svg>
+        ))}
+      </div>
     </div>
   );
 }
