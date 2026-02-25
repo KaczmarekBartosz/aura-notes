@@ -5,19 +5,19 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-full border border-transparent px-2.5 py-0.5 text-xs font-semibold w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:ring-1 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-all overflow-hidden",
+  "inline-flex items-center justify-center rounded-none border-2 px-3 py-1 text-xs font-black uppercase tracking-wider w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:ring-0 focus-visible:border-primary aria-invalid:border-destructive transition-transform hover:-translate-y-0.5 hover:shadow-[2px_2px_0_var(--foreground)]",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/80 shadow-sm",
+        default: "border-foreground bg-primary text-primary-foreground hover:bg-foreground hover:text-background shadow-[2px_2px_0_var(--foreground)]",
         secondary:
-          "bg-secondary/50 text-secondary-foreground hover:bg-secondary/80 backdrop-blur-md",
+          "border-foreground bg-secondary text-secondary-foreground hover:bg-foreground hover:text-background shadow-[2px_2px_0_var(--foreground)]",
         destructive:
-          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "border-destructive bg-destructive text-white hover:bg-foreground hover:text-background hover:border-foreground shadow-[2px_2px_0_var(--destructive)]",
         outline:
-          "border-black/10 dark:border-white/10 text-foreground hover:bg-black/5 dark:hover:bg-white/10",
-        ghost: "[a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 [a&]:hover:underline",
+          "border-foreground text-foreground bg-background shadow-[2px_2px_0_var(--foreground)] hover:bg-foreground hover:text-background",
+        ghost: "border-transparent text-foreground hover:bg-foreground hover:text-background",
+        link: "border-transparent text-primary underline-offset-4 hover:underline",
       },
     },
     defaultVariants: {

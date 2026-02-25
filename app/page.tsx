@@ -131,10 +131,12 @@ export default function Page() {
 
   if (!payload) {
     return (
-      <div className="min-h-dvh flex items-center justify-center p-6 vision-bg">
-        <div className="w-full max-w-sm p-8 text-center glass-panel">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">Aura Notes</h1>
-          <p className="text-sm opacity-60 mb-8">Secure Vault Access</p>
+      <div className="min-h-dvh flex items-center justify-center p-6 bg-background relative overflow-hidden">
+        {/* Dekoracyjna tekstura techniczna/szkicowa */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+        <div className="w-full max-w-sm p-8 text-center bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] relative z-10 transition-transform duration-300 hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0_var(--foreground)]">
+          <h1 className="text-4xl font-black tracking-tight mb-2 uppercase">Aura Notes</h1>
+          <p className="text-sm font-bold opacity-60 mb-8 uppercase tracking-widest">Bezpieczny sejf</p>
           <form
             className="space-y-4"
             onSubmit={(e) => {
@@ -146,11 +148,11 @@ export default function Page() {
               type="password" 
               value={loginInput} 
               onChange={(e) => setLoginInput(e.target.value)} 
-              placeholder="Enter password..." 
-              className="h-12 text-center rounded-2xl bg-white/50 dark:bg-black/50 border-white/20 dark:border-white/10"
+              placeholder="Wprowadź hasło..." 
+              className="h-12 text-center rounded-none bg-background border-2 border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[4px_4px_0_var(--primary)] transition-all font-mono"
             />
-            <Button type="submit" className="w-full h-12 rounded-2xl font-semibold text-md shadow-lg">{loading ? 'Unlocking...' : 'Unlock'}</Button>
-            {loginError && <p className="text-sm text-destructive font-medium">{loginError}</p>}
+            <Button type="submit" className="w-full h-12 rounded-none border-2 border-transparent hover:border-foreground hover:shadow-[4px_4px_0_var(--foreground)] hover:-translate-y-1 hover:bg-primary transition-all font-black uppercase text-lg">{loading ? 'Odblokowywanie...' : 'Odblokuj'}</Button>
+            {loginError && <p className="text-sm text-destructive font-black uppercase mt-2">{loginError}</p>}
           </form>
         </div>
       </div>
@@ -158,49 +160,50 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-dvh vision-bg">
-      <div className="mx-auto flex h-dvh max-w-[1600px] gap-4 p-3 md:p-6">
-        <aside className={cn('glass-panel flex flex-col w-full md:w-[380px] md:shrink-0', mobileTab === 'read' && 'hidden md:flex')}>
-          <div className="border-b-glass p-5">
-            <div className="mb-4 flex items-center justify-between gap-2">
+    <div className="min-h-dvh bg-background text-foreground font-sans relative">
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+      <div className="mx-auto flex h-dvh max-w-[1600px] gap-6 p-4 md:p-8 relative z-10">
+        <aside className={cn('bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] flex flex-col w-full md:w-[400px] md:shrink-0 transition-transform duration-300 hover:shadow-[12px_12px_0_var(--foreground)]', mobileTab === 'read' && 'hidden md:flex')}>
+          <div className="border-b-4 border-foreground p-4 md:p-5 bg-muted/30">
+            <div className="mb-6 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-bold tracking-tight">Aura Notes</h2>
-                <Badge variant="secondary" className="font-mono text-[10px] bg-black/5 dark:bg-white/10 rounded-full">{APP_VERSION}</Badge>
+                <h2 className="text-2xl font-black uppercase tracking-tight">Aura Notes</h2>
+                <Badge variant="secondary" className="font-mono text-[10px] rounded-none border-2 border-foreground px-1.5">{APP_VERSION}</Badge>
               </div>
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full hover:bg-black/5 dark:hover:bg-white/10">
-                {theme === 'light' ? <Moon className="h-5 w-5" strokeWidth={1.5} /> : <Sun className="h-5 w-5" strokeWidth={1.5} />}
+              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-none border-2 border-foreground hover:bg-foreground hover:text-background transition-colors hover:shadow-[4px_4px_0_var(--foreground)] hover:-translate-y-1">
+                {theme === 'light' ? <Moon className="h-5 w-5" strokeWidth={2.5} /> : <Sun className="h-5 w-5" strokeWidth={2.5} />}
               </Button>
             </div>
 
-            <div className="grid grid-cols-[1fr_auto] gap-2">
+            <div className="grid grid-cols-[1fr_auto] gap-3">
               <div className="relative group">
-                <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50 group-focus-within:opacity-100 transition-opacity" strokeWidth={1.5} />
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50 group-focus-within:opacity-100 transition-opacity" strokeWidth={3} />
                 <Input 
-                  className="pl-10 h-11 rounded-2xl bg-white/40 dark:bg-black/40 border-white/40 dark:border-white/10 focus-visible:ring-1 focus-visible:ring-black/20 dark:focus-visible:ring-white/20 transition-all" 
-                  placeholder="Search notes..." 
+                  className="pl-9 h-11 rounded-none bg-background border-2 border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[4px_4px_0_var(--primary)] transition-all font-bold" 
+                  placeholder="Szukaj notatek..." 
                   value={query} 
                   onChange={(e) => setQuery(e.target.value)} 
                 />
               </div>
               <Select value={sort} onValueChange={(v) => setSort(v as SortMode)}>
-                <SelectTrigger className="h-11 w-[110px] rounded-2xl bg-white/40 dark:bg-black/40 border-white/40 dark:border-white/10 text-sm focus:ring-1 focus:ring-black/20 dark:focus:ring-white/20 transition-all">
-                  <SelectValue placeholder="Sort" />
+                <SelectTrigger className="h-11 w-[110px] rounded-none bg-background border-2 border-foreground text-sm font-bold focus:ring-0 focus:border-primary focus:shadow-[4px_4px_0_var(--primary)] transition-all">
+                  <SelectValue placeholder="Sortuj" />
                 </SelectTrigger>
-                <SelectContent className="glass-panel border-0">
+                <SelectContent className="rounded-none border-2 border-foreground shadow-[4px_4px_0_var(--foreground)] bg-background">
                   {Object.entries(SORT_LABELS).map(([k, v]) => (
-                    <SelectItem value={k} key={k} className="rounded-xl">{v}</SelectItem>
+                    <SelectItem value={k} key={k} className="font-bold cursor-pointer hover:bg-foreground hover:text-background uppercase transition-colors">{v}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
 
-            <p className="mt-3 text-[11px] font-medium opacity-50 px-1">
-              {filtered.length} notes • Sync: {fmt(payload.generatedAt)}
+            <p className="mt-4 text-[12px] font-bold opacity-60 px-1 uppercase tracking-wider">
+              {filtered.length} notatek • Synchr.: {fmt(payload.generatedAt)}
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-2 border-b-glass p-4">
-            <button className={cn('chip', activeTag === 'all' && 'chip-active')} onClick={() => setActiveTag('all')}>All</button>
+          <div className="flex flex-wrap gap-2 border-b-4 border-foreground p-3 bg-muted/10">
+            <button className={cn('chip', activeTag === 'all' && 'chip-active')} onClick={() => setActiveTag('all')}>Wszystkie</button>
             {tags.map((t) => (
               <button key={t} className={cn('chip', activeTag === t && 'chip-active')} onClick={() => setActiveTag(t)}>
                 {t}
@@ -217,13 +220,13 @@ export default function Page() {
                     setSelectedId(n.id);
                     if (window.innerWidth < 768) setMobileTab('read');
                   }}
-                  className={cn('note-btn text-left', selectedId === n.id && 'note-btn-active')}
+                  className={cn('note-btn text-left group hover:px-5 transition-all duration-200 border-b-2 border-foreground/10', selectedId === n.id && 'note-btn-active bg-primary text-primary-foreground border-transparent border-l-8 border-l-foreground')}
                 >
-                  <div className="line-clamp-2 font-semibold text-[0.95rem] leading-snug">{n.title}</div>
-                  <div className="mt-1.5 flex items-center gap-2 text-xs opacity-60 font-medium">
+                  <div className="line-clamp-2 font-black text-lg leading-snug uppercase tracking-tight group-hover:tracking-normal transition-all">{n.title}</div>
+                  <div className="mt-2 flex items-center gap-2 text-[0.75rem] opacity-70 font-bold uppercase tracking-widest group-hover:opacity-100">
                     <span>{fmt(n.updatedAt)}</span>
-                    <span className="w-1 h-1 rounded-full bg-current opacity-30"></span>
-                    <span>{n.readingMinutes} min read</span>
+                    <span className="w-1.5 h-1.5 bg-current opacity-40"></span>
+                    <span>{n.readingMinutes} min czytania</span>
                   </div>
                 </button>
               ))}
@@ -231,53 +234,57 @@ export default function Page() {
           </div>
         </aside>
 
-        <main className={cn('glass-panel flex flex-col min-w-0 flex-1 relative overflow-hidden', mobileTab === 'list' && 'hidden md:flex')}>
+        <main className={cn('bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] flex flex-col min-w-0 flex-1 relative overflow-hidden transition-all duration-300', mobileTab === 'list' && 'hidden md:flex')}>
           {!selected ? (
-            <div className="flex flex-col items-center justify-center h-full opacity-40">
-              <div className="w-16 h-16 rounded-full border-2 border-current border-dashed mb-4 opacity-50 animate-pulse"></div>
-              <p className="font-medium">No note selected</p>
+            <div className="flex flex-col items-center justify-center h-full opacity-80 bg-muted/10">
+              <img src="/sketchbook.png" alt="Empty Sketchbook" className="w-[300px] h-[300px] object-cover mb-8 filter grayscale contrast-125 border-4 border-foreground shadow-[8px_8px_0_var(--primary)] -rotate-2" />
+              <p className="font-black text-3xl uppercase tracking-[0.2em] bg-foreground text-background px-6 py-3 shadow-[8px_8px_0_var(--primary)] rotate-1">Nie wybrano notatki</p>
             </div>
           ) : (
-            <>
-              <header className="border-b-glass p-5 md:p-8 shrink-0">
-                <div className="mb-4 flex items-center gap-2 md:hidden">
-                  <Button variant="ghost" size="icon" onClick={() => setMobileTab('list')} className="rounded-full bg-black/5 dark:bg-white/10">
-                    <ArrowLeft className="h-5 w-5" strokeWidth={1.5} />
-                  </Button>
-                  <span className="text-sm font-medium opacity-60">Back to notes</span>
-                </div>
-                
-                <h1 className="text-3xl font-bold tracking-tight md:text-5xl leading-tight mb-4">{selected.title}</h1>
-                
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-medium opacity-60">
-                  <span>Created {fmt(selected.createdAt)}</span>
-                  <span className="w-1 h-1 rounded-full bg-current opacity-30"></span>
-                  <span>Updated {fmt(selected.updatedAt)}</span>
-                  <span className="w-1 h-1 rounded-full bg-current opacity-30"></span>
-                  <span className="break-all font-mono opacity-80">{selected.path}</span>
-                </div>
-                
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {(selected.tags || []).map((t) => (
-                    <Badge key={t} variant="outline" className="rounded-full bg-black/5 dark:bg-white/5 border-transparent font-medium">{t}</Badge>
-                  ))}
-                </div>
-              </header>
-              <div className="min-h-0 flex-1 overflow-x-auto overflow-y-auto p-5 md:p-10 custom-scrollbar">
-                <article className="markdown-body mx-auto max-w-[700px]">
+            <div className="animate-in slide-in-from-right-8 fade-in duration-500 fill-mode-both flex flex-col h-full" key={selected.id}>
+              {/* Cienki nagłówek mobilny przypięty na stałe tylko w mobile */}
+              <div className="md:hidden border-b-4 border-foreground p-3 bg-muted/10 flex items-center justify-between shrink-0">
+                <Button variant="ghost" size="icon" onClick={() => setMobileTab('list')} className="rounded-none border-2 border-foreground hover:bg-foreground hover:text-background shadow-[4px_4px_0_var(--foreground)]">
+                  <ArrowLeft className="h-5 w-5" strokeWidth={3} />
+                </Button>
+                <span className="text-sm font-black uppercase tracking-wider bg-foreground text-background px-3 py-1.5 shadow-[4px_4px_0_var(--primary)] text-center">Notatki</span>
+              </div>
+              
+              <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-5 md:p-12 custom-scrollbar bg-background selection:bg-foreground selection:text-background">
+                <article className="markdown-body mx-auto max-w-[750px] pb-24">
+                  
+                  {/* Nagłówek i tagi wklejone jako treść, by się przewijały! */}
+                  <div className="mb-12 border-b-4 border-foreground pb-8 relative">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl mix-blend-multiply pointer-events-none"></div>
+                    <h1 className="text-4xl font-black tracking-tighter md:text-[3rem] leading-[1.1] mb-6 uppercase break-words border-none pb-0 relative z-10">{selected.title}</h1>
+                    
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-3 text-[11px] font-bold uppercase tracking-widest opacity-80 mb-6 relative z-10">
+                      <span className="bg-foreground text-background px-2 py-1 shadow-[2px_2px_0_var(--primary)]">Utworzono: {fmt(selected.createdAt)}</span>
+                      <span className="bg-foreground text-background px-2 py-1 shadow-[2px_2px_0_var(--primary)]">Akt: {fmt(selected.updatedAt)}</span>
+                    </div>
+                    
+                    {selected.tags && selected.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2 relative z-10">
+                        {selected.tags.map((t) => (
+                          <Badge key={t} variant="outline" className="rounded-none border-2 border-foreground uppercase font-black text-[10px] px-2 py-0.5 bg-background shadow-[2px_2px_0_var(--foreground)]">{t}</Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  
                   <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize, rehypeHighlight]}>
                     {selected.content}
                   </ReactMarkdown>
                 </article>
               </div>
-            </>
+            </div>
           )}
         </main>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-40 grid grid-cols-2 border-t border-black/5 dark:border-white/10 bg-white/70 dark:bg-black/70 p-3 backdrop-blur-xl md:hidden pb-safe">
-        <Button variant={mobileTab === 'list' ? 'secondary' : 'ghost'} className="rounded-xl h-12 font-medium" onClick={() => setMobileTab('list')}>Notes</Button>
-        <Button variant={mobileTab === 'read' ? 'secondary' : 'ghost'} className="rounded-xl h-12 font-medium" onClick={() => setMobileTab('read')}>Reader</Button>
+      <nav className="fixed bottom-0 left-0 right-0 z-40 grid grid-cols-2 border-t-4 border-foreground bg-background p-4 md:hidden pb-safe gap-2 shadow-[0_-8px_0_var(--foreground)]">
+        <Button variant={mobileTab === 'list' ? 'default' : 'outline'} className={cn("rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]", mobileTab === 'list' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1')} onClick={() => setMobileTab('list')}>Notatki</Button>
+        <Button variant={mobileTab === 'read' ? 'default' : 'outline'} className={cn("rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]", mobileTab === 'read' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1')} onClick={() => setMobileTab('read')}>Czytnik</Button>
       </nav>
     </div>
   );
