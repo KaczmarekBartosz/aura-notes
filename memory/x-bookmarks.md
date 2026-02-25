@@ -1,3 +1,31 @@
+---
+
+## [@BerbarianWizard] Jamal Dinkoui (2026-02-17)
+**Link:** [Otwórz Tweet](https://x.com/BerbarianWizard/status/2016867746764448031) (ID: 2016867746764448031)
+📰 The TESTOSTERONE Kabbalah - Kompletny przewodnik po naturalnej produkcji testosteronu. Testosteron jest kontrolowany przez: produkcję energii komórkowej, oddychanie mitochondrialne, stabilność glukozy we krwi, zapalenie jelit i endotoksyny, funkcję wątroby i usuwanie estrogenu, produkcję hormonów tarczycy, kortyzol, serotoninę, prolaktynę, aktywność aromatazy i metabolizm androgenów. Suplementy na testosteron są głównie bezużyteczne - trzeba naprawić upstreamowe systemy. Kluczowe: glukoza zamiast tłuszczów (więcej ATP, mniej ROS), witaminy B1/B3, magnez, cynk, miedź, sól, unikanie PUFA.
+
+**Tagi:** #testosterone #health #hormones #nutrition #mitochondria
+**Analiza:** Szczegółowe wytyczne w KSIEGA_PEPTYDOW.md sekcja hormonalna
+
+---
+
+## [@AncestralHealtx] AncestralHealth☀️ (2026-02-17)
+**Link:** [Otwórz Tweet](https://x.com/AncestralHealtx/status/2017555545742344454) (ID: 2017555545742344454)
+📰 How to be attractive so fast it feels ILLEGAL - 5 filarów biologicznej atrakcyjności: 1) Surowa żywienie zwierzęca (wątroba, surowa wołowina, jajka, masło), 2) Ekspozycja na naturalne światło (słońce >> suplementy), 3) Uziemienie (grounding), 4) Ruch przodków (naturalny ruch), 5) Eliminacja toksyn. Wątroba surowa = 70% redukcja trądziku w 3 tygodnie.
+
+**Tagi:** #health #attraction #nutrition #raw-food #ancestral
+
+---
+
+## [@peptidemaxxer] peptidemaxxer⚡️ (2026-02-13)
+**Link:** [Otwórz Tweet](https://x.com/peptidemaxxer/status/2022220494364455132) (ID: 2022220494364455132)
+5 mg epitalon + pinetalon = najlepsza noc snu w życiu. 22:00 - światła zgaszone, natychmiastowy sen. Żywe, zapadające w pamięć sny. Pobudka jak po dwóch podwójnych espressach.
+
+**Tagi:** #peptides #epitalon #pinetalon #sleep #biohacking
+**Analiza:** Dodano do KSIEGA_PEPTYDOW.md
+
+---
+
 ## [@MatthewBerman] Matthew Berman (2026-02-17)
 **Link:** [Otwórz Tweet](https://x.com/MatthewBerman/status/2023843493765157235) (ID: 2023843493765157235)
 I've spent 2.54 BILLION tokens perfecting OpenClaw.

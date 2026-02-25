@@ -1,11 +1,45 @@
 # KNOWLEDGE_ACTIONABLE — Wiedza Do Natychmiastowego Działania
-*Last Updated: 2026-02-18 12:47 UTC*
+*Last Updated: 2026-02-25*
 
 ## Zdrowie / Suplementacja — Peptydy (KSIĘGA)
+
+### Epitalon + Pinetalon — Stack na regenerację i sen
+- **Streszczenie:** 5mg epitalon + pinetalon = natychmiastowy sen o 22:00, żywe sny, pobudka z energią jak po espresso. Peptydy regulujące zegar biologiczny.
+- **Akcja:** Zbadać dostępność epitalon/pinetalon — potencjalny stack na reset snu przy jet-lag lub problemach z circadian rhythm.
+- **Source:** @peptidemaxxer
+- **Tagi:** #peptides #sleep #epitalon #pinetalon #recovery
+
+### Testosterone Kabbalah — Naturalna optymalizacja hormonalna
+- **Streszczenie:** Testosteron nie wymaga suplementów — wymaga naprawy upstream: mitochondrialna produkcja ATP, stabilność glukozy, brak PUFAs, wątroba, tarczyca. Kluczowe: glukoza > tłuszcze, B1/B3, magnez, cynk, miedź, sól.
+- **Akcja:** Wdrożyć protokół metaboliczny: usuń PUFAs, dodaj surową wątrobę 2x/tydzień, OJ/honey jako źródło węgli, monitoring temp/tętna rano.
+- **Source:** @BerbarianWizard
+- **Tagi:** #testosterone #hormones #mitochondria #nutrition #health
+
+### 5 Filarów Biologicznej Atrakcyjności
+- **Streszczenie:** Atrakcyjność to biologia, nie wygląd. 70% redukcja trądziku w 3 tyg na surowej wątrobie. Klucz: surowe odżywianie zwierzęce (wit A, B, Cu, CoQ10), słońce, grounding, naturalny ruch, eliminacja toksyn.
+- **Akcja:** Eksperyment 30-dniowy: 100g surowej wątroby 2x/tydzień, 10 min grounding dziennie, wyeliminuj PUFAs.
+- **Source:** @AncestralHealtx
+- **Tagi:** #health #skin #nutrition #ancestral #biohacking
+
+---
 
 ---
 
 ## AI / Enterprise — Context Synchronization
+
+### OpenClaw Gmail Integration Strategy
+- **Streszczenie:** Dedykowany Gmail dla OpenClaw odblokowuje: Search Console (SEO monitoring), Google Analytics, Calendar (meetings), Drive & Docs, Gmail. 15 minut setup, zero kodu.
+- **Akcja:** Utworzyć dedykowany Gmail dla instancji OpenClaw — zintegrować z Search Console i Analytics dla monitorowania projektów.
+- **Source:** @johann_sath
+- **Tagi:** #openclaw #gmail #integration #seo #analytics
+
+### Memory Protocol dla OpenClaw Agents
+- **Streszczenie:** Prosty protokół pamięci zamienia agenta ze stateless autocomplete w compounding system: daily logs, structured long-term memory, documented decisions.
+- **Akcja:** Wdrożyć codzienny log dla agentów — struktura: data, decyzje, kontekst, następne kroki.
+- **Source:** @thejayden
+- **Tagi:** #openclaw #memory #agents #productivity
+
+## AI / Automation — Self-Review Patterns
 
 ### Synchronizacja kontekstu AI w firmie
 - **Streszczenie:** Architektura synchronizacji kontekstu między asystentami AI w organizacji — wspólna pamięć, shared context, eliminacja "cold start" dla nowych agentów.
@@ -74,6 +108,36 @@
 - **Akcja:** Stack eksperymentalny — wymaga pełnego monitoringu medycznego.
 - **Plik:** `memory/GOLD_FITNESS_PROTOCOL.md` (sekcja 6)
 - **Tagi:** #health #peptides #lookmaxxing #experimental
+
+---
+
+## Growth / Marketing — SEO Framework
+
+### Kompletna Hierarchia SEO (2026)
+- **Streszczenie:** Pełna struktura SEO: Technical (Site Structure, Crawlability, CWV, Structured Data), On-Page (Keywords, Search Intent, Titles, Internal Linking), Off-Page (Link Building, Digital PR, Brand Mentions), Content (Topical Authority, Clusters, Programmatic), Local SEO, E-commerce SEO, International SEO, Enterprise SEO, AI SEO (GEO, LLM Visibility), Analytics.
+- **Akcja:** Użyć jako checklist przy audycie SEO — przejść przez każdą gałąź i ocenić obecny stan.
+- **Source:** @hridoyreh
+- **Tagi:** #seo #framework #marketing #growth
+
+### Claude Cowork — SEO Automation
+- **Streszczenie:** Claude może robić SEO jak agencja $10k/miesiąc. 7 promptów do Claude Cowork dla skalowania do $100k/miesiąc.
+- **Akcja:** Przetestować Claude Cowork prompts dla SEO — dokumentacja w GOLD_GROWTH_MARKETING_PROTOCOL.md
+- **Source:** @nahidulislam404
+- **Tagi:** #ai #seo #claude #automation #growth
+
+### Antigravity X Google Flow — Website Generation
+- **Streszczenie:** Antigravity X Google Flow generuje strony na poziomie agencji. Prompt-based web design.
+- **Akcja:** Przetestować flow do szybkiego prototypowania landing pages.
+- **Source:** @viktoroddy
+- **Tagi:** #design #ai #webdev #landing-page
+
+## Design / UX — Gamification
+
+### Dopamine Loops Scale — Gamification UX
+- **Streszczenie:** Nudne aplikacje umierają; dopamine loops skalują. Gamify your UX. Mechanika dopaminy = retencja.
+- **Akcja:** Dla każdego produktu — dodać elementy gamifikacji: streaks, achievements, progress bars, variable rewards.
+- **Source:** @j_kyorov
+- **Tagi:** #ux #gamification #retention #product-design
 
 ---
 
