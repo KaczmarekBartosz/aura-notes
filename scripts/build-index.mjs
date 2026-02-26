@@ -108,7 +108,13 @@ function classify(rel, content) {
 
   if (isSystemNote(rel, content)) return 'system';
 
-  if (/^memory\/\d{4}-\d{2}-\d{2}/.test(lowerRel)) return 'daily-log';
+  const isDatedLog = /^memory\/\d{4}-\d{2}-\d{2}/.test(lowerRel);
+  if (isDatedLog && /peptyd|peptide|fitness|workout|training|nutrition|trening|whoop|plan trening|fat loss|protein/.test(lower)) return 'fitness-health';
+  if (isDatedLog && /seo|aeo|geo|marketing|growth|acquisition|retention|pricing|distribution/.test(lower)) return 'growth-marketing';
+  if (isDatedLog && /\b(ui|ux|design|typography|layout|figma|prototype|component|furniture|wizualizacje|nano banana)\b/.test(lower)) return 'design';
+  if (isDatedLog && /openclaw|claude|codex|agent|subagent|mcp|llm|ai/.test(lower)) return 'ai-agents';
+
+  if (isDatedLog) return 'daily-log';
   if (lowerRel.startsWith('outputs/')) return 'outputs';
   if (lowerRel.includes('/recipes/')) return 'recipes';
   if (/^memory\/x-bookmarks\.md$/.test(lowerRel)) return 'bookmarks';

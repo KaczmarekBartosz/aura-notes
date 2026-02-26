@@ -5,49 +5,16 @@ category: system
 
 # INDEX PLIKÓW MD (AUTO)
 
-Wygenerowano: 2026-02-26T18:29:27.781Z
+Wygenerowano: 2026-02-26T18:37:49.358Z
 Liczba notatek: 87
 
-## bookmarks (1)
+## ai-agents (17)
 
-- **memory/x-bookmarks.md**
-  - Tytuł: Identity & Role
-  - Utworzono: 2026-02-22T13:50:36.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: [@BerbarianWizard] Jamal Dinkoui (2026 02 17) Link: (ID: 2016867746764448031) 📰 The TESTOSTERONE Kabbalah Kompletny przewodnik po naturalnej produkcji testosteronu. Testosteron jest kontrolowany przez: produkcję energii komórkowej, oddychanie mitochondrialne,
-
-## daily-log (37)
-
-- **memory/2026-01-29.md**
-  - Tytuł: Dziennik aktywności - 29 stycznia 2026
-  - Utworzono: 2026-01-29T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: Dziennik aktywności 29 stycznia 2026 Śledzenie zużycia tokenów Kimi Rozpoczęto śledzenie na prośbę użytkownika | Czas | Input | Output | Łącznie | | | | | | | 21:58 | 65k | 487 | ~65.5k | Model: kimi code/kimi for coding Limit kontekstu: 262k tokenów Zadania z
-- **memory/2026-01-30-1612.md**
-  - Tytuł: Session: 2026-01-30 16:12:01 UTC
-  - Utworzono: 2026-01-30T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: Session: 2026 01 30 16:12:01 UTC Session Key : agent:main:main Session ID : a6bf0cb2 9d45 4d4c ba9a fc73544e3563 Source : webchat Conversation Summary assistant: Dużo tego! Sprawdzam i . assistant: Główna logika jest w . Sprawdzam . assistant: Czytam . To serc
 - **memory/2026-01-30-1615.md**
   - Tytuł: Session: 2026-01-30 16:15:59 UTC
   - Utworzono: 2026-01-30T12:00:00.000Z
   - Zaktualizowano: 2026-02-22T18:01:36.000Z
   - Opis: Session: 2026 01 30 16:15:59 UTC Session Key : agent:main:main Session ID : b84736cd 33f7 4a0c bd0d 9ed580220c45 Source : webchat
-- **memory/2026-01-30-session-log.md**
-  - Tytuł: Dziennik sesji - 30 stycznia 2026
-  - Utworzono: 2026-01-30T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: Dziennik sesji 30 stycznia 2026 Podsumowanie dnia Kontekst: Intensywna sesja naprawcza po wczorajszej porażce (nieudana praca autonomiczna). Główne tematy: 1. Analiza błędów w kodzie aplikacji Aurafit 2. Definiowanie struktury pracy autonomicznej 3. Ustalenie 
-- **memory/2026-01-30.md**
-  - Tytuł: 🔄 ACTIVE AUTONOMOUS TASK
-  - Utworzono: 2026-01-30T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: 🔄 ACTIVE AUTONOMOUS TASK ID: aurafit autonomous 2026 01 30 Started: 2026 01 30 20:09 CET Deadline: none (bloki iteracyjne) Status: 🟡 In Progress Goal: Praca autonomiczna nad Aurafit w blokach (3 5 zadań na blok) Checkpoints: [ ] 20:30: Skan + Plan + Pierwsze
-- **memory/2026-01-31.md**
-  - Tytuł: 2026-01-31 — Daily Memory
-  - Utworzono: 2026-01-31T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: 2026 01 31 — Daily Memory X/Twitter Engagement Session Time: 14:47–14:52 UTC Account: @nicon official Actions Completed | Type | Content | Status | | | | | | Post | "Building a fitness app with 15 AI agents working in parallel. Each has a specialty: one handle
 - **memory/2026-02-01-0049.md**
   - Tytuł: Session: 2026-02-01 00:49:55 UTC
   - Utworzono: 2026-02-01T12:00:00.000Z
@@ -68,31 +35,6 @@ Liczba notatek: 87
   - Utworzono: 2026-02-01T12:00:00.000Z
   - Zaktualizowano: 2026-02-22T18:01:36.000Z
   - Opis: Session: 2026 02 01 13:55:42 UTC Session Key : agent:main:main Session ID : 359a9993 6686 427e 9f0f 2fb06f7b4684 Source : telegram Conversation Summary assistant: ✅ New session started · model: opencode/kimi k2.5 free user: A new session was started via /new o
-- **memory/2026-02-01-1615.md**
-  - Tytuł: Session: 2026-02-01 16:15:43 UTC
-  - Utworzono: 2026-02-01T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: Session: 2026 02 01 16:15:43 UTC Session Key : agent:main:main Session ID : 383cefb9 2269 419e 8075 a08af10b0934 Source : telegram Conversation Summary assistant: Hey! Nowa sesja uruchomiona — domyślny model to opencode/kimi k2.5 free (obecnie używam zai/glm 4
-- **memory/2026-02-01-2150.md**
-  - Tytuł: Session: 2026-02-01 21:50:37 UTC
-  - Utworzono: 2026-02-01T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: Session: 2026 02 01 21:50:37 UTC Session Key : agent:main:main Session ID : 5ffbfa1b cc5b 4f62 838e 66df35c86272 Source : telegram Conversation Summary assistant: assistant: assistant: Sprawdzam (wcześniej miał błędy): assistant: Szukam cudzysłowów w pliku: as
-- **memory/2026-02-02-app-icons.md**
-  - Tytuł: Session: 2026-02-02 20:11:07 UTC
-  - Utworzono: 2026-02-02T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: Session: 2026 02 02 20:11:07 UTC Session Key : agent:main:main Session ID : c0b5d98d 2cd8 4958 b41f 4ef989ba53b1 Source : telegram Conversation Summary assistant: ios 1024.png assistant: android launchericon 192 192.png assistant: ✅ WSZYSTKIE IKONY GOTOWE! Wyg
-- **memory/2026-02-02-aurafit-assets.md**
-  - Tytuł: Session: 2026-02-02 20:38:47 UTC
-  - Utworzono: 2026-02-02T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: Session: 2026 02 02 20:38:47 UTC Session Key : agent:main:main Session ID : 6c9f04bb 16bf 4f1a bf92 3d38dae15bd9 Source : telegram Conversation Summary assistant: ⚡ Action Icons (5): assistant: icon action add.png assistant: icon action edit.png assistant: ico
-- **memory/2026-02-02-aurafit-checkpoint.md**
-  - Tytuł: Session: 2026-02-02 08:31:01 UTC
-  - Utworzono: 2026-02-02T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: Session: 2026 02 02 08:31:01 UTC Session Key : agent:main:main Session ID : 61135140 95a3 4bce 8fd6 3dc7ed62448e Source : telegram Conversation Summary assistant: MODEL: opencode/kimi k2.5 free BRANCH: feat/aura updates 2026 01 30 Wykonuję checkpoint. Najpierw
 - **memory/2026-02-02-gemini-config.md**
   - Tytuł: Session: 2026-02-02 18:10:22 UTC
   - Utworzono: 2026-02-02T12:00:00.000Z
@@ -108,66 +50,21 @@ Liczba notatek: 87
   - Utworzono: 2026-02-02T12:00:00.000Z
   - Zaktualizowano: 2026-02-22T18:01:36.000Z
   - Opis: Session: 2026 02 02 15:32:30 UTC Session Key : agent:main:main Session ID : 09afb487 d196 4234 a029 fd391357cac2 Source : telegram Conversation Summary assistant: ✅ GATEWAY RESTART POMYŚLNY! 🎉 POPRAWIONY CONFIG AKTYWNY: Timestamp: 2026 02 02 14:50:03 UTC Stat
-- **memory/2026-02-02-mobile-polish.md**
-  - Tytuł: Session: 2026-02-02 17:34:03 UTC
-  - Utworzono: 2026-02-02T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: Session: 2026 02 02 17:34:03 UTC Session Key : agent:main:main Session ID : ad24e80e 4542 46c9 8a66 f5444d551174 Source : telegram Conversation Summary assistant: Sprawdzam czy są jeszcze inne części health data card do poprawy. assistant: Poprawiam resztę hea
 - **memory/2026-02-02-tokens.md**
   - Tytuł: Token Report — 2026-02-02 (UTC)
   - Utworzono: 2026-02-02T12:00:00.000Z
   - Zaktualizowano: 2026-02-22T18:01:36.000Z
   - Opis: Token Report — 2026 02 02 (UTC) Zakres Okres: 2026 02 02 00:00–23:59 UTC Źródło danych: (stan bieżący) Uwaga: OpenClaw nie udostępnia dziennego rozkładu tokenów per sesja/model w tym środowisku. Poniżej podaję tylko dostępne metryki bieżącej sesji , bez precyz
-- **memory/2026-02-02.md**
-  - Tytuł: 2026-02-02 — Aura Work Log
-  - Utworzono: 2026-02-02T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: 2026 02 02 — Aura Work Log AURAFIT CONTINUOUS DEV LOOP (DAY SHIFT) Branch: Repo: Build Version: v2.1.548 Objective Mobile first UI/UX polish (320–390px priority), stabilność builda, spójność design system. Changes Delivered 1. Skeletons Polish — dostosowano wy
-- **memory/2026-02-09.md**
-  - Tytuł: Session: 2026-02-09
-  - Utworzono: 2026-02-09T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: Session: 2026 02 09 Key Actions Taken OpenClaw Update Updated to version 2026.2.9 (from 2026.2.6 3) Update reason: cron scheduler reliability fixes that resolved Deep Analysis Cycle issues Cron Configuration Changes Deep Analysis Cycle frequency : Changed from
-- **memory/2026-02-10.md**
-  - Tytuł: 2026-02-10 — Gold Protocols System Launch
-  - Utworzono: 2026-02-10T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: 2026 02 10 — Gold Protocols System Launch Completed Today 1. Gold Fitness Protocol ✅ File: Size: 15KB Content: Complete fitness system compiled from X bookmarks (Alex Aaron, Coach Kev, Joey Yochheim, Riley Anderson) Sections: Nutrition, Training, Supplementati
-- **memory/2026-02-11-furniture-visualization.md**
-  - Tytuł: Session: 2026-02-11 10:59:39 UTC
-  - Utworzono: 2026-02-11T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: Session: 2026 02 11 10:59:39 UTC Session Key : agent:coder:main Session ID : 43e6e63a cd44 497e 9b54 8645611bb4c5 Source : telegram Conversation Summary assistant: Głęboka analiza 5 bookmarków gotowa — m.in. UI do mebli z AR, medyczne interfejsy, wzorce instru
 - **memory/2026-02-11-nextjs-woocommerce.md**
   - Tytuł: Session: 2026-02-11 09:53:54 UTC
   - Utworzono: 2026-02-11T12:00:00.000Z
   - Zaktualizowano: 2026-02-22T18:01:36.000Z
   - Opis: Session: 2026 02 11 09:53:54 UTC Session Key : agent:coder:main Session ID : acf9c2c0 c20e 4bb5 835d 655609569676 Source : telegram Conversation Summary assistant: Rozumiem. Tworzę strukturę na wyniki wyszukiwania Perplexity — zapis z datą, tagami i linkiem do
-- **memory/2026-02-11.md**
-  - Tytuł: Session: 2026-02-11 15:00 UTC
-  - Utworzono: 2026-02-11T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: Session: 2026 02 11 15:00 UTC Completed Today 1. Furniture Visualization Workflow (29 mebli) ✅ Wygenerowano 29 profesjonalnych wizualizacji mebli przy użyciu Nano Banana Pro Sprawdzony prompt zachowujący mebel 1:1 + zmieniający tło na lifestyle scene Wszystkie
-- **memory/2026-02-12.md**
-  - Tytuł: 2026-02-12 - Research Notes
-  - Utworzono: 2026-02-12T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: 2026 02 12 Research Notes GLM 5 Model Availability Official release: February 11, 2026 Model size: 745B parameters (MoE) Availability: Z.AI platform, WaveSpeed API, OpenRouter (z ai/glm 5) OpenClaw status: Not yet available (model alias needs configuration upd
-- **memory/2026-02-14.md**
-  - Tytuł: 2026-02-14 — Sobota
-  - Utworzono: 2026-02-14T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: 2026 02 14 — Sobota Zdrowie / Biohacking Research: Peptydy regeneracyjne (BPC 157, CJC 1295, TB 500) Zlecono i zakończono kompleksowy research na temat trzech peptydów regeneracyjnych. Wyniki zapisano w: — pełny raport naukowy — skrótowe podsumowanie Kluczowe 
 - **memory/2026-02-16.md**
   - Tytuł: 2026-02-16
   - Utworzono: 2026-02-16T12:00:00.000Z
   - Zaktualizowano: 2026-02-22T18:01:36.000Z
   - Opis: 2026 02 16 GitHub Backup Setup Utworzono nowe repo do synchronizacji plików OpenClaw: URL: https://github.com/KaczmarekBartosz/OpenClaw.git Cel: Dostęp do plików markdown z iPhone Status: Czeka na autoryzację GitHub CLI ( ) Opcje dostępu do markdown z iPhone (
-- **memory/2026-02-20.md**
-  - Tytuł: 2026-02-20 — GAWIN24 WooCommerce Product Import Project
-  - Utworzono: 2026-02-20T12:00:00.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: 2026 02 20 — GAWIN24 WooCommerce Product Import Project Project Status: COMPLETED ✅ Summary All 58 products in WooCommerce have been fully updated according to standardized templates. Categories Updated | Category | Products | Status | | | | | | Łóżka tapicero
 - **memory/2026-02-21-model-config.md**
   - Tytuł: Session: 2026-02-21 23:38:02 UTC
   - Utworzono: 2026-02-21T12:00:00.000Z
@@ -198,22 +95,123 @@ Liczba notatek: 87
   - Utworzono: 2026-02-22T12:00:00.000Z
   - Zaktualizowano: 2026-02-22T18:01:36.000Z
   - Opis: Session: 2026 02 22 13:39:29 UTC Session Key : agent:main:main Session ID : 18393a35 296b 4129 8aa5 2fb7a9312788 Source : telegram Conversation Summary assistant: Okej, to jest zadanie analityczne. Nie będę strzelać, tylko opieram się na danych. Oto mój plan d
-- **memory/2026-02-23-whoop-training.md**
-  - Tytuł: Session: 2026-02-23 10:01:20 UTC
-  - Utworzono: 2026-02-23T12:00:00.000Z
-  - Zaktualizowano: 2026-02-24T14:56:30.000Z
-  - Opis: Session: 2026 02 23 10:01:20 UTC Session Key : agent:main:main Session ID : c5628b21 e36c 417e a521 cb04254e54d5 Source : telegram Conversation Summary assistant: [[reply to current]] Jasne. Zrobimy to sensownie — WHOOP + plan treningowy + TRT monitoring , ale
 
-## design (1)
+## bookmarks (1)
 
+- **memory/x-bookmarks.md**
+  - Tytuł: Identity & Role
+  - Utworzono: 2026-02-22T13:50:36.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: [@BerbarianWizard] Jamal Dinkoui (2026 02 17) Link: (ID: 2016867746764448031) 📰 The TESTOSTERONE Kabbalah Kompletny przewodnik po naturalnej produkcji testosteronu. Testosteron jest kontrolowany przez: produkcję energii komórkowej, oddychanie mitochondrialne,
+
+## daily-log (2)
+
+- **memory/2026-01-29.md**
+  - Tytuł: Dziennik aktywności - 29 stycznia 2026
+  - Utworzono: 2026-01-29T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: Dziennik aktywności 29 stycznia 2026 Śledzenie zużycia tokenów Kimi Rozpoczęto śledzenie na prośbę użytkownika | Czas | Input | Output | Łącznie | | | | | | | 21:58 | 65k | 487 | ~65.5k | Model: kimi code/kimi for coding Limit kontekstu: 262k tokenów Zadania z
+- **memory/2026-01-30.md**
+  - Tytuł: 🔄 ACTIVE AUTONOMOUS TASK
+  - Utworzono: 2026-01-30T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: 🔄 ACTIVE AUTONOMOUS TASK ID: aurafit autonomous 2026 01 30 Started: 2026 01 30 20:09 CET Deadline: none (bloki iteracyjne) Status: 🟡 In Progress Goal: Praca autonomiczna nad Aurafit w blokach (3 5 zadań na blok) Checkpoints: [ ] 20:30: Skan + Plan + Pierwsze
+
+## design (4)
+
+- **memory/2026-01-30-1612.md**
+  - Tytuł: Session: 2026-01-30 16:12:01 UTC
+  - Utworzono: 2026-01-30T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: Session: 2026 01 30 16:12:01 UTC Session Key : agent:main:main Session ID : a6bf0cb2 9d45 4d4c ba9a fc73544e3563 Source : webchat Conversation Summary assistant: Dużo tego! Sprawdzam i . assistant: Główna logika jest w . Sprawdzam . assistant: Czytam . To serc
+- **memory/2026-02-11-furniture-visualization.md**
+  - Tytuł: Session: 2026-02-11 10:59:39 UTC
+  - Utworzono: 2026-02-11T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: Session: 2026 02 11 10:59:39 UTC Session Key : agent:coder:main Session ID : 43e6e63a cd44 497e 9b54 8645611bb4c5 Source : telegram Conversation Summary assistant: Głęboka analiza 5 bookmarków gotowa — m.in. UI do mebli z AR, medyczne interfejsy, wzorce instru
+- **memory/2026-02-11.md**
+  - Tytuł: Session: 2026-02-11 15:00 UTC
+  - Utworzono: 2026-02-11T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: Session: 2026 02 11 15:00 UTC Completed Today 1. Furniture Visualization Workflow (29 mebli) ✅ Wygenerowano 29 profesjonalnych wizualizacji mebli przy użyciu Nano Banana Pro Sprawdzony prompt zachowujący mebel 1:1 + zmieniający tło na lifestyle scene Wszystkie
 - **memory/workflow-furniture-viz.md**
   - Tytuł: Workflow: Wizualizacje mebli (Nano Banana Pro)
   - Utworzono: 2026-02-22T13:50:36.000Z
   - Zaktualizowano: 2026-02-22T13:50:36.000Z
   - Opis: Workflow: Wizualizacje mebli (Nano Banana Pro) Sprawdzony prompt Parametry Resolution: 2K (najlepszy balans jakości/czasu) Tryb: Edycja z flagą (input image) Efekt: Mebel zachowany 1:1, tło zmienione na lifestyle scene Użycie Notatka "Wyniki tego prompta są św
 
-## fitness-health (4)
+## fitness-health (18)
 
+- **memory/2026-01-30-session-log.md**
+  - Tytuł: Dziennik sesji - 30 stycznia 2026
+  - Utworzono: 2026-01-30T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: Dziennik sesji 30 stycznia 2026 Podsumowanie dnia Kontekst: Intensywna sesja naprawcza po wczorajszej porażce (nieudana praca autonomiczna). Główne tematy: 1. Analiza błędów w kodzie aplikacji Aurafit 2. Definiowanie struktury pracy autonomicznej 3. Ustalenie 
+- **memory/2026-01-31.md**
+  - Tytuł: 2026-01-31 — Daily Memory
+  - Utworzono: 2026-01-31T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: 2026 01 31 — Daily Memory X/Twitter Engagement Session Time: 14:47–14:52 UTC Account: @nicon official Actions Completed | Type | Content | Status | | | | | | Post | "Building a fitness app with 15 AI agents working in parallel. Each has a specialty: one handle
+- **memory/2026-02-01-1615.md**
+  - Tytuł: Session: 2026-02-01 16:15:43 UTC
+  - Utworzono: 2026-02-01T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: Session: 2026 02 01 16:15:43 UTC Session Key : agent:main:main Session ID : 383cefb9 2269 419e 8075 a08af10b0934 Source : telegram Conversation Summary assistant: Hey! Nowa sesja uruchomiona — domyślny model to opencode/kimi k2.5 free (obecnie używam zai/glm 4
+- **memory/2026-02-01-2150.md**
+  - Tytuł: Session: 2026-02-01 21:50:37 UTC
+  - Utworzono: 2026-02-01T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: Session: 2026 02 01 21:50:37 UTC Session Key : agent:main:main Session ID : 5ffbfa1b cc5b 4f62 838e 66df35c86272 Source : telegram Conversation Summary assistant: assistant: assistant: Sprawdzam (wcześniej miał błędy): assistant: Szukam cudzysłowów w pliku: as
+- **memory/2026-02-02-app-icons.md**
+  - Tytuł: Session: 2026-02-02 20:11:07 UTC
+  - Utworzono: 2026-02-02T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: Session: 2026 02 02 20:11:07 UTC Session Key : agent:main:main Session ID : c0b5d98d 2cd8 4958 b41f 4ef989ba53b1 Source : telegram Conversation Summary assistant: ios 1024.png assistant: android launchericon 192 192.png assistant: ✅ WSZYSTKIE IKONY GOTOWE! Wyg
+- **memory/2026-02-02-aurafit-assets.md**
+  - Tytuł: Session: 2026-02-02 20:38:47 UTC
+  - Utworzono: 2026-02-02T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: Session: 2026 02 02 20:38:47 UTC Session Key : agent:main:main Session ID : 6c9f04bb 16bf 4f1a bf92 3d38dae15bd9 Source : telegram Conversation Summary assistant: ⚡ Action Icons (5): assistant: icon action add.png assistant: icon action edit.png assistant: ico
+- **memory/2026-02-02-aurafit-checkpoint.md**
+  - Tytuł: Session: 2026-02-02 08:31:01 UTC
+  - Utworzono: 2026-02-02T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: Session: 2026 02 02 08:31:01 UTC Session Key : agent:main:main Session ID : 61135140 95a3 4bce 8fd6 3dc7ed62448e Source : telegram Conversation Summary assistant: MODEL: opencode/kimi k2.5 free BRANCH: feat/aura updates 2026 01 30 Wykonuję checkpoint. Najpierw
+- **memory/2026-02-02-mobile-polish.md**
+  - Tytuł: Session: 2026-02-02 17:34:03 UTC
+  - Utworzono: 2026-02-02T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: Session: 2026 02 02 17:34:03 UTC Session Key : agent:main:main Session ID : ad24e80e 4542 46c9 8a66 f5444d551174 Source : telegram Conversation Summary assistant: Sprawdzam czy są jeszcze inne części health data card do poprawy. assistant: Poprawiam resztę hea
+- **memory/2026-02-02.md**
+  - Tytuł: 2026-02-02 — Aura Work Log
+  - Utworzono: 2026-02-02T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: 2026 02 02 — Aura Work Log AURAFIT CONTINUOUS DEV LOOP (DAY SHIFT) Branch: Repo: Build Version: v2.1.548 Objective Mobile first UI/UX polish (320–390px priority), stabilność builda, spójność design system. Changes Delivered 1. Skeletons Polish — dostosowano wy
+- **memory/2026-02-09.md**
+  - Tytuł: Session: 2026-02-09
+  - Utworzono: 2026-02-09T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: Session: 2026 02 09 Key Actions Taken OpenClaw Update Updated to version 2026.2.9 (from 2026.2.6 3) Update reason: cron scheduler reliability fixes that resolved Deep Analysis Cycle issues Cron Configuration Changes Deep Analysis Cycle frequency : Changed from
+- **memory/2026-02-10.md**
+  - Tytuł: 2026-02-10 — Gold Protocols System Launch
+  - Utworzono: 2026-02-10T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: 2026 02 10 — Gold Protocols System Launch Completed Today 1. Gold Fitness Protocol ✅ File: Size: 15KB Content: Complete fitness system compiled from X bookmarks (Alex Aaron, Coach Kev, Joey Yochheim, Riley Anderson) Sections: Nutrition, Training, Supplementati
+- **memory/2026-02-12.md**
+  - Tytuł: 2026-02-12 - Research Notes
+  - Utworzono: 2026-02-12T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: 2026 02 12 Research Notes GLM 5 Model Availability Official release: February 11, 2026 Model size: 745B parameters (MoE) Availability: Z.AI platform, WaveSpeed API, OpenRouter (z ai/glm 5) OpenClaw status: Not yet available (model alias needs configuration upd
+- **memory/2026-02-14.md**
+  - Tytuł: 2026-02-14 — Sobota
+  - Utworzono: 2026-02-14T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: 2026 02 14 — Sobota Zdrowie / Biohacking Research: Peptydy regeneracyjne (BPC 157, CJC 1295, TB 500) Zlecono i zakończono kompleksowy research na temat trzech peptydów regeneracyjnych. Wyniki zapisano w: — pełny raport naukowy — skrótowe podsumowanie Kluczowe 
+- **memory/2026-02-23-whoop-training.md**
+  - Tytuł: Session: 2026-02-23 10:01:20 UTC
+  - Utworzono: 2026-02-23T12:00:00.000Z
+  - Zaktualizowano: 2026-02-24T14:56:30.000Z
+  - Opis: Session: 2026 02 23 10:01:20 UTC Session Key : agent:main:main Session ID : c5628b21 e36c 417e a521 cb04254e54d5 Source : telegram Conversation Summary assistant: [[reply to current]] Jasne. Zrobimy to sensownie — WHOOP + plan treningowy + TRT monitoring , ale
 - **memory/KNOWLEDGE_ACTIONABLE.md**
   - Tytuł: KNOWLEDGE_ACTIONABLE — Wiedza Do Natychmiastowego Działania
   - Utworzono: 2026-02-22T13:50:36.000Z
@@ -293,8 +291,13 @@ Liczba notatek: 87
   - Zaktualizowano: 2026-02-22T13:50:36.000Z
   - Opis: PERIODYZACJA I PROGRESJA Systematyczne podejście do długoterminowego rozwoju siły i hipertrofii 1. ZASADY PROGRESJI PRZECIĄŻENIA Progressive Overload Fundament Definicja: Systematyczne zwiększanie wymagań treningowych w czasie, wymuszające adaptację. 6 głównyc
 
-## growth-marketing (1)
+## growth-marketing (2)
 
+- **memory/2026-02-20.md**
+  - Tytuł: 2026-02-20 — GAWIN24 WooCommerce Product Import Project
+  - Utworzono: 2026-02-20T12:00:00.000Z
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: 2026 02 20 — GAWIN24 WooCommerce Product Import Project Project Status: COMPLETED ✅ Summary All 58 products in WooCommerce have been fully updated according to standardized templates. Categories Updated | Category | Products | Status | | | | | | Łóżka tapicero
 - **memory/LLM_POZYCJONOWANIE_PLAYBOOK.md**
   - Tytuł: LLM Pozycjonowanie (GEO) — Playbook wdrożeniowy
   - Utworzono: 2026-02-24T14:56:30.000Z
