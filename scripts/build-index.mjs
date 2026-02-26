@@ -311,6 +311,27 @@ for (const src of sources) {
   }
 }
 
+function validateNotesIndex(notesList) {
+  const systemPathPattern = /(^memory\/(state|cron-summaries|x-bookmarks-sync|token-usage|perplexity-searches)\/)|(_GLM\.md$)|X_BOOKMARKS_SYNC_REGISTRY\.md$/i;
+
+  const systemInFitness = notesList.filter((n) => n.category === 'fitness-health' && systemPathPattern.test(n.path));
+  if (systemInFitness.length > 0) {
+    throw new Error(`Invalid categorization: ${systemInFitness.length} system note(s) in fitness-health: ${systemInFitness.map(n => n.path).join(', ')}`);
+  }
+
+  const superhero = notesList.find((n) => n.path === 'memory/PROJEKT_SUPER_HERO_v2_1_FINAL.md');
+  if (!superhero) {
+    throw new Error('Critical note missing from index: memory/PROJEKT_SUPER_HERO_v2_1_FINAL.md');
+  }
+
+  const invalidDates = notesList.filter((n) => !n.createdAt || Number.isNaN(new Date(n.createdAt).getTime()) || Number.isNaN(new Date(n.updatedAt).getTime()));
+  if (invalidDates.length > 0) {
+    throw new Error(`Invalid dates in ${invalidDates.length} note(s)`);
+  }
+}
+
+validateNotesIndex(notes);
+
 notes.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
 
 const latestUpdatedAt = notes.length ? notes[0].updatedAt : null;
