@@ -5,8 +5,8 @@ category: system
 
 # INDEX PLIKÓW MD (AUTO)
 
-Wygenerowano: 2026-02-26T18:37:49.358Z
-Liczba notatek: 87
+Wygenerowano: 2026-02-26T18:40:40.337Z
+Liczba notatek: 88
 
 ## ai-agents (17)
 
@@ -140,7 +140,7 @@ Liczba notatek: 87
   - Zaktualizowano: 2026-02-22T13:50:36.000Z
   - Opis: Workflow: Wizualizacje mebli (Nano Banana Pro) Sprawdzony prompt Parametry Resolution: 2K (najlepszy balans jakości/czasu) Tryb: Edycja z flagą (input image) Efekt: Mebel zachowany 1:1, tło zmienione na lifestyle scene Użycie Notatka "Wyniki tego prompta są św
 
-## fitness-health (18)
+## fitness-health (19)
 
 - **memory/2026-01-30-session-log.md**
   - Tytuł: Dziennik sesji - 30 stycznia 2026
@@ -227,6 +227,11 @@ Liczba notatek: 87
   - Utworzono: 2026-02-22T13:50:36.000Z
   - Zaktualizowano: 2026-02-22T13:50:36.000Z
   - Opis: Minimal Fatigue but Maximum Growth The Low Volume Advantage Kompleksowy przewodnik po treningu niskim wolumenie wysokiej intensywności Główna Idea Badania (Bret Contreras, Schoenfeld, Morton) pokazują, że można osiągnąć podobne wyniki siłowe i utrzymanie masy 
+- **memory/PROJEKT_SUPER_HERO_v2_1_FINAL.md**
+  - Tytuł: PROJEKT SUPER-HERO v2.1 FINAL
+  - Utworzono: 2026-02-22T16:28:52.000Z
+  - Zaktualizowano: 2026-02-24T19:52:45.000Z
+  - Opis: PROJEKT SUPER HERO v2.1 FINAL Autor: Bartosz Kaczmarek Model: 5 dniowy plan Powerbuilding + Arm Priority Wersja: czysta (zero balastu, samo mięso + balans strukturalny) 1) Kontekst i założenia Cel: rekompozycja (budowa masy + dalsza redukcja BF) TRT: Testoster
 - **memory/RESEARCH_PEPTYDY_BPC_CJC_TB500.md**
   - Tytuł: Research: Peptydy BPC-157, CJC-1295 i TB-500
   - Utworzono: 2026-02-22T13:50:36.000Z
