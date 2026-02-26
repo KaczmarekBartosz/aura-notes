@@ -714,3 +714,18 @@ Design to nie tylko to, jak coś wygląda. To jak to działa, jak się zachowuje
 *Dokument skompilowany z zakładek X/Twitter przez Aura/OpenClaw*  
 *Wszystkie specyfikacje są kompilacją best practices branżowych*  
 *Wersja 1.0 — Luty 2026*
+
+---
+
+## Aktualizacja 2026-02-26 — design workflow signals
+
+### Code ↔ Canvas roundtrip
+Rosnący pattern: Claude/Figma loop (kod → canvas → prototyp → feedback → kod) skraca iteracje produktu.
+
+- Source: https://x.com/figma/status/2026796079602413985
+
+### Stitch MCP + Antigravity
+Nowy most między designem i implementacją frontend; warto utrzymać w stacku eksperymentalnym dla szybkiego handoffu.
+
+- Source: https://x.com/stitchbygoogle/status/2026729415707865244
+

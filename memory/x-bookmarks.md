@@ -13174,3 +13174,531 @@ Claude Code ma problem - amnezję. Kieran Klaassen zbudował plugin do persisten
 ---
 
 *Koniec batch 346 — Przetworzono 212 zakładek*
+
+
+## Batch 2026-02-26 — Nowe zakładki (25)
+
+
+## [@edgaralandough] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/edgaralandough/status/2026691233242816745) (ID: 2026691233242816745)
+- Claude = coding. ($20/mo)
+- Supabase = backend. (Free)
+- Vercel = deploying. (Free)
+- Namecheap = domain. ($12/yr)
+- Stripe = payments. (2.9%/transaction)
+- GitHub = version control. (Free)
+- Resend = emails. (Free)
+- Clerk = auth. (Free)
+- Cloudflare = DNS. (Free)
+- PostHog = analytics. (Free)
+- Sentry = error tracking. (Free)
+- Upstash = Redis. (Free)
+- Pinecone =  vector DB. (Free)
+
+Total monthly cost to run a startup: ~$20
+
+There has never been a cheaper time to build.
+
+---
+
+
+## [@johann_sath] (2026-02-26)
+**Link:** [Otwórz Tweet](https://x.com/johann_sath/status/2026909147590177076) (ID: 2026909147590177076)
+openclaw tip most people miss:
+
+add this to your https://t.co/8yLvJBW8ek:
+
+"you are the orchestrator. subagents execute. never build, verify, or code inline. your job is to plan, prioritize & coordinate."
+
+went from 1 slow agent doing everything to a CEO managing an army of workers
+
+10x faster. 0 bottlenecks.
+
+---
+
+
+## [@rohit4verse] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/rohit4verse/status/2026801076746502654) (ID: 2026801076746502654)
+Now you can read 100 books a week using NotebookLM + Gemini + Obsidian 
+
+Rather than watching 20 YouTube videos on the same topic use this framework.
+
+Don't use AI as an excuse to stop learning, but leverage AI to 10X your learnings.
+https://t.co/N7wUQdQVzC
+
+---
+
+
+## [@figma] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/figma/status/2026796079602413985) (ID: 2026796079602413985)
+&gt; Send code from Claude
+&gt; Explore on the canvas
+&gt; Prototype with AI
+&gt; Work through feedback
+&gt; Roundtrip back to code
+
+All in Figma https://t.co/04nxfISJwX
+
+---
+
+
+## [@levelsio] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/levelsio/status/2026768651584700460) (ID: 2026768651584700460)
+💪 My personal trainer is also a consultant for many gyms in Portugal
+
+And she now uses 🏡 Interior AI to redesign gyms
+
+She first builds a concept in SketchUp, then uploads that basic wireframe to Interior AI which turns it into a photorealistic render in a few seconds
+
+Then she taps [ Make 3d ] and a few minutes later, she can walk around in her new design in 3d (thanks to @theworldlabs API)
+
+Very very very useful to show her gym clients how it'll look!
+>  QT @levelsio:
+> ✨ Built my own Guassian Splat viewer for my app 🏡 Interior AI
+> 
+> It takes splats generated from your interior with the @theworldlabs API so you can walk around them in 3d space
+> 
+> VIDEO: https://pbs.twimg.com/amplify_video_thumb/2026398127842820096/img/RL8CDzKzEmNyP49w.jpg
+>  https://x.com/levelsio/status/2026398484232810621
+
+---
+
+
+## [@shivbhaktt_] (2026-02-26)
+**Link:** [Otwórz Tweet](https://x.com/shivbhaktt_/status/2026928548502712559) (ID: 2026928548502712559)
+Shoulder workout 🔥 https://t.co/MRfZLyKzy3
+
+---
+
+
+## [@nathangotch] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/nathangotch/status/2026754368146645187) (ID: 2026754368146645187)
+https://t.co/PaxG9gGYw3
+
+---
+
+
+## [@hridoyreh] (2026-02-26)
+**Link:** [Otwórz Tweet](https://x.com/hridoyreh/status/2026910544859656334) (ID: 2026910544859656334)
+On-page SEO is 100% essential.
+
+And without it, you won't rank higher.
+
+10 free on-page SEO tools:
+
+---
+
+
+## [@stitchbygoogle] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/stitchbygoogle/status/2026729415707865244) (ID: 2026729415707865244)
+Watch the magic happen with Stitch MCP and Antigravity
+>  QT @antigravity:
+> Quick tip: Bring your design to Astro with Stitch MCP 🔨 https://t.co/81hYW9bsEs
+> VIDEO: https://pbs.twimg.com/amplify_video_thumb/2026518566594400256/img/4xTAxlcQ7S8-yYN0.jpg
+>  https://x.com/antigravity/status/2026703742498738202
+
+---
+
+
+## [@om_patel5] (2026-02-26)
+**Link:** [Otwórz Tweet](https://x.com/om_patel5/status/2026880809106317406) (ID: 2026880809106317406)
+HOW TO MASTER THE ART OF DISTRIBUTION WITH OPENCLAW
+
+most founders do marketing manually. 
+
+here's how to automate 90% of it across every channel using one AI agent. 
+
+1\ tiktok/reels (fully automated)
+
+> scans your niche daily and picks hooks based on what's been performing
+
+> generates 6-slide photo carousels with consistent scene architecture (2.9x more shares than video)
+
+> writes storytelling captions that mention your product naturally
+
+> adds text overlays with correct positioning (30% from top, safe zones handled automatically)
+
+> uploads everything as drafts via postiz API
+
+> you open tiktok, add trending audio, hit publish. 60 seconds
+
+> tracks views vs conversions overnight. if a hook flopped, it gets logged. if one hit 200k, three variations get generated the next morning
+
+2\ twitter/linkedin
+
+> monitors what's trending in your space every morning
+
+> drafts 3 posts per day using your best performing formats as templates
+
+> finds conversations where someone is literally asking for what you built and drafts replies
+
+> sends everything to your telegram or whatsapp for approval on the go
+
+> you tap approve and it posts. that's it
+
+> over time it learns which hooks get engagement, which post styles drive profile clicks, and adjusts automatically
+
+3\ reddit
+
+> scans 5-8 subreddits daily for posts mentioning your niche keywords
+
+> flags threads where people are complaining about the exact problem you solve
+
+> drafts long-form value posts following the formula that actually gets upvoted (real data, real lessons, product mentioned naturally in the middle)
+
+> drafts comment replies and DM openers for high-intent posts
+
+> sends you the full post draft on telegram or whatsapp. you read it, tap approve, it goes live
+
+> tracks which subreddits convert, which post structures get traction, and what times get the most visibility
+
+4\ cold emails
+
+> pulls prospects from apollo matching your ICP
+
+> scrapes their recent linkedin posts and references something specific they said
+
+> drafts a full 5-email value-first sequence (no pitch in email 1, case study in email 2, specific niche data in email 3, social proof in email 4, breakup in email 5)
+
+> sends 150-200 personalized emails daily through resend
+
+> A/B tests subject lines automatically and flags anyone who opened 3+ times so you can follow up personally
+
+5\ SEO/blogs
+
+> identifies high-intent keywords people are already googling ("[competitor] alternatives", "best [category] tools 2026")
+
+> drafts full blog posts targeting those bottom-of-funnel searches
+
+> repurposes your top performing reddit posts and twitter threads into long-form articles (content already validated by upvotes)
+
+> sends you the draft. you approve. it publishes
+
+the whole system learns from itself. every post, email, and article feeds data back in. skill files start at 50 lines. after a month they're 500+. it doesn't get lucky. it gets better. every day.
+
+openclaw is free. runs on any old computer. distribution is the entire game. automate it.
+
+all you do is open your phone, approve the drafts it sends you on telegram or whatsapp, and move on with your day.
+
+---
+
+
+## [@ihtesham2005] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/ihtesham2005/status/2026752089473314975) (ID: 2026752089473314975)
+🚨 Anthropic just open-sourced the exact Skills library their own engineers use internally.
+
+Stop building Claude workflows from scratch.
+
+These are plug-and-play components that work across Claude Code, API, SDK, and VS Code copy once, deploy everywhere.
+
+What's inside:
+
+→ Excel + PowerPoint generation out of the box
+→ File handling and document workflows
+→ MCP-ready subagent building blocks
+→ Pre-built patterns for multi-step automation
+→ Production templates you'd normally spend weeks writing
+
+The old way: re-explain your workflow every single chat.
+
+The new way: build a Skill once, Claude never forgets how you work.
+
+100% Open Source. Official Anthropic release.
+
+Repo: https://t.co/XNx3i4yNy6
+PHOTO: https://pbs.twimg.com/media/HCB4OclWoAAG98y.jpg
+
+---
+
+
+## [@boyuan_chen] (2026-02-26)
+**Link:** [Otwórz Tweet](https://x.com/boyuan_chen/status/2026858910963917022) (ID: 2026858910963917022)
+@Hesamation @kepano @obsdmd Been running this for months. Obsidian vault as the memory layer for my AI assistant. The trick is structuring notes so the agent finds context without you spelling everything out. Daily logs + semantic search changed the whole workflow for me.
+
+---
+
+
+## [@Hesamation] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/Hesamation/status/2026801420872093708) (ID: 2026801420872093708)
+this Obsidian + AI is the new hot combo.
+few people know that the CEO of Obsidian @kepano has made multiples skills for Claude Code and Codex that you can use right now both for your codebase and your personal vault. https://t.co/pshaSsfcj6
+PHOTO: https://pbs.twimg.com/media/HCClJmHXQAARvP7.jpg
+>  QT @jameesy:
+> https://t.co/qwpV7LscFK
+>  https://x.com/jameesy/status/2026628809424781787
+
+---
+
+
+## [@Param_eth] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/Param_eth/status/2026731858982313998) (ID: 2026731858982313998)
+OpenClaw after 50 days: 
+
+20 best prompts
+
+- Morning X/Twitter briefing
+- Background health checks
+- Excalidraw diagrams via MCP
+- Self-maintenance: updates and backups
+- Web summaries: the /summarise command
+PHOTO: https://pbs.twimg.com/media/HCBlEhuaMAQQC6v.jpg
+
+---
+
+
+## [@nauczymycieAI] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/nauczymycieAI/status/2026657047899492671) (ID: 2026657047899492671)
+Od teraz możesz kontrolować Claude Code z telefonu - wyjść na spacer z psem, podczas gdy agent AI pracuje dla Ciebie.
+
+Większość funkcji Code trafia do Cowork - niedługo będziesz w stanie przygotować prezentację dla szefa w 100% z telefonu.
+
+Na przykład bawiąc się z dzieckiem
+>  QT @noahzweben:
+> Announcing a new Claude Code feature: Remote Control. It's rolling out now to Max users in research preview. Try it with /remote-control
+> 
+> Start local sessions from the terminal, then continue them from your phone. Take a walk, see the sun, walk your dog without losing your flow.
+> VIDEO: https://pbs.twimg.com/amplify_video_thumb/2026370115915362307/img/dajbIKWEIuDDXHlC.jpg
+>  https://x.com/noahzweben/status/2026371260805271615
+
+---
+
+
+## [@victormustar] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/victormustar/status/2026624792602808707) (ID: 2026624792602808707)
+If you like Claude Code/Codex and have 32GB of RAM: please run Qwen3.5-35B-A3B locally.
+
+There's a before and after for local agents: reliable tool calling, stable agentic loops, only 3B active params. Punches way above its weight!
+
+Now is the best time to get started with local models.
+PHOTO: https://pbs.twimg.com/media/HCAD8RLWQAABhli.png
+>  QT @victormustar:
+> This is big: Pi X Hugging Face
+> 
+> The agent behind OpenClaw 🦞 is now integrated directly in Hugging Face - letting your run thousands of models locally without leaving your computer!
+> 
+> PHOTO: https://pbs.twimg.com/media/HB8jgHsWAAAyMng.jpg
+>  https://x.com/victormustar/status/2026380975425388964
+
+---
+
+
+## [@TheWarEnglish] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/TheWarEnglish/status/2026661151522672878) (ID: 2026661151522672878)
+Your Belly, GONE. Fast:
+
+• Drink water
+• Limit alcohol
+• 10k+ steps a day
+• Get enough quality sleep
+• Eat primarily whole foods
+• 500+ calories below maintenance
+• Eat 1g of protein per lb of bodyweight
+
+6 months of this, and you'll be a unrecognizable.
+
+---
+
+
+## [@AmirMushich] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/AmirMushich/status/2026760628090605747) (ID: 2026760628090605747)
+99% of creators &amp; brands will never realize this
+
+You're losing $1000s daily
+Because your brand looks cheap
+
+Your viewers' interactions aren't growing into transactions &amp; relationships
+
+Because people want to interact with what makes them feel great
+
+Here's your missing piece👇 https://t.co/qyTwqHUdBt
+PHOTO: https://pbs.twimg.com/media/HCB90INXwAAv-hl.jpg
+>  QT @AmirMushich:
+> https://t.co/QZ35cjcIbt
+>  https://x.com/AmirMushich/status/2026693633794076892
+
+---
+
+
+## [@miroburn] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/miroburn/status/2026740496115150898) (ID: 2026740496115150898)
+Kto by chciał śledzić te wszystkie newsy o AI?
+
+Wystarczy, że my je analizujemy.
+A Ty tylko piszesz, co chcesz.
+
+Update 2026.02.25
+- +Wispr Flow (dyktowanie AI, 100+ języków, Android/Mac/iOS)
+- +Perplexity Computer (agent end-to-end, 19 modeli równolegle)
+- Claude Pro: finance plugins, enterprise marketplace
+- Claude Code: remote control z telefonu
+- GPT-5.3 Codex: Responses API dla wszystkich
+- Qwen 3.5: nowe modele Medium
+
+Wystarczy, że wejdziesz i poszukasz czegoś pod siebie.
+A newsy będą już zaszyte w polecenia.
+
+https://t.co/GHe2TmFQAP
+PHOTO: https://pbs.twimg.com/media/HCBrclCXgAA7prj.jpg
+
+---
+
+
+## [@polydao] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/polydao/status/2026552743738094041) (ID: 2026552743738094041)
+THIS IS HOW YOU COMPRESS 100 HOURS INTO 10 MINUTES
+
+> just tried NotebookLM + Obsidian combo
+
+and honestly… this is insane
+
+> i didn’t expect NotebookLM to be this powerful
+
+the craziest part?
+
+> the "YouTube to NotebookLM" extension
+
+you can literally pull entire channels, dump all videos into NotebookLM and get a structured mega-summary in minutes
+
+> but two features completely blew my mind:
+
+Audio Overviews:
+> turns any PDF, report or notes into a podcast-style dialogue between two hosts
+> perfect for listening while walking or driving
+
+Book Filter:
+> upload your Obsidian knowledge base + a new book
+ask: "Is there anything new for me here?"
+
+if the answer is "no"  skip it and save dozens of hours
+
+> this feels like compression for knowledge
+
+if you’re serious about learning fast, here’s the stack:
+
+📁 NotebookLM
+↳ https://t.co/eUmT4BZFSr
+
+📁 YouTube to NotebookLM Chrome Extension
+↳ https://t.co/2ZnZzGcysm
+
+📁 Google Gemini
+↳ https://t.co/fzC8ilOacT
+
+this combo + Obsidian vault = unfair advantage
+>  QT @phosphenq:
+> this russian guy found a way to learn anything 10x faster🚨
+> 
+> saved 1,460h
+> 
+> VIDEO: https://pbs.twimg.com/amplify_video_thumb/2026381671214276609/img/XdynZvzP1CiqaYDZ.jpg
+>  https://x.com/phosphenq/status/2026383675735048248
+
+---
+
+
+## [@everestchris6] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/everestchris6/status/2026722616246198750) (ID: 2026722616246198750)
+My OpenClaw bot runs a full website sales business 24/7:
+
+- Finds local businesses without a website
+- Builds them a custom site automatically
+- Emails them the preview link
+- Runs every day on autopilot
+
+Most local businesses don't have a website. This skill finds them and pitches them automatically
+
+Reply "skill" and I'll send you a free skill file that scrapes leads, builds sites, and sends emails on autopilot. (must be following)
+
+---
+
+
+## [@indexsy] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/indexsy/status/2026470836627206279) (ID: 2026470836627206279)
+REPEAT AFTER ME
+
+OpenClaw can manage Meta ads better than 99% of agencies
+
+Hook it to your ad account and it:
+→ Monitors campaigns 24/7 and flags what's bleeding budget
+→ Kills underperforming ads before they drain your wallet
+→ Scales winning creatives automatically
+→ Reports performance in plain English — no dashboard needed
+
+Your AI agent just became your media buyer.
+
+RIP AGENCIES
+
+Comment "META" + bookmark this → I'll DM you the free setup guide (must be following)
+PHOTO: https://pbs.twimg.com/media/HB94fKiaMAMPqUE.jpg
+
+---
+
+
+## [@alexaaronlab] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/alexaaronlab/status/2026769864224854075) (ID: 2026769864224854075)
+Bored thoughts 
+
+-Tesamorelin is overrated 
+-Reta and MotsC will get you shredded 
+-MT2 is overhated 
+-you should not be taking over 4 peps as a beginner
+-GLOW & KLOW blend has amazing ROI
+ -peptides amplify good habits way more than they fix bad ones 
+-dose and timing matter greatly for GH secretagogues 
+-you need to monitor your protocol 
+
+https://t.co/Z37ZJl2szP
+PHOTO: https://pbs.twimg.com/media/HCCIcswW0AEDPIC.jpg
+PHOTO: https://pbs.twimg.com/media/HCCIcswW4AA6lQH.jpg
+
+---
+
+
+## [@coreyganim] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/coreyganim/status/2026666463675765106) (ID: 2026666463675765106)
+https://t.co/U25NSj7R1N
+
+---
+
+
+## [@CodeByPoonam] (2026-02-25)
+**Link:** [Otwórz Tweet](https://x.com/CodeByPoonam/status/2026734134543134818) (ID: 2026734134543134818)
+🚨 Perplexity just dropped their own OpenClaw version.
+
+And the timing couldn't be more perfect.
+
+OpenClaw got suspended by Google this week.
+219,000 GitHub stars. Cut off. Just like that.
+
+Then Perplexity launched Perplexity Computer.
+
+Here's what Perplexity Computer actually is:
+→ 19 AI models working in parallel.
+→ Claude for reasoning. Gemini for research.
+→ 17 other models handling everything else.
+
+All in one browser. No local setup. No terms of service drama. No Google pulling the plug.
+
+It can:
+→ Research and analyze — NVIDIA earnings to market reports
+→ Design, code and deploy web apps end to end
+→ Connect to Google Workspace, Slack and GitHub
+→ Handle files with persistent memory across sessions
+→ Run autonomously in the cloud while you do something else
+
+OpenClaw ran locally on your machine.
+Perplexity Computer runs in the cloud on 19 models simultaneously.
+
+OpenClaw got suspended the same week Perplexity shipped its replacement.
+
+Timing is everything.
+PHOTO: https://pbs.twimg.com/media/HCBn9H7aMAMfmSU.jpg
+>  QT @perplexity_ai:
+> Introducing Perplexity Computer.
+> 
+> Computer unifies every current AI capability into one system.
+> 
+> VIDEO: https://pbs.twimg.com/amplify_video_thumb/2026695448996753409/img/yeKxOwuVQwjvBDYt.jpg
+>  https://x.com/perplexity_ai/status/2026695550771540489
+
+---

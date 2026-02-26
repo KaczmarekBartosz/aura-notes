@@ -519,3 +519,18 @@ Podstawy + Konsekwencja + Czas = Wyniki.
 *Dokument skompilowany z zakładek X/Twitter przez Aura/OpenClaw*  
 *Wszystkie protokoły są kompilacją wiedzy publicznej i nie stanowią porady medycznej*  
 *Przed rozpoczęciem jakiegokolwiek protokołu skonsultuj się z lekarzem*
+
+---
+
+## Aktualizacja 2026-02-26 — fitness signals
+
+### Minimal baseline for fat loss
+Powtarza się prosty, skuteczny rdzeń: 10k kroków, deficyt, wysoki protein, sen, ograniczenie alkoholu.
+
+- Source: https://x.com/TheWarEnglish/status/2026661151522672878
+
+### Peptides: protocol discipline > hype
+Wątek peptydowy podkreśla, że efekty są zależne od monitoringu, dawkowania i jakości nawyków bazowych.
+
+- Source: https://x.com/alexaaronlab/status/2026769864224854075
+

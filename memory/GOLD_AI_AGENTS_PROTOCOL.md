@@ -1,636 +1,521 @@
 # GOLD AI AGENTS PROTOCOL
-## Kompletny system architektury, delegacji i optymalizacji agentów AI
+## Kompletny system budowania i zarządzania autonomicznymi agentami AI
 
 **Wersja:** 1.0  
-**Źródło:** Kompilacja zakładek X/Twitter (@AlexFinn, @EXM7777, @code_rams, @moritzkremb) + Azure/Google/AWS best practices  
+**Źródło:** Kompilacja zakładek X/Twitter (@AlexFinn, @EXM7777, @code_rams, @moritzkremb, @miroburn, @szarketh, @kaostyl, @KacperTrzepiec1)  
 **Data kompilacji:** Luty 2026
 
 ---
 
 ## SPIS TREŚCI
 
-1. [Filozofia Protokołu](#1-filozofia-protokołu)
-2. [Architektura Agentów AI](#2-architektura-agentów-ai)
-3. [Wzorce Orkiestracji Multi-Agent](#3-wzorce-orkiestracji-multi-agent)
-4. [Delegacja Sub-Agentów](#4-delegacja-sub-agentów)
-5. [Automatyzacja Workflow](#5-automatyzacja-workflow)
-6. [Optymalizacja Kosztów](#6-optymalizacja-kosztów)
-7. [Stack Technologiczny](#7-stack-technologiczny)
-8. [Implementacja w Praktyce](#8-implementacja-w-praktyce)
-9. [Typowe Błędy](#9-typowe-błędy)
-10. [Hierarchia Priorytetów](#10-hierarchia-priorytetów)
+1. [Filozofia Agentów AI](#1-filozofia-agentów-ai)
+2. [Architektura Systemu Agentów](#2-architektura-systemu-agentów)
+3. [Protokół Memory (Pamięci)](#3-protokół-memory-pamięci)
+4. [Protokół Sub-Agentów](#4-protokół-sub-agentów)
+5. [Protokół Automatyzacji (Cron vs Heartbeat)](#5-protokół-automatyzacji-cron-vs-heartbeat)
+6. [Protokół Mission Control](#6-protokół-mission-control)
+7. [Protokół Bezpieczeństwa](#7-protokół-bezpieczeństwa)
+8. [Stack Technologiczny](#8-stack-technologiczny)
+9. [Checklist Konfiguracji](#9-checklist-konfiguracji)
+10. [Typowe Błędy](#10-typowe-błędy)
 
 ---
 
-## 1. FILOZOFIA PROTOKOŁU
+## 1. FILOZOFIA AGENTÓW AI
 
-### 1.1 Podstawowa Zasada
-> "Jeden agent zbyt wieloma odpowiedzialnościami staje się 'Jack of all trades, master of none'. Specjalizacja = niezawodność." — Azure AI Patterns
+### 1.1 Definicja Agenta
 
-Protokół opiera się na **modularnej architekturze multi-agent**. Nie budujemy monolitycznych agentów — tworzymy specjalizowane jednostki, które razem tworzą system bardziej niezawodny niż pojedynczy super-agent.
+> "Agent to nie chatbot. Agent to pracownik z pamięcią, osobowością i celem." — Alex Finn
 
-### 1.2 Dlaczego Multi-Agent?
+**Różnica kluczowa:**
+- **Chatbot:** Odpowiada na pytania, zapomina po sesji
+- **Agent:** Pamięta, uczy się, działa proaktywnie, koordynuje innych agentów
 
-| Aspekt | Pojedynczy Agent | System Multi-Agent |
-|--------|------------------|-------------------|
-| **Złożoność** | Rosnąca z każdym narzędziem | Rozproszona na agentach |
-| **Debugowanie** | Trudne (gdzie jest błąd?) | Łatwe (izolowany agent) |
-| **Skalowalność** | Ograniczona | Elastyczna (dodaj agenta) |
-| **Optymalizacja** | Jedna konfiguracja dla wszystkiego | Każdy agent ma optymalny model |
-| **Koszt** | Stały (najdroższy model) | Dynamiczny (dopasowany do zadania) |
+### 1.2 Misja jako Kompas
 
-### 1.3 Zasada 80/20 w Agentach AI
+**Zasada Alex Finna:**
+> "Musisz dać swojemu OpenClaw misję, którą umieszcza na górze Mission Control. Teraz, gdy agent jest bezczynny, możesz zapytać: 'co możemy zrobić, aby przybliżyć się do naszej misji?'"
 
-**20% wysiłku daje 80% rezultatów:**
-- Dobry prompt systemowy
-- Właściwy model dla zadania
-- Podstawowa orkiestracja
-- Monitoring kosztów
+**Przykładowe Misje:**
+- "Zbudować autonomiczną organizację agentów AI, która pracuje dla mnie 24/7 i wytwarza wartość"
+- "Stworzyć system AI, który zarządza całym moim cyfrowym workflow — od researchu po publikację"
+- "Zautomatyzować 80% powtarzalnych zadań w mojej pracy kreatywnej"
 
-**Ostatnie 20% wymaga:**
-- Zaawansowanej delegacji
-- Kompleksowej obsługi błędów
-- Multi-agent collaboration
-- Enterprise governance
+### 1.3 Od Chatbota do Pracownika
 
----
+**5 Elementów Transformacji (Alex Finn):**
 
-## 2. ARCHITEKTURA AGENTÓW AI
-
-### 2.1 Anatomia Agenta
-
-Każdy agent składa się z 5 kluczowych elementów:
-
-```
-┌─────────────────────────────────────────┐
-│           AGENT AI                      │
-├─────────────────────────────────────────┤
-│ 1. Model LLM (mózg)                     │
-│    - Wybór modelu według zadania        │
-│    - Temperature, max_tokens            │
-│                                         │
-│ 2. System Prompt (osobowość)            │
-│    - Rola, ograniczenia, format wyjścia │
-│                                         │
-│ 3. Tools (narzędzia)                    │
-│    - Funkcje, API, bazy danych          │
-│                                         │
-│ 4. Memory (pamięć)                      │
-│    - Session state, RAG, history        │
-│                                         │
-│ 5. Orchestration (orkiestracja)         │
-│    - Jak agent współpracuje z innymi    │
-└─────────────────────────────────────────┘
-```
-
-### 2.2 Hierarchia Modeli
-
-**Strategia "Right-Sizing":**
-
-| Model | Zastosowanie | Przykład | Koszt względny |
-|-------|-------------|----------|----------------|
-| **Tier 1: Małe** | Klasyfikacja, ekstrakcja, proste Q&A | GPT-3.5, Claude Haiku, Gemini Flash | 1x (baseline) |
-| **Tier 2: Średnie** | Kompleksowe analizy, generowanie kodu | GPT-4o, Claude Sonnet | 3-5x |
-| **Tier 3: Duże** | Rozumowanie, planowanie, kreatywność | GPT-4.5, Claude Opus, o1 | 10-20x |
-
-**Zasada:** 80% zadań obsłuż małym modelem. Tylko 20% wymaga największych.
-
-### 2.3 Prompt Engineering - Minimal Effective Dose
-
-> "Descriptive labels like 'Please find below the summary...' may be clear — but token-expensive." — Token Optimization Study
-
-**Zoptymalizowany prompt:**
-```
-ZAMIAST:
-"You are an expert data scientist. Given the following dataset and detailed 
-instructions, please analyze correlations, generate graphs, and provide observations."
-
-UŻYJ:
-"Analyze correlations, visualize data, summarize key insights."
-```
-
-**Rezultat:** 84% redukcja kosztów tokenów przez usunięcie redundantnego formatowania.
+| Element | Chatbot | Agent/Pracownik |
+|---------|---------|-----------------|
+| Pamięć | Brak | Pliki .md, wektory, daily logs |
+| Cel | Brak | Mission statement |
+| Proaktywność | Reaktywny | Sam inicjuje zadania |
+| Narzędzia | Ograniczone | Pełny dostęp do systemu |
+| Delegacja | Brak | Sub-agenci, workflow |
 
 ---
 
-## 3. WZORCE ORKIESTRACJI MULTI-AGENT
+## 2. ARCHITEKTURA SYSTEMU AGENTÓW
 
-### 3.1 Pattern 1: Sequential (Linia Montażowa)
+### 2.1 Struktura Zespołu Agentów
 
-**Kiedy użyć:** Pipeline'y przetwarzania danych, przepływy z wyraźnymi zależnościami
+**Model 6-Agentów (Szark / @szarketh):**
 
-**Struktura:**
+| Agent | Rola | Odpowiedzialność |
+|-------|------|------------------|
+| **IT** | Dział techniczny | Tworzy nowych agentów, utrzymuje infrastrukturę |
+| **Marketing** | Content & Growth | Tworzy treści, analizuje trendy, zarządza publikacją |
+| **Research** | Badania i analiza | Monitoruje rynek, konkurencję, nowe technologie |
+| **Operacje** | Automatyzacja | Zarządza workflow, cronami, powiadomieniami |
+| **Biznes** | Strategia | Analizuje KPI, proponuje decyzje biznesowe |
+| **QC** | Quality Control | Weryfikuje output, pilnuje standardów |
+
+### 2.2 Komunikacja Między Agentami
+
+**Centralny System (@miroburn):**
+1. **Notion jako hub** — wspólna przestrzeń dla wszystkich agentów
+2. **API Context** — każdy agent pobiera aktualny kontekst przed działaniem
+3. **Recepcja** — wspólna kolejka zadań i aktualizacji
+
+**Alternatywny Model (Discord/Telegram):**
+- Główny kanał: Aktualizacje systemowe
+- Thread per task: Izolowane sesje robocze
+- Statusline w voice channel: Dynamiczne statusy
+
+### 2.3 Routing Zadań
+
+**Zasada:** Agent nie wykonuje bezpośrednio — deleguje.
+
 ```
-Input → Agent A → Agent B → Agent C → Output
-        (Parse)   (Extract) (Summarize)
+Użytkownik → Główny Agent → Analiza → Delegacja → Sub-agenci
+                                          ↓
+                                    Równoległe wykonanie
+                                          ↓
+                                   Weryfikacja → Output
 ```
-
-**Przykład - Przetwarzanie Dokumentów:**
-| Krok | Agent | Zadanie | Output Key |
-|------|-------|---------|------------|
-| 1 | ParserAgent | PDF → Tekst | `raw_text` |
-| 2 | ExtractorAgent | Tekst → Struktura | `structured_data` |
-| 3 | SummarizerAgent | Struktura → Podsumowanie | `final_summary` |
-
-**Zalety:** Proste do debugowania, deterministyczne  
-**Wady:** Brak równoległości, wolniejsze
-
-### 3.2 Pattern 2: Concurrent (Fan-Out/Fan-In)
-
-**Kiedy użyć:** Zadania niezależne, przeglądy kodu, analizy wielowymiarowe
-
-**Struktura:**
-```
-Input → Agent A (Security) ─┐
-        Agent B (Style)    ─┼→ Synthesizer → Output
-        Agent C (Performance)─┘
-```
-
-**Przykład - Code Review:**
-```python
-# Parallel Agents
-security_scanner = LlmAgent(
-    name="SecurityAuditor",
-    instruction="Check for vulnerabilities.",
-    output_key="security_report"
-)
-
-style_checker = LlmAgent(
-    name="StyleEnforcer", 
-    instruction="Check PEP8 compliance.",
-    output_key="style_report"
-)
-
-# Synthesizer
-pr_summarizer = LlmAgent(
-    name="PRSummarizer",
-    instruction="Consolidate reports into one review."
-)
-```
-
-**Zalety:** Szybsze (równoległość), różne perspektywy  
-**Wady:** Złożona agregacja wyników, race conditions na shared state
-
-### 3.3 Pattern 3: Coordinator/Dispatcher (Koncjer)
-
-**Kiedy użyć:** Routing intencji, customer service, złożone systemy z wieloma ekspertami
-
-**Struktura:**
-```
-User Request → Coordinator Agent → Billing Specialist
-                                → Tech Support  
-                                → Sales Agent
-```
-
-**Implementacja:**
-```python
-coordinator = LlmAgent(
-    name="CoordinatorAgent",
-    instruction="Analyze user intent. Route billing to Billing, tech to TechSupport.",
-    sub_agents=[billing_specialist, tech_support, sales_agent]
-)
-```
-
-**Klucz:** Sub-agenci mają `description` — coordinator wybiera na podstawie opisu.
-
-### 3.4 Pattern 4: Hierarchical Decomposition (Rosyjska Matrioszka)
-
-**Kiedy użyć:** Złożone zadania wymagające dekompozycji, zadania przekraczające context window
-
-**Struktura:**
-```
-ReportWriter (L1)
-    └── ResearchAssistant (L2)
-            ├── WebSearchAgent (L3)
-            └── SummarizerAgent (L3)
-```
-
-**Zasada:** Parent agent deleguje część zadania i czeka na wynik, aby kontynuować.
-
-### 3.5 Pattern 5: Group Chat (Rada Agentów)
-
-**Kiedy użyć:** Burza mózgów, iteracyjne doskonalenie, decyzje kworum
-
-**Mechanizm:** Agenci wymieniają się wiadomościami w pętli do osiągnięcia konsensusu.
 
 ---
 
-## 4. DELEGACJA SUB-AGENTÓW
+## 3. PROTOKÓŁ MEMORY (PAMIĘCI)
 
-### 4.1 Agent-as-a-Tool Pattern
+### 3.1 Architektura Pamięci (@kaostyl, @KacperTrzepiec1)
 
-Najefektywniejszy sposób implementacji sub-agentów — traktuj je jak narzędzia.
+**Split Memory Model:**
 
-**Dlaczego to działa:**
-- Redukcja context growth (kontekst sub-agenta nie zalewa głównego)
-- Możliwość użycia tańszego modelu dla prostych zadań
-- Izolacja błędów
+| Plik | Zawartość | Częstotliwość aktualizacji |
+|------|-----------|---------------------------|
+| `memory/active-tasks.md` | Aktualne zadania, "save game" | Real-time |
+| `memory/YYYY-MM-DD.md` | Daily logs, surowe notatki | Codziennie |
+| `memory/user-profile.md` | Kim jest użytkownik, cele, preferencje | Rzadko |
+| `memory/lessons-learned.md` | Wyciągnięte wnioski | Co kilka dni |
+| `memory/projects.md` | Status projektów, kontekst | Na bieżąco |
 
-**Implementacja (pseudokod):**
-```kotlin
-fun createFindAgentTool(): Tool<*, *> {
-    return AIAgentService
-        .fromAgent(findAgent)
-        .createAgentTool<String, String>(
-            agentName = "__find_in_codebase_agent__",
-            agentDescription = """
-                Użyj gdy potrzebujesz znaleźć kod w bazie.
-                Podaj CO szukasz i DLACZEGO to ważne.
-            """,
-            inputDescription = """
-                Szczegółowy opis poszukiwanego kodu i kontekstu.
-            """
-        )
-}
+### 3.2 Protokół Daily Log
+
+**Struktura pliku `memory/2026-02-26.md`:**
+
+```markdown
+# 2026-02-26 — Daily Log
+
+## 📋 Zadania Wykonane
+- [x] Konfiguracja nowego agenta research
+- [x] Automatyzacja backupu (cron)
+
+## 💡 Decyzje Podjęte
+- Przełączono model główny na MiniMax M2.5 (koszt ↓ 80%)
+
+## ❌ Błędy i Poprawki
+- Błąd: Agent nie wczytywał USER.md
+- Fix: Dodano explicit read na starcie sesji
+
+## 📝 Kontekst Przydatny
+- Użytkownik preferuje krótkie odpowiedzi
+- Nowy projekt: Aurafit — priorytet #1
 ```
 
-### 4.2 Strategia "Find Agent" - Case Study
+### 3.3 Protokół REFLECT (@KacperTrzepiec1)
 
-**Problem:** Główny agent przegląda wiele plików, zapamiętując ślepe zaułki (dead ends)
+**Komenda:** `/reflect`
 
-**Rozwiązanie:** Delegacja wyszukiwania do dedykowanego sub-agenta
+**Co robi agent:**
+1. Skanuje całą rozmowę
+2. Szuka sygnałów zmian:
+   - "za długie" → dodaje zasadę "odpowiadaj krócej"
+   - "nie pisz game-changer" → czarna lista słów
+   - Poprawki zachowania → aktualizuje RULES.md
+3. Aktualizuje pliki pamięci
 
-| Bez Sub-Agenta | Z Sub-Agentem |
-|----------------|---------------|
-| Cała historia wyszukiwania w kontekście | Tylko wynik znalezienia |
-| Drogi model (GPT-4) przez cały czas | Tani model (GPT-4 Mini) dla wyszukiwania |
-| Kontekst zalewa istotne informacje | Skompresowana historia |
+### 3.4 Memory Files — MUST HAVE
 
-**Rezultat:** Redukcja kosztów + poprawa wydajności
+**Wymagane pliki w workspace:**
 
-### 4.3 Zasady Delegacji
-
-**DELEGUJ gdy:**
-- Zadanie jest wąsko zdefiniowane (search, parse, classify)
-- Możesz użyć tańszego modelu
-- Chcesz ograniczyć wzrost kontekstu
-- Potrzebujesz izolacji błędów
-
-**NIE DELEGUJ gdy:**
-- Wymagana jest głęboka współpraca (użyj Group Chat)
-- Zadanie jest trywialne (prosta funkcja wystarczy)
-- Overhead orkiestracji przewyższa korzyści
+| Plik | Przeznaczenie | Co wrzucać |
+|------|---------------|------------|
+| `USER.md` | Profil użytkownika | Cele, preferencje, styl pracy |
+| `AGENTS.md` | Instrukcje dla agenta | Jak reagować, kiedy pytać |
+| `CLAUDE.md` / `OPENCLAW.md` | Zasady techniczne | Stack, konwencje, workflow |
+| `HEARTBEAT.md` | Status systemu | Aktywne zadania, blokady |
 
 ---
 
-## 5. AUTOMATYZACJA WORKFLOW
+## 4. PROTOKÓŁ SUB-AGENTÓW
 
-### 5.1 N8N vs Make.com vs Custom Code
+### 4.1 Zasada Delegacji
 
-| Narzędzie | Najlepsze dla | Zalety | Wady |
-|-----------|--------------|--------|------|
-| **n8n** | Self-hosted, HIPAA/GDPR | Open-source, lokalna instancja, 400+ integracji | Wymaga utrzymania |
-| **Make.com** | Szybkie MVP, małe zespoły | UI/UX, łatwe startowanie | Drogi przy skali, vendor lock-in |
-| **Temporal** | Enterprise, critical workflows | Trwałość, replay, scalability | Wymaga kodowania |
-| **Airflow** | Data pipelines, ML ops | Mature, programowalne | Steep learning curve |
+**Golden Rule (@johann_sath):**
+> "Spawn subagents for all execution. Never do inline work. You strategize, subagents build. 10x faster."
+
+**Kiedy Delegować:**
+- [x] Zadanie > 15 minut pracy
+- [x] Można podzielić na niezależne części
+- [x] Wymaga specjalizacji (research, kod, design)
+- [x] Jest powtarzalne
+
+### 4.2 Tworzenie Sub-Agenta
+
+**Prompt Template:**
+
+```
+Create a sub-agent with the following context:
+
+ROLE: [Researcher/Coder/Writer/etc.]
+TASK: [Konkretne zadanie]
+CONTEXT: [Wszystko co agent musi wiedzieć]
+SUCCESS CRITERIA: [Jak ocenić czy zadanie zrobione]
+OUTPUT FORMAT: [Jaki format oczekujesz]
+
+IMPORTANT: Do not read any .md files. I will provide all context you need.
+```
+
+### 4.3 Parallel Execution
+
+**Wzorzec (@kaostyl):**
+```
+Zadanie: "Przeanalizuj 10 produktów konkurencji"
+
+→ Sub-agent 1: Produkty 1-3
+→ Sub-agent 2: Produkty 4-6  
+→ Sub-agent 3: Produkty 7-10
+
+Wszystkie równolegle → Merge wyników → Final report
+```
+
+### 4.4 Nested Sub-Agents
+
+**Zaawansowany Wzorzec (@jumperz):**
+> "Mój agent John dostał zadanie researchu. Spawnął 3 internów do równoległego badania. Jeden z nich znalazł coś na tyle głębokiego, że uruchomił własnego interna, aby kopać dalej."
+
+**Zasada:** Sub-agent może tworzyć własnych sub-agentów, gdy natrafi na pod-zadanie wymagające głębszej analizy.
+
+---
+
+## 5. PROTOKÓŁ AUTOMATYZACJI (CRON VS HEARTBEAT)
+
+### 5.1 Cron Jobs — Precyzyjne Zadania
+
+**Kiedy używać:** Konkretne zadania o określonym czasie
+
+**Przykłady:**
+
+| Zadanie | Harmonogram | Model |
+|---------|-------------|-------|
+| Daily Briefing | 6:00 AM | Haiku/MiniMax |
+| Research Scout | 2:00 AM (noc) | Opus |
+| Content Ideas | 8:00 AM | Sonnet |
+| Backup Systemu | 3:00 AM | MiniMax |
+| Analytics Review | Niedziela 10:00 | Opus |
+
+### 5.2 Heartbeat — Monitoring Systemu
+
+**Zasada (@kaostyl):**
+> "Keep it under 20 lines. Heavy work goes in cron jobs, not heartbeats."
+
+**Struktura HEARTBEAT.md:**
+
+```markdown
+# HEARTBEAT — Sprawdź co 30 min
+
+- [ ] Czy `active-tasks.md` jest aktualne?
+- [ ] Czy są sesje "zombie" (> 2h bez aktywności)?
+- [ ] Czy jakiś cron nie wykonał się > 24h?
+- [ ] Self-review co 4h: Co mogę poprawić?
+```
+
+### 5.3 Wybór Modelu do Automatyzacji
+
+**Zasada (@kaostyl):**
+
+| Typ Zadania | Model | Dlaczego |
+|-------------|-------|----------|
+| External content (X, web, email) | Opus / Najsilniejszy | Odporność na prompt injection |
+| Internal tasks (pliki, logi) | Sonnet / Średni | Wystarczający, tańszy |
+| Heartbeat / Monitoring | MiniMax / Haiku | Szybki, tani |
+| Kodowanie | GPT-5.3 Codex | Najlepszy kod |
+| Frontend | Gemini 3.1 Pro | Najlepszy design |
+
+---
+
+## 6. PROTOKÓŁ MISSION CONTROL
+
+### 6.1 Definicja
+
+**Mission Control = Dashboard + Command Center**
+
+Centralny hub, gdzie:
+- Monitorujesz wszystkich agentów
+- Widzisz status zadań
+- Zarządzasz workflow
+- Przeglądasz analizy
+
+### 6.2 Stack Technologiczny (Kloss / @kloss_xyz)
 
 **Rekomendacja:**
-- Start: n8n (self-hosted) lub Make.com
-- Skala: Temporal lub custom z orkiestracją
+- **Frontend:** Next.js 15 + Tailwind CSS v4 + Framer Motion
+- **Backend:** Convex (real-time) lub własne API
+- **UI:** ShadCN UI + Lucide icons
+- **Design:** Dark mode, glassmorphism, premium aesthetic
 
-### 5.2 Event-Driven Agent Workflows
+### 6.3 Komponenty Mission Control
 
-**Architektura:**
+**Widoki:**
+
+| Sekcja | Co wyświetla |
+|--------|--------------|
+| **Home** | System Health, Agent Status, Cron Health, Revenue, Content Pipeline |
+| **Ops** | Zadania operacyjne, kalendarz, priorytety |
+| **Agents** | Lista agentów, ich role, modele, status |
+| **Chat** | Interfejs do komunikacji z agentami |
+| **Content** | Pipeline treści, statusy, zatwierdzanie |
+| **Knowledge** | Baza wiedzy, wyszukiwanie |
+
+### 6.4 Reverse Prompting w Practice
+
+**Technika Alex Finna:**
+
+> "Zamiast pytać 'co mam zrobić?', zapytaj: 'W oparciu o to, co wiesz o mnie, gdzie tracę czas? Jakie workflow możemy zbudować?'"
+
+**Prompt:**
 ```
-Trigger (Webhook/Schedule/Cron)
-    ↓
-Event Bus (Redis/RabbitMQ/SQS)
-    ↓
-Agent Workers (scaling)
-    ↓
-Results Store (DB/Cache)
-    ↓
-Notifications/Callbacks
-```
+Based on my USER.md, AGENTS.md, and our mission statement:
 
-**Zalety:**
-- Agenci skalują się niezależnie
-- Odporność na awarie (retry logic)
-- Możliwość mixu LLM + traditional processing
-
-### 5.3 Human-in-the-Loop
-
-**Kiedy włączyć człowieka:**
-- Decyzje o wysokiej wartości ($$$)
-- Dane wrażliwe (PII, HIPAA)
-- Confidence score < threshold
-- Edge cases nieobsługiwane automatycznie
-
-**Implementacja:**
-```python
-if confidence < 0.7:
-    send_to_human_review(task_id, context)
-    await human_approval()
-else:
-    execute_automatically()
+1. What is 1 task we can do RIGHT NOW to get closer to our mission?
+2. What workflow should we automate that we're currently doing manually?
+3. What tool should we build that doesn't exist yet?
 ```
 
 ---
 
-## 6. OPTYMALIZACJA KOSZTÓW
+## 7. PROTOKÓŁ BEZPIECZEŃSTWA
 
-### 6.1 Główne Drivery Kosztów
+### 7.1 Zasady Bezpieczeństwa (@johann_sath)
 
-| Czynnik | Wpływ | Strategia optymalizacji |
-|---------|-------|------------------------|
-| **Tokeny Input** | 60-70% kosztu | Krótsze prompty, RAG, prompt caching |
-| **Tokeny Output** | 30-40% kosztu | Limit max_tokens, format constraints |
-| **Wybór modelu** | 10-50x różnica | Model routing, tiered approach |
-| **Częstotliwość** | Multiplikator | Caching, batch processing |
-| **Latency** | Premium pricing | Async processing, queue |
+**4 Guardrails:**
 
-### 6.2 Strategie Redukcji Kosztów
+| Zasada | Implementacja |
+|--------|---------------|
+| **Proactive Fixes** | "Fix errors immediately. Don't ask. Don't wait." |
+| **Sub-agent Execution** | "Spawn subagents for all execution. Never do inline work." |
+| **Git Safety** | "Never force push, delete branches, or rewrite git history." |
+| **Config Safety** | "Never guess config changes. Read docs first. Backup before editing." |
 
-#### A. Prompt Optimization
+### 7.2 Sandboxowanie
 
-**Przed:**
+**Zasady:**
+- [ ] Agent ma dostęp tylko do wyznaczonych folderów
+- [ ] Brak dostępu do ~/.ssh, ~/.aws bez explicit allow
+- [ ] Wrażliwe operacje wymagają approval
+- [ ] Wszystkie zmiany przez git (trackable)
+
+### 7.3 Backup i Recovery
+
+**Crash Recovery Pattern (@kaostyl):**
+
 ```
-You are a helpful assistant. Please analyze the following text carefully 
-and provide a detailed summary including main points, supporting evidence, 
-and conclusions. Make sure to be thorough and comprehensive.
-```
-**Tokeny:** ~45
+START task → Zapisz do active-tasks.md
+SPAWN sub-agent → Zapisz session key
+COMPLETE → Aktualizuj status
 
-**Po:**
-```
-Summarize: {text}
-Format: Bullet points
-Max length: 3 bullets
-```
-**Tokeny:** ~12 (73% redukcja)
-
-#### B. Model Routing (LLM Gateway)
-
-**Logika routingu:**
-```python
-def route_request(task_type, complexity):
-    if complexity == "simple" or task_type in ["classify", "extract"]:
-        return "gpt-3.5-turbo"  # 10x cheaper
-    elif complexity == "medium":
-        return "gpt-4o-mini"     # 3x cheaper
-    else:
-        return "gpt-4"           # Full power
-```
-
-**Case Study:** Telecom enterprise — 42% redukcja kosztów przez dynamic routing.
-
-#### C. Caching Strategy
-
-**Poziomy cache:**
-1. **Exact Match Cache** — identyczne zapytania (Redis, 1h TTL)
-2. **Semantic Cache** — podobne zapytania (embeddings + vector DB)
-3. **Pre-computed Results** — FAQ, common queries
-
-**Potencjalna oszczędność:** 20-40% dla repetitive workloads
-
-#### D. Context Compression
-
-**Techniki:**
-- Summarization conversation history (keep last 5, summarize rest)
-- RAG z relevant chunks (nie całe dokumenty)
-- Selective context passing między agentami
-
-**Rezultat:** Redukcja input tokens o 50-70%
-
-### 6.3 Benchmarki Kosztów
-
-**Typowy support chatbot (500k requestów/miesiąc):**
-
-| Scenariusz | Koszt miesięczny |
-|------------|------------------|
-| GPT-4 everywhere | $15,000 |
-| + Model routing | $9,000 (-40%) |
-| + Caching (30% hit) | $6,300 (-58%) |
-| + Prompt optimization | $4,500 (-70%) |
-
-**Zasada:** Optymalizacja nie zmniejsza jakości — zwiększa efektywność.
-
----
-
-## 7. STACK TECHNOLOGICZNY
-
-### 7.1 Core Stack (Must-Have)
-
-| Warstwa | Narzędzie | Alternatywy | Kiedy użyć |
-|---------|-----------|-------------|------------|
-| **LLM API** | OpenAI API | Anthropic, Google, Azure | Start, prototyping |
-| **Framework** | LangChain | LlamaIndex, Haystack | Complex agents |
-| **Orkiestracja** | n8n | Make.com, Temporal | Workflow automation |
-| **Baza danych** | PostgreSQL | Supabase, Neon | Session state, logs |
-| **Cache** | Redis | Memcached, KeyDB | Token caching, rate limiting |
-| **Monitoring** | LangSmith | Langfuse, Helicone | Cost tracking, debugging |
-
-### 7.2 Zaawansowany Stack
-
-| Warstwa | Narzędzie | Cel |
-|---------|-----------|-----|
-| **Vector DB** | Pinecone / Weaviate | RAG, semantic cache |
-| **LLM Gateway** | LiteLLM / Portkey | Unified API, cost control |
-| **Observability** | OpenTelemetry + Grafana | Full tracing |
-| **Deployment** | Docker + K8s | Scale to zero |
-| **Queue** | Redis / SQS / RabbitMQ | Async processing |
-
-### 7.3 Self-Hosted vs Cloud
-
-| Scenariusz | Rekomendacja | Szacunkowy koszt miesięczny |
-|------------|-------------|----------------------------|
-| Startup / MVP | Cloud APIs (OpenAI) | $100-500 |
-| Scale / Cost control | Self-hosted (Llama 3, Mistral) | $500-2000 (infra) |
-| Enterprise / Privacy | Hybrid (sensitive on-prem, rest cloud) | $2000-10000 |
-| High volume | Full self-hosted | Fixed vs variable cost |
-
----
-
-## 8. IMPLEMENTACJA W PRAKTYCE
-
-### 8.1 Startowy Template (Python)
-
-```python
-from langchain.agents import AgentExecutor, create_openai_tools_agent
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
-
-# 1. Definiujemy narzędzia
-from my_tools import search_tool, calculator_tool
-
-# 2. Konfiguracja promptu
-system_prompt = """Jesteś pomocnym asystentem. 
-Używaj narzędzi gdy potrzebujesz zewnętrznych danych.
-Odpowiadaj zwięźle i konkretnie."""
-
-prompt = ChatPromptTemplate.from_messages([
-    ("system", system_prompt),
-    ("placeholder", "{chat_history}"),
-    ("human", "{input}"),
-    ("placeholder", "{agent_scratchpad}"),
-])
-
-# 3. Tworzymy agenta
-llm = ChatOpenAI(model="gpt-4o-mini")  # Start z małym modelem
-agent = create_openai_tools_agent(llm, [search_tool, calculator_tool], prompt)
-
-# 4. Executor z obsługą błędów
-agent_executor = AgentExecutor(
-    agent=agent, 
-    tools=[search_tool, calculator_tool],
-    verbose=True,
-    max_iterations=5,
-    handle_parsing_errors=True
-)
-```
-
-### 8.2 Multi-Agent Setup (ADK Pattern)
-
-```python
-from google.adk.agents import LlmAgent, SequentialAgent, ParallelAgent
-
-# Definiujemy specjalistów
-researcher = LlmAgent(
-    name="Researcher",
-    model="gemini-1.5-flash",
-    instruction="Znajdź fakty na podany temat.",
-    output_key="facts"
-)
-
-writer = LlmAgent(
-    name="Writer",
-    model="gemini-1.5-pro",
-    instruction="Napisz artykuł używając: {facts}",
-    output_key="article"
-)
-
-# Orkiestracja
-pipeline = SequentialAgent(
-    name="ContentPipeline",
-    sub_agents=[researcher, writer]
-)
-```
-
-### 8.3 Cost-Optimized Setup
-
-```python
-from langchain_core.runnables import RunnablePassthrough
-
-# Router funkcji — wybiera model według zadania
-def smart_router(input_data):
-    task = classify_task(input_data)  # Lightweight classifier
-    
-    if task == "simple":
-        return cheap_model
-    elif task == "complex":
-        return expensive_model
-    else:
-        return medium_model
-
-# Chain z routingiem
-chain = (
-    {"input": RunnablePassthrough()}
-    | smart_router
-    | prompt
-    | llm
-    | parser
-)
+RESTART agenta:
+1. Read active-tasks.md
+2. Resume from last known state
+3. No "what were we doing?"
 ```
 
 ---
 
-## 9. TYPOWE BŁĘDY
+## 8. STACK TECHNOLOGICZNY
 
-### 9.1 Błędy Architektoniczne
+### 8.1 Current Best Stack (Luty 2026)
 
-| Błąd | Rozwiązanie |
-|------|-------------|
-| Monolityczny super-agent | Podział na specjalistów |
-| Jeden model dla wszystkiego | Model routing |
-| Brak limitów iteracji | `max_iterations=5` |
-| No error handling | Try/catch + fallback |
-| Synchroniczne wywołania | Async + queue |
+**Stack @EXM7777:**
 
-### 9.2 Błędy Kosztowe
+| Zadanie | Model | Uzasadnienie |
+|---------|-------|--------------|
+| Writing | Claude Opus 4.6 + Kimi K2.5 | Głęboka analiza, styl |
+| Coding | GPT-5.3-Codex + Opus 4.6 | Kod produkcyjny |
+| General Tasks | MiniMax M2.5 | Szybki, tani, mocny |
+| Images | Nano Banana Pro | Najlepsza jakość |
+| Video | Seedance 2.0 | Najlepsze rezultaty |
 
-| Błąd | Rozwiązanie |
-|------|-------------|
-| Pełna historia w każdym requeście | Context compression |
-| GPT-4 dla prostych zadań | Tiered model strategy |
-| Brak caching | Redis + semantic cache |
-| Verbose system prompts | Concise prompt engineering |
-| Brak monitoringu | LangSmith/Helicone |
+### 8.2 Alternatywy Darmowe / Tanie
 
-### 9.3 Błędy Bezpieczeństwa
+| Model | Koszt | Kiedy używać |
+|-------|-------|--------------|
+| MiniMax M2.5 | ~$0.10/1M tokens | Dzienne zadania, heartbeat |
+| GLM-5 (Z.ai) | Darmowy (limit 40 req/min) | Eksperymenty, prototypowanie |
+| Kimi K2.5 (NVIDIA) | Darmowy | Kodowanie, research |
+| Gemini 3.1 (Google) | Darmowy (Studio) | Frontend, design |
 
-| Błąd | Rozwiązanie |
-|------|-------------|
-| Exposed API keys w kodzie | Environment variables |
-| No rate limiting | Redis + middleware |
-| Sensitive data w prompts | PII detection + masking |
-| No audit logs | Structured logging |
-| Prompt injection vulnerable | Input validation |
+### 8.3 Routing Logic dla Skilli
 
----
+**Zasada:**
+Każdy skill MUSI mieć "Use when / Don't use when"
 
-## 10. HIERARCHIA PRIORYTETÓW
+**Przykład:**
+```markdown
+## Skill: X Research
 
-### Piramida Gold AI Agents Protocol
+**Use when:**
+- Potrzebujesz aktualnych informacji z X/Twitter
+- Research konkurencji, trendów
 
-```
-                    ┌─────────────────┐
-                    │  ENTERPRISE     │  ← Governance, compliance,
-                    │  FEATURES       │    multi-region
-                    └────────┬────────┘
-                             │
-                    ┌────────▼────────┐
-│  ADVANCED       │  ← Multi-agent patterns,
-                    │  ORKIESTRACJA   │    sub-agent delegation
-                    └────────┬────────┘
-                             │
-                    ┌────────▼────────┐
-                    │  COST CONTROL   │  ← Model routing, caching,
-                    │  & MONITORING   │    token optimization
-                    └────────┬────────┘
-                             │
-                    ┌────────▼────────┐
-                    │  SOLID BASE     │  ← Good prompts, right model,
-                    │  IMPLEMENTATION │    error handling, tools
-                    └────────┬────────┘
-                             │
-    ┌────────────────────────▼────────────────────────┐
-    │              CLEAR USE CASE                     │  ← 100% must-have
-    │  (Co agent ma robić? Dla kogo? Jaka wartość?)   │
-    └─────────────────────────────────────────────────┘
+**Don't use when:**
+- Szukasz ogólnej wiedzy (użyj web_search)
+- Potrzebujesz archiwalnych danych > 7 dni
 ```
 
-### Ścieżka Implementacji (12-tygodniowy plan)
+---
 
-| Tydzień | Fokus | Deliverable |
-|---------|-------|-------------|
-| 1-2 | Definicja problemu, wybór modelu | Working prototype |
-| 3-4 | Prompt engineering, tools | Solid single-agent |
-| 5-6 | Cost monitoring, caching | Baseline metrics |
-| 7-8 | Multi-agent decomposition | 2-3 agents working |
-| 9-10 | Orchestration, error handling | Production-ready |
-| 11-12 | Governance, security, scale | Enterprise deploy |
+## 9. CHECKLIST KONFIGURACJI
+
+### 9.1 First-Time Setup
+
+**Day 1 — Brain Dump:**
+- [ ] Stwórz `USER.md` — kim jesteś, cele, projekty
+- [ ] Stwórz `AGENTS.md` — jak agent ma się zachowywać
+- [ ] Stwórz folder `memory/`
+- [ ] Dodaj mission statement do głównego prompta
+
+**Day 2 — Tools:**
+- [ ] Podłącz Gmail API
+- [ ] Podłącz Calendar API
+- [ ] Podłącz Notion (opcjonalnie)
+- [ ] Skonfiguruj Discord/Telegram dla agentów
+
+**Day 3 — Automation:**
+- [ ] Skonfiguruj pierwszego crona (np. daily briefing)
+- [ ] Skonfiguruj heartbeat
+- [ ] Przetestuj sub-agenta na małym zadaniu
+
+**Day 4 — Mission Control:**
+- [ ] Zbuduj lub skonfiguruj dashboard
+- [ ] Podłącz wszystkie źródła danych
+- [ ] Przetestuj end-to-end
+
+**Day 5 — Iterate:**
+- [ ] Przeprowadź pierwszy `/reflect`
+- [ ] Zaktualizuj pliki pamięci
+- [ ] Dostosuj workflow na podstawie feedbacku
+
+### 9.2 Daily Operations
+
+**Morning Routine:**
+- [ ] Sprawdź podsumowanie od agentów (cron output)
+- [ ] Przejrzyj aktywne zadania w `active-tasks.md`
+- [ ] Zatwierdź/odrzuć zaproponowane zadania
+
+**Evening Routine:**
+- [ ] Oznacz zadania jako complete
+- [ ] Uruchom `/reflect` jeśli była intensywna sesja
+- [ ] Przejrzyj logi błędów
+
+### 9.3 Weekly Review
+
+- [ ] Przegląd wszystkich sub-agentów
+- [ ] Analiza kosztów (tokenów)
+- [ ] Update `lessons-learned.md`
+- [ ] Planowanie zadań na następny tydzień
 
 ---
 
-## PODSUMOWANIE
+## 10. TYPOWE BŁĘDY
 
-**Gold AI Agents Protocol** to kompletny system budowy agentów AI:
+### 10.1 Architektura
 
-1. **Specjalizacja** — dziel złożone zadania na dedykowanych agentów
-2. **Delegacja** — używaj sub-agentów jako narzędzi dla izolacji i kosztów
-3. **Orkiestracja** — wybieraj wzorzec dopasowany do przepływu danych
-4. **Optymalizacja** — 80% zadań obsługuj małymi modelami
-5. **Monitoring** — śledź koszty per task, nie tylko per API call
+| Błąd | Dlaczego szkodliwy | Rozwiązanie |
+|------|-------------------|-------------|
+| Brak split memory | Agent ładuje za dużo kontekstu | Rozdziel na daily/thematic files |
+| Inline execution | Wolne, brak skalowalności | Zawsze deleguj do sub-agentów |
+| Bloated HEARTBEAT | Marnuje tokeny | Max 20 linii |
+| Brak success criteria | Agent nie wie kiedy skończyć | Definiuj przed spawnem |
 
-**Nie buduj największego agenta. Buduj najlepiej zorganizowany system.**
+### 10.2 Operacyjne
+
+| Błąd | Konsekwencja | Fix |
+|------|--------------|-----|
+| Słaby model do external content | Prompt injection risk | Zawsze Opus dla web/email |
+| Brak backupu configu | Utrata konfiguracji | Auto-backup co 5 min |
+| Za duży AGENTS.md | Agent gubi się | Podziel na role |
+| Brak crash recovery | Utrata postępu | active-tasks.md pattern |
+
+### 10.3 Strategiczne
+
+**Błąd #1: Traktowanie jak ChatGPT**
+> "Większość ludzi używa OpenClaw jak ChatGPT. To jak używanie Ferrari do jazdy po sklep." — Alex Finn
+
+**Błąd #2: Brak Mission Statement**
+Bez misji agent nie wie jak priorytetyzować. Każde zadanie jest równie ważne = żadne nie jest ważne.
+
+**Błąd #3: Przekomplikowanie**
+Zacznij od 1 agenta i 1 automatyzacji. Nie buduj 22 agentów w tydzień (@szarketh to zaawansowany przypadek).
 
 ---
 
-**Zasada końcowa:**
-> "Progress > Perfection. Get a working agent first, then optimize." — Agent Development Best Practices
+## ZAKOŃCZENIE
+
+### The 80/20 Agent Setup
+
+**Minimalna konfiguracja, która daje 80% wartości:**
+
+1. **USER.md** — 50 linijek o sobie
+2. **AGENTS.md** — 30 linijek instrukcji
+3. **memory/** — folder na daily logs
+4. **1 sub-agent skill** — np. research X
+5. **1 cron job** — np. daily briefing o 8am
+
+**Koszt:** <$1/dzień  
+**Efekt:** 5x produktywności w porównaniu do chatbota
+
+### Następne Kroki
+
+1. Utwórz pliki pamięci (Day 1)
+2. Przeprowadź pierwszy reverse prompt: "Co możemy zautomatyzować?"
+3. Zbuduj pierwszego sub-agenta na małym zadaniu
+4. Iteruj przez `/reflect` co kilka dni
 
 ---
 
-*Dokument skompilowany z zakładek X/Twitter przez Aura/OpenClaw*  
-*Źródła: @AlexFinn, @moritzkremb, @code_rams, Azure AI Patterns, Google ADK, AWS Best Practices*  
-*Wszystkie protokoły są kompilacją wiedzy publicznej*
+*Protokół opracowany na podstawie doświadczeń zaawansowanych użytkowników OpenClaw. Aktualizuj wraz z rozwojem systemu.*
+
+---
+
+## Aktualizacja 2026-02-26 — nowe sygnały z zakładek
+
+### Orchestrator > do-it-all agent
+Nowy powtarzający się pattern: główny agent jako koordynator i planista, subagenci jako egzekucja. Praktycznie daje to większą przepustowość i mniej błędów kontekstowych.
+
+- Source: https://x.com/johann_sath/status/2026909147590177076
+
+### Mobile remote control jako warstwa operacyjna
+Sterowanie sesjami coding agentów z telefonu zwiększa ciągłość pracy i skraca czas reakcji na blokery.
+
+- Source: https://x.com/nauczymycieAI/status/2026657047899492671
+
+### Memory layer: Obsidian vault + semantic retrieval
+Wzorzec potwierdzony przez użytkowników: daily logs + dobrze ustrukturyzowany vault znacząco poprawia retrieval i jakość decyzji agenta.
+
+- Sources:
+  - https://x.com/boyuan_chen/status/2026858910963917022
+  - https://x.com/Hesamation/status/2026801420872093708
+

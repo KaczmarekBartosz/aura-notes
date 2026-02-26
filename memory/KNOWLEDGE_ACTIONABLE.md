@@ -467,3 +467,62 @@
 - **Source:** Nate.Google (@Nate_Google_) — https://x.com/Nate_Google_/status/2026338035458056265?s=46
 - **Tagi:** #growth #geo #aeo #ecommerce #llm-discovery #merchant-center
 
+
+---
+
+## Batch 2026-02-26 — Zakładki X (25) — synteza actionable
+
+### AI / Orkiestracja agentów
+- **Orchestrator-first prompt pattern:** "you are the orchestrator, subagents execute" przyspiesza pracę i ogranicza bottleneck jednego agenta.
+- **Akcja:** Trzymać twardy podział ról: planowanie w agencie głównym, wykonanie przez subagentów.
+- **Source:** @johann_sath — https://x.com/johann_sath/status/2026909147590177076
+- **Tagi:** #ai #orchestration #subagents
+
+- **Remote control dla coding agents:** sterowanie sesją Claude Code z telefonu = większa ciągłość pracy i mniej przerw w flow.
+- **Akcja:** Utrzymywać workflow mobile-first dla szybkich akceptacji i nadzoru.
+- **Source:** @nauczymycieAI — https://x.com/nauczymycieAI/status/2026657047899492671
+- **Tagi:** #ai #mobile #workflow
+
+- **Obsidian jako memory layer dla agenta:** daily logs + semantyczne wyszukiwanie daje stabilny kontekst między sesjami.
+- **Akcja:** Kontynuować vault-first memory architecture i porządek notatek pod retrieval.
+- **Source:** @boyuan_chen — https://x.com/boyuan_chen/status/2026858910963917022
+- **Tagi:** #ai #memory #obsidian
+
+### Growth / Marketing / Distribution
+- **Agentic distribution engine:** jeden agent może automatyzować TikTok/X/LinkedIn/Reddit/email/SEO i iterować na podstawie metryk.
+- **Akcja:** Budować modułowy pipeline dystrybucji z approval loop na Telegramie.
+- **Source:** @om_patel5 — https://x.com/om_patel5/status/2026880809106317406
+- **Tagi:** #growth #distribution #automation
+
+- **Lean startup stack ~$20/mies:** Claude + Supabase + Vercel + darmowe narzędzia infra/analytics.
+- **Akcja:** Trzymać kosztową dyscyplinę i preferować free-tier stack do prototypów.
+- **Source:** @edgaralandough — https://x.com/edgaralandough/status/2026691233242816745
+- **Tagi:** #startup #cost #stack
+
+- **On-page SEO nadal krytyczne:** brak on-page = brak rankingu, nawet przy dobrej treści.
+- **Akcja:** Dodać regularny on-page audit do workflow contentowego.
+- **Source:** @hridoyreh — https://x.com/hridoyreh/status/2026910544859656334
+- **Tagi:** #seo #growth #onpage
+
+### Design / Product
+- **Code-to-canvas loop (Figma + Claude):** szybka iteracja: kod → canvas → prototyp → feedback → powrót do kodu.
+- **Akcja:** Używać roundtrip workflow przy projektach UI-heavy.
+- **Source:** @figma — https://x.com/figma/status/2026796079602413985
+- **Tagi:** #design #workflow #prototype
+
+- **Stitch MCP + Antigravity:** skraca transfer designu do implementacji frontend.
+- **Akcja:** Testować jako ścieżkę "design handoff bez tarcia".
+- **Source:** @stitchbygoogle — https://x.com/stitchbygoogle/status/2026729415707865244
+- **Tagi:** #design #mcp #frontend
+
+### Fitness / Health
+- **Prosty fat-loss baseline:** 10k kroków, deficyt, wysoki protein, sen i mniej alkoholu.
+- **Akcja:** Traktować jako minimalny, trwały protokół bazowy.
+- **Source:** @TheWarEnglish — https://x.com/TheWarEnglish/status/2026661151522672878
+- **Tagi:** #fitness #fatloss #habits
+
+- **Peptide stack insight (opinionated):** Reta + MOTS-c jako rdzeń redukcji, nacisk na monitoring i dawkowanie.
+- **Akcja:** Zachować ostrożność: tylko edukacyjnie, nie rekomendacyjnie, z monitoringiem.
+- **Source:** @alexaaronlab — https://x.com/alexaaronlab/status/2026769864224854075
+- **Tagi:** #peptides #protocol #monitoring
+

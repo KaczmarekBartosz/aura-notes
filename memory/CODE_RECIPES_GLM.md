@@ -289,3 +289,73 @@ export class ClaudeMemoryPersistence {
 ---
 
 *End of Batch 346*
+
+---
+
+## Batch 2026-02-26 — Recipes z nowych zakładek
+
+### 1) Orchestrator System Prompt (subagent-first)
+**Cel:** Wymusić podział: planowanie vs wykonanie.
+
+```text
+You are the orchestrator. Subagents execute.
+Never build, verify, or code inline.
+Your job is to plan, prioritize, and coordinate.
+```
+
+**Źródło:** https://x.com/johann_sath/status/2026909147590177076
+
+### 2) Lean $20/mo SaaS Stack
+**Use-case:** Szybki bootstrap MVP przy minimalnym koszcie.
+
+```yaml
+coding: Claude
+backend: Supabase
+deploy: Vercel
+domain: Namecheap
+payments: Stripe
+email: Resend
+auth: Clerk
+dns: Cloudflare
+analytics: PostHog
+error_tracking: Sentry
+cache_queue: Upstash
+vector_db: Pinecone
+```
+
+**Źródło:** https://x.com/edgaralandough/status/2026691233242816745
+
+### 3) Obsidian Memory Layer Pattern
+**Struktura:**
+- dzienne logi,
+- notatki projektowe,
+- semantyczne wyszukiwanie,
+- retrieval przez kontekst zamiast ręcznego dopowiadania.
+
+```text
+vault/
+  daily/YYYY-MM-DD.md
+  projects/*.md
+  knowledge/*.md
+  decisions/*.md
+```
+
+**Źródła:**
+- https://x.com/boyuan_chen/status/2026858910963917022
+- https://x.com/Hesamation/status/2026801420872093708
+
+### 4) Distribution Agent Pipeline (approval loop)
+**Koncepcja:** Agent generuje drafty multi-channel, człowiek tylko akceptuje/reject na Telegram/WhatsApp.
+
+```mermaid
+flowchart LR
+A[Trend scan] --> B[Draft generation]
+B --> C[Approval queue]
+C -->|approve| D[Publish]
+C -->|reject| E[Regenerate]
+D --> F[Metrics]
+F --> A
+```
+
+**Źródło:** https://x.com/om_patel5/status/2026880809106317406
+

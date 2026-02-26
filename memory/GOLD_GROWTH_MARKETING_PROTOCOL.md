@@ -710,3 +710,23 @@ Growth to maraton, nie sprint. Systematyczne podejście zawsze bije viralowe hac
 *Dokument skompilowany z zakładek X/Twitter przez Aura/OpenClaw*  
 *Wszystkie strategie są kompilacją best practices branżowych*  
 *Wersja 1.0 — Luty 2026*
+
+---
+
+## Aktualizacja 2026-02-26 — growth/distribution signals
+
+### Agentic Distribution Engine (multi-channel)
+Silny sygnał: automatyzacja dystrybucji contentu i outreach przez jednego agenta (TikTok/X/LinkedIn/Reddit/email/SEO) + feedback loop na metrykach.
+
+- Source: https://x.com/om_patel5/status/2026880809106317406
+
+### Lean stack economics
+Koszt wejścia do SaaS/MVP spada do bardzo niskiego poziomu dzięki free-tier stack + jeden płatny model kodujący.
+
+- Source: https://x.com/edgaralandough/status/2026691233242816745
+
+### SEO fundamentals still win
+On-page SEO pozostaje podstawą rankingu; bez niego nawet dobra treść nie domyka efektu.
+
+- Source: https://x.com/hridoyreh/status/2026910544859656334
+
