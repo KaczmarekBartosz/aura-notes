@@ -111,12 +111,14 @@ function classify(rel, content) {
   if (/^memory\/\d{4}-\d{2}-\d{2}/.test(lowerRel)) return 'daily-log';
   if (lowerRel.startsWith('outputs/')) return 'outputs';
   if (lowerRel.includes('/recipes/')) return 'recipes';
+  if (/^memory\/x-bookmarks\.md$/.test(lowerRel)) return 'bookmarks';
+  if (/^memory\/operations_critical_access\.md$/.test(lowerRel)) return 'system';
 
   if (/gold(_|\s|-)?[a-z0-9]*_?protocol|gold protocols/.test(lower) || /^memory\/gold_.*\.md$/.test(lowerRel)) return 'golden-protocols';
   if (/user_tastes|knowledge_tips|taste|psychografia|visual dna/.test(lower)) return 'taste';
   if (/peptyd|peptide|fitness|workout|training|nutrition|trening|whoop|plan trening|fat loss|protein/.test(lower)) return 'fitness-health';
   if (/seo|aeo|geo|marketing|growth|acquisition|retention|pricing|distribution/.test(lower)) return 'growth-marketing';
-  if (/\b(ui|ux|design|typography|layout|figma|prototype|component)\b/.test(lower)) return 'design';
+  if (/\b(ui|ux|design|typography|layout|figma|prototype|component|furniture|wizualizacje|nano banana)\b/.test(lower)) return 'design';
   if (/openclaw|claude|codex|agent|subagent|mcp|llm|ai/.test(lower)) return 'ai-agents';
 
   return 'knowledge';

@@ -5,21 +5,16 @@ category: system
 
 # INDEX PLIKÓW MD (AUTO)
 
-Wygenerowano: 2026-02-26T18:18:54.766Z
+Wygenerowano: 2026-02-26T18:29:27.781Z
 Liczba notatek: 87
 
-## ai-agents (2)
+## bookmarks (1)
 
-- **memory/OPERATIONS_CRITICAL_ACCESS.md**
-  - Tytuł: Operations — Critical Access Map (No Secrets)
-  - Utworzono: 2026-02-24T15:27:48.000Z
-  - Zaktualizowano: 2026-02-24T19:41:18.000Z
-  - Opis: Operations — Critical Access Map (No Secrets) Purpose: eliminate "memory gaps" for recurring tool access. X/Twitter bookmarks (bird) Primary command: Wrapper path: Credential source fallback: Required fields: , Non negotiable rule Never persist raw tokens in r
-- **memory/workflow-furniture-viz.md**
-  - Tytuł: Workflow: Wizualizacje mebli (Nano Banana Pro)
+- **memory/x-bookmarks.md**
+  - Tytuł: Identity & Role
   - Utworzono: 2026-02-22T13:50:36.000Z
-  - Zaktualizowano: 2026-02-22T13:50:36.000Z
-  - Opis: Workflow: Wizualizacje mebli (Nano Banana Pro) Sprawdzony prompt Parametry Resolution: 2K (najlepszy balans jakości/czasu) Tryb: Edycja z flagą (input image) Efekt: Mebel zachowany 1:1, tło zmienione na lifestyle scene Użycie Notatka "Wyniki tego prompta są św
+  - Zaktualizowano: 2026-02-22T18:01:36.000Z
+  - Opis: [@BerbarianWizard] Jamal Dinkoui (2026 02 17) Link: (ID: 2016867746764448031) 📰 The TESTOSTERONE Kabbalah Kompletny przewodnik po naturalnej produkcji testosteronu. Testosteron jest kontrolowany przez: produkcję energii komórkowej, oddychanie mitochondrialne,
 
 ## daily-log (37)
 
@@ -209,7 +204,15 @@ Liczba notatek: 87
   - Zaktualizowano: 2026-02-24T14:56:30.000Z
   - Opis: Session: 2026 02 23 10:01:20 UTC Session Key : agent:main:main Session ID : c5628b21 e36c 417e a521 cb04254e54d5 Source : telegram Conversation Summary assistant: [[reply to current]] Jasne. Zrobimy to sensownie — WHOOP + plan treningowy + TRT monitoring , ale
 
-## fitness-health (5)
+## design (1)
+
+- **memory/workflow-furniture-viz.md**
+  - Tytuł: Workflow: Wizualizacje mebli (Nano Banana Pro)
+  - Utworzono: 2026-02-22T13:50:36.000Z
+  - Zaktualizowano: 2026-02-22T13:50:36.000Z
+  - Opis: Workflow: Wizualizacje mebli (Nano Banana Pro) Sprawdzony prompt Parametry Resolution: 2K (najlepszy balans jakości/czasu) Tryb: Edycja z flagą (input image) Efekt: Mebel zachowany 1:1, tło zmienione na lifestyle scene Użycie Notatka "Wyniki tego prompta są św
+
+## fitness-health (4)
 
 - **memory/KNOWLEDGE_ACTIONABLE.md**
   - Tytuł: KNOWLEDGE_ACTIONABLE — Wiedza Do Natychmiastowego Działania
@@ -231,11 +234,6 @@ Liczba notatek: 87
   - Utworzono: 2026-02-22T13:50:36.000Z
   - Zaktualizowano: 2026-02-22T13:50:36.000Z
   - Opis: Research: Peptydy BPC 157, CJC 1295 i TB 500 Podsumowanie naukowe z X/Twitter i literatury medycznej Zapisano: 2026 02 14 20:41 UTC 1. BPC 157 (Body Protection Compound 157) Działanie i mechanizm BPC 157 to pentadekapeptyd (15 aminokwasów) pochodzący z soku żo
-- **memory/x-bookmarks.md**
-  - Tytuł: Identity & Role
-  - Utworzono: 2026-02-22T13:50:36.000Z
-  - Zaktualizowano: 2026-02-22T18:01:36.000Z
-  - Opis: [@BerbarianWizard] Jamal Dinkoui (2026 02 17) Link: (ID: 2016867746764448031) 📰 The TESTOSTERONE Kabbalah Kompletny przewodnik po naturalnej produkcji testosteronu. Testosteron jest kontrolowany przez: produkcję energii komórkowej, oddychanie mitochondrialne,
 
 ## golden-protocols (11)
 
@@ -329,7 +327,7 @@ Liczba notatek: 87
   - Zaktualizowano: 2026-02-22T18:01:36.000Z
   - Opis: Oreo Blizzard High Protein Ice Cream Źródło: Dean Turner (@DeanTTraining) Data zapisu: 2026 02 09 Składniki | Składnik | Ilość | | | | | Fairlife Skim Milk (0%) | 240ml | | Almond Milk Unsweetened Vanilla | 240ml | | True Nutrition Cookies N Cream Egg White Pr
 
-## system (24)
+## system (25)
 
 - **memory/2026-02-13-heartbeat-glm.md**
   - Tytuł: Session: 2026-02-13 11:17:58 UTC
@@ -386,6 +384,11 @@ Liczba notatek: 87
   - Utworzono: 2026-02-22T13:50:36.000Z
   - Zaktualizowano: 2026-02-22T18:01:36.000Z
   - Opis: Batch Implementation Guide: 1 Bookmark 2026 02 18 16:45 UTC Processing Model: GLM 4.7 Ultra Precision Mode Status: Content Inaccessible — Framework Only PATTERN: Unknown (Florian Darroman Article) Source: @floriandarroman X Article Status: ⚠️ Content could not
+- **memory/OPERATIONS_CRITICAL_ACCESS.md**
+  - Tytuł: Operations — Critical Access Map (No Secrets)
+  - Utworzono: 2026-02-24T15:27:48.000Z
+  - Zaktualizowano: 2026-02-24T19:41:18.000Z
+  - Opis: Operations — Critical Access Map (No Secrets) Purpose: eliminate "memory gaps" for recurring tool access. X/Twitter bookmarks (bird) Primary command: Wrapper path: Credential source fallback: Required fields: , Non negotiable rule Never persist raw tokens in r
 - **memory/perplexity-searches/2026-02-11-nextjs-woocommerce-headless.md**
   - Tytuł: Perplexity Search: Next.js + WooCommerce Headless Architecture
   - Utworzono: 2026-02-11T12:00:00.000Z
