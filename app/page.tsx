@@ -32,7 +32,7 @@ const SORT_LABELS: Record<SortMode, string> = {
   title_asc: 'A-Z',
 };
 
-const RESERVED_FILTERS = new Set(['all', 'biurko', 'system']);
+const RESERVED_FILTERS = new Set(['all', 'main', 'biurko', 'system']);
 
 function fmt(iso?: string | null) {
   if (!iso) return '—';
@@ -184,6 +184,7 @@ export default function Page() {
   }, [notes]);
 
   const systemCount = useMemo(() => notes.filter((n) => n.category === 'system').length, [notes]);
+  const mainCount = useMemo(() => notes.filter((n) => n.category !== 'system').length, [notes]);
 
   const filtered = useMemo(() => {
     const q = debouncedQuery.trim().toLowerCase(); // opt #10: debounced
@@ -191,7 +192,7 @@ export default function Page() {
       const isSystem = n.category === 'system';
 
       if (activeTag === 'system' && !isSystem) return false;
-      if (activeTag !== 'system' && isSystem) return false;
+      if (activeTag === 'main' && isSystem) return false;
 
       if (activeTag === 'biurko' && !n.isFavorite) return false;
       if (!RESERVED_FILTERS.has(activeTag) && !(n.tags || []).includes(activeTag)) return false;
@@ -457,7 +458,8 @@ export default function Page() {
 
           {/* Tag chips — opt #3: touch targets improved via CSS media query */}
           <div className="flex flex-wrap gap-2 border-b-4 border-foreground p-3 bg-muted/10 shrink-0">
-            <button className={cn('chip', activeTag === 'all' && 'chip-active')} onClick={() => setActiveTag('all')}>Notatki</button>
+            <button className={cn('chip', activeTag === 'all' && 'chip-active')} onClick={() => setActiveTag('all')}>Wszystkie ({notes.length})</button>
+            <button className={cn('chip', activeTag === 'main' && 'chip-active')} onClick={() => setActiveTag('main')}>Główne ({mainCount})</button>
             <button className={cn('chip border-primary text-primary hover:bg-primary/10', activeTag === 'biurko' && 'chip-active bg-primary text-primary-foreground')} onClick={() => setActiveTag('biurko')}>★ Biurko</button>
             {systemCount > 0 && (
               <button

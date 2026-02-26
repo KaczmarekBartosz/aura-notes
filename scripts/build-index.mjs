@@ -7,6 +7,7 @@ const root = process.cwd();
 const sources = ['memory', 'outputs'];
 const outDir = path.join(root, 'netlify/functions/data');
 const outPath = path.join(outDir, 'notes-index.json');
+const catalogPath = path.join(root, 'outputs/INDEX_PLIKOW_MD.md');
 
 function walk(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -36,45 +37,37 @@ function excerptFrom(content) {
   return plain.slice(0, 260);
 }
 
-function classify(rel, content) {
-  const lowerRel = rel.toLowerCase();
-  const lower = (rel + ' ' + content.slice(0, 1200)).toLowerCase();
-
-  if (isSystemNote(rel, content)) return 'system';
-
-  // 1) Path-first rules (most stable)
-  if (
-    lowerRel.includes('/cron-summaries/') ||
-    lowerRel.includes('/x-bookmarks-sync/') ||
-    /x-bookmarks-sync|sync-summary|glm-bookmark-sync|cron/.test(lowerRel)
-  ) return 'cron-sync';
-
-  if (/^memory\/\d{4}-\d{2}-\d{2}/.test(lowerRel)) return 'daily-log';
-
-  // 2) Semantic rules
-  if (/gold(_|\s|-)?[a-z0-9]*_?protocol|golden protocol|gold protocols/.test(lower)) return 'golden-protocols';
-  if (/user_tastes|knowledge_tips|taste/.test(lower)) return 'taste';
-  if (/peptyd|peptide|fitness|workout|training|nutrition|trening|whoop|plan trening/.test(lower)) return 'fitness-health';
-
-  return 'other';
-}
-
-function detectTags(rel, content) {
-  const hit = (rel + ' ' + content.slice(0, 1200)).match(/\b(gold|protocol|fitness|peptyd|peptide|taste|cron|bookmark|glm|aurafit|design|marketing|ai)\b/gi) || [];
-  return [...new Set(hit.map(t => t.toLowerCase()))];
-}
-
 function readFrontmatter(content) {
   const frontmatter = content.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
   return frontmatter?.[1] ?? '';
 }
 
+function parseFrontmatter(content) {
+  const raw = readFrontmatter(content);
+  const obj = {};
+  if (!raw) return obj;
+  for (const line of raw.split(/\r?\n/)) {
+    const m = line.match(/^\s*([a-zA-Z0-9_\-]+)\s*:\s*(.*?)\s*$/);
+    if (!m) continue;
+    const key = m[1].toLowerCase();
+    let val = m[2].replace(/^['"]|['"]$/g, '');
+    obj[key] = val;
+  }
+  return obj;
+}
+
 function hasSystemFrontmatter(content) {
-  const frontmatter = readFrontmatter(content);
-  if (!frontmatter) return false;
-  if (/^\s*(category|aura_category)\s*:\s*system\s*$/im.test(frontmatter)) return true;
-  if (/^\s*system\s*:\s*true\s*$/im.test(frontmatter)) return true;
-  return false;
+  const fm = parseFrontmatter(content);
+  return (
+    fm.category === 'system' ||
+    fm.aura_category === 'system' ||
+    fm.system === 'true'
+  );
+}
+
+function hasIndexDisabled(content) {
+  const fm = parseFrontmatter(content);
+  return fm.index === 'false';
 }
 
 function isSystemNote(rel, content) {
@@ -99,40 +92,98 @@ function isSystemNote(rel, content) {
   return false;
 }
 
-function hasIndexDisabled(content) {
-  const frontmatter = readFrontmatter(content);
-  if (!frontmatter) return false;
-  return /^\s*index\s*:\s*false\s*$/im.test(frontmatter);
-}
-
 function shouldSkipFromIndex(rel, content) {
   const p = rel.toLowerCase();
-
   if (p.includes('/_archive/')) return true;
   return hasIndexDisabled(content);
 }
 
-function semanticDateFromContentOrPath(rel, content) {
-  const fm = content.slice(0, 1200);
-  const dateMatch = fm.match(/^(last_updated|updated_at|updated|date)\s*:\s*"?([0-9]{4}-[0-9]{2}-[0-9]{2}(?:[T ][0-9:.+\-Z]+)?)"?/im);
-  if (dateMatch?.[2]) {
-    const d = new Date(dateMatch[2]);
-    if (!Number.isNaN(d.getTime())) return d.toISOString();
+function classify(rel, content) {
+  const lowerRel = rel.toLowerCase();
+  const lower = (rel + ' ' + content.slice(0, 1800)).toLowerCase();
+  const fm = parseFrontmatter(content);
+
+  if (fm.category && fm.category !== 'system') return fm.category;
+  if (fm.aura_category && fm.aura_category !== 'system') return fm.aura_category;
+
+  if (isSystemNote(rel, content)) return 'system';
+
+  if (/^memory\/\d{4}-\d{2}-\d{2}/.test(lowerRel)) return 'daily-log';
+  if (lowerRel.startsWith('outputs/')) return 'outputs';
+  if (lowerRel.includes('/recipes/')) return 'recipes';
+
+  if (/gold(_|\s|-)?[a-z0-9]*_?protocol|gold protocols/.test(lower) || /^memory\/gold_.*\.md$/.test(lowerRel)) return 'golden-protocols';
+  if (/user_tastes|knowledge_tips|taste|psychografia|visual dna/.test(lower)) return 'taste';
+  if (/peptyd|peptide|fitness|workout|training|nutrition|trening|whoop|plan trening|fat loss|protein/.test(lower)) return 'fitness-health';
+  if (/seo|aeo|geo|marketing|growth|acquisition|retention|pricing|distribution/.test(lower)) return 'growth-marketing';
+  if (/\b(ui|ux|design|typography|layout|figma|prototype|component)\b/.test(lower)) return 'design';
+  if (/openclaw|claude|codex|agent|subagent|mcp|llm|ai/.test(lower)) return 'ai-agents';
+
+  return 'knowledge';
+}
+
+function detectTags(rel, content) {
+  const lower = (rel + ' ' + content.slice(0, 2200)).toLowerCase();
+  const tags = new Set();
+
+  const dictionary = [
+    ['openclaw', /\bopenclaw\b/],
+    ['ai', /\b(ai|llm|agent|subagent|mcp)\b/],
+    ['bookmark', /bookmark|zakład/],
+    ['design', /\b(ui|ux|design|figma|typography|layout)\b/],
+    ['marketing', /\b(marketing|growth|seo|aeo|geo|retention)\b/],
+    ['fitness', /\b(fitness|workout|trening|protein|fat loss)\b/],
+    ['peptides', /peptide|peptyd|retatrutide|mots-?c|tesamorelin/],
+    ['protocol', /\bprotocol\b|protok/],
+    ['memory', /\bmemory|obsidian|vault\b/]
+  ];
+
+  for (const [name, rx] of dictionary) {
+    if (rx.test(lower)) tags.add(name);
   }
 
-  const headingDate = content.match(/^#\s*(20\d{2}-\d{2}-\d{2})\b/m);
-  if (headingDate?.[1]) {
-    const d = new Date(`${headingDate[1]}T12:00:00Z`);
-    if (!Number.isNaN(d.getTime())) return d.toISOString();
+  return [...tags];
+}
+
+function parseAnyDate(value) {
+  if (!value) return null;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  if (d.getTime() > Date.now() + 86400000) return null;
+  return d.toISOString();
+}
+
+function semanticDates(rel, content) {
+  const fm = parseFrontmatter(content);
+  const createdCandidates = [];
+  const updatedCandidates = [];
+
+  for (const key of ['created_at', 'created', 'date', 'data']) {
+    const iso = parseAnyDate(fm[key]);
+    if (iso) createdCandidates.push(iso);
   }
 
-  const pathMatch = rel.match(/(20\d{2}-\d{2}-\d{2})(?:[^\d]|$)/);
-  if (pathMatch?.[1]) {
-    const d = new Date(`${pathMatch[1]}T12:00:00Z`);
-    if (!Number.isNaN(d.getTime())) return d.toISOString();
+  for (const key of ['updated_at', 'updated', 'last_updated', 'modified']) {
+    const iso = parseAnyDate(fm[key]);
+    if (iso) updatedCandidates.push(iso);
   }
 
-  return null;
+  const headerDate = content.match(/^#\s*(20\d{2}-\d{2}-\d{2})\b/m)?.[1];
+  if (headerDate) {
+    const iso = parseAnyDate(`${headerDate}T12:00:00Z`);
+    if (iso) {
+      createdCandidates.push(iso);
+      updatedCandidates.push(iso);
+    }
+  }
+
+  const pathDate = rel.match(/(20\d{2}-\d{2}-\d{2})(?:[^\d]|$)/)?.[1];
+  if (pathDate) {
+    const iso = parseAnyDate(`${pathDate}T12:00:00Z`);
+    if (iso) createdCandidates.push(iso);
+  }
+
+  return { createdCandidates, updatedCandidates };
 }
 
 function newestIso(candidates, fallbackIso) {
@@ -141,14 +192,24 @@ function newestIso(candidates, fallbackIso) {
     if (!iso) continue;
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) continue;
-    if (d.getTime() > Date.now() + 86400000) continue;
     if (!best || d > best) best = d;
   }
   return best ? best.toISOString() : fallbackIso;
 }
 
-const gitDateCache = new Map();
+function oldestIso(candidates, fallbackIso) {
+  let best = null;
+  for (const iso of candidates) {
+    if (!iso) continue;
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) continue;
+    if (!best || d < best) best = d;
+  }
+  return best ? best.toISOString() : fallbackIso;
+}
+
 const gitCreatedCache = new Map();
+const gitUpdatedCache = new Map();
 
 function gitCreatedAtFor(relPath, fallbackMtime) {
   if (gitCreatedCache.has(relPath)) return gitCreatedCache.get(relPath);
@@ -160,33 +221,39 @@ function gitCreatedAtFor(relPath, fallbackMtime) {
     }).toString().trim();
     const lines = history.split('\n').filter(Boolean);
     const iso = lines[lines.length - 1] || '';
-    const val = newestIso([iso], fallbackIso);
+    const val = parseAnyDate(iso) || fallbackIso;
     gitCreatedCache.set(relPath, val);
     return val;
   } catch {
-    const val = fallbackIso;
-    gitCreatedCache.set(relPath, val);
-    return val;
+    gitCreatedCache.set(relPath, fallbackIso);
+    return fallbackIso;
   }
 }
 
-function updatedAtFor(relPath, fallbackMtime, semanticIso = null) {
-  if (gitDateCache.has(relPath)) return gitDateCache.get(relPath);
+function gitUpdatedAtFor(relPath, fallbackMtime) {
+  if (gitUpdatedCache.has(relPath)) return gitUpdatedCache.get(relPath);
   const fallbackIso = fallbackMtime.toISOString();
+
   try {
-    const gitIso = execSync(`git log -n 1 --format=%cI -- "${relPath.replace(/"/g, '\\"')}"`, {
+    const log = execSync(`git log --format=%cI%x09%s -- "${relPath.replace(/"/g, '\\"')}"`, {
       cwd: root,
       stdio: ['ignore', 'pipe', 'ignore']
-    }).toString().trim();
+    }).toString();
 
-    const val = newestIso([gitIso, semanticIso], fallbackIso);
+    const lines = log.split('\n').filter(Boolean);
+    const nonSync = lines.find((line) => {
+      const msg = line.split('\t').slice(1).join('\t').toLowerCase();
+      return !/sync notes from clawd|regenerate notes index|sync markdown notes/.test(msg);
+    });
 
-    gitDateCache.set(relPath, val);
+    const picked = nonSync || lines[0] || '';
+    const iso = picked.split('\t')[0];
+    const val = parseAnyDate(iso) || fallbackIso;
+    gitUpdatedCache.set(relPath, val);
     return val;
   } catch {
-    const val = newestIso([semanticIso], fallbackIso);
-    gitDateCache.set(relPath, val);
-    return val;
+    gitUpdatedCache.set(relPath, fallbackIso);
+    return fallbackIso;
   }
 }
 
@@ -194,14 +261,30 @@ const notes = [];
 for (const src of sources) {
   const srcDir = path.join(root, src);
   if (!fs.existsSync(srcDir)) continue;
+
   for (const f of walk(srcDir)) {
     const rel = path.relative(root, f).replace(/\\/g, '/');
     const content = fs.readFileSync(f, 'utf8');
+
     if (shouldSkipFromIndex(rel, content)) continue;
+
     const stat = fs.statSync(f);
-    const semanticIso = semanticDateFromContentOrPath(rel, content);
-    const createdAt = gitCreatedAtFor(rel, stat.mtime);
-    const words = content.replace(/```[\s\S]*?```/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
+    const fallbackIso = stat.mtime.toISOString();
+    const { createdCandidates, updatedCandidates } = semanticDates(rel, content);
+
+    const gitCreated = gitCreatedAtFor(rel, stat.mtime);
+    const gitUpdated = gitUpdatedAtFor(rel, stat.mtime);
+
+    const createdAt = oldestIso([gitCreated, ...createdCandidates], fallbackIso);
+    const updatedAt = newestIso([gitUpdated, ...updatedCandidates], fallbackIso);
+
+    const words = content
+      .replace(/```[\s\S]*?```/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .split(' ')
+      .filter(Boolean).length;
+
     notes.push({
       id: crypto.createHash('sha1').update(rel).digest('hex').slice(0, 12),
       path: rel,
@@ -210,7 +293,7 @@ for (const src of sources) {
       title: titleFrom(content, path.basename(f)),
       excerpt: excerptFrom(content),
       createdAt,
-      updatedAt: updatedAtFor(rel, stat.mtime, semanticIso),
+      updatedAt,
       readingMinutes: Math.max(1, Math.round(words / 220)),
       words,
       tags: detectTags(rel, content),
@@ -223,7 +306,6 @@ for (const src of sources) {
 notes.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
 
 const latestUpdatedAt = notes.length ? notes[0].updatedAt : null;
-
 const payload = {
   generatedAt: new Date().toISOString(),
   latestUpdatedAt,
@@ -233,4 +315,43 @@ const payload = {
 
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(outPath, JSON.stringify(payload));
+
+// Build human-readable catalog
+const byCategory = new Map();
+for (const note of notes) {
+  if (!byCategory.has(note.category)) byCategory.set(note.category, []);
+  byCategory.get(note.category).push(note);
+}
+
+const sortedCategories = [...byCategory.keys()].sort((a, b) => a.localeCompare(b, 'pl'));
+const lines = [];
+lines.push('---');
+lines.push('index: false');
+lines.push('category: system');
+lines.push('---');
+lines.push('');
+lines.push('# INDEX PLIKÓW MD (AUTO)');
+lines.push('');
+lines.push(`Wygenerowano: ${new Date().toISOString()}`);
+lines.push(`Liczba notatek: ${notes.length}`);
+lines.push('');
+
+for (const cat of sortedCategories) {
+  const items = byCategory.get(cat).sort((a, b) => a.path.localeCompare(b.path, 'pl'));
+  lines.push(`## ${cat} (${items.length})`);
+  lines.push('');
+  for (const n of items) {
+    lines.push(`- **${n.path}**`);
+    lines.push(`  - Tytuł: ${n.title}`);
+    lines.push(`  - Utworzono: ${n.createdAt ?? '—'}`);
+    lines.push(`  - Zaktualizowano: ${n.updatedAt}`);
+    lines.push(`  - Opis: ${n.excerpt}`);
+  }
+  lines.push('');
+}
+
+fs.mkdirSync(path.dirname(catalogPath), { recursive: true });
+fs.writeFileSync(catalogPath, lines.join('\n'));
+
 console.log(`Built ${notes.length} notes -> ${path.relative(root, outPath)}`);
+console.log(`Built catalog -> ${path.relative(root, catalogPath)}`);
