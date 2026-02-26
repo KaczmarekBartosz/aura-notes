@@ -1,3 +1,24 @@
+# Fix: indeksowanie notatek Markdown (2026-02-26)
+
+- [x] 1. Usunac whitelist/blacklist z indeksowania, aby kazdy `.md` z `memory/` i `outputs/` trafial do indeksu
+- [x] 2. Uproscic logike dat (`updatedAt`/`createdAt`) tak, aby zmiany z commitow sync byly widoczne
+- [x] 3. Przebudowac indeks i zweryfikowac, ze nowe notatki sa w `notes-index.json`
+- [x] 4. Dodac dokumentacje workflow dla OpenClaw + gotowy prompt w pliku `.md` w katalogu glownym
+- [x] 5. Zapisac wynik i wnioski w tym pliku (sekcja review)
+
+## Review
+
+- Zmieniono `scripts/build-index.mjs`: indeksuje domyslnie wszystkie `.md` z `memory/` i `outputs/`.
+- Usunieto statyczna whitelist/blacklist notatek; pozostawiono tylko wykluczenie `/_archive/` i opcjonalne `index: false` w frontmatter.
+- Poprawiono logike dat zeby sync commity aktualizowaly `updatedAt` (bez ignorowania commit message).
+- Usunieto zaleznosc od `tail -n 1` (lepsza przenosnosc komend git).
+- `npm run build:index` po zmianie: `count=87` (wczeniej `23`).
+- Weryfikacja obecnosci: `memory/CODE_RECIPES_GLM.md`, `memory/X_BOOKMARKS_SYNC_REGISTRY.md`, `memory/recipes/aeo-ecommerce-7-layer-playbook-2026-02-25.md` sa w indeksie.
+- Dodano dokumentacje: `OPENCLAW_NOTES_UPDATE_GUIDE.md`.
+- Sprawdzenie techniczne: `npm run lint` i `npm run build` przechodza (pozostaje istniejacy warning `@next/next/no-img-element`).
+
+---
+
 # UX/UI/Design Optimization — Aura Notes (iPhone 12 Pro PWA)
 
 ## 🔴 TOP Priority

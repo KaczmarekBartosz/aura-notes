@@ -62,48 +62,17 @@ function detectTags(rel, content) {
   return [...new Set(hit.map(t => t.toLowerCase()))];
 }
 
-function isCuratedValueNote(rel) {
-  const p = rel.toLowerCase();
-
-  // Keep explicit high-value collections
-  if (p.startsWith('outputs/')) return true;
-  if (p === 'memory/projekt_super_hero_v2_1_final.md') return true;
-  if (p === 'memory/ksiega_peptydow.md') return true;
-  if (p === 'memory/research_peptydy_bpc_cjc_tb500.md') return true;
-  if (p === 'memory/minimal-fatigue-maximum-growth-protocol.md') return true;
-  if (p === 'memory/knowledge_actionable.md') return true;
-  if (p === 'memory/knowledge_tips.md') return true;
-  if (p === 'memory/user_tastes.md') return true;
-  if (p === 'memory/user_tastes_deep.md') return true;
-  if (p === 'memory/llm_pozycjonowanie_playbook.md') return true;
-  if (p === 'memory/x-bookmarks.md') return true;
-  if (p === 'memory/recipes/high-protein-oreo-blizzard.md') return true;
-
-  if (p.startsWith('memory/gold-protocols/')) return true;
-  if (/^memory\/gold_.*_protocol\.md$/.test(p)) return true;
-
-  // Keep selected dated note with training context
-  if (p === 'memory/2026-02-23-whoop-training.md') return true;
-
-  return false;
+function hasIndexDisabled(content) {
+  const frontmatter = content.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
+  if (!frontmatter) return false;
+  return /^\s*index\s*:\s*false\s*$/im.test(frontmatter[1]);
 }
 
-function shouldSkipFromIndex(rel) {
+function shouldSkipFromIndex(rel, content) {
   const p = rel.toLowerCase();
 
   if (p.includes('/_archive/')) return true;
-  if (!isCuratedValueNote(rel)) return true;
-
-  // Filter malformed/placeholder notes that add noise
-  if (p === 'memory/user_tastes_deep_glm.md') return true;
-  if (p === 'memory/knowledge_actionable_glm.md') return true;
-  if (p === 'memory/growth_tactics_glm.md') return true;
-  if (p === 'memory/psychology_triggers_glm.md') return true;
-  if (p === 'memory/code_recipes_glm.md') return true;
-  if (p === 'memory/gold_protocols_list.md') return true;
-  if (p === 'memory/operations_critical_access.md') return true;
-
-  return false;
+  return hasIndexDisabled(content);
 }
 
 function semanticDateFromContentOrPath(rel, content) {
@@ -129,18 +98,16 @@ function semanticDateFromContentOrPath(rel, content) {
   return null;
 }
 
-function latestDateMention(content) {
-  const sample = content.slice(0, 20000);
-  const matches = [...sample.matchAll(/\b(20\d{2}-\d{2}-\d{2})(?:[T ]([0-9:.+\-Z]{2,}))?\b/g)];
+function newestIso(candidates, fallbackIso) {
   let best = null;
-  for (const m of matches) {
-    const isoCandidate = m[2] ? `${m[1]}T${m[2].replace(/^\s+/, '')}` : `${m[1]}T12:00:00Z`;
-    const d = new Date(isoCandidate);
+  for (const iso of candidates) {
+    if (!iso) continue;
+    const d = new Date(iso);
     if (Number.isNaN(d.getTime())) continue;
     if (d.getTime() > Date.now() + 86400000) continue;
     if (!best || d > best) best = d;
   }
-  return best ? best.toISOString() : null;
+  return best ? best.toISOString() : fallbackIso;
 }
 
 const gitDateCache = new Map();
@@ -148,54 +115,39 @@ const gitCreatedCache = new Map();
 
 function gitCreatedAtFor(relPath, fallbackMtime) {
   if (gitCreatedCache.has(relPath)) return gitCreatedCache.get(relPath);
+  const fallbackIso = fallbackMtime.toISOString();
   try {
-    const iso = execSync(`git log --diff-filter=A --format=%aI -- "${relPath.replace(/"/g, '\\"')}" | tail -n 1`, {
+    const history = execSync(`git log --diff-filter=A --format=%aI -- "${relPath.replace(/"/g, '\\"')}"`, {
       cwd: root,
       stdio: ['ignore', 'pipe', 'ignore']
     }).toString().trim();
-    const val = iso || fallbackMtime.toISOString();
+    const lines = history.split('\n').filter(Boolean);
+    const iso = lines[lines.length - 1] || '';
+    const val = newestIso([iso], fallbackIso);
     gitCreatedCache.set(relPath, val);
     return val;
   } catch {
-    const val = fallbackMtime.toISOString();
+    const val = fallbackIso;
     gitCreatedCache.set(relPath, val);
     return val;
   }
 }
 
-function updatedAtFor(relPath, fallbackMtime, semanticIso = null, mentionIso = null) {
+function updatedAtFor(relPath, fallbackMtime, semanticIso = null) {
   if (gitDateCache.has(relPath)) return gitDateCache.get(relPath);
+  const fallbackIso = fallbackMtime.toISOString();
   try {
-    const logs = execSync(`git log --format=%cI%x09%s -- "${relPath.replace(/"/g, '\\"')}"`, {
+    const gitIso = execSync(`git log -n 1 --format=%cI -- "${relPath.replace(/"/g, '\\"')}"`, {
       cwd: root,
       stdio: ['ignore', 'pipe', 'ignore']
-    }).toString().trim().split('\n').filter(Boolean);
+    }).toString().trim();
 
-    let iso = '';
-    for (const line of logs) {
-      const [d, ...msgParts] = line.split('\t');
-      const msg = (msgParts.join('\t') || '').toLowerCase();
-      if (/sync notes from clawd|sync notes|x-bookmarks-sync/.test(msg)) continue;
-      iso = d;
-      break;
-    }
-    if (!iso && logs[0]) iso = logs[0].split('\t')[0] || '';
-
-    let val = semanticIso || iso || fallbackMtime.toISOString();
-
-    if (!semanticIso && mentionIso && iso) {
-      const gitDate = new Date(iso);
-      const mentionDate = new Date(mentionIso);
-      if (!Number.isNaN(gitDate.getTime()) && !Number.isNaN(mentionDate.getTime())) {
-        const diffDays = (gitDate.getTime() - mentionDate.getTime()) / 86400000;
-        if (diffDays > 2) val = mentionIso;
-      }
-    }
+    const val = newestIso([gitIso, semanticIso], fallbackIso);
 
     gitDateCache.set(relPath, val);
     return val;
   } catch {
-    const val = semanticIso || mentionIso || fallbackMtime.toISOString();
+    const val = newestIso([semanticIso], fallbackIso);
     gitDateCache.set(relPath, val);
     return val;
   }
@@ -207,11 +159,10 @@ for (const src of sources) {
   if (!fs.existsSync(srcDir)) continue;
   for (const f of walk(srcDir)) {
     const rel = path.relative(root, f).replace(/\\/g, '/');
-    if (shouldSkipFromIndex(rel)) continue;
     const content = fs.readFileSync(f, 'utf8');
+    if (shouldSkipFromIndex(rel, content)) continue;
     const stat = fs.statSync(f);
     const semanticIso = semanticDateFromContentOrPath(rel, content);
-    const mentionIso = latestDateMention(content);
     const createdAt = gitCreatedAtFor(rel, stat.mtime);
     const words = content.replace(/```[\s\S]*?```/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
     notes.push({
@@ -222,7 +173,7 @@ for (const src of sources) {
       title: titleFrom(content, path.basename(f)),
       excerpt: excerptFrom(content),
       createdAt,
-      updatedAt: updatedAtFor(rel, stat.mtime, semanticIso, mentionIso),
+      updatedAt: updatedAtFor(rel, stat.mtime, semanticIso),
       readingMinutes: Math.max(1, Math.round(words / 220)),
       words,
       tags: detectTags(rel, content),

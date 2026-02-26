@@ -34,8 +34,7 @@ memory/*.md + outputs/*.md
 ```
 
 Key functions in `build-index.mjs`:
-- `isCuratedValueNote(rel)` — whitelist filter; only curated notes get indexed
-- `shouldSkipFromIndex(rel)` — blacklist for noise files
+- `shouldSkipFromIndex(rel, content)` — default include for all `.md`; skips only `/_archive/` and frontmatter `index: false`
 - `classify(rel, content)` — categorizes notes (golden-protocols, daily-log, fitness-health, etc.)
 - `detectTags(rel, content)` — auto-generates tags from content
 
@@ -92,7 +91,7 @@ Theme toggle is manual (`document.documentElement.classList.toggle('dark')` + `l
 
 ## Adding Notes
 
-Add `.md` files to `memory/` or `outputs/`, then rebuild. Notes are only indexed if they pass the `isCuratedValueNote()` whitelist in `scripts/build-index.mjs`.
+Add `.md` files to `memory/` or `outputs/`, then rebuild. All markdown notes are indexed by default. To intentionally hide a note from the app, add frontmatter `index: false` or move it under an `/_archive/` path.
 
 ## Workflow Orchestration
 
