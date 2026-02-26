@@ -8,3 +8,4 @@
 - **Viewport units na iOS:** Zawsze dawaj fallback `min-h-[100svh]` obok `h-[100dvh]`. Safari PWA może mieć rozbieżność między dvh a svh przy zmianie orientacji / klawiatury.
 - **Safe-area insets:** Używaj `env(safe-area-inset-*, 0px)` z fallbackiem `0px` zgodnie z MDN — `max(env(...), 0px)` nie jest wymagane i może być problematyczne.
 - Jeśli użytkownik zgłasza, że zmiany są na `origin/main`, najpierw zweryfikuj `git branch -vv` i wykonaj `git pull --ff-only` przed analizą przyczyny błędu lokalnie.
+- Po rozszerzeniu indeksowania do "wszystkich .md" trzeba od razu zapewnić warstwę UX do separacji notatek systemowych (osobna kategoria/filtr), inaczej lista użytkownika robi się nieczytelna.

@@ -1,3 +1,21 @@
+# Fix: wydzielenie notatek systemowych (2026-02-26)
+
+- [x] 1. Dodac klasyfikacje `system` w indeksie dla technicznych/logowych plikow markdown
+- [x] 2. Zmienic filtrowanie w UI: domyslnie ukryc `system`, pokazac je tylko pod osobnym chipem
+- [x] 3. Ograniczyc dynamiczne tagi do notatek glownych (bez `system`)
+- [x] 4. Zbudowac indeks i zweryfikowac dzialanie (`system` ma osobna pule)
+- [x] 5. Zaktualizowac review i lessons
+
+## Review
+
+- Dodano klasyfikacje `system` w `scripts/build-index.mjs` dla plikow technicznych/logowych (np. `x-bookmarks-sync`, `state`, `token-usage`, `perplexity-searches`, `*_GLM.md`, batch report/analysis).
+- Dodano mozliwosc wymuszenia kategorii systemowej frontmatterem (`category: system` lub `system: true`).
+- W `app/page.tsx` domyslny widok (`Notatki`) ukrywa `category=system`, a dedykowany chip `System (N)` pokazuje tylko te pliki.
+- Dynamiczne tagi sa liczone tylko z notatek glownych, zeby systemowe tagi nie zasmiecaly paska filtrow.
+- Weryfikacja: `npm run build` przechodzi; indeks ma dalej `count=87`, z czego `system=24` i sa one odseparowane kategoriiowo.
+
+---
+
 # Fix: indeksowanie notatek Markdown (2026-02-26)
 
 - [x] 1. Usunac whitelist/blacklist z indeksowania, aby kazdy `.md` z `memory/` i `outputs/` trafial do indeksu

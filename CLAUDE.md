@@ -35,7 +35,7 @@ memory/*.md + outputs/*.md
 
 Key functions in `build-index.mjs`:
 - `shouldSkipFromIndex(rel, content)` — default include for all `.md`; skips only `/_archive/` and frontmatter `index: false`
-- `classify(rel, content)` — categorizes notes (golden-protocols, daily-log, fitness-health, etc.)
+- `classify(rel, content)` — categorizes notes (including `system` for technical/log files)
 - `detectTags(rel, content)` — auto-generates tags from content
 
 ### Authentication

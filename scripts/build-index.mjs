@@ -40,6 +40,8 @@ function classify(rel, content) {
   const lowerRel = rel.toLowerCase();
   const lower = (rel + ' ' + content.slice(0, 1200)).toLowerCase();
 
+  if (isSystemNote(rel, content)) return 'system';
+
   // 1) Path-first rules (most stable)
   if (
     lowerRel.includes('/cron-summaries/') ||
@@ -62,10 +64,45 @@ function detectTags(rel, content) {
   return [...new Set(hit.map(t => t.toLowerCase()))];
 }
 
-function hasIndexDisabled(content) {
+function readFrontmatter(content) {
   const frontmatter = content.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
+  return frontmatter?.[1] ?? '';
+}
+
+function hasSystemFrontmatter(content) {
+  const frontmatter = readFrontmatter(content);
   if (!frontmatter) return false;
-  return /^\s*index\s*:\s*false\s*$/im.test(frontmatter[1]);
+  if (/^\s*(category|aura_category)\s*:\s*system\s*$/im.test(frontmatter)) return true;
+  if (/^\s*system\s*:\s*true\s*$/im.test(frontmatter)) return true;
+  return false;
+}
+
+function isSystemNote(rel, content) {
+  const p = rel.toLowerCase();
+  if (hasSystemFrontmatter(content)) return true;
+
+  if (
+    p.startsWith('memory/cron-summaries/') ||
+    p.startsWith('memory/x-bookmarks-sync/') ||
+    p.startsWith('memory/perplexity-searches/') ||
+    p.startsWith('memory/state/') ||
+    p.startsWith('memory/token-usage/')
+  ) return true;
+
+  if (/^memory\/x-bookmarks-sync-\d{4}-\d{2}-\d{2}/.test(p)) return true;
+  if (/(^|\/)(x_bookmarks_sync_registry|x-bookmarks-sync-summary|token_history_full)\.md$/.test(p)) return true;
+  if (/(^|\/)batch_\d+_\d+_(analysis|report)\.md$/.test(p)) return true;
+  if (/(^|\/)glm_analysis_batch_\d+_\d+\.md$/.test(p)) return true;
+  if (/[-_]glm\.md$/.test(p)) return true;
+  if (/sync-summary/.test(p)) return true;
+
+  return false;
+}
+
+function hasIndexDisabled(content) {
+  const frontmatter = readFrontmatter(content);
+  if (!frontmatter) return false;
+  return /^\s*index\s*:\s*false\s*$/im.test(frontmatter);
 }
 
 function shouldSkipFromIndex(rel, content) {

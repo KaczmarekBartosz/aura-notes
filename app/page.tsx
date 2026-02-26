@@ -32,6 +32,8 @@ const SORT_LABELS: Record<SortMode, string> = {
   title_asc: 'A-Z',
 };
 
+const RESERVED_FILTERS = new Set(['all', 'biurko', 'system']);
+
 function fmt(iso?: string | null) {
   if (!iso) return '—';
   return new Date(iso).toLocaleString('pl-PL', { dateStyle: 'short', timeStyle: 'short' });
@@ -175,15 +177,25 @@ export default function Page() {
 
   const tags = useMemo(() => {
     const set = new Set<string>();
-    notes.forEach((n) => (n.tags || []).forEach((t) => set.add(t)));
+    notes
+      .filter((n) => n.category !== 'system')
+      .forEach((n) => (n.tags || []).forEach((t) => set.add(t)));
     return Array.from(set).sort((a, b) => a.localeCompare(b, 'pl'));
   }, [notes]);
+
+  const systemCount = useMemo(() => notes.filter((n) => n.category === 'system').length, [notes]);
 
   const filtered = useMemo(() => {
     const q = debouncedQuery.trim().toLowerCase(); // opt #10: debounced
     let out = notes.filter((n) => {
+      const isSystem = n.category === 'system';
+
+      if (activeTag === 'system' && !isSystem) return false;
+      if (activeTag !== 'system' && isSystem) return false;
+
       if (activeTag === 'biurko' && !n.isFavorite) return false;
-      if (activeTag !== 'all' && activeTag !== 'biurko' && !(n.tags || []).includes(activeTag)) return false;
+      if (!RESERVED_FILTERS.has(activeTag) && !(n.tags || []).includes(activeTag)) return false;
+
       if (!q) return true;
       return (
         n.title.toLowerCase().includes(q) ||
@@ -445,8 +457,16 @@ export default function Page() {
 
           {/* Tag chips — opt #3: touch targets improved via CSS media query */}
           <div className="flex flex-wrap gap-2 border-b-4 border-foreground p-3 bg-muted/10 shrink-0">
-            <button className={cn('chip', activeTag === 'all' && 'chip-active')} onClick={() => setActiveTag('all')}>Wszystkie</button>
+            <button className={cn('chip', activeTag === 'all' && 'chip-active')} onClick={() => setActiveTag('all')}>Notatki</button>
             <button className={cn('chip border-primary text-primary hover:bg-primary/10', activeTag === 'biurko' && 'chip-active bg-primary text-primary-foreground')} onClick={() => setActiveTag('biurko')}>★ Biurko</button>
+            {systemCount > 0 && (
+              <button
+                className={cn('chip border-foreground/70 bg-muted/40', activeTag === 'system' && 'chip-active')}
+                onClick={() => setActiveTag('system')}
+              >
+                System ({systemCount})
+              </button>
+            )}
             {tags.map((t) => (
               <button key={t} className={cn('chip', activeTag === t && 'chip-active')} onClick={() => setActiveTag(t)}>
                 {t}

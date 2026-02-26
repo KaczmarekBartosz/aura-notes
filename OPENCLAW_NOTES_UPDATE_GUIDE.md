@@ -9,6 +9,7 @@ Ten dokument opisuje bezpieczny workflow aktualizacji notatek w tym repo.
 - Wyjatki (celowe pomijanie):
   - sciezki zawierajace `/_archive/`
   - pliki z frontmatter `index: false`
+- Notatki techniczne/systemowe sa klasyfikowane jako `category: system` i widoczne pod osobnym filtrem `System` w UI.
 - Indeks jest generowany do `netlify/functions/data/notes-index.json` przez `npm run build:index`.
 - Netlify deploy z `origin/main` uruchamia `npm run build`, a ten zawsze odpala `build:index` przed buildem Next.js.
 
@@ -61,6 +62,14 @@ git push origin main
 ```md
 ---
 index: false
+---
+```
+
+- Jesli notatka ma byc jawnie traktowana jako systemowa, ustaw frontmatter:
+
+```md
+---
+category: system
 ---
 ```
 
