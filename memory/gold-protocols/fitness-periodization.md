@@ -1,3 +1,15 @@
+---
+title: "PERIODYZACJA I PROGRESJA"
+subcategory: "training"
+category: "fitness-health"
+tags: ["health", "fitness", "training", "workout"]
+type: "note"
+created: "2026-02-01"
+updated: "2026-02-01"
+source: "manual"
+ai_generated: false
+---
+
 # PERIODYZACJA I PROGRESJA
 
 *Systematyczne podejście do długoterminowego rozwoju siły i hipertrofii*

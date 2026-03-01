@@ -1,3 +1,15 @@
+---
+title: "PSYCHOLOGY TRIGGERS - GLM"
+subcategory: "training"
+category: "fitness-health"
+tags: ["health", "fitness", "training", "workout"]
+type: "note"
+created: "2026-02-01"
+updated: "2026-02-01"
+source: "claude"
+ai_generated: false
+---
+
 # PSYCHOLOGY TRIGGERS - GLM
 *Extracted from 250 Twitter/X bookmarks*
 *Last Updated: 2026-02-13*

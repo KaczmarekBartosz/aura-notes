@@ -1,3 +1,15 @@
+---
+title: "PROJEKT SUPER-HERO v2.1 FINAL"
+subcategory: "training"
+category: "fitness-health"
+tags: ["health", "fitness", "training", "workout"]
+type: "protocol"
+created: "2026-02-01"
+updated: "2026-02-01"
+source: "manual"
+ai_generated: false
+---
+
 # PROJEKT SUPER-HERO v2.1 FINAL
 
 **Autor:** Bartosz Kaczmarek  

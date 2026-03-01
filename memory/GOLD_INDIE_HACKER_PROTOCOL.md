@@ -1,3 +1,15 @@
+---
+title: "GOLD INDIE HACKER PROTOCOL"
+subcategory: "indie-hacker"
+category: "growth-marketing"
+tags: ["marketing", "growth"]
+type: "protocol"
+created: "2026-02-01"
+updated: "2026-02-01"
+source: "x-bookmark"
+ai_generated: false
+---
+
 # GOLD INDIE HACKER PROTOCOL
 ## Kompletny system budowania solo SaaS od $0 do $10K MRR
 

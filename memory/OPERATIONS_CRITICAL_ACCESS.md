@@ -1,3 +1,14 @@
+---
+title: "Operations — Critical Access Map (No Secrets)"
+category: "note"
+tags: []
+type: "note"
+created: "2026-02-01"
+updated: "2026-02-01"
+source: "x-bookmark"
+ai_generated: false
+---
+
 # Operations — Critical Access Map (No Secrets)
 
 Purpose: eliminate "memory gaps" for recurring tool access.

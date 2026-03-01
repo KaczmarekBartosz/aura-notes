@@ -1,3 +1,15 @@
+---
+title: "USER TASTES: PRODUCT DNA & AESTHETICS"
+subcategory: "personal"
+category: "taste"
+tags: []
+type: "note"
+created: "2026-02-01"
+updated: "2026-02-01"
+source: "x-bookmark"
+ai_generated: false
+---
+
 # USER TASTES: PRODUCT DNA & AESTHETICS
 > Last updated: 2026-02-04 22:13 UTC
 > Status: "MiniMax v3" - 250 X Bookmarks Mined

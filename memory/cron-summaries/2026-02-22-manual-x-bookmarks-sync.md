@@ -1,3 +1,15 @@
+---
+title: "X Bookmarks Sync Summary"
+subcategory: "x-twitter"
+category: "bookmarks"
+tags: ["bookmarks", "resources"]
+type: "bookmark"
+created: "2026-02-22"
+updated: "2026-02-22"
+source: "x-bookmark"
+ai_generated: false
+---
+
 # X Bookmarks Sync Summary
 **Type:** Manual on-demand sync (Aura)  
 **Executed:** 2026-02-22 UTC  

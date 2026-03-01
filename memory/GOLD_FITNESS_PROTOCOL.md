@@ -1,3 +1,15 @@
+---
+title: "GOLD FITNESS PROTOCOL"
+subcategory: "protocols"
+category: "fitness-health"
+tags: ["health", "fitness", "peptides", "training"]
+type: "protocol"
+created: "2026-02-01"
+updated: "2026-02-01"
+source: "x-bookmark"
+ai_generated: false
+---
+
 # GOLD FITNESS PROTOCOL
 ## Kompletny system optymalizacji sylwetki, zdrowia i wydajności
 

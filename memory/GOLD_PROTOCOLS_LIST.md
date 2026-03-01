@@ -1,3 +1,15 @@
+---
+title: "GOLD PROTOCOLS — Lista Protokołów do Opracowania"
+subcategory: "automation"
+category: "ai-agents"
+tags: ["ai", "automation"]
+type: "protocol"
+created: "2026-02-01"
+updated: "2026-02-01"
+source: "manual"
+ai_generated: false
+---
+
 # GOLD PROTOCOLS — Lista Protokołów do Opracowania
 
 **Status:** Lista trwała — aktualizowana na bieżąco  

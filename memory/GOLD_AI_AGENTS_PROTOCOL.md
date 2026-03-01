@@ -1,3 +1,15 @@
+---
+title: "GOLD AI AGENTS PROTOCOL"
+subcategory: "automation"
+category: "ai-agents"
+tags: ["ai", "automation", "openclaw"]
+type: "protocol"
+created: "2026-02-01"
+updated: "2026-02-01"
+source: "x-bookmark"
+ai_generated: false
+---
+
 # GOLD AI AGENTS PROTOCOL
 ## Kompletny system budowania i zarządzania autonomicznymi agentami AI
 

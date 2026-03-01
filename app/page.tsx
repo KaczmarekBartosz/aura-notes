@@ -34,6 +34,19 @@ const SORT_LABELS: Record<SortMode, string> = {
 
 const RESERVED_FILTERS = new Set(['all', 'main', 'biurko', 'system']);
 
+const CATEGORY_LABELS: Record<string, string> = {
+  'fitness-health': 'Fitness',
+  'golden-protocols': 'Gold Protocols',
+  'ai-agents': 'AI Agents',
+  'bookmarks': 'Bookmarks',
+  'design': 'Design',
+  'daily-log': 'Daily Log',
+  'growth-marketing': 'Marketing',
+  'outputs': 'Outputs',
+  'recipes': 'Recipes',
+  'taste': 'Taste',
+};
+
 function fmt(iso?: string | null) {
   if (!iso) return '—';
   return new Date(iso).toLocaleString('pl-PL', { dateStyle: 'short', timeStyle: 'short' });
@@ -183,11 +196,19 @@ export default function Page() {
     return Array.from(set).sort((a, b) => a.localeCompare(b, 'pl'));
   }, [notes]);
 
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    notes
+      .filter((n) => n.category !== 'system' && n.category !== 'other')
+      .forEach((n) => set.add(n.category));
+    return Array.from(set).sort((a, b) => a.localeCompare(b, 'pl'));
+  }, [notes]);
+
   const systemCount = useMemo(() => notes.filter((n) => n.category === 'system').length, [notes]);
   const mainCount = useMemo(() => notes.filter((n) => n.category !== 'system').length, [notes]);
 
   const filtered = useMemo(() => {
-    const q = debouncedQuery.trim().toLowerCase(); // opt #10: debounced
+    const q = debouncedQuery.trim().toLowerCase();
     let out = notes.filter((n) => {
       const isSystem = n.category === 'system';
 
@@ -195,6 +216,13 @@ export default function Page() {
       if (activeTag === 'main' && isSystem) return false;
 
       if (activeTag === 'biurko' && !n.isFavorite) return false;
+
+      // Filtrowanie po kategorii (jeśli activeTag to nazwa kategorii)
+      if (!RESERVED_FILTERS.has(activeTag) && categories.includes(activeTag)) {
+        return n.category === activeTag;
+      }
+
+      // Filtrowanie po tagu
       if (!RESERVED_FILTERS.has(activeTag) && !(n.tags || []).includes(activeTag)) return false;
 
       if (!q) return true;
@@ -202,7 +230,8 @@ export default function Page() {
         n.title.toLowerCase().includes(q) ||
         n.path.toLowerCase().includes(q) ||
         n.content.toLowerCase().includes(q) ||
-        (n.tags || []).some((t) => t.toLowerCase().includes(q))
+        (n.tags || []).some((t) => t.toLowerCase().includes(q)) ||
+        n.category.toLowerCase().includes(q)
       );
     });
 
@@ -469,9 +498,27 @@ export default function Page() {
                 System ({systemCount})
               </button>
             )}
+            {/* Kategorie */}
+            {categories.map((cat) => {
+              const count = notes.filter(n => n.category === cat).length;
+              return (
+                <button 
+                  key={cat} 
+                  className={cn(
+                    'chip border-l-4 border-l-primary bg-primary/5', 
+                    activeTag === cat && 'chip-active bg-primary text-primary-foreground'
+                  )} 
+                  onClick={() => setActiveTag(cat)}
+                  title={`Kategoria: ${cat}`}
+                >
+                  {CATEGORY_LABELS[cat] || cat} ({count})
+                </button>
+              );
+            })}
+            {/* Tagi */}
             {tags.map((t) => (
               <button key={t} className={cn('chip', activeTag === t && 'chip-active')} onClick={() => setActiveTag(t)}>
-                {t}
+                #{t}
               </button>
             ))}
           </div>

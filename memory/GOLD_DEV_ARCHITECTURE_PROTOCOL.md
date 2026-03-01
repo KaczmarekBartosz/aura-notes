@@ -1,3 +1,15 @@
+---
+title: "GOLD DEV ARCHITECTURE PROTOCOL"
+subcategory: "development"
+category: "ai-agents"
+tags: ["ai", "automation", "coding", "development", "claude"]
+type: "protocol"
+created: "2026-02-01"
+updated: "2026-02-01"
+source: "manual"
+ai_generated: false
+---
+
 # GOLD DEV ARCHITECTURE PROTOCOL
 ## Kompletny system architektury oprogramowania, AI-assisted coding i optymalizacji wydajności
 

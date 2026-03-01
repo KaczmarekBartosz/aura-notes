@@ -5,7 +5,7 @@ category: system
 
 # INDEX PLIKÓW MD (AUTO)
 
-Wygenerowano: 2026-02-26T18:54:36.854Z
+Wygenerowano: 2026-03-01T01:32:33.182Z
 Liczba notatek: 88
 
 ## ai-agents (17)
@@ -230,7 +230,7 @@ Liczba notatek: 88
 - **memory/PROJEKT_SUPER_HERO_v2_1_FINAL.md**
   - Tytuł: PROJEKT SUPER-HERO v2.1 FINAL
   - Utworzono: 2026-02-22T16:28:52.000Z
-  - Zaktualizowano: 2026-02-26T18:40:46.000Z
+  - Zaktualizowano: 2026-02-26T18:54:47.000Z
   - Opis: PROJEKT SUPER HERO v2.1 FINAL Autor: Bartosz Kaczmarek Model: 5 dniowy plan Powerbuilding + Arm Priority Wersja: czysta (zero balastu, samo mięso + balans strukturalny) 1) Kontekst i założenia Cel: rekompozycja (budowa masy + dalsza redukcja BF) TRT: Testoster
 - **memory/RESEARCH_PEPTYDY_BPC_CJC_TB500.md**
   - Tytuł: Research: Peptydy BPC-157, CJC-1295 i TB-500

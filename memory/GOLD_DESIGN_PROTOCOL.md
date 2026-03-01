@@ -1,3 +1,15 @@
+---
+title: "GOLD DESIGN PROTOCOL"
+subcategory: "ui-ux"
+category: "design"
+tags: ["design", "ui", "ux"]
+type: "protocol"
+created: "2026-02-01"
+updated: "2026-02-01"
+source: "x-bookmark"
+ai_generated: false
+---
+
 # GOLD DESIGN PROTOCOL
 ## Kompletny system projektowania interfejsów, landing pages i doświadczeń cyfrowych
 

@@ -1,3 +1,15 @@
+---
+title: "KNOWLEDGE BASE: ENGINEERING PLAYBOOK"
+subcategory: "automation"
+category: "ai-agents"
+tags: ["ai", "automation", "openclaw", "claude"]
+type: "research"
+created: "2026-02-01"
+updated: "2026-02-01"
+source: "x-bookmark"
+ai_generated: false
+---
+
 # KNOWLEDGE BASE: ENGINEERING PLAYBOOK
 > Last updated: 2026-02-04 22:13 UTC
 > Status: "MiniMax v3" - 250 X Bookmarks Mined

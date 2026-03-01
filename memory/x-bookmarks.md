@@ -1,4 +1,14 @@
 ---
+title: "X Bookmarks - Kolekcja Zakładek"
+category: "bookmarks"
+subcategory: "x-twitter"
+tags: ["bookmarks", "x-twitter", "resources", "fitness", "ai", "health"]
+type: "bookmark"
+created: "2026-02-17"
+updated: "2026-02-27"
+source: "x-bookmark"
+ai_generated: false
+---
 
 ## [@BerbarianWizard] Jamal Dinkoui (2026-02-17)
 **Link:** [Otwórz Tweet](https://x.com/BerbarianWizard/status/2016867746764448031) (ID: 2016867746764448031)

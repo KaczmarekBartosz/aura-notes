@@ -1,3 +1,15 @@
+---
+title: "Perplexity Search: Next.js + WooCommerce Headless Architecture"
+subcategory: "ui-ux"
+category: "design"
+tags: ["design", "ui", "ux"]
+type: "daily-log"
+created: "2026-02-11"
+updated: "2026-02-11"
+source: "manual"
+ai_generated: false
+---
+
 # Perplexity Search: Next.js + WooCommerce Headless Architecture
 
 **Query:** Jak połączyć frontend React/Next.js z WooCommerce (e-commerce), wczytywanie produktów z innego serwera, zarządzanie produktami

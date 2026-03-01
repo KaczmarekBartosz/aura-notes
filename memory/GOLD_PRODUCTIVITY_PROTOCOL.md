@@ -1,3 +1,15 @@
+---
+title: "GOLD PRODUCTIVITY PROTOCOL"
+subcategory: "productivity"
+category: "golden-protocols"
+tags: ["protocol", "system", "training"]
+type: "protocol"
+created: "2026-02-01"
+updated: "2026-02-01"
+source: "manual"
+ai_generated: false
+---
+
 # GOLD PRODUCTIVITY PROTOCOL
 ## Kompletny system optymalizacji pracy, focusu i energii
 
