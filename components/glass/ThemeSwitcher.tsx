@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import { useTheme, useReducedMotion } from '@/lib/theme';
 import { GlassCard, GlassCardTitle } from './GlassCard';
@@ -31,6 +32,11 @@ export function ThemeSwitcher({
   const { theme, setTheme, isGlass } = useTheme();
   const reducedMotion = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleThemeChange = useCallback((newTheme: ThemeMode) => {
     // Add transition class for smooth theme switch
@@ -52,6 +58,51 @@ export function ThemeSwitcher({
 
   // Compact variant - button that opens picker
   if (variant === 'compact') {
+    const pickerOverlay = (
+      <div className="fixed inset-0 z-[120]">
+        {/* Backdrop */}
+        <button
+          className="absolute inset-0 bg-black/10"
+          aria-label="Zamknij wybór motywu"
+          onClick={() => setIsOpen(false)}
+        />
+
+        {/* Picker panel */}
+        <div
+          className={cn(
+            'absolute p-4 max-h-[min(72vh,420px)] overflow-y-auto custom-scrollbar',
+            'left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))]',
+            'top-[calc(env(safe-area-inset-top,0px)+4rem)] sm:left-auto sm:right-[max(0.75rem,env(safe-area-inset-right))] sm:w-[320px]',
+            isGlass
+              ? 'glass-card'
+              : 'bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)]',
+            !reducedMotion && 'animate-in fade-in slide-in-from-top-2 duration-200'
+          )}
+          role="listbox"
+          aria-label="Wybierz motyw"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h4 className={cn(
+            'font-bold mb-4',
+            isGlass ? 'text-sm text-[var(--muted-foreground)]' : 'text-xs uppercase tracking-wider'
+          )}>
+            Wybierz motyw
+          </h4>
+
+          <div className="space-y-2">
+            {THEMES.map((t) => (
+              <ThemeOption
+                key={t.id}
+                theme={t}
+                isActive={theme === t.id}
+                onSelect={() => handleThemeChange(t.id)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+
     return (
       <div className={cn('relative', className)}>
         <GlassIconButton
@@ -70,50 +121,7 @@ export function ThemeSwitcher({
         </GlassIconButton>
 
         {/* Theme picker dropdown */}
-        {isOpen && (
-          <div className="fixed inset-0 z-[80]">
-            {/* Backdrop */}
-            <button
-              className="absolute inset-0 bg-black/10"
-              aria-label="Zamknij wybór motywu"
-              onClick={() => setIsOpen(false)}
-            />
-
-            {/* Picker panel */}
-            <div
-              className={cn(
-                "absolute p-4 max-h-[min(72vh,420px)] overflow-y-auto custom-scrollbar",
-                "left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))]",
-                "top-[calc(env(safe-area-inset-top,0px)+4rem)] sm:left-auto sm:right-[max(0.75rem,env(safe-area-inset-right))] sm:w-[320px]",
-                isGlass
-                  ? 'glass-card'
-                  : 'bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)]',
-                !reducedMotion && 'animate-in fade-in slide-in-from-top-2 duration-200'
-              )}
-              role="listbox"
-              aria-label="Wybierz motyw"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h4 className={cn(
-                'font-bold mb-4',
-                isGlass ? 'text-sm text-[var(--muted-foreground)]' : 'text-xs uppercase tracking-wider'
-              )}>
-                Wybierz motyw
-              </h4>
-
-              <div className="space-y-2">
-                {THEMES.map((t) => (
-                  <ThemeOption
-                    key={t.id}
-                    theme={t}
-                    isActive={theme === t.id}
-                    onSelect={() => handleThemeChange(t.id)}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
+        {isOpen && isMounted && createPortal(pickerOverlay, document.body)}
       </div>
     );
   }

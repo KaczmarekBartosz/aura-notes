@@ -19,24 +19,46 @@ function setThemeColorMeta(isDark: boolean) {
 
 export function PwaClientEnhancements() {
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      const registerServiceWorker = async () => {
-        try {
-          await navigator.serviceWorker.register('/sw.js', {
-            scope: '/',
-            updateViaCache: 'none',
-          });
-        } catch {
-          return;
-        }
-      };
+    const hostname = window.location.hostname;
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '[::1]';
+    const shouldDisableServiceWorker = process.env.NODE_ENV !== 'production' || isLocalhost;
 
-      if (document.readyState === 'complete') {
-        void registerServiceWorker();
+    const clearServiceWorkerState = async () => {
+      try {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map((registration) => registration.unregister()));
+
+        if ('caches' in window) {
+          const cacheKeys = await caches.keys();
+          await Promise.all(cacheKeys.map((key) => caches.delete(key)));
+        }
+      } catch {
+        return;
+      }
+    };
+
+    if ('serviceWorker' in navigator) {
+      if (shouldDisableServiceWorker) {
+        void clearServiceWorkerState();
       } else {
-        window.addEventListener('load', () => {
+        const registerServiceWorker = async () => {
+          try {
+            await navigator.serviceWorker.register('/sw.js', {
+              scope: '/',
+              updateViaCache: 'none',
+            });
+          } catch {
+            return;
+          }
+        };
+
+        if (document.readyState === 'complete') {
           void registerServiceWorker();
-        }, { once: true });
+        } else {
+          window.addEventListener('load', () => {
+            void registerServiceWorker();
+          }, { once: true });
+        }
       }
     }
 

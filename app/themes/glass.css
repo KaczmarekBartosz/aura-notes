@@ -36,7 +36,7 @@ html.theme-glass-light {
   --glass-blur-light: blur(20px) saturate(185%);
   
   /* Accent colors */
-  --accent-teal: rgba(13, 148, 136, 0.92);
+  --accent-teal: rgba(96, 115, 150, 0.9);
   --accent-coral: rgba(244, 63, 94, 0.9);
   --accent-lavender: rgba(124, 58, 237, 0.88);
   --accent-sky: rgba(14, 165, 233, 0.92);
@@ -47,7 +47,7 @@ html.theme-glass-light {
   --popover: rgba(255, 255, 255, 0.72);
   --popover-foreground: #0b1530;
   
-  --primary: rgba(14, 116, 144, 0.96);
+  --primary: rgba(88, 108, 146, 0.94);
   --primary-foreground: #f8fbff;
   
   --secondary: rgba(219, 234, 254, 0.62);
@@ -64,7 +64,7 @@ html.theme-glass-light {
   
   --border: rgba(148, 163, 184, 0.38);
   --input: rgba(255, 255, 255, 0.58);
-  --ring: rgba(14, 116, 144, 0.45);
+  --ring: rgba(96, 115, 150, 0.4);
   
   /* Radius - liquid organic shapes */
   --radius: 1.5rem;
@@ -293,6 +293,16 @@ html.theme-glass-dark .glass-button-primary {
   box-shadow: 0 18px 34px rgba(15, 118, 110, 0.4);
 }
 
+html.theme-glass-light .glass-button-primary {
+  background: linear-gradient(135deg, rgba(94, 114, 153, 0.96) 0%, rgba(72, 94, 136, 0.94) 100%);
+  box-shadow: 0 14px 28px rgba(52, 71, 109, 0.34);
+  color: #f8faff;
+}
+
+html.theme-glass-light .glass-button-primary:hover {
+  box-shadow: 0 18px 34px rgba(52, 71, 109, 0.4);
+}
+
 /* Glass Navigation - floating nav with blur */
 .glass-nav {
   background: var(--glass-sheen), var(--glass-bg);
@@ -364,13 +374,25 @@ html.theme-glass-dark .glass-button-primary {
 }
 
 .glass-chip-active {
-  background: linear-gradient(135deg, rgba(14, 116, 144, 0.95) 0%, rgba(13, 148, 136, 0.9) 100%);
-  border-color: transparent;
-  color: white;
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.04) 72%),
+    linear-gradient(135deg, rgba(96, 115, 150, 0.78) 0%, rgba(72, 94, 136, 0.72) 100%);
+  border-color: rgba(255, 255, 255, 0.52);
+  color: #f7f9ff;
+  box-shadow: 0 10px 24px rgba(52, 71, 109, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.46);
 }
 
 html.theme-glass-dark .glass-chip-active {
-  color: #0a0a12;
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.02) 72%),
+    linear-gradient(135deg, rgba(45, 212, 191, 0.64) 0%, rgba(56, 189, 248, 0.58) 100%);
+  border-color: rgba(125, 211, 252, 0.56);
+  color: #04161f;
+  box-shadow: 0 12px 26px rgba(8, 47, 73, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+html.theme-glass-light .glass-chip-active {
+  color: #f7f9ff;
 }
 
 /* --------------------------------------------------------------------------
@@ -759,10 +781,28 @@ html.theme-glass-dark .aura-theme-scope .chip:hover {
 
 html.theme-glass-light .aura-theme-scope .chip-active,
 html.theme-glass-dark .aura-theme-scope .chip-active {
-  background: linear-gradient(135deg, rgba(14, 116, 144, 0.95) 0%, rgba(13, 148, 136, 0.9) 100%);
-  color: var(--primary-foreground);
-  border-color: transparent;
-  transform: none;
+  border-radius: 9999px;
+  transform: translateY(-1px);
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
+}
+
+html.theme-glass-light .aura-theme-scope .chip-active {
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.06) 72%),
+    linear-gradient(135deg, rgba(96, 115, 150, 0.78) 0%, rgba(72, 94, 136, 0.72) 100%);
+  color: #f7f9ff;
+  border-color: rgba(255, 255, 255, 0.52);
+  box-shadow: 0 10px 24px rgba(52, 71, 109, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.46);
+}
+
+html.theme-glass-dark .aura-theme-scope .chip-active {
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.02) 72%),
+    linear-gradient(135deg, rgba(45, 212, 191, 0.64) 0%, rgba(56, 189, 248, 0.58) 100%);
+  color: #04161f;
+  border-color: rgba(125, 211, 252, 0.56);
+  box-shadow: 0 12px 26px rgba(8, 47, 73, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 html.theme-glass-light .aura-theme-scope .note-btn,
@@ -785,6 +825,11 @@ html.theme-glass-dark .aura-theme-scope .note-btn-active {
   color: var(--primary-foreground) !important;
   border-color: transparent !important;
   box-shadow: 0 12px 28px rgba(15, 118, 110, 0.32) !important;
+}
+
+html.theme-glass-light .aura-theme-scope .note-btn-active {
+  background: linear-gradient(135deg, rgba(94, 114, 153, 0.95) 0%, rgba(72, 94, 136, 0.92) 100%) !important;
+  box-shadow: 0 12px 28px rgba(52, 71, 109, 0.32) !important;
 }
 
 html.theme-glass-light .aura-theme-scope .note-btn-active *,
@@ -917,8 +962,20 @@ html.theme-glass-dark body {
 /* Glass containers float above aurora */
 html.theme-glass-light .aura-theme-scope .glass-card,
 html.theme-glass-dark .aura-theme-scope .glass-card {
-  position: relative;
   z-index: 10;
+}
+
+/* Main app cards in light mode: more transparent, less milky */
+html.theme-glass-light .aura-theme-scope aside.glass-card,
+html.theme-glass-light .aura-theme-scope main.glass-card {
+  --glass-bg: rgba(255, 255, 255, 0.18);
+  --glass-bg-hover: rgba(255, 255, 255, 0.24);
+  --glass-sheen: linear-gradient(140deg, rgba(255, 255, 255, 0.54) 0%, rgba(255, 255, 255, 0.2) 46%, rgba(191, 219, 254, 0.08) 100%);
+  --glass-sheen-hover: linear-gradient(140deg, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0.28) 46%, rgba(191, 219, 254, 0.12) 100%);
+  border-color: rgba(255, 255, 255, 0.48);
+  box-shadow: 0 22px 52px rgba(24, 42, 74, 0.2), 0 8px 18px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.74), inset 0 -1px 0 rgba(56, 82, 120, 0.1);
+  backdrop-filter: blur(44px) saturate(210%);
+  -webkit-backdrop-filter: blur(44px) saturate(210%);
 }
 
 /* Glass nav floats above */

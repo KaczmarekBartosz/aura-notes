@@ -349,7 +349,13 @@ export default function Page() {
           </div>
         )}
 
-        <div className="absolute top-4 right-4 z-30">
+        <div
+          className="absolute z-[90] pointer-events-auto"
+          style={{
+            top: 'calc(env(safe-area-inset-top, 0px) + 0.75rem)',
+            right: 'calc(env(safe-area-inset-right, 0px) + 0.75rem)',
+          }}
+        >
           <ThemeSwitcher variant="compact" />
         </div>
 
@@ -417,11 +423,11 @@ export default function Page() {
         )}>
           <h1 className={cn(
             "text-4xl tracking-tight mb-2",
-            isGlass ? "font-semibold" : "font-black uppercase"
+            isGlass ? "font-semibold tracking-tighter" : "font-black uppercase"
           )}>Aura Notes</h1>
           <p className={cn(
-            "text-sm opacity-60 mb-8",
-            isGlass ? "font-medium tracking-normal" : "font-bold uppercase tracking-widest"
+            "text-sm mb-8",
+            isGlass ? "font-medium opacity-70 tracking-tight" : "font-bold uppercase tracking-widest opacity-60"
           )}>Bezpieczny sejf</p>
           <form
             className="space-y-4"
@@ -430,30 +436,31 @@ export default function Page() {
               loadNotes(loginInput);
             }}
           >
-            <Input
+            <input
               type="password"
               value={loginInput}
               onChange={(e) => setLoginInput(e.target.value)}
               placeholder="Wprowadź hasło..."
               className={cn(
-                "login-auth-input h-12 text-center transition-all",
-                isGlass ? "font-sans" : "font-mono",
+                "login-auth-input h-12 w-full px-4 text-center transition-all outline-none",
+                isGlass ? "font-medium tracking-tight" : "font-mono font-bold",
                 isGlass
-                  ? "glass-input rounded-2xl border"
-                  : "rounded-none bg-background border-2 border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[4px_4px_0_var(--primary)]"
+                  ? "glass-input rounded-2xl border border-foreground/30 dark:border-white/20"
+                  : "rounded-none bg-background border-2 border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:-translate-y-1 focus-visible:-translate-x-1 focus-visible:shadow-[8px_8px_0_var(--primary)] placeholder:text-muted-foreground shadow-[4px_4px_0_var(--foreground)]"
               )}
             />
-            <Button
+            <button
               type="submit"
+              disabled={loading}
               className={cn(
-                "login-auth-button w-full h-12 transition-all font-black text-lg",
+                "login-auth-button w-full h-12 transition-all font-black text-lg outline-none",
                 isGlass
                   ? "glass-button glass-button-primary rounded-2xl border"
-                  : "rounded-none border-2 border-transparent hover:border-foreground hover:shadow-[4px_4px_0_var(--foreground)] hover:bg-primary hover:brightness-[1.03] uppercase"
+                  : "rounded-none border-2 border-transparent bg-primary text-primary-foreground hover:border-foreground hover:-translate-y-1 hover:shadow-[4px_4px_0_var(--foreground)] hover:bg-foreground hover:text-background active:translate-y-0 active:translate-x-0 active:shadow-none uppercase tracking-wider"
               )}
             >
               {loading ? 'Odblokowywanie...' : 'Odblokuj'}
-            </Button>
+            </button>
             {loginError && <p className={cn("text-sm text-destructive mt-2", isGlass ? "font-medium" : "font-black uppercase")}>{loginError}</p>}
           </form>
         </div>
@@ -467,7 +474,7 @@ export default function Page() {
 
   return (
     <div className={cn(
-      "aura-theme-scope h-[100dvh] min-h-[100svh] w-full max-w-full overflow-hidden text-foreground font-sans relative overscroll-none box-border pt-safe",
+      "aura-theme-scope h-[100dvh] min-h-[100svh] w-full max-w-full overflow-hidden text-foreground font-sans relative overscroll-none box-border pt-safe pb-[calc(env(safe-area-inset-bottom,0px)+5.75rem)] md:pb-0",
       isGlass ? "bg-transparent" : "bg-background"
     )}>
       {isGlass && (
@@ -613,7 +620,7 @@ export default function Page() {
           {/* Note list — opt #7: pull-to-refresh, pb-28 for bottom nav clearance */}
           <div
             ref={listRef}
-            className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-3 pb-28 md:pb-3 custom-scrollbar overscroll-y-contain touch-pan-y relative"
+            className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-3 pb-8 md:pb-3 custom-scrollbar overscroll-y-contain touch-pan-y relative"
             onTouchStart={handlePullStart}
             onTouchMove={handlePullMove}
             onTouchEnd={handlePullEnd}
@@ -834,12 +841,9 @@ export default function Page() {
 
       {/* opt #8: Bottom nav with icons, count badge, transition */}
       <nav className={cn(
-        "fixed bottom-0 left-0 right-0 z-40 px-safe pb-safe md:hidden",
-        isGlass
-          ? "glass-nav border-t border-[var(--glass-border)] rounded-t-3xl"
-          : "border-t-4 border-foreground bg-background shadow-[0_-8px_0_var(--foreground)]"
+        "fixed bottom-0 left-0 right-0 z-40 px-safe pb-safe md:hidden pointer-events-none"
       )}>
-        <div className="grid grid-cols-2 gap-2 p-3">
+        <div className="grid grid-cols-2 gap-2 p-3 pointer-events-auto">
           <Button
             variant={mobileTab === 'list' ? 'default' : 'outline'}
             className={cn(
