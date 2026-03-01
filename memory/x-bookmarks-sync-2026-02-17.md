@@ -1,15 +1,3 @@
----
-title: "X Bookmarks Sync Summary"
-subcategory: "x-twitter"
-category: "bookmarks"
-tags: ["bookmarks", "resources"]
-type: "bookmark"
-created: "2026-02-17"
-updated: "2026-02-17"
-source: "x-bookmark"
-ai_generated: false
----
-
 # X Bookmarks Sync Summary
 
 **Timestamp:** 2026-02-17 10:42 UTC  

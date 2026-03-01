@@ -1,15 +1,3 @@
----
-title: "Session: 2026-02-23 10:01:20 UTC"
-subcategory: "peptides"
-category: "fitness-health"
-tags: ["health", "fitness", "peptides", "biohacking", "training"]
-type: "daily-log"
-created: "2026-02-23"
-updated: "2026-02-23"
-source: "manual"
-ai_generated: false
----
-
 # Session: 2026-02-23 10:01:20 UTC
 
 - **Session Key**: agent:main:main

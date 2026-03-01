@@ -1,15 +1,3 @@
----
-title: "Minimal Fatigue but Maximum Growth - The Low-Volume Advantage"
-subcategory: "training"
-category: "fitness-health"
-tags: ["health", "fitness", "training", "workout"]
-type: "protocol"
-created: "2026-02-01"
-updated: "2026-02-01"
-source: "manual"
-ai_generated: false
----
-
 # Minimal Fatigue but Maximum Growth - The Low-Volume Advantage
 
 *Kompleksowy przewodnik po treningu niskim wolumenie wysokiej intensywności*

@@ -1,15 +1,3 @@
----
-title: "AEO dla e-commerce — 7-warstwowy playbook (analiza zakładki X)"
-subcategory: "seo"
-category: "growth-marketing"
-tags: ["marketing", "growth", "claude"]
-type: "note"
-created: "2026-02-25"
-updated: "2026-02-25"
-source: "manual"
-ai_generated: false
----
-
 # AEO dla e-commerce — 7-warstwowy playbook (analiza zakładki X)
 
 **Data analizy:** 2026-02-25 (UTC)  

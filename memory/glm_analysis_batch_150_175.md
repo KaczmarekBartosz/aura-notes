@@ -1,15 +1,3 @@
----
-title: "GLM Deep Analysis Batch 150-175"
-subcategory: "automation"
-category: "ai-agents"
-tags: ["ai", "automation", "openclaw"]
-type: "note"
-created: "2026-02-01"
-updated: "2026-02-01"
-source: "claude"
-ai_generated: false
----
-
 # GLM Deep Analysis Batch 150-175
 ## Processed: Tuesday, February 10th, 2026 — 6:49 AM (UTC)
 ## Model: zai/glm-4.7

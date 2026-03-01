@@ -1,15 +1,3 @@
----
-title: "X Bookmarks Sync Summary"
-subcategory: "x-twitter"
-category: "bookmarks"
-tags: ["bookmarks", "resources", "openclaw", "claude"]
-type: "bookmark"
-created: "2026-02-14"
-updated: "2026-02-14"
-source: "x-bookmark"
-ai_generated: false
----
-
 # X Bookmarks Sync Summary
 **Date:** 2026-02-14 04:41 UTC
 **Source:** node tools/sync-x-bookmarks.js

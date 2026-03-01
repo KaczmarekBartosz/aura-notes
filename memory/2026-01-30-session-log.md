@@ -1,14 +1,3 @@
----
-title: "Dziennik sesji - 30 stycznia 2026"
-category: "daily-log"
-tags: []
-type: "daily-log"
-created: "2026-01-30"
-updated: "2026-01-30"
-source: "manual"
-ai_generated: false
----
-
 # Dziennik sesji - 30 stycznia 2026
 
 ## Podsumowanie dnia

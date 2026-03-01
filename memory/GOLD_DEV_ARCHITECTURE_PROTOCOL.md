@@ -1,827 +1,637 @@
----
-title: "GOLD DEV ARCHITECTURE PROTOCOL"
-subcategory: "development"
-category: "ai-agents"
-tags: ["ai", "automation", "coding", "development", "claude"]
-type: "protocol"
-created: "2026-02-01"
-updated: "2026-02-01"
-source: "manual"
-ai_generated: false
----
-
-# GOLD DEV ARCHITECTURE PROTOCOL
-## Kompletny system architektury oprogramowania, AI-assisted coding i optymalizacji wydajności
+# GOLD DEV & ARCHITECTURE PROTOCOL 🛠️
 
 **Wersja:** 1.0  
-**Źródło:** Kompilacja zakładek X/Twitter (@steipete, @alexcooldev, @farhanrizzvi, @raihanarbix) + literatura branżowa  
-**Data kompilacji:** Luty 2026
+**Data utworzenia:** 2026-02-27  
+**Ostatnia aktualizacja:** 2026-02-27  
+**Status:** AKTYWNY
 
 ---
 
-## SPIS TREŚCI
+## 🎯 CO TO JEST
 
-1. [Filozofia Protokołu](#1-filozofia-protokołu)
-2. [Nowoczesny Tech Stack 2026](#2-nowoczesny-tech-stack-2026)
-3. [AI-Assisted Coding](#3-ai-assisted-coding)
-4. [Wzorce Architektoniczne](#4-wzorce-architektoniczne)
-5. [Optymalizacja Wydajności](#5-optymalizacja-wydajności)
-6. [Bezpieczeństwo Aplikacji](#6-bezpieczeństwo-aplikacji)
-7. [Modernizacja i Migracje](#7-modernizacja-i-migracje)
-8. [Codzienna Checklista Deweloperska](#8-codzienna-checklista-deweloperska)
-9. [Typowe Błędy Architektoniczne](#9-typowe-błędy-architektoniczne)
-10. [Hierarchia Priorytetów](#10-hierarchia-priorytetów)
+Kompletny playbook technologiczny dla budowania aplikacji, SaaS i systemów AI w 2026 roku. Od stacku technologicznego, przez architekturę, po konkretne wzorce kodowania z AI. Nie teoria — tylko to, co działa teraz.
 
 ---
 
-## 1. FILOZOFIA PROTOKOŁU
+## 📚 ŹRÓDŁA
 
-### 1.1 Podstawowa Zasada
-> "Najlepsza architektura to ta, która pozwala zespołowi dostarczać wartość szybko, utrzymując operacje na rozsądnym poziomie." — Chris Richardson
-
-Protokół opiera się na **pragmatyzmie** i **ewolucyjnym podejściu**:
-- Nie szukamy "idealnej" architektury od razu
-- Startujemy prosto, skalujemy na podstawie dowodów
-- Architektura jest narzędziem, nie celem samym w sobie
-
-### 1.2 Spektrum Architektoniczne
-
-W 2026 roku przestań myśleć w kategoriach:
-- ❌ "Monolit ZŁY, Mikroserwisy DOBRE"
-- ❌ "Mikroserwisy są przereklamowane"
-
-Zacznij myśleć:
-- ✅ "Gdzie na spektrum leży mój projekt?"
-- ✅ "Jaki poziom złożoności jest uzasadniony?"
-
-**Spektrum 2026:**
-```
-Monolit klasyczny ← Modular Monolith → Hybryda → Mikroserwisy → Nano-serwisy
-     (start)         (sweet spot)      (rost)     (skala)       (edge cases)
-```
-
-### 1.3 Agentic Leap 2026
-> "2026 to rok skoku agentowego — AI przechodzi z roli co-pilota do autonomicznego kolegi." — Tech Startups
-
-**Co to oznacza dla deweloperów:**
-- AI pisze 60-80% kodu produkcyjnego
-- Twoja rola: architekt, reviewer, integrator
-- Kluczowe umiejętności: prompt engineering, kontekst management, review AI-generated code
+- **@steipete** — Peter Steinberger, twórca OpenClaw, agentic engineering
+- **@alexcooldev** — Alex Nguyen, indie hacking, app development
+- **@farhanrizzvi** — architektura systemów, best practices
+- **@raihanarbix** — UI/UX development, frontend patterns
+- **@code_rams** — agentic engineering, workflow AI
+- **@KacperTrzepiec1** — Claude Code, konfiguracja agentów
+- **@miroburn** — synchronizacja kontekstu, AI w firmie
 
 ---
 
-## 2. NOWOCZESNY TECH STACK 2026
+## 🏗️ SEKCJA 1: TECH STACK 2026
 
-### 2.1 Stack AI-Assisted Coding (Vibe Coding Stack)
+### 1.1 Core Stack dla SaaS/App
 
-#### Podstawowe Narzędzia (January 2026)
+| Warstwa | Technologia | Użycie | Alternatywy |
+|---------|-------------|--------|-------------|
+| **Frontend** | Next.js 15 (App Router) | Strony, dashboardy, misje | Remix, SvelteKit |
+| **Backend** | Convex / Supabase | Real-time DB, auth, storage | Firebase, PlanetScale |
+| **Styling** | Tailwind CSS v4 | Szybki UI, responsywność | UnoCSS, Panda |
+| **Komponenty** | ShadCN UI | Pre-built, dostępne | Radix, Headless |
+| **Animacje** | Framer Motion | Mikrointerakcje, przejścia | GSAP, Motion One |
+| **Icons** | Lucide React | Spójność wizualna | Heroicons, Tabler |
 
-| Narzędzie | Zastosowanie | Model AI | Uwagi |
-|-----------|--------------|----------|-------|
-| **Cursor** | Główne IDE | Opus 4.5 Thinking + GPT-5.2-Codex-High | Faworyt, mimo spadku użycia |
-| **Claude Code** | Kodowanie + inne zadania | Max 5x plan | Najlepsza wartość dla agentic AI |
-| **GitHub Copilot** | Autouzupełnianie | GPT-4 | Pioneer, nadal solidny |
-| **Windsurf** | Alternatywa dla Cursora | Claude 3.5 Sonnet | Nowy gracz, rośnie popularność |
+### 1.2 Stack dla Agentów AI
 
-#### Kryteria Wyboru IDE 2026
+| Komponent | Narzędzie | Koszt/mies. | Kiedy użyć |
+|-----------|-----------|-------------|------------|
+| **Orchestracja** | OpenClaw | $0 (self-hosted) | Główny system agentów |
+| **Coding** | GPT-5.3 Codex / Opus 4.6 | $20-200 | Główny development |
+| **Frontend** | Gemini 3.1 Pro | $0-20 | UI/UX, design code |
+| **Zadania ogólne** | MiniMax M2.5 | $0-10 (via OpenRouter) | Szybkie taski, heartbeats |
+| **Research** | Grok 4.1 | $8-16 | X/Twitter, news |
+| **Images** | Nano Banana Pro | $0-20 | Grafiki, mockupy |
+| **Video** | Seedance 2.0 | $0-25 | Content video |
+
+### 1.3 $0 Stack (dla startu)
 
 ```
-Must-have:
-✓ Kontekst całego projektu (nie tylko plik)
-✓ Agent mode (AI może wykonywać komendy)
-✓ Integracja z terminal
-✓ Multi-file editing
-✓ Smart apply (aplikowanie zmian selektywnie)
+IDE:        Google AntiGravity (100% free)
+Docs:       SuperDocs (open source)
+Database:   Supabase (Nano plan)
+Auth:       Stack Auth (do 10K users)
+LLM:        OpenRouter / Gemini AI Studio
+Git:        GitHub/GitLab (free)
+Deploy:     Vercel (free tier)
+Analytics:  PostHog + Clarity + GA (wszystkie free)
 ```
 
-### 2.2 Języki Programowania 2026
+**Całkowity koszt startu:** $0  
+**Miesięczny koszt przy skali:** $50-200
 
-#### Hierarchia (AI-assisted coding era)
+---
 
-| Pozycja | Język | Dlaczego | AI Compatibility |
-|---------|-------|----------|------------------|
-| 1 | **TypeScript** | Full-stack, typesafety, ekosystem | ⭐⭐⭐⭐⭐ |
-| 2 | **Python** | AI/ML, backend, prototypowanie | ⭐⭐⭐⭐⭐ |
-| 3 | **Rust** | Performance-critical, systems | ⭐⭐⭐⭐ |
-| 4 | **Go** | Backend, cloud-native, DevOps | ⭐⭐⭐⭐ |
-| 5 | **Zig** | Systems programming (rising) | ⭐⭐⭐ |
+## 🧠 SEKCJA 2: AGENTIC ENGINEERING
 
-> "AI-assisted coding sprawia, że konkretny język programowania jest mniej ważny." — Andrew Ng
+### 2.1 Agentic Engineering > Vibe Coding
 
-### 2.3 Backend Stack 2026
+**Zasada:** Prompt tricks nie wystarczą. Architektura systemu decyduje o jakości agenta.
 
-#### Dla Startupów / MVPs
+**Core Principles:**
+
+1. **Czysty kod = lepszy agent**
+   - Czytelne nazewnictwo
+   - Dobra struktura
+   - Czysta architektura
+   - Agent działa lepiej na uporządkowanym kodzie
+
+2. **Start stupid simple**
+   - OpenClaw zaczął jako 1-godzinny WhatsApp → CLI relay
+   - Minimalny core system
+   - Dodawaj jedną regułę na raz
+   - Aggressive pruning
+
+3. **Więcej promptów ≠ więcej inteligencji**
+   - Rozdęte instrukcje obniżają jakość
+   - Mały system. Tight loop. Szybka iteracja.
+
+4. **Samomodyfikujące się agenty**
+   - Agent inspekcjonuje własne narzędzia
+   - Czyta dokumentację
+   - Analizuje błędy
+   - Pyta: "Co widzisz? Co Cię myli? Gdzie jest błąd?"
+
+### 2.2 Wzorce Architektury Agentów
+
+**Pattern 1: Skill-Based Shell Agent**
+
 ```
-Runtime: Node.js (TypeScript) lub Python (FastAPI)
-Database: PostgreSQL (must-have)
-Cache: Redis
-Auth: Clerk / Auth0 / Supabase Auth
-Storage: S3-compatible (MinIO dla self-hosted)
-Queue: BullMQ / Celery
+Hierarchia:
+├── Shell (kontener hosta)
+│   └── Sprawdź zależności przed odpowiedzią
+├── Skills (/skills/)
+│   └── Każdy powtarzalny task = osobny skill
+└── Memory (Compaction)
+    └── Podsumowuj stan, zapisuj artefakty
+
+Execution Rules:
+- Description over marketing (kiedy użyć / kiedy nie)
+- Artifacts first (wszystko do /mnt/data/)
+- Negative examples (dokumentuj porażki)
 ```
 
-#### Dla Enterprise / Scale
+**Pattern 2: Sub-agent Delegation**
+
 ```
-Runtime: Go lub Rust (performance-critical)
-Database: PostgreSQL + read replicas
-Cache: Redis Cluster
-Message Queue: Apache Kafka lub RabbitMQ
-Observability: Datadog / Grafana Stack
-Service Mesh: Istio (tylko przy >10 serwisów)
+Główny Agent (Orchestrator)
+├── Sub-agent 1: Research
+├── Sub-agent 2: Coding
+├── Sub-agent 3: Testing
+└── Sub-agent 4: Deployment
+
+Każdy sub-agent:
+- Ma jasne kryteria sukcesu
+- Waliduje własną pracę
+- Raportuje do orchestratora
 ```
 
-### 2.4 Frontend Stack 2026
+**Pattern 3: Memory Architecture**
 
-#### Frameworki (Ranking 2026)
-
-| Framework | Best For | AI-Assisted Coding |
-|-----------|----------|-------------------|
-| **Next.js 15** | Full-stack React, SSR | ⭐⭐⭐⭐⭐ |
-| **Nuxt 4** | Vue ekosystem | ⭐⭐⭐⭐ |
-| **SvelteKit** | Performance, simplicity | ⭐⭐⭐⭐ |
-| **Astro** | Content sites, MPA | ⭐⭐⭐⭐ |
-| **React Native** | Mobile (Expo SDK 52) | ⭐⭐⭐⭐ |
-
-#### UI Components 2026
 ```
-Shadcn/ui → tailwindcss → radix-ui (stack polecany)
-Alternatywy: Chakra UI v3, Mantine v7
-Unikaj: Material UI (legacy), Bootstrap (archaic)
+memory/
+├── active-tasks.md          # "Save game" (crash recovery)
+├── YYYY-MM-DD.md            # Dzienne logi
+├── projects.md              # Projekty długoterminowe
+├── decisions.md             # Kluczowe decyzje
+└── failures.md              # Dokumentowane błędy
+
+Zasada: Jeśli nie jest zapisane w pliku — agent nie pamięta.
+```
+
+### 2.3 Reverse Prompting
+
+**Zamiast:** "Co powinienem zrobić?"  
+**Zapytaj:** "Co robię źle? Gdzie tracę czas?"
+
+Agent zna Twoje cele, projekty, nawyki. Niech Ci powie, gdzie jesteś nieefektywny.
+
+**Przykładowe odpowiedzi z reverse prompting:**
+- "Za dużo kontekstu w jednym prompcie"
+- "Powtarzasz te same błędy w nazewnictwie"
+- "Możesz zautomatyzować 70% tego workflow"
+
+---
+
+## 🔧 SEKCJA 3: CLAUDE CODE BEST PRACTICES
+
+### 3.1 Konfiguracja Środowiska
+
+**~/.claude/CLAUDE.md:**
+
+```markdown
+# Zasady krytyczne
+
+1. "fix errors immediately. don't ask. don't wait."
+   → Agent przestaje być pasywny, zaczyna być proaktywny
+
+2. "spawn subagents for all execution. never do inline work."
+   → Ty strategizujesz, sub-agenci budują. 10x szybciej.
+
+3. "never force push, delete branches, or rewrite git history."
+   → Jedna guardrail, która ratuje przed katastrofą
+
+4. "never guess config changes. read docs first. backup before editing."
+   → Zapobiega psuciu własnej konfiguracji
+```
+
+### 3.2 Dwa pliki startowe
+
+Agent powinien czytać na start każdej sesji:
+
+**Plik 1: USER.md**
+- Kim jesteś
+- Jak lubisz pracować
+- Czego unikać
+- Jak odpowiadać
+
+**Plik 2: AI_RULES.md** (pisany przez AI)
+- Jak reagować na feedback
+- Kiedy pytać, kiedy działać
+- Jaki ton trzymać
+
+**Auto-aktualizacja:**
+```
+Komenda: /reflect
+AI skanuje rozmowę, szuka sygnałów:
+→ "za długie" 2x → dodaj regułę "odpowiadaj krócej"
+→ "nie pisz game-changer" → czarna lista słów
+```
+
+### 3.3 Model Routing
+
+| Zadanie | Model | Dlaczego |
+|---------|-------|----------|
+| Orchestracja | Opus 4.6 | Najlepszy do planowania |
+| Coding | GPT-5.3 Codex | Najmniej handholdingu |
+| Frontend/UI | Gemini 3.1 Pro | Creative code |
+| Szybkie taski | MiniMax M2.5 | 95% tańszy niż Opus |
+| Debugowanie | GPT-5.2 | Szybki, precyzyjny |
+| Zewnętrzne źródła | Opus 4.6 | Odporny na prompt injection |
+
+### 3.4 Security Best Practices
+
+1. **Sandboxing** — agent działa w izolowanym środowisku
+2. **Allowlists** — tylko zatwierdzone komendy
+3. **Scoped permissions** — minimalne uprawnienia
+4. **Explicit approvals** — potwierdzenia przy ryzykownych akcjach
+5. **Zewnętrzna treść = silny model** — Opus dla web content, słabsze modele są podatne na prompt injection
+
+---
+
+## 🏛️ SEKCJA 4: ARCHITEKTURA SYSTEMÓW
+
+### 4.1 Struktura Folderów OpenClaw
+
+```
+workspace/
+├── agents/
+│   ├── registry.json
+│   ├── coder/
+│   │   ├── SOUL.md
+│   │   └── RULES.md
+│   └── researcher/
+├── memory/
+│   ├── 2026-02-27.md
+│   ├── projects.md
+│   └── decisions.md
+├── state/
+│   ├── servers.json
+│   ├── crons.json
+│   └── revenue.json
+├── content/
+│   └── queue.md
+├── clients/
+│   └── client-name.md
+├── skills/
+│   └── [skill-name]/
+└── shared-context/
+    ├── priorities.md
+    └── agent-outputs/
+```
+
+### 4.2 HEARTBEAT.md (Proactive Status)
+
+```markdown
+## Aktywne projekty
+- [Nazwa] — status, next step
+
+## Immediate actions
+- [Co do zrobienia dzisiaj]
+
+## Background tasks
+- [Co działa, co zrobione]
+```
+
+Agent czyta to przy każdym starcie i:
+- Fluguje jeśli coś jest stare/uszkodzone
+- Proponuje następne kroki
+- Nie czeka na pytanie
+
+### 4.3 System Notyfikacji i Kontekstu
+
+**Architektura 3-fazowa:**
+
+**Faza 1: RĘCZNIE**
+- Szef przygotowuje kontekst
+- Wyciąga z systemów (API, ręcznie)
+- Dodaje cele, KPI
+- Rozsyła zespołowi raz w tygodniu
+
+**Faza 2: API w 1 stronę**
+- System zbiera dane
+- Wystawia po API
+- Agenci pobierają pliki kontekstowe
+
+**Faza 3: API w 2 strony**
+- Agenci wrzucają dane do "recepcji"
+- System przetwarza
+- Automatyczna synchronizacja
+
+### 4.4 Mission Control Dashboard
+
+**Stack:** Next.js 15 + Convex + Tailwind + Framer Motion
+
+**Widoki:**
+1. **Home** — System Health, Agent Status, Cron Health, Revenue
+2. **Ops** — Tasks, Calendar, Operations
+3. **Agents** — Registry, Models, Personalities
+4. **Chat** — Interface do agentów
+5. **Content** — Pipeline, Drafts
+6. **Comms** — CRM, Discord, Telegram
+7. **Knowledge** — Search, Ecosystem
+8. **Code** — Repos, Commits, PRs
+
+---
+
+## 💻 SEKCJA 5: KODOWANIE Z AI
+
+### 5.1 Prompt Architecture dla Kodu
+
+```markdown
+<context>
+[Opis systemu, architektury, ograniczeń]
+</context>
+
+<role>
+[Kim AI ma być: principal engineer, security-focused, etc.]
+</role>
+
+<response_guidelines>
+- Read architekturę przed kodem
+- State: filepath, purpose, dependencies, consumers
+- Strict separation of concerns
+- Fully typed, production-ready
+- Error handling comprehensive
+- Suggest tests dla każdej zmiany
+</response_guidelines>
+
+<task_criteria>
+[Concrete task with acceptance criteria]
+</task_criteria>
+```
+
+### 5.2 Code Review Checklist
+
+Przed każdym commitem:
+
+- [ ] Typy zdefiniowane
+- [ ] Error handling dla edge cases
+- [ ] Input validation
+- [ ] Environment variables dla sekretów
+- [ ] Testy (unit + integration)
+- [ ] Dokumentacja
+- [ ] Security check (brak hardcoded secrets)
+- [ ] Performance (nie dodajemy N+1 queries)
+
+### 5.3 Fix Forward Mindset
+
+**Zamiast rollback panic:**
+- Patch quickly
+- Re-run
+- Keep main deployable
+
+**Post-build questions:**
+- "What should we refactor next?"
+- "Where is complexity increasing?"
+- "What tests are missing?"
+
+### 5.4 Vibe Coding Best Practices
+
+1. **Generuj 10 wariantów** — poproś o 10 plików HTML, każdy z 4 wariacjami feature. Wybierasz najlepsze.
+
+2. **Frontend UI stack:**
+   - Zaproponuj scope
+   - 10 HTML files, 4 variations each
+   - Cherry pick
+   - Saves hours of reprompting
+
+3. **Gamifikacja:**
+   - Dopamine loops scale
+   - Boring apps die
+   - Dodaj mascota, gamification layer
+
+---
+
+## 🔄 SEKCJA 6: AUTOMATYZACJA WORKFLOW
+
+### 6.1 Cron vs Heartbeats
+
+**Heartbeats:**
+- Co ~30 min
+- Batchowane checki (email + calendar + mentions)
+- Krótki, <20 linii
+- Keep it simple
+
+**Cron jobs:**
+- Precyzyjne timingi
+- Daily content ideas at 6am
+- Overnight research at 2am
+- Tech watch at 8am
+- Każdy w izolacji, własny kontekst
+
+### 6.2 Task Queue Pattern
+
+```
+Źródła → Baza (DynamoDB/Convex) → Agent Tasks
+
+Źródła:
+- Maile od firm (SaaS, API)
+- CRM daily digest
+- Analytics (ruch + AI analiza)
+- Grok Intel (trendy, konkurencja)
+- CloudWatch (błędy)
+
+Agent Tasks:
+1. Pobiera wszystko w kolejkę
+2. Pokazuje po jednej wiadomości
+3. Analizuje w kontekście projektów
+4. Proponuje: usuń / zamknij / stwórz task
+```
+
+### 6.3 One Process Per Week
+
+**Zasada:** Nie ogarniaj wszystkiego od razu.
+
+- Week 1: Automatyzacja maili (1 skrzynka)
+- Week 2: Dodaj drugą skrzynkę
+- Week 3: Kategoryzacja
+- Week 4: Auto-drafty
+- Week 5+: Skaluj
+
+---
+
+## 📊 SEKCJA 7: MONITORING I ANALITYKA
+
+### 7.1 Metryki Agenta
+
+| Metryka | Target | Jak mierzyć |
+|---------|--------|-------------|
+| Tasks completed/day | 10+ | Logi w state/ |
+| Success rate | >90% | Failed vs completed |
+| Avg response time | <30s | Timestamp diff |
+| Token efficiency | Spadający trend | Tokens/task over time |
+| Cost per task | <$0.10 | $/task |
+
+### 7.2 Self-Review Loop
+
+**Co 4h:** Agent pyta samego siebie:
+- "Co zrobiłem źle?"
+- "Jaki wzorzec się powtarza?"
+- "Co powinienem zmienić?"
+
+**Widoczne efekty po 30 dniach:**
+- Wyłapanie błędów przed użytkownikiem
+- Naprawa powtarzających się patternów
+- Auto-aktualizacja reguł
+
+### 7.3 Cost Optimization
+
+**Darmowe alternatywy:**
+- Kimi K2.5 via NVIDIA (darmowe API)
+- GLM-5 via Z.ai (darmowe tier)
+- MiniMax M2.5 via OpenRouter (tanie)
+- Gemini AI Studio (darmowe testowanie)
+
+**Koszty miesięczne (przykład):**
+```
+OpenAI GPT:        $90 (Team plan)
+Claude Max:        $100
+OpenRouter:        $30
+Vercel:            $20
+Supabase:          $25
+Other tools:       $50
+-------------------
+RAZEM:            ~$315/mies.
 ```
 
 ---
 
-## 3. AI-ASSISTED CODING
+## 🚀 SEKCJA 8: CHECKLISTY
 
-### 3.1 Rytm AI-Assisted Coding (Andrej Karpathy)
+### 8.1 Checklist: Nowy Projekt
 
-> "Zauważam, że adoptuję pewien rytm w kodowaniu z AI. To nie jest vibe coding — to kod, na którym mi naprawdę zależy."
+- [ ] Zdefiniuj architekturę (dokument)
+- [ ] Wybierz stack technologiczny
+- [ ] Skonfiguruj środowisko (env vars, secrets)
+- [ ] Utwórz strukturę folderów
+- [ ] Skonfiguruj agenta (SOUL.md, RULES.md)
+- [ ] Ustaw CI/CD (Vercel, GitHub Actions)
+- [ ] Dodaj monitoring (Sentry, LogRocket)
+- [ ] Utwórz backup strategy
+- [ ] Dokumentacja (README, ARCHITECTURE.md)
 
-#### 7-Fazowy Workflow:
+### 8.2 Checklist: Kodowanie z AI
 
-| Faza | Działanie | Czas |
-|------|-----------|------|
-| 1. Kontekst | Wrzuć wszystko relewantne do kontekstu | 2-5 min |
-| 2. Prompt | Napisz szczegółowy prompt z wymaganiami | 2-3 min |
-| 3. Generacja | AI generuje kod | 30-60 sec |
-| 4. Review | Ręczny przegląd, nauka, zmiany | 5-15 min |
-| 5. API Docs | Otwórz dokumentację API w przeglądarce bocznej | 3-5 min |
-| 6. Test | Testuj wygenerowany kod | 5-10 min |
-| 7. Commit | Git commit + planowanie następnych kroków | 2 min |
+- [ ] Podaj kontekst (architektura, constraints)
+- [ ] Zdefiniuj rolę AI (engineer, reviewer)
+- [ ] Określ acceptance criteria
+- [ ] Review: typy, error handling, security
+- [ ] Testy (unit + integration)
+- [ ] Dokumentacja
+- [ ] Commit z opisem (conventional commits)
 
-**Klucz:** Review i nauka są niezbędne — nie akceptuj ślepo AI.
+### 8.3 Checklist: Deployment
 
-### 3.2 Vibe Coding vs AI-Assisted Coding
+- [ ] Wszystkie testy przechodzą
+- [ ] Build nie ma błędów
+- [ ] Environment variables ustawione
+- [ ] Database migrations ready
+- [ ] Rollback plan przygotowany
+- [ ] Monitoring aktywny
+- [ ] Dokumentacja zaktualizowana
 
-| Aspekt | Vibe Coding | AI-Assisted Coding |
-|--------|-------------|-------------------|
-| **Cel** | Prototyp, eksperyment | Produkcja, kod, który utrzymasz |
-| **Review** | Minimalny lub brak | Obowiązkowy |
-| **Testy** | Często pomijane | Konieczne |
-| **Kontekst** | Wąski (tu i teraz) | Szeroki (cały projekt) |
-| **Wyjście** | Działa = gitara | Działa + jest utrzymywalny |
+### 8.4 Checklist: Security
 
-> "Vibe coding to świetny sposób na prototypowanie. AI-assisted coding to sposób na budowanie produkcji." — Robin Ebers
-
-### 3.3 Prompt Engineering dla Deweloperów
-
-#### Złote Zasady Promptów
-
-```
-❌ ZŁO: "Napisz funkcję do logowania"
-
-✅ DOBRZE: 
-"Napisz funkcję authenticateUser w TypeScript:
-- Input: { email: string, password: string }
-- Output: { user: User, token: JWT } | { error: AuthError }
-- Wymagania:
-  1. Walidacja email (zod)
-  2. Hash porównanie (bcrypt)
-  3. JWT expiry 24h
-  4. Rate limiting 5 prób/min
-- Kontekst: Używamy Prisma ORM, PostgreSQL"
-```
-
-#### Szablon Promptu Architektonicznego
-```
-Kontekst projektu:
-- [ ] Stack technologiczny
-- [ ] Obecna struktura plików
-- [ ] Konwencje nazewnictwa
-- [ ] Zależności (package.json, requirements.txt)
-
-Zadanie:
-- [ ] Co konkretnie ma być zaimplementowane
-- [ ] Oczekiwane wejście/wyjście
-- [ ] Edge cases
-- [ ] Wymagania niefunkcjonalne (performance, security)
-
-Ograniczenia:
-- [ ] Co NIE wolno zmieniać
-- [ ] Zależności zewnętrzne
-- [ ] Compatibility requirements
-```
-
-### 3.4 Review AI-Generated Code
-
-#### Checklist Review
-
-- [ ] **Logika biznesowa** — czy AI zrozumiało domain?
-- [ ] **Edge cases** — null, empty, max int, etc.
-- [ ] **Security** — SQL injection, XSS, auth
-- [ ] **Performance** — N+1 queries, unnecessary loops
-- [ ] **Error handling** — czy wszystkie ścieżki są obsłużone?
-- [ ] **Type safety** — any, unknown, type assertions
-- [ ] **Testability** — czy da się łatwo testować?
+- [ ] Brak hardcoded secrets
+- [ ] Input validation wszędzie
+- [ ] Rate limiting API
+- [ ] Auth/Authz działa
+- [ ] CORS skonfigurowane
+- [ ] Dependencies zaktualizowane
+- [ ] Security headers ustawione
 
 ---
 
-## 4. WZORCE ARCHITEKTONICZNE
+## 🎓 SEKCJA 9: NAUKA I ROZWÓJ
 
-### 4.1 Decision Framework 2026
+### 9.1 Jak uczyć się AI-assisted coding
 
-#### Pytania Decyzyjne (szczera ocena)
+1. **Używaj codziennie** — nie tylko jak masz czas
+2. **Zbuduj coś prawdziwego** — nie ćwicz na promptach
+3. **Naucz AI, kim jesteś** — zanim o cokolwiek poprosisz
+4. **Nie pytaj o radę** — daj konkretny problem
+5. **Zostaw AI odpowiadanie za Ciebie** — maile, podsumowania
+6. **Uruchom kilka agentów naraz** — różne perspektywy
+7. **Buduj narzędzia pod siebie** — nie pod wszystkich
+8. **Jeden proces automatyzacji co tydzień**
+9. **Nie używaj AI do tego, co lubisz robić**
+10. **Mierz czas, nie jakość odpowiedzi**
 
-| Pytanie | Jeśli TAK → | Jeśli NIE → |
-|---------|-------------|-------------|
-| >50 deweloperów? | Mikroserwisy rozważalne | Modular Monolith |
-| Dedicated platform team? | Mikroserwisy możliwe | Modular Monolith |
-| Granice domenowe są jasne? | Mikroserwisy | Modular Monolith |
-| Różne komponenty mają różne wymagania skalowania? | Mikroserwisy | Modular Monolith |
-| MVP / Startup / <12 miesięcy? | Modular Monolith | Ewaluuj dalej |
+### 9.2 Resources do Śledzenia
 
-**Zasada:** Startuj z Modular Monolith. Ewoluuj tylko przy jasnych dowodach.
+**Ludzie:**
+- @steipete — OpenClaw, agentic engineering
+- @bcherny — Claude Code creator
+- @code_rams — agentic patterns
+- @KacperTrzepiec1 — AI workflows
+- @miroburn — kontekst, synchronizacja
 
-### 4.2 Modular Monolith — Sweet Spot 2026
+**Tools:**
+- Claude Code + Antigravity combo
+- OpenClaw + Codex
+- MiniMax M2.5 (darmowy, wydajny)
+- Kimi K2.5 (najlepszy stosunek jakości do ceny)
 
-> "42% organizacji, które początkowo przyjęły mikroserwisy, konsoliduje część z powrotem do większych jednostek." — CNCF Survey 2025
+### 9.3 Common Anti-Patterns
 
-#### Struktura Modular Monolith
-
-```
-/src
-├── /modules
-│   ├── /users
-│   │   ├── /domain      → Encje, value objects
-│   │   ├── /application → Use cases, services
-│   │   ├── /infrastructure → Repositories, external APIs
-│   │   └── /api         → Controllers, DTOs
-│   ├── /orders
-│   ├── /products
-│   └── /payments
-├── /shared              → Tylko prawdziwie shared code
-└── /config
-```
-
-#### Zasady Modular Monolith
-
-1. **Strict module boundaries** — moduły komunikują się tylko przez public API
-2. **No shared database tables** — każdy moduł ma własny schemat
-3. **No circular dependencies** — enforced przez linter/architecture tests
-4. **Module could be extracted** — jeśli nie można wyodrębnić → zła granica
-
-### 4.3 Mikroserwisy — Kiedy Naprawdę Potrzebne
-
-#### Legitime Przypadki Użycia
-
-| Scenariusz | Uzasadnienie | Przykład |
-|------------|--------------|----------|
-| Skalowanie niezależne | 1 komponent 1000x ruch, reszta normalnie | Image processing vs auth |
-| Różne wymagania SLA | Critical path vs best effort | Payments vs analytics |
-| Team autonomia | 100+ devs, różne timezony | Netflix, Spotify |
-| Technology diversity | ML (Python) + API (Go) | Rekomendacje + core API |
-| Compliance izolacja | Regulacje wymagają separacji | Płatności, health data |
-
-#### Anty-Wzorce Mikroserwisów
-
-```
-❌ Distributed Monolith — serwisy muszą być deployowane razem
-❌ Shared Database — każdy serwis dotyka tych samych tabel
-❌ Chatty Services — 50 HTTP calls na jeden request użytkownika
-❌ God Service — jeden serwis robi wszystko
-❌ Premature Extraction — wydzielanie przed osiągnięciem skali
-```
-
-### 4.4 Hexagonal / Ports & Adapters
-
-#### Struktura (dla każdego modułu/serwisu)
-
-```
-/order-service
-├── /domain              → Czysta logika biznesowa
-│   ├── Order.ts
-│   ├── OrderRepository.ts (interface)
-│   └── OrderService.ts
-├── /application         → Use cases
-│   ├── CreateOrder.ts
-│   └── CancelOrder.ts
-├── /infrastructure      → Implementacje zewnętrzne
-│   ├── /persistence
-│   │   └── PostgresOrderRepository.ts
-│   ├── /messaging
-│   │   └── KafkaEventPublisher.ts
-│   └── /web
-│       └── OrderController.ts
-└── /config
-```
-
-**Zaleta:** Możesz zmienić bazę danych bez dotykania logiki biznesowej.
-
-### 4.5 Komunikacja Międzyserwisowa
-
-#### Wybór Patternu
-
-| Pattern | Latency | Consistency | Złożoność | Kiedy Użyć |
-|---------|---------|-------------|-----------|------------|
-| In-process call | <1ms | Silna | Niska | Wewnątrz monolitu |
-| Sync HTTP/gRPC | 10-50ms | Silna | Średnia | Request-response, real-time |
-| Async messaging | Zmienna | Eventual | Wysoka | Events, background, decoupling |
-| GraphQL Federation | 20-100ms | Silna | Wysoka | Complex data aggregation |
-
-**Zasada:** Preferuj async dla wszystkiego, co nie wymaga natychmiastowej odpowiedzi.
-
-### 4.6 Saga Pattern — Distributed Transactions
-
-#### Orchestracja vs Choreografia
-
-| Aspekt | Orchestration | Choreography |
-|--------|---------------|--------------|
-| Kontrola | Centralny koordynator | Każdy serwis sam decyduje |
-| Złożoność | Wysoka w koordynatorze | Rozproszona |
-| Debugowanie | Łatwiejsze | Trudniejsze |
-| Coupling | Coupling do koordynatora | Coupling między serwisami |
-| Best for | Complex workflows | Simple event chains |
-
-**Przykład Saga (Order → Payment → Shipping):**
-```
-Order Service → Payment Service → Shipping Service
-      ↓                ↓                  ↓
-  [succeed]        [succeed]          [FAIL]
-      ↓                ↓                  ↓
-                 [compensate] ← [refund] ←┘
-```
+❌ **Rozdęte pliki pamięci** (>200 linii w HEARTBEAT)  
+❌ **Brak kryteriów sukcesu** dla sub-agentów  
+❌ **Inline work** zamiast delegacji  
+❌ **Brak dokumentacji** failure patterns  
+❌ **Zgadywanie** zamiast czytania dokumentacji  
+❌ **Force push** bez myślenia  
+❌ **Jeden model do wszystkiego**
 
 ---
 
-## 5. OPTYMALIZACJA WYDAJNOŚCI
+## 📝 SEKCJA 10: QUICK REFERENCE
 
-### 5.1 Core Web Vitals 2026 — Cele
-
-| Metryka | Good | Needs Improvement | Poor |
-|---------|------|-------------------|------|
-| **LCP** (Largest Contentful Paint) | ≤2.5s | ≤4s | >4s |
-| **INP** (Interaction to Next Paint) | ≤200ms | ≤500ms | >500ms |
-| **CLS** (Cumulative Layout Shift) | ≤0.1 | ≤0.25 | >0.25 |
-| **TTFB** (Time to First Byte) | ≤600ms | ≤800ms | >800ms |
-| **FCP** (First Contentful Paint) | ≤1.8s | ≤3s | >3s |
-
-### 5.2 Frontend Performance Checklist
-
-#### Krytyczna Ścieżka Renderowania
-
-- [ ] **Inline critical CSS** — <14KB w <head>
-- [ ] **Preload key resources** — fonts, hero image
-- [ ] **Lazy load** — obrazy poza viewportem
-- [ ] **Defer non-critical JS** — analytics, widgets
-- [ ] **Font optimization** — font-display: swap, preload
-
-#### Obrazy i Media
-
-```
-Formaty 2026:
-✓ AVIF (najlepszy compression, fallback do WebP)
-✓ WebP (dla starszych przeglądarek)
-✓ Responsive images — srcset + sizes
-✓ Lazy loading — loading="lazy"
-✓ CDN — Cloudflare, CloudFront, Fastly
-```
-
-#### JavaScript Optimization
-
-| Technika | Wpływ | Implementacja |
-|----------|-------|---------------|
-| Code splitting | -50-70% initial JS | Dynamic imports |
-| Tree shaking | -20-40% bundle size | ESM, sideEffects: false |
-| Module federation | Shared deps | Webpack 5 / Vite |
-| Islands architecture | -60% hydration | Astro, Fresh |
-| Server Components | Zero JS dla UI | Next.js 15 |
-
-### 5.3 Backend Performance
-
-#### Database Optimization
-
-```
-Must-have:
-✓ Indeksy na wszystkich WHERE, JOIN, ORDER BY
-✓ Connection pooling (pgbouncer dla Postgres)
-✓ Query timeout (30s default, 5s dla API)
-✓ Read replicas dla SELECT queries
-✓ Connection limits (max 100/instancja)
-
-Nice-to-have:
-○ Query result caching (Redis)
-○ Materialized views dla raportów
-○ Partitioning dla dużych tabel (>10M rows)
-```
-
-#### Caching Hierarchy
-
-```
-┌─────────────────────────────────────────────┐
-│  L1: In-memory (LRU cache)                  │ ← <1ms, ephemeric
-│     Zastosowanie: Hot data, computed values │
-├─────────────────────────────────────────────┤
-│  L2: Redis (distributed cache)              │ ← 1-5ms
-│     Zastosowanie: Sessions, API responses   │
-├─────────────────────────────────────────────┤
-│  L3: CDN (CloudFlare/Fastly)                │ ← 10-50ms
-│     Zastosowanie: Static assets, API cache  │
-├─────────────────────────────────────────────┤
-│  L4: Database                               │ ← 5-50ms
-│     Zastosowanie: Source of truth           │
-└─────────────────────────────────────────────┘
-```
-
-#### Redis Caching Strategy
-
-```typescript
-// Cache-Aside Pattern
-async function getUser(id: string): Promise<User> {
-  // 1. Sprawdź cache
-  const cached = await redis.get(`user:${id}`);
-  if (cached) return JSON.parse(cached);
-  
-  // 2. Pobierz z DB
-  const user = await db.users.findById(id);
-  if (!user) throw new NotFoundError();
-  
-  // 3. Zapisz w cache (TTL)
-  await redis.setex(`user:${id}`, 3600, JSON.stringify(user));
-  
-  return user;
-}
-
-// Invalidation
-await redis.del(`user:${id}`); // Po update
-```
-
-### 5.4 Network Optimization
-
-#### HTTP/3 i QUIC
-- Włącz na CDN (Cloudflare domyślnie)
-- 0-RTT handshake dla powracających użytkowników
-- Lepsza obsłaga packet loss (mobilne)
-
-#### Compression
-```
-Brotli (level 4-9) dla static assets
-Gzip fallback dla starszych klientów
-Minify: JS, CSS, HTML, JSON
-```
-
----
-
-## 6. BEZPIECZEŃSTWO APLIKACJI
-
-### 6.1 OWASP Top 10 2026 — Praktyczna Ochrona
-
-| Rank | Zagrożenie | Ochrona |
-|------|------------|---------|
-| 1 | Broken Access Control | RBAC, ABAC, principle of least privilege |
-| 2 | Cryptographic Failures | TLS 1.3, AES-256-GCM, bcrypt/Argon2 |
-| 3 | Injection | Parametrized queries, ORM, validation |
-| 4 | Insecure Design | Threat modeling, security by design |
-| 5 | Security Misconfiguration | Hardening, CIS benchmarks |
-| 6 | Vulnerable Components | SCA scanning, dependency updates |
-| 7 | Auth Failures | MFA, OAuth 2.1, secure sessions |
-| 8 | Data Integrity | Signing, provenance checking |
-| 9 | Logging Failures | Centralized logging, SIEM |
-| 10 | SSRF | URL validation, egress filtering |
-
-### 6.2 Authentication & Authorization
-
-#### JWT Best Practices 2026
-
-```typescript
-// ✅ DOBRZE
-const token = jwt.sign(
-  { 
-    sub: user.id,           // Subject (user ID)
-    iss: 'myapp.com',       // Issuer
-    aud: 'myapp-api',       // Audience
-    iat: Date.now(),        // Issued at
-    exp: Date.now() + 900000, // 15 min expiry
-    jti: uuid()             // Unique token ID (revocation)
-  },
-  privateKey,
-  { algorithm: 'ES256' }    // Asymetryczne (RS256/ES256)
-);
-
-// ❌ ŹLE
-const token = jwt.sign(
-  { user: user, password: user.password }, // Nigdy nie wkładaj wrażliwych danych!
-  'secret123',                            // Słaby secret
-  { expiresIn: '7d' }                     // Za długi expiry
-);
-```
-
-#### Refresh Token Pattern
-```
-Access Token: 15 min, JWT, w pamięci (nie localStorage!)
-Refresh Token: 7-30 dni, HTTP-only cookie, SameSite=strict
-Revocation: Blacklist w Redis
-```
-
-### 6.3 Input Validation
-
-#### Defense in Depth
-
-```typescript
-// 1. Schema validation (Zod)
-const userSchema = z.object({
-  email: z.string().email(),
-  age: z.number().int().min(13).max(120),
-  role: z.enum(['user', 'admin'])
-});
-
-// 2. Parametrized queries (Prisma/TypeORM)
-const user = await prisma.user.findUnique({
-  where: { id: userId } // Nigdy string interpolation!
-});
-
-// 3. Output encoding (XSS prevention)
-const sanitized = DOMPurify.sanitize(userInput);
-
-// 4. Rate limiting
-const limiter = new RateLimiter({
-  windowMs: 15 * 60 * 1000,
-  max: 100 // limit każdego IP
-});
-```
-
-### 6.4 Secrets Management
-
-#### Hierarchy
-
-```
-❌ NIGDY:
-- Hardcoded secrets w kodzie
-- .env files w repo
-- Secrets w logs
-
-✅ ZAWSZE:
-- Secret manager (AWS Secrets Manager, HashiCorp Vault)
-- Environment variables (runtime only)
-- Encrypted at rest
-- Rotated co 90 dni
-```
-
-#### Implementation
-
-```typescript
-// AWS Secrets Manager
-const secret = await secretsManager
-  .getSecretValue({ SecretId: 'prod/db/password' })
-  .promise();
-
-// Lokalnie: .env (gitignored!)
-// production: parameter store / vault
-```
-
-### 6.5 Security Headers
-
-```nginx
-# Nginx / Traefik / CDN
-add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
-add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline';" always;
-add_header X-Frame-Options "DENY" always;
-add_header X-Content-Type-Options "nosniff" always;
-add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
-```
-
-### 6.6 Dependency Security
+### 10.1 Komendy OpenClaw
 
 ```bash
-# npm audit
-npm audit --audit-level=moderate
+# Status i diagnostyka
+openclaw status
+openclaw doctor
+openclaw doctor --fix
 
-# Snyk
-snyk test
-snyk monitor
+# Gateway
+openclaw gateway start
+openclaw gateway stop
+openclaw gateway restart
 
-# GitHub Dependabot
-# Auto-PR dla security updates
+# Aktualizacja
+npm uninstall -g openclaw
+npm i -g openclaw@latest
+```
 
-# Yarn
-yarn audit
+### 10.2 Model Aliases (OpenClaw)
 
-# Pakiety do unikania:
-# - deprecated (check npm deprecated)
-# - 0 maintainers
-# - last publish >2 lata
+```
+kimi-coding/k2p5      → Kimi K2.5
+claude-opus-4-6       → Claude Opus 4.6
+gpt-codex-5-3         → GPT-5.3 Codex
+minimax-m2-5          → MiniMax M2.5
+glm-5                 → GLM-5
+gemini-3-pro          → Gemini 3 Pro
+```
+
+### 10.3 Claude Code z innym modelem
+
+```bash
+# Kimi K2.5
+claude --model kimi-k2-5
+
+# MiniMax M2.5  
+claude --model minimax-m2-5
+
+# GLM-5
+claude --model glm-5
 ```
 
 ---
 
-## 7. MODERNIZACJA I MIGRACJE
+## ✅ PODSUMOWANIE
 
-### 7.1 Strangler Fig Pattern
+**Gold Dev & Architecture Protocol** to Twój kompletny przewodnik po budowaniu systemów z AI w 2026 roku.
 
-> "Najskuteczniejsza strategia migracji z monolitu do mikroserwisów." — Martin Fowler
+**Kluczowe takeaways:**
 
-#### Proces
-
-```
-Faza 1: Zidentyfikuj bounded context (np. User Authentication)
-         ↓
-Faza 2: Zbuduj nowy serwis obok monolitu
-         ↓
-Faza 3: Routing przez API Gateway (50% traffic na nowy serwis)
-         ↓
-Faza 4: Zwiększaj traffic stopniowo (50% → 75% → 100%)
-         ↓
-Faza 5: Usuń kod z monolitu
-         ↓
-Powtórz dla kolejnego bounded context
-```
-
-### 7.2 Data Migration Strategie
-
-| Strategia | Kiedy | Ryzyko |
-|-----------|-------|--------|
-| **Strangler + Sync** | Długotrwała migracja | Niskie (dual-write) |
-| **Event Sourcing** | Complex domains | Średnie |
-| **Big Bang** | Małe bazy, okno serwisowe | Wysokie |
-| **CDC (Change Data Capture)** | Read replicas, analytics | Niskie |
-
-### 7.3 CDC z Debezium
-
-```
-PostgreSQL → WAL (Write-Ahead Log) → Debezium → Kafka → Consumers
-                                        ↓
-                                   Event Stream
-                                        ↓
-                    Search Index / Analytics / Cache / Data Warehouse
-```
+1. **Agentic engineering > vibe coding** — architektura > prompt tricks
+2. **Skill-based shell agent** — systematyczne podejście do agentów
+3. **Memory architecture** — split na active/daily/long-term
+4. **Sub-agent delegation** — 10x szybciej przez paralelizm
+5. **Reverse prompting** — AI mówi Ci, co robisz źle
+6. **Fix forward** — nie rollback, tylko szybki patch
+7. **Jeden proces tygodniowo** — nie wszystko na raz
 
 ---
 
-## 8. CODZIENNA CHECKLISTA DEWELOPERSKA
-
-### 8.1 Przed Rozpoczęciem Pracy
-
-- [ ] Pull najnowszego kodu (`git pull origin main`)
-- [ ] Review zmian od zespołu (szybki skan PRów)
-- [ ] Sprawdź CI/CD status (czy main jest zielony?)
-- [ ] Sync z task management (Jira/Linear)
-
-### 8.2 Podczas Developmentu
-
-- [ ] **Branch per feature** (`feature/TICKET-123-short-desc`)
-- [ ] **Commit często** (co 30-60 minut pracy)
-- [ ] **Commit messages:** `type(scope): description`
-- [ ] **Testy jednostkowe** dla nowego kodu
-- [ ] **Linting i formatting** (pre-commit hooks)
-- [ ] **Type safety** — brak `any`, wszystkie errory naprawione
-
-### 8.3 Przed Push
-
-- [ ] Testy przechodzą lokalnie (`npm test`)
-- [ ] Type checking (`npm run type-check`)
-- [ ] Lint clean (`npm run lint`)
-- [ ] Build przechodzi (`npm run build`)
-- [ ] Review własnego kodu (git diff)
-
-### 8.4 Code Review
-
-- [ ] **Logika biznesowa** — czy rozwiązanie jest poprawne?
-- [ ] **Czytelność** — czy ktoś inny zrozumie za rok?
-- [ ] **Testy** — czy są? Czy pokrywają edge cases?
-- [ ] **Security** — czy nie wprowadza luk?
-- [ ] **Performance** — czy nie ma N+1, niepotrzebnych operacji?
-- [ ] **Documentation** — czy wymaga aktualizacji docs?
-
-### 8.5 Deployment Checklist
-
-- [ ] Feature flags dla ryzykownych zmian
-- [ ] Monitoring alerts skonfigurowane
-- [ ] Rollback plan gotowy
-- [ ] Database migrations przetestowane
-- [ ] Smoke tests po deploy
+**Następne kroki:**
+1. Zaimplementuj strukturę folderów
+2. Skonfiguruj CLAUDE.md i HEARTBEAT.md
+3. Wybierz swój stack
+4. Zbuduj pierwszego sub-agenta
+5. Iteruj i optymalizuj
 
 ---
 
-## 9. TYPOWE BŁĘDY ARCHITEKTONICZNE
-
-### 9.1 Błędy Początkujące
-
-| Błąd | Skutek | Rozwiązanie |
-|------|--------|-------------|
-| Premature microservices | Spalenie runway, complexity | Start monolith, extract later |
-| Shared database | Coupling, trudne zmiany schema | Database per module/service |
-| No API versioning | Breaking changes dla klientów | Versioning od dnia 1 |
-| Synchronous everywhere | Cascading failures | Async dla non-critical |
-| No observability | Blind debugging | Logs, metrics, traces od startu |
-
-### 9.2 Błędy Średniozaawansowane
-
-| Błąd | Skutek | Rozwiązanie |
-|------|--------|-------------|
-| Distributed Monolith | Koszty obie, benefitów żadnych | Przeprojektuj granice |
-| Over-engineering | Wolniejszy development | YAGNI, KISS |
-| Ignoring Conway's Law | Architektura walczy z org | Align teams z services |
-| Wrong abstraction | Trudna refaktoryzacja | Poczekaj na 3 use cases |
-| Premature optimization | Złożoność bez benefitów | Profile first, optimize second |
-
-### 9.3 Anti-Patterns AI-Assisted Coding
-
-```
-❌ Blind acceptance — akceptowanie AI bez review
-❌ Context stuffing — wrzucanie za dużo nieistotnego kontekstu
-❌ No testing — pomijanie testów dla AI-generated code
-❌ Prompt vagueness — zbyt ogólne polecenia
-❌ No learning — nie rozumienie wygenerowanego kodu
-
-✅ Zawsze review, zawsze testuj, zawsze ucz się
-```
-
----
-
-## 10. HIERARCHIA PRIORYTETÓW
-
-### Piramida Gold Dev Architecture Protocol
-
-```
-                    ┌───────────────────────┐
-                    │   AI/ML OPTYMALIZACJA │  ← 2% różnicy
-                    │   (fine-tuning, RLHF) │
-                    └───────────┬───────────┘
-                                │
-                    ┌───────────▼───────────┐
-                    │   MIKROSERWISY        │  ← 5% różnicy
-                    │   (gdy uzasadnione)   │
-                    └───────────┬───────────┘
-                                │
-                    ┌───────────▼───────────┐
-                    │   ARCHITEKTURA        │  ← 15% różnicy
-                    │   (hexagonal, DDD)    │
-                    └───────────┬───────────┘
-                                │
-                    ┌───────────▼───────────┐
-                    │   CODE QUALITY        │  ← 25% różnicy
-                    │   (tests, types, lint)│
-                    └───────────┬───────────┘
-                                │
-           ┌────────────────────▼────────────────────┐
-           │         AI-ASSISTED CODING              │  ← 50% różnicy
-           │   (Cursor/Claude + review + context)    │
-           └────────────────────┬────────────────────┘
-                                │
-    ┌───────────────────────────▼─────────────────────────────┐
-    │                 KONSYSTENCJA                            │  ← 100% różnicy
-    │   (shipping features, code review, continuous learning) │
-    └─────────────────────────────────────────────────────────┘
-```
-
-### Zasada 80/20 w Architekturze
-
-**20% wysiłku daje 80% rezultatów:**
-- Modular Monolith zamiast mikroserwisów
-- Hexagonal architecture basics
-- Code review + CI/CD
-- Podstawowy monitoring
-- AI-assisted coding z review
-
-**Ostatnie 20% wymaga:**
-- Mikroserwisów z service mesh
-- Zaawansowanego observability
-- Chaos engineering
-- Custom AI fine-tuning
-- 100% test coverage
-
----
-
-## PODSUMOWANIE
-
-**Gold Dev Architecture Protocol** to kompletny system, który eliminuje przedwczesną optymalizację i skupia się na tym, co działa:
-
-1. **Start Prosty** (Modular Monolith, AI-assisted coding)
-2. **Ewolucja na Dowodach** (nie na podstawie trendów)
-3. **Pragmatyzm** (najprostsze rozwiązanie, które działa)
-4. **Security by Design** (nie jako afterthought)
-5. **Performance świadomie** (profile first, optimize second)
-6. **AI jako wzmocnienie** (nie zastępstwo myślenia)
-
-**Nie szukaj perfekcyjnej architektury. Szukaj architektury, która pozwala dostarczać wartość.**
-
----
-
-**Zasada końcowa:**
-> "Najlepszy czas na refactoring jest teraz. Drugi najlepszy czas to wczoraj." — Zasada Dewelopera
-
----
-
-*Dokument skompilowany z zakładek X/Twitter oraz literatury branżowej przez Aura/OpenClaw*  
-*Wszystkie protokoły są kompilacją wiedzy publicznej*  
-*Przed implementacją skonsultuj się z architektem i zespołem bezpieczeństwa*
+*Protokół utworzony przez Aura/OpenClaw*  
+*Źródła: @steipete @alexcooldev @code_rams @KacperTrzepiec1 @miroburn*  
+*Na podstawie zakładek X z 2026*

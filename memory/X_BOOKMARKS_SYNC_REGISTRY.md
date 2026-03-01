@@ -1,15 +1,3 @@
----
-title: "Zakładki X — Rejestr Synchronizacji"
-subcategory: "x-twitter"
-category: "bookmarks"
-tags: ["bookmarks", "resources", "peptides"]
-type: "note"
-created: "2026-02-01"
-updated: "2026-02-01"
-source: "x-bookmark"
-ai_generated: false
----
-
 # Zakładki X — Rejestr Synchronizacji
 
 *Plik nadzorczy dla ręcznej synchronizacji zakładek X z bazą wiedzy*

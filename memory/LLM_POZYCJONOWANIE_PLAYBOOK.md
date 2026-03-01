@@ -1,15 +1,3 @@
----
-title: "LLM Pozycjonowanie (GEO) — Playbook wdrożeniowy"
-subcategory: "seo"
-category: "growth-marketing"
-tags: ["marketing", "growth", "claude"]
-type: "note"
-created: "2026-02-01"
-updated: "2026-02-01"
-source: "manual"
-ai_generated: false
----
-
 # LLM Pozycjonowanie (GEO) — Playbook wdrożeniowy
 
 Data: 2026-02-24

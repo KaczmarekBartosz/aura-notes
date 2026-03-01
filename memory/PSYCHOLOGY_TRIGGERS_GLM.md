@@ -1,15 +1,3 @@
----
-title: "PSYCHOLOGY TRIGGERS - GLM"
-subcategory: "psychology"
-category: "ai-agents"
-tags: ["psychology", "triggers", "marketing", "engagement"]
-type: "research"
-created: "2026-02-01"
-updated: "2026-02-01"
-source: "claude"
-ai_generated: false
----
-
 # PSYCHOLOGY TRIGGERS - GLM
 *Extracted from 250 Twitter/X bookmarks*
 *Last Updated: 2026-02-13*

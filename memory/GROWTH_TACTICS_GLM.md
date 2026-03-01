@@ -1,15 +1,3 @@
----
-title: "GROWTH TACTICS - GLM"
-subcategory: "seo"
-category: "growth-marketing"
-tags: ["marketing", "growth"]
-type: "note"
-created: "2026-02-01"
-updated: "2026-02-01"
-source: "claude"
-ai_generated: false
----
-
 # GROWTH TACTICS - GLM
 *Extracted from 250 Twitter/X bookmarks*
 *Last Updated: 2026-02-13*

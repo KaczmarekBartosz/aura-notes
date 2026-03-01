@@ -1,19 +1,7 @@
----
-title: "GOLD PROTOCOLS — Lista Protokołów do Opracowania"
-subcategory: "automation"
-category: "ai-agents"
-tags: ["ai", "automation"]
-type: "protocol"
-created: "2026-02-01"
-updated: "2026-02-01"
-source: "manual"
-ai_generated: false
----
-
 # GOLD PROTOCOLS — Lista Protokołów do Opracowania
 
 **Status:** Lista trwała — aktualizowana na bieżąco  
-**Ostatnia aktualizacja:** 2026-02-26 10:31 UTC  
+**Ostatnia aktualizacja:** 2026-02-27 22:31 UTC
 **Wersja:** 1.0
 
 ---
@@ -25,9 +13,9 @@ ai_generated: false
 | 1 | **Gold Design Protocol** | ✅ ZAKOŃCZONE | WYSOKI | 2-3h |
 | 2 | **Gold Growth & Marketing Protocol** | ✅ ZAKOŃCZONE | WYSOKI | 2-3h |
 | 3 | **Gold AI Agents Protocol** | ✅ ZAKOŃCZONE | WYSOKI | 2-3h |
-| 4 | **Gold Indie Hacker Protocol** | ⏳ Oczekuje | ŚREDNI | 2h |
-| 5 | **Gold Productivity Protocol** | ⏳ Oczekuje | ŚREDNI | 2h |
-| 6 | **Gold Dev & Architecture Protocol** | ⏳ Oczekuje | ŚREDNI | 2h |
+| 4 | **Gold Indie Hacker Protocol** | ✅ ZAKOŃCZONE | ŚREDNI | 2h |
+| 5 | **Gold Productivity Protocol** | ✅ ZAKOŃCZONE | ŚREDNI | 2h |
+| 6 | **Gold Dev & Architecture Protocol** | ✅ ZAKOŃCZONE | ŚREDNI | 2h |
 | 7 | **Gold Content Creation Protocol** | ⏳ Oczekuje | NISKI | 1.5h |
 | 8 | **Gold Psychology & Decision Making Protocol** | ⏳ Oczekuje | NISKI | 1.5h |
 
@@ -41,6 +29,9 @@ ai_generated: false
 | 2 | **Gold Design Protocol** | 2026-02-10 | `memory/GOLD_DESIGN_PROTOCOL.md` |
 | 3 | **Gold Growth & Marketing Protocol** | 2026-02-11 | `memory/GOLD_GROWTH_MARKETING_PROTOCOL.md` |
 | 4 | **Gold AI Agents Protocol** | 2026-02-26 | `memory/GOLD_AI_AGENTS_PROTOCOL.md` |
+| 5 | **Gold Indie Hacker Protocol** | 2026-02-26 | `memory/GOLD_INDIE_HACKER_PROTOCOL.md` |
+| 6 | **Gold Productivity Protocol** | 2026-02-27 | `memory/GOLD_PRODUCTIVITY_PROTOCOL.md` |
+| 7 | **Gold Dev & Architecture Protocol** | 2026-02-27 | `memory/GOLD_DEV_ARCHITECTURE_PROTOCOL.md` |
 
 ---
 

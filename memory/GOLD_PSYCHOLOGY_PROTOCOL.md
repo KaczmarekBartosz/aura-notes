@@ -1,15 +1,3 @@
----
-title: "GOLD PSYCHOLOGY PROTOCOL"
-subcategory: "psychology"
-category: "fitness-health"
-tags: ["health", "fitness"]
-type: "protocol"
-created: "2026-02-01"
-updated: "2026-02-01"
-source: "manual"
-ai_generated: false
----
-
 # GOLD PSYCHOLOGY PROTOCOL
 ## Kompletny system mentalnych modeli, podejmowania decyzji i myślenia długoterminowego
 

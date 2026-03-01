@@ -1,15 +1,3 @@
----
-title: "Oreo Blizzard High Protein Ice Cream"
-subcategory: "training"
-category: "fitness-health"
-tags: ["health", "fitness", "training", "workout"]
-type: "note"
-created: "2026-02-01"
-updated: "2026-02-01"
-source: "manual"
-ai_generated: false
----
-
 # Oreo Blizzard High Protein Ice Cream
 
 **Źródło:** Dean Turner (@DeanTTraining)  

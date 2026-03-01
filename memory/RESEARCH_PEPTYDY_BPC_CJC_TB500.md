@@ -1,15 +1,3 @@
----
-title: "Research: Peptydy BPC-157, CJC-1295 i TB-500"
-subcategory: "peptides"
-category: "fitness-health"
-tags: ["health", "fitness", "peptides", "biohacking"]
-type: "research"
-created: "2026-02-01"
-updated: "2026-02-01"
-source: "manual"
-ai_generated: false
----
-
 # Research: Peptydy BPC-157, CJC-1295 i TB-500
 ## Podsumowanie naukowe z X/Twitter i literatury medycznej
 *Zapisano: 2026-02-14 20:41 UTC*

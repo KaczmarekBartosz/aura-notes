@@ -1,15 +1,3 @@
----
-title: "📊 Pełna Historia Zużycia Tokenów"
-subcategory: "monitoring"
-category: "ai-agents"
-tags: ["ai", "automation"]
-type: "note"
-created: "2026-02-01"
-updated: "2026-02-01"
-source: "manual"
-ai_generated: false
----
-
 # 📊 Pełna Historia Zużycia Tokenów
 *Raport od początku rejestrowanej historii (29.01.2026 - 02.02.2026)*
 
