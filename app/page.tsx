@@ -482,7 +482,7 @@ export default function Page() {
         <div className="fixed inset-0 w-full h-full pointer-events-none opacity-[0.03] z-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
       )}
 
-      <div className="mx-auto flex h-full w-full max-w-[1600px] gap-6 p-4 md:p-8 relative z-10 overflow-hidden">
+      <div className="mx-auto flex h-full w-full max-w-[1600px] gap-6 p-4 md:p-8 relative z-10">
 
         {/* ── SIDEBAR / NOTE LIST ── */}
         <aside className={cn(
