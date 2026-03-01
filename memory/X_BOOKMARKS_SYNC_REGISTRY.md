@@ -69,29 +69,6 @@ Gdy Bartek poprosi o synchronizację:
 5. **Zaktualizuj ten plik** (dodaj nowy wpis w historii)
 6. **Git commit** z opisem synchronizacji
 
-## Checklist operacyjna (obowiązkowa, żeby nic nie pominąć)
-
-### A. Zbieranie i kontrola wejścia
-- [ ] Pobrać świeży snapshot zakładek (`tools/birdx bookmarks -n 300 --plain`)
-- [ ] Wyciągnąć top-level ID i porównać z `memory/state/bookmarks-processed.json`
-- [ ] Zapisać listę nieprzetworzonych do `/tmp/unprocessed_ids.txt`
-- [ ] Potwierdzić liczby: `current / processed / unprocessed`
-
-### B. Obróbka treści (kompleksowo)
-- [ ] Dodać pełne wpisy do `memory/x-bookmarks.md` (link + ID + treść)
-- [ ] Każdej zakładce przypisać kategorię tematyczną (AI/Growth/Design/Fitness/itp.)
-- [ ] Dodać syntezę actionable do `memory/KNOWLEDGE_ACTIONABLE.md`
-- [ ] Dodać recipes/patterny techniczne do `memory/CODE_RECIPES_GLM.md` (jeśli dotyczy)
-- [ ] Zaktualizować odpowiednie protokoły GOLD_* (tylko tam, gdzie treść pasuje)
-- [ ] Zaktualizować `memory/recipes/*.md` lub `KSIEGA_PEPTYDOW.md` (gdy wymaga dłuższego opracowania)
-
-### C. Zamknięcie synchronizacji
-- [ ] Dodać przetworzone ID do `memory/state/bookmarks-processed.json`
-- [ ] Zaktualizować `memory/X_BOOKMARKS_SYNC_REGISTRY.md` (tabela + historia + status)
-- [ ] Zweryfikować, że `unprocessed = 0` dla top-level snapshotu
-- [ ] Lokalny commit z jasnym opisem batcha
-- [ ] **Push tylko po wyraźnej zgodzie Bartka**
-
 ---
 
 ## Pliki zależne (do aktualizacji przy każdej synchronizacji)
