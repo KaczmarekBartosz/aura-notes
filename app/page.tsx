@@ -338,8 +338,8 @@ export default function Page() {
   if (!token) {
     return (
       <div className={cn(
-        "flex min-h-[100svh] min-h-dvh w-full max-w-full flex-col items-center justify-center p-4 bg-background relative overflow-hidden box-border pt-safe transition-all duration-[400ms]",
-        isGlass && "theme-transitioning",
+        "flex min-h-[100svh] min-h-dvh w-full max-w-full flex-col items-center justify-center p-4 relative overflow-hidden box-border pt-safe transition-all duration-[400ms]",
+        isGlass ? "theme-glass-light theme-glass-dark" : "bg-background",
         unlocking && "opacity-0 scale-95"
       )}>
         {isGlass && (
@@ -405,7 +405,10 @@ export default function Page() {
           </div>
         </button>
 
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+        {/* Dot pattern overlay - only in brutalist mode */}
+        {!isGlass && (
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+        )}
         <div className={cn(
           "w-full max-w-sm p-8 text-center relative z-10 transition-transform duration-300",
           isGlass
@@ -457,7 +460,8 @@ export default function Page() {
 
   return (
     <div className={cn(
-      "h-[100dvh] min-h-[100svh] w-full max-w-full overflow-hidden bg-background text-foreground font-sans relative overscroll-none box-border pt-safe",
+      "h-[100dvh] min-h-[100svh] w-full max-w-full overflow-hidden text-foreground font-sans relative overscroll-none box-border pt-safe",
+      isGlass ? "bg-transparent" : "bg-background",
       isGlass && "theme-transitioning"
     )}>
       {isGlass && (
@@ -467,10 +471,10 @@ export default function Page() {
         </div>
       )}
 
-      <div className={cn(
-        "absolute inset-0 w-full h-full pointer-events-none",
-        isGlass ? "opacity-[0.02]" : "opacity-[0.03]"
-      )} style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+      {/* Dot pattern overlay - only in brutalist mode */}
+      {!isGlass && (
+        <div className="fixed inset-0 w-full h-full pointer-events-none opacity-[0.03] z-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+      )}
 
       <div className="mx-auto flex h-full w-full max-w-[1600px] gap-6 p-4 md:p-8 relative z-10 overflow-hidden">
 
@@ -682,7 +686,10 @@ export default function Page() {
 
           {/* opt #4: typographic empty state */}
           {!selected ? (
-            <div className="flex flex-col items-center justify-center h-full opacity-80 bg-muted/10 gap-6">
+            <div className={cn(
+              "flex flex-col items-center justify-center h-full opacity-80 gap-6",
+              isGlass ? "bg-transparent" : "bg-muted/10"
+            )}>
               <BookOpen className="w-20 h-20 stroke-[1.5] opacity-30" />
               <div className="text-center">
                 <p className="font-black text-3xl uppercase tracking-[0.2em] bg-foreground text-background px-6 py-3 shadow-[8px_8px_0_var(--primary)] rotate-1">Wybierz notatkę</p>
@@ -720,7 +727,10 @@ export default function Page() {
 
               <div
                 ref={readerRef}
-                className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-5 md:p-12 custom-scrollbar bg-background selection:bg-foreground selection:text-background overscroll-y-contain touch-pan-y"
+                className={cn(
+                  "min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-5 md:p-12 custom-scrollbar selection:bg-foreground selection:text-background overscroll-y-contain touch-pan-y",
+                  isGlass ? "bg-transparent" : "bg-background"
+                )}
               >
                 <article className="markdown-body mx-auto max-w-[750px] pb-24">
 
@@ -803,7 +813,7 @@ export default function Page() {
         </div>
       </nav>
 
-      {/* Paper texture overlay (brutalist only) */}
+      {/* Brutalist paper texture overlay (brutalist only) */}
       {!isGlass && <div className="vignette-grain" />}
 
       {/* Ink spill Easter Egg */}

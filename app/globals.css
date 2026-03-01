@@ -113,6 +113,12 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+
+  /* Glass theme: transparent body to show aurora */
+  .theme-glass-light body,
+  .theme-glass-dark body {
+    background: transparent !important;
+  }
 }
 
 /* ==========================================================================
