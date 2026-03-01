@@ -1,9 +1,9 @@
 ---
 title: "PSYCHOLOGY TRIGGERS - GLM"
-subcategory: "training"
-category: "fitness-health"
-tags: ["health", "fitness", "training", "workout"]
-type: "note"
+subcategory: "psychology"
+category: "ai-agents"
+tags: ["psychology", "triggers", "marketing", "engagement"]
+type: "research"
 created: "2026-02-01"
 updated: "2026-02-01"
 source: "claude"
