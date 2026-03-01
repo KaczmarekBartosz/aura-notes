@@ -57,14 +57,21 @@ export function ThemeProvider({
   // Apply theme classes to document
   const applyThemeClasses = useCallback((newTheme: ThemeMode) => {
     const html = document.documentElement;
+    const body = document.body;
     
     // Remove all theme classes
     Object.values(THEME_CLASSNAMES).forEach(cls => {
       html.classList.remove(cls);
+      body?.classList.remove(cls);
     });
     
     // Add new theme class
     html.classList.add(THEME_CLASSNAMES[newTheme]);
+    body?.classList.add(THEME_CLASSNAMES[newTheme]);
+    html.dataset.theme = newTheme;
+    if (body) {
+      body.dataset.theme = newTheme;
+    }
     
     // Handle dark mode for glass-dark
     if (newTheme === 'glass-dark') {

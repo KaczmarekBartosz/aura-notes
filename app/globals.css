@@ -10,6 +10,9 @@
   color-scheme: light;
   --radius: 0rem; /* Kanciasty / surowy brutalizm */
   font-size: 12px; /* Zmniejszenie bazowego fontu = "wyższa rozdzielczość" ekranu we wszystkich paddingach/marginesach REM */
+  --font-sans-theme: -apple-system, BlinkMacSystemFont, "helvetica neue", helvetica, ubuntu, roboto, noto, "segoe ui", arial, sans-serif;
+  --font-heading-theme: "Arial Black", "Segoe UI", sans-serif;
+  --font-mono-theme: "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   
   /* Złamana biel (off-white) dla papieru, chłodny/neutralny odcień */
   --background: oklch(0.97 0.005 260); 
@@ -109,7 +112,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: -apple-system, BlinkMacSystemFont, "helvetica neue", helvetica, ubuntu, roboto, noto, "segoe ui", arial, sans-serif;
+    font-family: var(--font-sans-theme);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -240,7 +243,7 @@
   border: none;
 }
 .markdown-body code {
-  font-family: "Courier New", Courier, monospace;
+  font-family: var(--font-mono-theme);
 }
 .markdown-body pre code {
   color: var(--background);
@@ -269,7 +272,7 @@
   background: var(--muted);
   padding: 0.15rem 0.4rem;
   border: 1px solid var(--border);
-  font-family: "Courier New", Courier, monospace;
+  font-family: var(--font-mono-theme);
   font-size: 0.9em;
   font-weight: 600;
 }
@@ -484,4 +487,35 @@ html, body {
 
 .animate-glass-in {
   animation: fade-in-glass 0.4s ease-out forwards;
+}
+
+/* Login screen: no hover lift, slower and smoother glow/brighten transitions */
+.login-auth-card,
+.login-auth-input,
+.login-auth-button {
+  transition-property: background-color, border-color, color, box-shadow, filter, transform, opacity;
+  transition-duration: 650ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.login-auth-card:hover,
+.login-auth-button:hover,
+.login-auth-button:active {
+  transform: none !important;
+}
+
+html.theme-glass-light .login-auth-card:hover,
+html.theme-glass-dark .login-auth-card:hover {
+  box-shadow: var(--glass-shadow-lg), inset 0 1px 0 var(--glass-inner-highlight), inset 0 -1px 0 var(--glass-inner-shadow);
+  filter: brightness(1.015);
+}
+
+html.theme-glass-light .login-auth-input:focus,
+html.theme-glass-dark .login-auth-input:focus {
+  box-shadow: 0 0 0 3px var(--ring), 0 14px 28px rgba(15, 23, 42, 0.16), inset 0 1px 0 var(--glass-inner-highlight);
+}
+
+html.theme-glass-light .login-auth-button:hover,
+html.theme-glass-dark .login-auth-button:hover {
+  filter: brightness(1.06);
 }
