@@ -5,7 +5,7 @@ category: system
 
 # INDEX PLIKÓW MD (AUTO)
 
-Wygenerowano: 2026-03-01T12:09:12.645Z
+Wygenerowano: 2026-03-01T12:13:59.570Z
 Liczba notatek: 88
 
 ## ai-agents (28)
@@ -128,7 +128,7 @@ Liczba notatek: 88
 - **memory/PSYCHOLOGY_TRIGGERS_GLM.md**
   - Tytuł: PSYCHOLOGY TRIGGERS - GLM
   - Utworzono: 2026-02-01T00:00:00.000Z
-  - Zaktualizowano: 2026-03-01T01:39:54.000Z
+  - Zaktualizowano: 2026-03-01T12:09:48.000Z
   - Opis: title: "PSYCHOLOGY TRIGGERS GLM" subcategory: "psychology" category: "ai agents" tags: ["psychology", "triggers", "marketing", "engagement"] type: "research" created: "2026 02 01" updated: "2026 02 01" source: "claude" ai generated: false PSYCHOLOGY TRIGGERS G
 - **memory/state/sync-summary-2026-02-10.md**
   - Tytuł: X Bookmarks Sync Summary

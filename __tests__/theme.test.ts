@@ -7,7 +7,7 @@ import {
   getNextTheme,
   isValidTheme,
   type ThemeMode,
-} from '../types/theme.ts';
+} from '../types/theme';
 
 test('theme registry includes required themes', () => {
   const ids = THEMES.map((t) => t.id);
