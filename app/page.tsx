@@ -436,7 +436,8 @@ export default function Page() {
               onChange={(e) => setLoginInput(e.target.value)}
               placeholder="Wprowadź hasło..."
               className={cn(
-                "login-auth-input h-12 text-center transition-all font-mono",
+                "login-auth-input h-12 text-center transition-all",
+                isGlass ? "font-sans" : "font-mono",
                 isGlass
                   ? "glass-input rounded-2xl border"
                   : "rounded-none bg-background border-2 border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[4px_4px_0_var(--primary)]"
@@ -499,7 +500,8 @@ export default function Page() {
               <div className="flex items-center gap-2">
                 <h2 className={cn("text-2xl tracking-tight", isGlass ? "font-semibold" : "font-black uppercase")}>Aura Notes</h2>
                 <Badge variant="secondary" className={cn(
-                  "font-mono text-[10px] px-1.5",
+                  isGlass ? "font-sans" : "font-mono",
+                  "text-[10px] px-1.5",
                   isGlass ? "rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)]" : "rounded-none border-2 border-foreground"
                 )}>{APP_VERSION}</Badge>
                 <Badge variant="outline" className={cn(
@@ -668,7 +670,7 @@ export default function Page() {
 
                     {/* opt #10: search snippet with highlight */}
                     {snippet && (
-                      <p className="mt-1 text-[0.75rem] opacity-70 line-clamp-1 font-mono">
+                      <p className={cn("mt-1 text-[0.75rem] opacity-70 line-clamp-1", isGlass ? "font-sans" : "font-mono")}>
                         {highlightText(snippet, debouncedQuery.trim())}
                       </p>
                     )}
@@ -859,7 +861,7 @@ export default function Page() {
             <span className="text-[10px] flex items-center gap-1">
               Notatki
               {filtered.length > 0 && (
-                <span className={cn("px-1 text-[9px] font-mono", isGlass ? "bg-[var(--glass-bg)] rounded-full" : "bg-foreground/20")}>{filtered.length}</span>
+                <span className={cn("px-1 text-[9px]", isGlass ? "font-sans" : "font-mono", isGlass ? "bg-[var(--glass-bg)] rounded-full" : "bg-foreground/20")}>{filtered.length}</span>
               )}
             </span>
           </Button>
