@@ -2,6 +2,7 @@
 @import 'highlight.js/styles/github-dark.css';
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "./themes/glass.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -427,4 +428,54 @@ html, body {
       font-size: 16px !important;
     }
   }
+}
+
+/* ==========================================================================
+   GLASS THEME ANIMATIONS
+   ========================================================================== */
+
+/* Shimmer animation for glass buttons */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* Subtle glow pulse for active elements */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(20, 184, 166, 0.5);
+  }
+}
+
+.animate-glow {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Fade in animation for glass elements */
+@keyframes fade-in-glass {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    backdrop-filter: blur(20px);
+  }
+}
+
+.animate-glass-in {
+  animation: fade-in-glass 0.4s ease-out forwards;
 }

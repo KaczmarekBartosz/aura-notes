@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { PwaClientEnhancements } from './pwa-client-enhancements';
+import { ThemeProvider } from '@/lib/theme';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -37,8 +38,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pl" suppressHydrationWarning>
       <body>
-        <PwaClientEnhancements />
-        {children}
+        <ThemeProvider defaultTheme="brutalist">
+          <PwaClientEnhancements />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
