@@ -338,8 +338,8 @@ export default function Page() {
   if (!token) {
     return (
       <div className={cn(
-        "flex min-h-[100svh] min-h-dvh w-full max-w-full flex-col items-center justify-center p-4 relative overflow-hidden box-border pt-safe transition-all duration-[400ms]",
-        isGlass ? "theme-glass-light theme-glass-dark" : "bg-background",
+        "aura-theme-scope flex min-h-[100svh] min-h-dvh w-full max-w-full flex-col items-center justify-center p-4 relative overflow-hidden box-border pt-safe transition-all duration-[400ms]",
+        isGlass ? "bg-transparent" : "bg-background",
         unlocking && "opacity-0 scale-95"
       )}>
         {isGlass && (
@@ -410,13 +410,19 @@ export default function Page() {
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
         )}
         <div className={cn(
-          "w-full max-w-sm p-8 text-center relative z-10 transition-transform duration-300",
+          "login-auth-card w-full max-w-sm p-8 text-center relative z-10",
           isGlass
             ? "glass-card"
-            : "bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0_var(--foreground)]"
+            : "bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] hover:shadow-[12px_12px_0_var(--foreground)] hover:brightness-[1.015]"
         )}>
-          <h1 className="text-4xl font-black tracking-tight mb-2 uppercase">Aura Notes</h1>
-          <p className="text-sm font-bold opacity-60 mb-8 uppercase tracking-widest">Bezpieczny sejf</p>
+          <h1 className={cn(
+            "text-4xl tracking-tight mb-2",
+            isGlass ? "font-semibold" : "font-black uppercase"
+          )}>Aura Notes</h1>
+          <p className={cn(
+            "text-sm opacity-60 mb-8",
+            isGlass ? "font-medium tracking-normal" : "font-bold uppercase tracking-widest"
+          )}>Bezpieczny sejf</p>
           <form
             className="space-y-4"
             onSubmit={(e) => {
@@ -430,7 +436,7 @@ export default function Page() {
               onChange={(e) => setLoginInput(e.target.value)}
               placeholder="Wprowadź hasło..."
               className={cn(
-                "h-12 text-center transition-all font-mono",
+                "login-auth-input h-12 text-center transition-all font-mono",
                 isGlass
                   ? "glass-input rounded-2xl border"
                   : "rounded-none bg-background border-2 border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[4px_4px_0_var(--primary)]"
@@ -439,15 +445,15 @@ export default function Page() {
             <Button
               type="submit"
               className={cn(
-                "w-full h-12 transition-all font-black text-lg",
+                "login-auth-button w-full h-12 transition-all font-black text-lg",
                 isGlass
                   ? "glass-button glass-button-primary rounded-2xl border"
-                  : "rounded-none border-2 border-transparent hover:border-foreground hover:shadow-[4px_4px_0_var(--foreground)] hover:-translate-y-1 hover:bg-primary uppercase"
+                  : "rounded-none border-2 border-transparent hover:border-foreground hover:shadow-[4px_4px_0_var(--foreground)] hover:bg-primary hover:brightness-[1.03] uppercase"
               )}
             >
               {loading ? 'Odblokowywanie...' : 'Odblokuj'}
             </Button>
-            {loginError && <p className="text-sm text-destructive font-black uppercase mt-2">{loginError}</p>}
+            {loginError && <p className={cn("text-sm text-destructive mt-2", isGlass ? "font-medium" : "font-black uppercase")}>{loginError}</p>}
           </form>
         </div>
       </div>
@@ -460,9 +466,8 @@ export default function Page() {
 
   return (
     <div className={cn(
-      "h-[100dvh] min-h-[100svh] w-full max-w-full overflow-hidden text-foreground font-sans relative overscroll-none box-border pt-safe",
-      isGlass ? "bg-transparent" : "bg-background",
-      isGlass && "theme-transitioning"
+      "aura-theme-scope h-[100dvh] min-h-[100svh] w-full max-w-full overflow-hidden text-foreground font-sans relative overscroll-none box-border pt-safe",
+      isGlass ? "bg-transparent" : "bg-background"
     )}>
       {isGlass && (
         <div className="aurora-bg" aria-hidden>
@@ -492,7 +497,7 @@ export default function Page() {
           )}>
             <div className="mb-6 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-black uppercase tracking-tight">Aura Notes</h2>
+                <h2 className={cn("text-2xl tracking-tight", isGlass ? "font-semibold" : "font-black uppercase")}>Aura Notes</h2>
                 <Badge variant="secondary" className={cn(
                   "font-mono text-[10px] px-1.5",
                   isGlass ? "rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)]" : "rounded-none border-2 border-foreground"
@@ -536,13 +541,27 @@ export default function Page() {
                     : "rounded-none border-2 border-foreground shadow-[4px_4px_0_var(--foreground)] bg-background"
                 )}>
                   {Object.entries(SORT_LABELS).map(([k, v]) => (
-                    <SelectItem value={k} key={k} className="font-bold cursor-pointer hover:bg-foreground hover:text-background uppercase transition-colors">{v}</SelectItem>
+                    <SelectItem
+                      value={k}
+                      key={k}
+                      className={cn(
+                        "cursor-pointer transition-colors",
+                        isGlass
+                          ? "font-semibold normal-case hover:bg-[var(--glass-bg-hover)]"
+                          : "font-bold uppercase hover:bg-foreground hover:text-background"
+                      )}
+                    >
+                      {v}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
 
-            <p className="mt-4 text-[12px] font-bold opacity-60 px-1 uppercase tracking-wider">
+            <p className={cn(
+              "mt-4 text-[12px] opacity-60 px-1",
+              isGlass ? "font-medium tracking-normal" : "font-bold uppercase tracking-wider"
+            )}>
               {filtered.length} notatek • Synchr.: {fmt(payload?.generatedAt)}
             </p>
           </div>
@@ -567,12 +586,13 @@ export default function Page() {
             {categories.map((cat) => {
               const count = notes.filter(n => n.category === cat).length;
               return (
-                <button 
-                  key={cat} 
+                <button
+                  key={cat}
                   className={cn(
-                    'chip border-l-4 border-l-primary bg-primary/5', 
-                    activeTag === cat && 'chip-active bg-primary text-primary-foreground'
-                  )} 
+                    'chip',
+                    !isGlass && 'border-l-4 border-l-primary bg-primary/5',
+                    activeTag === cat && 'chip-active'
+                  )}
                   onClick={() => setActiveTag(cat)}
                   title={`Kategoria: ${cat}`}
                 >
@@ -618,14 +638,21 @@ export default function Page() {
                     key={n.id}
                     onClick={() => handleSelectNote(n.id)}
                     className={cn(
-                      'note-btn text-left group hover:px-5 border-b-2 border-foreground/10 flex flex-col',
+                      'note-btn text-left group border-b-2 border-foreground/10 flex flex-col',
                       'active:scale-[0.98] transition-all', // opt #5: micro-animation
-                      selectedId === n.id && 'note-btn-active bg-primary text-primary-foreground border-transparent border-l-8 border-l-foreground'
+                      !isGlass && 'hover:px-5',
+                      selectedId === n.id && cn(
+                        'note-btn-active',
+                        !isGlass && 'bg-primary text-primary-foreground border-transparent border-l-8 border-l-foreground'
+                      )
                     )}
                   >
                     <div className="flex w-full justify-between items-start gap-2">
                       {/* opt #10: highlighted title when searching */}
-                      <div className="line-clamp-2 font-black text-lg leading-snug uppercase tracking-tight group-hover:tracking-normal transition-all flex-1">
+                      <div className={cn(
+                        "line-clamp-2 text-lg leading-snug transition-all flex-1",
+                        isGlass ? "font-semibold tracking-tight" : "font-black uppercase tracking-tight group-hover:tracking-normal"
+                      )}>
                         {debouncedQuery ? highlightText(n.title, debouncedQuery.trim()) : n.title}
                       </div>
                       {/* opt #3: 44x44px touch target for favorite star */}
@@ -646,7 +673,10 @@ export default function Page() {
                       </p>
                     )}
 
-                    <div className="mt-2 flex items-center gap-2 text-[0.75rem] opacity-70 font-bold uppercase tracking-widest group-hover:opacity-100 w-full flex-wrap">
+                    <div className={cn(
+                      "mt-2 flex items-center gap-2 text-[0.75rem] opacity-70 group-hover:opacity-100 w-full flex-wrap",
+                      isGlass ? "font-medium tracking-normal" : "font-bold uppercase tracking-widest"
+                    )}>
                       <span>{fmt(n.updatedAt)}</span>
                       <span className="w-1.5 h-1.5 bg-current opacity-40"></span>
                       <span>{n.readingMinutes} min czytania</span>
@@ -692,8 +722,13 @@ export default function Page() {
             )}>
               <BookOpen className="w-20 h-20 stroke-[1.5] opacity-30" />
               <div className="text-center">
-                <p className="font-black text-3xl uppercase tracking-[0.2em] bg-foreground text-background px-6 py-3 shadow-[8px_8px_0_var(--primary)] rotate-1">Wybierz notatkę</p>
-                <p className="mt-4 text-sm font-bold opacity-50 uppercase tracking-widest">{filtered.length} notatek dostępnych</p>
+                <p className={cn(
+                "text-3xl px-6 py-3",
+                isGlass
+                  ? "font-bold tracking-tight glass-card inline-block"
+                  : "font-black uppercase tracking-[0.2em] bg-foreground text-background shadow-[8px_8px_0_var(--primary)] rotate-1"
+              )}>Wybierz notatkę</p>
+                <p className={cn("mt-4 text-sm opacity-50", isGlass ? "font-medium tracking-normal" : "font-bold uppercase tracking-widest")}>{filtered.length} notatek dostępnych</p>
               </div>
             </div>
           ) : (
@@ -710,7 +745,12 @@ export default function Page() {
                 )}>
                   <ArrowLeft className="h-5 w-5" strokeWidth={3} />
                 </Button>
-                <span className="text-sm font-black uppercase tracking-wider bg-foreground text-background px-3 py-1.5 shadow-[4px_4px_0_var(--primary)] text-center line-clamp-1 max-w-[60%]">
+                <span className={cn(
+                  "text-sm text-center line-clamp-1 max-w-[60%] px-3 py-1.5",
+                  isGlass
+                    ? "glass-badge rounded-full font-semibold"
+                    : "font-black uppercase tracking-wider bg-foreground text-background shadow-[4px_4px_0_var(--primary)]"
+                )}>
                   {selected.title}
                 </span>
               </div>
@@ -721,8 +761,14 @@ export default function Page() {
                 isGlass ? "border-b border-[var(--glass-border)] bg-[var(--glass-bg)]" : "border-b-4 border-foreground bg-muted/30",
                 readerScrollY > 150 ? "opacity-100 max-h-16" : "opacity-0 max-h-0 overflow-hidden py-0 border-b-0"
               )}>
-                <span className="font-black uppercase tracking-tight text-sm line-clamp-1 flex-1">{selected.title}</span>
-                <span className="text-[10px] font-bold opacity-50 ml-4 uppercase shrink-0">{Math.round(readProgress * 100)}%</span>
+                <span className={cn(
+                  "text-sm line-clamp-1 flex-1",
+                  isGlass ? "font-semibold tracking-normal" : "font-black uppercase tracking-tight"
+                )}>{selected.title}</span>
+                <span className={cn(
+                  "text-[10px] opacity-50 ml-4 shrink-0",
+                  isGlass ? "font-medium tracking-normal" : "font-bold uppercase"
+                )}>{Math.round(readProgress * 100)}%</span>
               </div>
 
               <div
@@ -735,9 +781,12 @@ export default function Page() {
                 <article className="markdown-body mx-auto max-w-[750px] pb-24">
 
                   {/* Note header with metadata */}
-                  <div className="mb-12 border-b-4 border-foreground pb-8 relative">
+                  <div className={cn("mb-12 pb-8 relative", isGlass ? "border-b border-[var(--glass-border)]" : "border-b-4 border-foreground")}>
                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl mix-blend-multiply pointer-events-none"></div>
-                    <h1 className="text-4xl font-black tracking-tighter md:text-[3rem] leading-[1.1] mb-6 uppercase break-words border-none pb-0 relative z-10 flex items-start gap-4">
+                    <h1 className={cn(
+                      "text-4xl md:text-[3rem] leading-[1.1] mb-6 break-words border-none pb-0 relative z-10 flex items-start gap-4",
+                      isGlass ? "font-semibold tracking-tight" : "font-black uppercase tracking-tighter"
+                    )}>
                       {selected.title}
                       {/* opt #3: 44x44px touch target */}
                       <button onClick={(e) => toggleFavorite(e, selected.id)} className={cn(
@@ -748,15 +797,23 @@ export default function Page() {
                       </button>
                     </h1>
 
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-3 text-[11px] font-bold uppercase tracking-widest opacity-80 mb-6 relative z-10">
-                      <span className="bg-foreground text-background px-2 py-1 shadow-[2px_2px_0_var(--primary)]">Utworzono: {fmt(selected.createdAt)}</span>
-                      <span className="bg-foreground text-background px-2 py-1 shadow-[2px_2px_0_var(--primary)]">Akt: {fmt(selected.updatedAt)}</span>
+                    <div className={cn(
+                      "flex flex-wrap items-center gap-x-4 gap-y-3 text-[11px] opacity-80 mb-6 relative z-10",
+                      isGlass ? "font-medium tracking-normal" : "font-bold uppercase tracking-widest"
+                    )}>
+                      <span className={cn(isGlass ? "glass-badge rounded-full" : "bg-foreground text-background px-2 py-1 shadow-[2px_2px_0_var(--primary)]")}>Utworzono: {fmt(selected.createdAt)}</span>
+                      <span className={cn(isGlass ? "glass-badge rounded-full" : "bg-foreground text-background px-2 py-1 shadow-[2px_2px_0_var(--primary)]")}>Akt: {fmt(selected.updatedAt)}</span>
                     </div>
 
                     {selected.tags && selected.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2 relative z-10">
                         {selected.tags.map((t) => (
-                          <Badge key={t} variant="outline" className="rounded-none border-2 border-foreground uppercase font-black text-[10px] px-2 py-0.5 bg-background shadow-[2px_2px_0_var(--foreground)]">{t}</Badge>
+                          <Badge key={t} variant="outline" className={cn(
+                          "text-[10px] px-2 py-0.5",
+                          isGlass
+                            ? "rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] font-semibold"
+                            : "rounded-none border-2 border-foreground uppercase font-black bg-background shadow-[2px_2px_0_var(--foreground)]"
+                        )}>{t}</Badge>
                         ))}
                       </div>
                     )}
@@ -777,16 +834,24 @@ export default function Page() {
       <nav className={cn(
         "fixed bottom-0 left-0 right-0 z-40 px-safe pb-safe md:hidden",
         isGlass
-          ? "glass-nav border-t border-[var(--glass-border)] rounded-none"
+          ? "glass-nav border-t border-[var(--glass-border)] rounded-t-3xl"
           : "border-t-4 border-foreground bg-background shadow-[0_-8px_0_var(--foreground)]"
       )}>
         <div className="grid grid-cols-2 gap-2 p-3">
           <Button
             variant={mobileTab === 'list' ? 'default' : 'outline'}
             className={cn(
-              "rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]",
-              "transition-all duration-150 flex flex-col gap-0.5 items-center justify-center",
-              mobileTab === 'list' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1'
+              "h-14 text-sm transition-all duration-150 flex flex-col gap-0.5 items-center justify-center",
+              isGlass
+                ? cn(
+                    "rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-bg)] text-[var(--foreground)] font-semibold tracking-normal normal-case shadow-none",
+                    "hover:bg-[var(--glass-bg-hover)]",
+                    mobileTab === 'list' && 'bg-[var(--primary)] text-[var(--primary-foreground)] border-transparent'
+                  )
+                : cn(
+                    "rounded-none font-black uppercase tracking-wider border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]",
+                    mobileTab === 'list' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1'
+                  )
             )}
             onClick={() => handleTabChange('list')}
           >
@@ -794,16 +859,24 @@ export default function Page() {
             <span className="text-[10px] flex items-center gap-1">
               Notatki
               {filtered.length > 0 && (
-                <span className="bg-foreground/20 px-1 text-[9px] font-mono">{filtered.length}</span>
+                <span className={cn("px-1 text-[9px] font-mono", isGlass ? "bg-[var(--glass-bg)] rounded-full" : "bg-foreground/20")}>{filtered.length}</span>
               )}
             </span>
           </Button>
           <Button
             variant={mobileTab === 'read' ? 'default' : 'outline'}
             className={cn(
-              "rounded-none h-14 font-black uppercase tracking-wider text-sm border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]",
-              "transition-all duration-150 flex flex-col gap-0.5 items-center justify-center",
-              mobileTab === 'read' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1'
+              "h-14 text-sm transition-all duration-150 flex flex-col gap-0.5 items-center justify-center",
+              isGlass
+                ? cn(
+                    "rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-bg)] text-[var(--foreground)] font-semibold tracking-normal normal-case shadow-none",
+                    "hover:bg-[var(--glass-bg-hover)]",
+                    mobileTab === 'read' && 'bg-[var(--primary)] text-[var(--primary-foreground)] border-transparent'
+                  )
+                : cn(
+                    "rounded-none font-black uppercase tracking-wider border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]",
+                    mobileTab === 'read' && 'bg-primary border-primary text-primary-foreground shadow-none translate-y-1 translate-x-1'
+                  )
             )}
             onClick={() => handleTabChange('read')}
           >

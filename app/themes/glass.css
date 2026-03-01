@@ -7,60 +7,64 @@
    GLASS LIGHT THEME
    -------------------------------------------------------------------------- */
 html.theme-glass-light {
-  /* Base colors - soft aurora gradient base */
-  --background: transparent;
-  --foreground: #1a1a2e;
+  color-scheme: light;
+  /* Base colors - modern frosted palette */
+  --background: #e6edfb;
+  --foreground: #0b1530;
+  --font-sans-theme: "SF Pro Text", "Avenir Next", "Segoe UI", "Noto Sans", sans-serif;
+  --font-heading-theme: "SF Pro Display", "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+  --font-mono-theme: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
   
-  /* Glass surface colors - more opaque for better readability */
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-bg-hover: rgba(255, 255, 255, 0.88);
-  --glass-bg-active: rgba(255, 255, 255, 0.95);
-  --glass-border: rgba(255, 255, 255, 0.6);
-  --glass-border-strong: rgba(255, 255, 255, 0.9);
-  --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.12);
-  --glass-shadow-lg: 0 12px 40px rgba(31, 38, 135, 0.18), 0 4px 12px rgba(31, 38, 135, 0.12);
+  /* Glass surfaces */
+  --glass-bg: rgba(255, 255, 255, 0.36);
+  --glass-bg-hover: rgba(255, 255, 255, 0.48);
+  --glass-bg-active: rgba(255, 255, 255, 0.58);
+  --glass-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.44) 42%, rgba(191, 219, 254, 0.2) 100%);
+  --glass-sheen-hover: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.54) 42%, rgba(147, 197, 253, 0.24) 100%);
+  --glass-border: rgba(255, 255, 255, 0.58);
+  --glass-border-strong: rgba(255, 255, 255, 0.82);
+  --glass-inner-highlight: rgba(255, 255, 255, 0.88);
+  --glass-inner-shadow: rgba(15, 23, 42, 0.08);
+  --glass-reflection: radial-gradient(125% 95% at 0% 0%, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0) 60%);
+  --glass-reflection-hover: radial-gradient(125% 95% at 0% 0%, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0) 62%);
+  --glass-shadow: 0 16px 38px rgba(30, 64, 175, 0.2), 0 6px 14px rgba(15, 23, 42, 0.12);
+  --glass-shadow-lg: 0 28px 60px rgba(30, 64, 175, 0.28), 0 10px 24px rgba(15, 23, 42, 0.16);
   
   /* Backdrop blur intensities */
-  --glass-blur: blur(24px) saturate(180%);
-  --glass-blur-heavy: blur(40px) saturate(200%);
-  --glass-blur-light: blur(12px) saturate(150%);
+  --glass-blur: blur(32px) saturate(205%);
+  --glass-blur-heavy: blur(54px) saturate(225%);
+  --glass-blur-light: blur(20px) saturate(185%);
   
-  /* Accent colors - translucent vibrant */
-  --accent-teal: rgba(13, 148, 136, 0.9);
+  /* Accent colors */
+  --accent-teal: rgba(13, 148, 136, 0.92);
   --accent-coral: rgba(244, 63, 94, 0.9);
-  --accent-lavender: rgba(124, 58, 237, 0.9);
-  --accent-sky: rgba(14, 165, 233, 0.9);
+  --accent-lavender: rgba(124, 58, 237, 0.88);
+  --accent-sky: rgba(14, 165, 233, 0.92);
   
   /* Component mappings */
-  --card: rgba(255, 255, 255, 0.7);
-  --card-foreground: #1a1a2e;
-  --popover: rgba(255, 255, 255, 0.85);
-  --popover-foreground: #1a1a2e;
+  --card: rgba(255, 255, 255, 0.44);
+  --card-foreground: #0b1530;
+  --popover: rgba(255, 255, 255, 0.72);
+  --popover-foreground: #0b1530;
   
-  /* Primary - glass teal */
-  --primary: rgba(13, 148, 136, 0.9);
-  --primary-foreground: #ffffff;
+  --primary: rgba(14, 116, 144, 0.96);
+  --primary-foreground: #f8fbff;
   
-  /* Secondary - soft glass */
-  --secondary: rgba(255, 255, 255, 0.55);
-  --secondary-foreground: #1a1a2e;
+  --secondary: rgba(219, 234, 254, 0.62);
+  --secondary-foreground: #102a43;
   
-  /* Muted - frosted */
-  --muted: rgba(241, 245, 249, 0.65);
-  --muted-foreground: rgba(26, 26, 46, 0.65);
+  --muted: rgba(255, 255, 255, 0.32);
+  --muted-foreground: rgba(30, 41, 59, 0.78);
   
-  /* Accent - lavender glass */
-  --accent: rgba(124, 58, 237, 0.15);
-  --accent-foreground: #1a1a2e;
+  --accent: rgba(99, 102, 241, 0.22);
+  --accent-foreground: #172554;
   
-  /* Destructive - coral glass */
-  --destructive: rgba(244, 63, 94, 0.9);
+  --destructive: rgba(225, 29, 72, 0.9);
   --destructive-foreground: #ffffff;
   
-  /* Borders - ultra thin glass edges */
-  --border: rgba(255, 255, 255, 0.7);
-  --input: rgba(255, 255, 255, 0.55);
-  --ring: rgba(13, 148, 136, 0.5);
+  --border: rgba(148, 163, 184, 0.38);
+  --input: rgba(255, 255, 255, 0.58);
+  --ring: rgba(14, 116, 144, 0.45);
   
   /* Radius - liquid organic shapes */
   --radius: 1.5rem;
@@ -70,44 +74,53 @@ html.theme-glass-light {
   --radius-xl: 2rem;
   --radius-2xl: 2.5rem;
   
-  /* Gradients - aurora backgrounds - MORE VIBRANT */
+  /* Aurora backgrounds */
   --gradient-aurora: linear-gradient(
     135deg,
-    rgba(224, 242, 254, 0.9) 0%,
-    rgba(243, 232, 255, 0.85) 25%,
-    rgba(255, 241, 235, 0.9) 50%,
-    rgba(236, 254, 255, 0.85) 75%,
-    rgba(219, 234, 254, 0.9) 100%
+    rgba(186, 230, 253, 0.97) 0%,
+    rgba(196, 181, 253, 0.9) 24%,
+    rgba(252, 211, 236, 0.82) 48%,
+    rgba(165, 243, 252, 0.86) 72%,
+    rgba(191, 219, 254, 0.94) 100%
   );
   
-  /* Aurora blob colors for animated background - MORE VIBRANT */
-  --aurora-1: rgba(56, 189, 248, 0.55);
-  --aurora-2: rgba(168, 85, 247, 0.45);
-  --aurora-3: rgba(20, 184, 166, 0.5);
-  --aurora-4: rgba(251, 113, 133, 0.4);
+  --aurora-1: rgba(14, 165, 233, 0.78);
+  --aurora-2: rgba(99, 102, 241, 0.64);
+  --aurora-3: rgba(45, 212, 191, 0.72);
+  --aurora-4: rgba(244, 114, 182, 0.58);
 }
 
 /* --------------------------------------------------------------------------
    GLASS DARK THEME
    -------------------------------------------------------------------------- */
 html.theme-glass-dark {
+  color-scheme: dark;
   /* Base colors - deep navy/purple undertones */
-  --background: transparent;
-  --foreground: rgba(255, 255, 255, 0.95);
+  --background: #0b1220;
+  --foreground: #e9effb;
+  --font-sans-theme: "SF Pro Rounded", "Avenir Next", "Segoe UI", "Noto Sans", sans-serif;
+  --font-heading-theme: "SF Pro Display", "Avenir Next", "Segoe UI", sans-serif;
+  --font-mono-theme: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
   
-  /* Glass surface colors - dark mode - more opaque for readability */
-  --glass-bg: rgba(30, 30, 50, 0.72);
-  --glass-bg-hover: rgba(45, 45, 70, 0.82);
-  --glass-bg-active: rgba(60, 60, 90, 0.9);
-  --glass-border: rgba(255, 255, 255, 0.15);
-  --glass-border-strong: rgba(255, 255, 255, 0.3);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --glass-shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4);
+  /* Glass surface colors - dark mode */
+  --glass-bg: rgba(10, 20, 40, 0.5);
+  --glass-bg-hover: rgba(15, 28, 52, 0.62);
+  --glass-bg-active: rgba(20, 35, 62, 0.76);
+  --glass-sheen: linear-gradient(145deg, rgba(255, 255, 255, 0.21) 0%, rgba(255, 255, 255, 0.09) 50%, rgba(96, 165, 250, 0.06) 100%);
+  --glass-sheen-hover: linear-gradient(145deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.14) 50%, rgba(129, 140, 248, 0.08) 100%);
+  --glass-border: rgba(148, 163, 184, 0.35);
+  --glass-border-strong: rgba(203, 213, 225, 0.55);
+  --glass-inner-highlight: rgba(255, 255, 255, 0.2);
+  --glass-inner-shadow: rgba(2, 6, 23, 0.5);
+  --glass-reflection: radial-gradient(125% 95% at 0% 0%, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 60%);
+  --glass-reflection-hover: radial-gradient(125% 95% at 0% 0%, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0) 62%);
+  --glass-shadow: 0 18px 40px rgba(2, 6, 23, 0.54), 0 8px 18px rgba(8, 47, 73, 0.3);
+  --glass-shadow-lg: 0 28px 62px rgba(2, 6, 23, 0.64), 0 10px 26px rgba(30, 58, 138, 0.3);
   
   /* Backdrop blur intensities */
-  --glass-blur: blur(24px) saturate(180%);
-  --glass-blur-heavy: blur(40px) saturate(200%);
-  --glass-blur-light: blur(12px) saturate(150%);
+  --glass-blur: blur(32px) saturate(195%);
+  --glass-blur-heavy: blur(52px) saturate(220%);
+  --glass-blur-light: blur(20px) saturate(180%);
   
   /* Accent colors - neon glass on dark */
   --accent-teal: rgba(45, 212, 191, 0.95);
@@ -116,35 +129,35 @@ html.theme-glass-dark {
   --accent-sky: rgba(125, 211, 252, 0.95);
   
   /* Component mappings */
-  --card: rgba(25, 25, 45, 0.65);
-  --card-foreground: rgba(255, 255, 255, 0.95);
-  --popover: rgba(35, 35, 55, 0.85);
-  --popover-foreground: rgba(255, 255, 255, 0.95);
+  --card: rgba(15, 23, 42, 0.58);
+  --card-foreground: #e9effb;
+  --popover: rgba(15, 23, 42, 0.82);
+  --popover-foreground: #e9effb;
   
   /* Primary - glowing teal */
-  --primary: rgba(45, 212, 191, 0.9);
-  --primary-foreground: #0a0a12;
+  --primary: rgba(45, 212, 191, 0.92);
+  --primary-foreground: #05221f;
   
   /* Secondary - dark glass */
-  --secondary: rgba(255, 255, 255, 0.1);
-  --secondary-foreground: rgba(255, 255, 255, 0.92);
+  --secondary: rgba(30, 41, 59, 0.72);
+  --secondary-foreground: #dbe5f5;
   
   /* Muted - deep frosted */
-  --muted: rgba(255, 255, 255, 0.08);
-  --muted-foreground: rgba(255, 255, 255, 0.6);
+  --muted: rgba(30, 41, 59, 0.62);
+  --muted-foreground: rgba(226, 232, 240, 0.86);
   
   /* Accent - subtle glow */
-  --accent: rgba(168, 85, 247, 0.25);
-  --accent-foreground: rgba(255, 255, 255, 0.95);
+  --accent: rgba(129, 140, 248, 0.25);
+  --accent-foreground: #f8fafc;
   
   /* Destructive - coral glow */
-  --destructive: rgba(251, 113, 133, 0.9);
-  --destructive-foreground: #0a0a12;
+  --destructive: rgba(248, 113, 113, 0.9);
+  --destructive-foreground: #1f0a0a;
   
   /* Borders - subtle glass edges */
-  --border: rgba(255, 255, 255, 0.12);
-  --input: rgba(255, 255, 255, 0.1);
-  --ring: rgba(45, 212, 191, 0.5);
+  --border: rgba(148, 163, 184, 0.34);
+  --input: rgba(30, 41, 59, 0.76);
+  --ring: rgba(45, 212, 191, 0.45);
   
   /* Radius - liquid organic shapes */
   --radius: 1.5rem;
@@ -154,21 +167,20 @@ html.theme-glass-dark {
   --radius-xl: 2rem;
   --radius-2xl: 2.5rem;
   
-  /* Gradients - deep aurora backgrounds with richer colors */
+  /* Gradients - deep aurora backgrounds */
   --gradient-aurora: linear-gradient(
     135deg,
-    rgba(15, 23, 42, 0.98) 0%,
-    rgba(45, 25, 75, 0.9) 25%,
-    rgba(25, 45, 55, 0.92) 50%,
-    rgba(45, 35, 65, 0.9) 75%,
-    rgba(15, 30, 40, 0.98) 100%
+    rgba(7, 12, 24, 0.98) 0%,
+    rgba(32, 22, 58, 0.92) 25%,
+    rgba(17, 36, 59, 0.9) 52%,
+    rgba(20, 44, 56, 0.9) 76%,
+    rgba(7, 15, 30, 0.98) 100%
   );
   
-  /* Aurora blob colors for animated background - BOOSTED for visibility */
-  --aurora-1: rgba(56, 189, 248, 0.5);
-  --aurora-2: rgba(168, 85, 247, 0.4);
-  --aurora-3: rgba(45, 212, 191, 0.45);
-  --aurora-4: rgba(251, 113, 133, 0.35);
+  --aurora-1: rgba(56, 189, 248, 0.58);
+  --aurora-2: rgba(168, 85, 247, 0.46);
+  --aurora-3: rgba(45, 212, 191, 0.5);
+  --aurora-4: rgba(251, 113, 133, 0.4);
 }
 
 /* --------------------------------------------------------------------------
@@ -177,55 +189,78 @@ html.theme-glass-dark {
 
 /* Glass Card - frosted glass container */
 .glass-card {
-  background: var(--glass-bg);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--glass-sheen), var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--glass-shadow);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-inner-highlight), inset 0 -1px 0 var(--glass-inner-shadow);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  /* Ensure proper stacking context for backdrop-filter */
   transform: translateZ(0);
   will-change: transform, backdrop-filter;
 }
 
+.glass-card::before,
+.glass-nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--glass-reflection);
+  pointer-events: none;
+  transition: background 0.3s ease;
+  z-index: 0;
+}
+
+.glass-card > *,
+.glass-nav > * {
+  position: relative;
+  z-index: 1;
+}
+
 .glass-card:hover {
-  background: var(--glass-bg-hover);
+  background: var(--glass-sheen-hover), var(--glass-bg-hover);
   box-shadow: var(--glass-shadow-lg);
   transform: translateY(-2px) translateZ(0);
 }
 
+.glass-card:hover::before,
+.glass-nav:hover::before {
+  background: var(--glass-reflection-hover);
+}
+
 /* Glass Button - liquid glass buttons */
 .glass-button {
-  background: var(--glass-bg);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--glass-sheen), var(--glass-bg);
   backdrop-filter: var(--glass-blur-light);
   -webkit-backdrop-filter: var(--glass-blur-light);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   color: var(--foreground);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12), inset 0 1px 0 var(--glass-inner-highlight);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
 }
 
 .glass-button::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.2) 0%,
-    transparent 50%,
-    rgba(255, 255, 255, 0.1) 100%
-  );
-  opacity: 0;
+  background: var(--glass-reflection);
+  opacity: 0.72;
   transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .glass-button:hover {
-  background: var(--glass-bg-hover);
+  background: var(--glass-sheen-hover), var(--glass-bg-hover);
   border-color: var(--glass-border-strong);
   transform: scale(1.02);
+  box-shadow: var(--glass-shadow);
 }
 
 .glass-button:hover::before {
@@ -233,15 +268,16 @@ html.theme-glass-dark {
 }
 
 .glass-button:active {
-  background: var(--glass-bg-active);
+  background: var(--glass-sheen-hover), var(--glass-bg-active);
   transform: scale(0.98);
 }
 
 /* Glass Button Primary - accent color */
 .glass-button-primary {
-  background: var(--accent-teal);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
+  background: linear-gradient(135deg, rgba(14, 116, 144, 0.96) 0%, rgba(13, 148, 136, 0.92) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  box-shadow: 0 14px 28px rgba(15, 118, 110, 0.35);
 }
 
 html.theme-glass-light .glass-button-primary {
@@ -253,48 +289,54 @@ html.theme-glass-dark .glass-button-primary {
 }
 
 .glass-button-primary:hover {
-  filter: brightness(1.1);
-  box-shadow: 0 4px 20px var(--accent-teal);
+  filter: brightness(1.08);
+  box-shadow: 0 18px 34px rgba(15, 118, 110, 0.4);
 }
 
 /* Glass Navigation - floating nav with blur */
 .glass-nav {
-  background: var(--glass-bg);
+  background: var(--glass-sheen), var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
-  box-shadow: var(--glass-shadow-lg);
+  box-shadow: var(--glass-shadow-lg), inset 0 1px 0 var(--glass-inner-highlight), inset 0 -1px 0 var(--glass-inner-shadow);
+  isolation: isolate;
+  overflow: hidden;
 }
 
 /* Glass Input - frosted text input */
 .glass-input {
-  background: var(--glass-bg);
+  position: relative;
+  background: var(--glass-sheen), var(--glass-bg);
   backdrop-filter: var(--glass-blur-light);
   -webkit-backdrop-filter: var(--glass-blur-light);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   color: var(--foreground);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08), inset 0 1px 0 var(--glass-inner-highlight);
   transition: all 0.3s ease;
 }
 
 .glass-input:focus {
-  background: var(--glass-bg-hover);
-  border-color: var(--accent-teal);
-  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2);
+  background: var(--glass-sheen-hover), var(--glass-bg-hover);
+  border-color: var(--glass-border-strong);
+  box-shadow: 0 0 0 3px var(--ring), var(--glass-shadow), inset 0 1px 0 var(--glass-inner-highlight);
   outline: none;
 }
 
 .glass-input::placeholder {
   color: var(--muted-foreground);
+  opacity: 0.9;
 }
 
 /* Glass Badge - pill shape */
 .glass-badge {
-  background: var(--glass-bg);
+  background: var(--glass-sheen), var(--glass-bg);
   backdrop-filter: var(--glass-blur-light);
   -webkit-backdrop-filter: var(--glass-blur-light);
   border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-inner-highlight);
   border-radius: 9999px;
   padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
@@ -303,10 +345,11 @@ html.theme-glass-dark .glass-button-primary {
 
 /* Glass Chip - interactive tag */
 .glass-chip {
-  background: var(--glass-bg);
+  background: var(--glass-sheen), var(--glass-bg);
   backdrop-filter: var(--glass-blur-light);
   -webkit-backdrop-filter: var(--glass-blur-light);
   border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-inner-highlight);
   border-radius: var(--radius-md);
   padding: 0.5rem 1rem;
   font-size: 0.75rem;
@@ -316,12 +359,12 @@ html.theme-glass-dark .glass-button-primary {
 }
 
 .glass-chip:hover {
-  background: var(--glass-bg-hover);
+  background: var(--glass-sheen-hover), var(--glass-bg-hover);
   border-color: var(--glass-border-strong);
 }
 
 .glass-chip-active {
-  background: var(--accent-teal);
+  background: linear-gradient(135deg, rgba(14, 116, 144, 0.95) 0%, rgba(13, 148, 136, 0.9) 100%);
   border-color: transparent;
   color: white;
 }
@@ -340,7 +383,12 @@ html.theme-glass-dark .glass-chip-active {
   z-index: 0;
   overflow: hidden;
   background: var(--gradient-aurora);
+  filter: saturate(1.22) contrast(1.08);
   pointer-events: none;
+}
+
+html.theme-glass-dark .aurora-bg {
+  filter: saturate(1.16) contrast(1.04);
 }
 
 .aurora-bg::before,
@@ -524,6 +572,15 @@ html.theme-glass-dark .markdown-body h2 {
   text-transform: none;
 }
 
+html.theme-glass-light .markdown-body h3,
+html.theme-glass-dark .markdown-body h3,
+html.theme-glass-light .markdown-body h4,
+html.theme-glass-dark .markdown-body h4 {
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: -0.01em;
+}
+
 html.theme-glass-light .markdown-body pre,
 html.theme-glass-dark .markdown-body pre {
   background: var(--glass-bg);
@@ -536,6 +593,12 @@ html.theme-glass-dark .markdown-body pre {
 
 html.theme-glass-dark .markdown-body pre {
   background: rgba(0, 0, 0, 0.3);
+}
+
+/* Fix: base CSS sets pre code color to --background (transparent in glass) */
+html.theme-glass-light .markdown-body pre code,
+html.theme-glass-dark .markdown-body pre code {
+  color: var(--foreground);
 }
 
 html.theme-glass-light .markdown-body blockquote,
@@ -552,6 +615,28 @@ html.theme-glass-dark .markdown-body :not(pre) > code {
   border: 1px solid var(--glass-border);
   border-radius: 0.5rem;
   padding: 0.2rem 0.5rem;
+  color: var(--foreground);
+}
+
+/* Table styling for glass */
+html.theme-glass-light .markdown-body th,
+html.theme-glass-dark .markdown-body th {
+  background: var(--glass-bg);
+  color: var(--foreground);
+  text-transform: none;
+  font-weight: 700;
+  border: 1px solid var(--glass-border);
+}
+
+html.theme-glass-light .markdown-body td,
+html.theme-glass-dark .markdown-body td {
+  border: 1px solid var(--glass-border);
+}
+
+html.theme-glass-light .markdown-body hr,
+html.theme-glass-dark .markdown-body hr {
+  height: 1px;
+  background: var(--glass-border);
 }
 
 /* --------------------------------------------------------------------------
@@ -592,66 +677,237 @@ html.theme-glass-dark .markdown-body :not(pre) > code {
    GLASS OVERRIDES FOR EXISTING BRUTALIST COMPONENTS
    -------------------------------------------------------------------------- */
 
-html.theme-glass-light .chip,
-html.theme-glass-dark .chip {
+html.theme-glass-light .aura-theme-scope,
+html.theme-glass-dark .aura-theme-scope {
+  font-family: var(--font-sans-theme);
+}
+
+html.theme-glass-light .aura-theme-scope::before,
+html.theme-glass-dark .aura-theme-scope::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+html.theme-glass-light .aura-theme-scope::before {
+  background:
+    radial-gradient(120% 80% at 10% -5%, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0) 58%),
+    radial-gradient(120% 90% at 90% 110%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 60%);
+}
+
+html.theme-glass-dark .aura-theme-scope::before {
+  background:
+    radial-gradient(120% 80% at 10% -5%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 58%),
+    radial-gradient(120% 90% at 90% 110%, rgba(96, 165, 250, 0.14) 0%, rgba(96, 165, 250, 0) 60%);
+}
+
+html.theme-glass-light .aura-theme-scope h1,
+html.theme-glass-light .aura-theme-scope h2,
+html.theme-glass-light .aura-theme-scope h3,
+html.theme-glass-light .aura-theme-scope h4,
+html.theme-glass-light .aura-theme-scope h5,
+html.theme-glass-light .aura-theme-scope h6,
+html.theme-glass-dark .aura-theme-scope h1,
+html.theme-glass-dark .aura-theme-scope h2,
+html.theme-glass-dark .aura-theme-scope h3,
+html.theme-glass-dark .aura-theme-scope h4,
+html.theme-glass-dark .aura-theme-scope h5,
+html.theme-glass-dark .aura-theme-scope h6 {
+  font-family: var(--font-heading-theme);
+}
+
+html.theme-glass-light .aura-theme-scope .font-black,
+html.theme-glass-dark .aura-theme-scope .font-black {
+  font-weight: 700 !important;
+}
+
+html.theme-glass-light .aura-theme-scope .uppercase,
+html.theme-glass-dark .aura-theme-scope .uppercase {
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+html.theme-glass-light .aura-theme-scope .rounded-none,
+html.theme-glass-dark .aura-theme-scope .rounded-none {
+  border-radius: var(--radius-md) !important;
+}
+
+html.theme-glass-light .aura-theme-scope .bg-foreground.text-background,
+html.theme-glass-dark .aura-theme-scope .bg-foreground.text-background {
+  background: var(--glass-bg) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: none !important;
+}
+
+html.theme-glass-light .aura-theme-scope .chip,
+html.theme-glass-dark .aura-theme-scope .chip {
   border-radius: 9999px;
   border: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-  box-shadow: none;
+  background: var(--glass-sheen), var(--glass-bg);
+  box-shadow: inset 0 1px 0 var(--glass-inner-highlight);
   text-transform: none;
   font-weight: 600;
 }
 
-html.theme-glass-light .chip:hover,
-html.theme-glass-dark .chip:hover {
+html.theme-glass-light .aura-theme-scope .chip:hover,
+html.theme-glass-dark .aura-theme-scope .chip:hover {
   background: var(--glass-bg-hover);
 }
 
-html.theme-glass-light .chip-active,
-html.theme-glass-dark .chip-active {
-  background: var(--primary);
+html.theme-glass-light .aura-theme-scope .chip-active,
+html.theme-glass-dark .aura-theme-scope .chip-active {
+  background: linear-gradient(135deg, rgba(14, 116, 144, 0.95) 0%, rgba(13, 148, 136, 0.9) 100%);
   color: var(--primary-foreground);
   border-color: transparent;
   transform: none;
 }
 
-html.theme-glass-light .note-btn,
-html.theme-glass-dark .note-btn {
-  border-bottom: 1px solid var(--glass-border);
-  border-radius: 1rem;
-  margin-bottom: 0.25rem;
-}
-
-html.theme-glass-light .note-btn:hover,
-html.theme-glass-dark .note-btn:hover {
-  background: var(--glass-bg);
-}
-
-html.theme-glass-light .note-btn-active,
-html.theme-glass-dark .note-btn-active {
-  background: var(--primary) !important;
-  color: var(--primary-foreground) !important;
-}
-
-html.theme-glass-light [data-slot="button"],
-html.theme-glass-dark [data-slot="button"] {
-  border-radius: 1rem;
-}
-
-html.theme-glass-light [data-slot="button"][data-variant="default"],
-html.theme-glass-dark [data-slot="button"][data-variant="default"] {
-  background: var(--glass-bg);
+html.theme-glass-light .aura-theme-scope .note-btn,
+html.theme-glass-dark .aura-theme-scope .note-btn {
   border: 1px solid var(--glass-border);
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 100%);
+  box-shadow: inset 0 1px 0 var(--glass-inner-highlight);
+  border-radius: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+html.theme-glass-light .aura-theme-scope .note-btn:hover,
+html.theme-glass-dark .aura-theme-scope .note-btn:hover {
+  background: var(--glass-bg);
+}
+
+html.theme-glass-light .aura-theme-scope .note-btn-active,
+html.theme-glass-dark .aura-theme-scope .note-btn-active {
+  background: linear-gradient(135deg, rgba(14, 116, 144, 0.95) 0%, rgba(13, 148, 136, 0.9) 100%) !important;
+  color: var(--primary-foreground) !important;
+  border-color: transparent !important;
+  box-shadow: 0 12px 28px rgba(15, 118, 110, 0.32) !important;
+}
+
+html.theme-glass-light .aura-theme-scope .note-btn-active *,
+html.theme-glass-dark .aura-theme-scope .note-btn-active * {
+  color: var(--primary-foreground) !important;
+  opacity: 1 !important;
+}
+
+html.theme-glass-light .aura-theme-scope [data-slot="button"],
+html.theme-glass-dark .aura-theme-scope [data-slot="button"] {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-sheen), var(--glass-bg);
+  color: var(--foreground);
+  box-shadow: none !important;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 600;
   backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
+}
+
+html.theme-glass-light .aura-theme-scope [data-slot="button"][data-variant="default"],
+html.theme-glass-light .aura-theme-scope [data-slot="button"][data-variant="secondary"],
+html.theme-glass-light .aura-theme-scope [data-slot="button"][data-variant="outline"],
+html.theme-glass-dark .aura-theme-scope [data-slot="button"][data-variant="default"],
+html.theme-glass-dark .aura-theme-scope [data-slot="button"][data-variant="secondary"],
+html.theme-glass-dark .aura-theme-scope [data-slot="button"][data-variant="outline"] {
+  background: var(--glass-sheen), var(--glass-bg);
+  color: var(--foreground);
+}
+
+html.theme-glass-light .aura-theme-scope [data-slot="button"][data-variant="ghost"],
+html.theme-glass-dark .aura-theme-scope [data-slot="button"][data-variant="ghost"] {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: var(--glass-bg);
+}
+
+html.theme-glass-light .aura-theme-scope [data-slot="button"]:hover,
+html.theme-glass-dark .aura-theme-scope [data-slot="button"]:hover {
+  background: var(--glass-sheen-hover), var(--glass-bg-hover) !important;
+  color: var(--foreground) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--glass-shadow) !important;
+}
+
+html.theme-glass-light .aura-theme-scope [data-slot="button"][data-variant="destructive"],
+html.theme-glass-dark .aura-theme-scope [data-slot="button"][data-variant="destructive"] {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+  border-color: transparent;
+}
+
+html.theme-glass-light .aura-theme-scope [data-slot="input"],
+html.theme-glass-dark .aura-theme-scope [data-slot="input"],
+html.theme-glass-light .aura-theme-scope [data-slot="select-trigger"],
+html.theme-glass-dark .aura-theme-scope [data-slot="select-trigger"] {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-sheen), var(--glass-bg);
+  color: var(--foreground);
+  box-shadow: none !important;
+  text-transform: none;
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
+}
+
+html.theme-glass-light .aura-theme-scope [data-slot="input"]::placeholder,
+html.theme-glass-dark .aura-theme-scope [data-slot="input"]::placeholder {
+  color: var(--muted-foreground);
+}
+
+html.theme-glass-light .aura-theme-scope [data-slot="select-content"],
+html.theme-glass-dark .aura-theme-scope [data-slot="select-content"],
+html.theme-glass-light [data-slot="select-content"],
+html.theme-glass-dark [data-slot="select-content"] {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-sheen), var(--card);
+  color: var(--foreground);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+html.theme-glass-light .aura-theme-scope [data-slot="select-item"],
+html.theme-glass-dark .aura-theme-scope [data-slot="select-item"],
+html.theme-glass-light [data-slot="select-item"],
+html.theme-glass-dark [data-slot="select-item"] {
+  border-radius: 0.75rem;
+  text-transform: none;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+html.theme-glass-light .aura-theme-scope [data-slot="select-item"]:focus,
+html.theme-glass-light .aura-theme-scope [data-slot="select-item"]:hover,
+html.theme-glass-dark .aura-theme-scope [data-slot="select-item"]:focus,
+html.theme-glass-dark .aura-theme-scope [data-slot="select-item"]:hover,
+html.theme-glass-light [data-slot="select-item"]:focus,
+html.theme-glass-light [data-slot="select-item"]:hover,
+html.theme-glass-dark [data-slot="select-item"]:focus,
+html.theme-glass-dark [data-slot="select-item"]:hover {
+  background: var(--glass-bg-hover);
+  color: var(--foreground);
+}
+
+html.theme-glass-light .aura-theme-scope [data-slot="badge"],
+html.theme-glass-dark .aura-theme-scope [data-slot="badge"] {
+  border-radius: 9999px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--foreground);
+  box-shadow: none !important;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 600;
 }
 
 /* --------------------------------------------------------------------------
    GLASS THEME MAIN CONTAINER FIXES
    -------------------------------------------------------------------------- */
 
-/* Main app container - transparent to show aurora */
-html.theme-glass-light .bg-background,
-html.theme-glass-dark .bg-background,
 html.theme-glass-light body,
 html.theme-glass-dark body {
   background: transparent !important;
@@ -659,58 +915,36 @@ html.theme-glass-dark body {
 }
 
 /* Glass containers float above aurora */
-html.theme-glass-light .glass-card,
-html.theme-glass-dark .glass-card {
+html.theme-glass-light .aura-theme-scope .glass-card,
+html.theme-glass-dark .aura-theme-scope .glass-card {
   position: relative;
   z-index: 10;
 }
 
 /* Glass nav floats above */
-html.theme-glass-light .glass-nav,
-html.theme-glass-dark .glass-nav {
-  position: relative;
-  z-index: 20;
+html.theme-glass-light .aura-theme-scope .glass-nav,
+html.theme-glass-dark .aura-theme-scope .glass-nav {
+  z-index: 40;
 }
 
 /* Ensure content layer is above aurora */
-html.theme-glass-light main,
-html.theme-glass-dark main,
-html.theme-glass-light aside,
-html.theme-glass-dark aside {
+html.theme-glass-light .aura-theme-scope main,
+html.theme-glass-dark .aura-theme-scope main,
+html.theme-glass-light .aura-theme-scope aside,
+html.theme-glass-dark .aura-theme-scope aside {
   position: relative;
   z-index: 10;
 }
 
 /* Reader content needs proper bg for readability */
-html.theme-glass-light .markdown-body,
-html.theme-glass-dark .markdown-body {
+html.theme-glass-light .aura-theme-scope .markdown-body,
+html.theme-glass-dark .aura-theme-scope .markdown-body {
   position: relative;
   z-index: 10;
 }
 
 /* Bottom nav for mobile */
-html.theme-glass-light nav,
-html.theme-glass-dark nav {
-  position: relative;
+html.theme-glass-light .aura-theme-scope nav,
+html.theme-glass-dark .aura-theme-scope nav {
   z-index: 40;
-}
-
-/* Override for outline/ghost buttons */
-html.theme-glass-light [data-slot="button"][data-variant="outline"],
-html.theme-glass-dark [data-slot="button"][data-variant="outline"] {
-  border: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-  color: var(--foreground);
-}
-
-html.theme-glass-light [data-slot="button"][data-variant="ghost"],
-html.theme-glass-dark [data-slot="button"][data-variant="ghost"] {
-  border: 1px solid transparent;
-  color: var(--foreground);
-}
-
-html.theme-glass-light [data-slot="button"]:hover,
-html.theme-glass-dark [data-slot="button"]:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--glass-shadow);
 }

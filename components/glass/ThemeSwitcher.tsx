@@ -71,18 +71,20 @@ export function ThemeSwitcher({
 
         {/* Theme picker dropdown */}
         {isOpen && (
-          <>
+          <div className="fixed inset-0 z-[80]">
             {/* Backdrop */}
-            <div
-              className="fixed inset-0 z-40"
+            <button
+              className="absolute inset-0 bg-black/10"
+              aria-label="Zamknij wybór motywu"
               onClick={() => setIsOpen(false)}
             />
 
             {/* Picker panel */}
             <div
               className={cn(
-                'absolute z-50 mt-2 right-0',
-                'w-[280px] p-4',
+                "absolute p-4 max-h-[min(72vh,420px)] overflow-y-auto custom-scrollbar",
+                "left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))]",
+                "top-[calc(env(safe-area-inset-top,0px)+4rem)] sm:left-auto sm:right-[max(0.75rem,env(safe-area-inset-right))] sm:w-[320px]",
                 isGlass
                   ? 'glass-card'
                   : 'bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)]',
@@ -90,6 +92,7 @@ export function ThemeSwitcher({
               )}
               role="listbox"
               aria-label="Wybierz motyw"
+              onClick={(e) => e.stopPropagation()}
             >
               <h4 className={cn(
                 'font-bold mb-4',
@@ -109,7 +112,7 @@ export function ThemeSwitcher({
                 ))}
               </div>
             </div>
-          </>
+          </div>
         )}
       </div>
     );
@@ -272,7 +275,8 @@ function ThemeOption({
     <button
       onClick={onSelect}
       className={cn(
-        'w-full flex items-center gap-3 p-3 rounded-xl',
+        'w-full flex items-center gap-3 p-3',
+        isGlass ? 'rounded-xl' : 'rounded-none',
         'transition-all duration-200',
         isGlass
           ? cn(
