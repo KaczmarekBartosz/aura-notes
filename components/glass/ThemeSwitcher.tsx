@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { useTheme, useReducedMotion } from '@/lib/theme';
 import { GlassCard, GlassCardTitle } from './GlassCard';
 import { GlassButton, GlassIconButton } from './GlassButton';
-import { THEMES, type ThemeMode } from '@/types/theme';
+import { THEMES, type ThemeMode, type ThemeMetadata } from '@/types/theme';
 import { Palette, Check, Sparkles } from 'lucide-react';
 
 interface ThemeSwitcherProps {
@@ -296,7 +296,7 @@ function ThemeOption({
   isActive,
   onSelect,
 }: {
-  theme: typeof THEMES[0];
+  theme: ThemeMetadata;
   isActive: boolean;
   onSelect: () => void;
 }) {

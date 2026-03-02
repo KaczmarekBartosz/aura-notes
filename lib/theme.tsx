@@ -14,13 +14,17 @@ import {
   type ThemeContextValue,
   THEME_STORAGE_KEY,
   THEME_CLASSNAMES,
+  GLASS_THEME_IDS,
   supportsBackdropFilter,
   prefersReducedMotion,
   getNextTheme,
+  getThemeMeta,
+  isGlassTheme,
   isValidTheme,
 } from '@/types/theme';
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
+const GLASS_THEME_CLASS_SELECTORS = GLASS_THEME_IDS.map((id) => `.${THEME_CLASSNAMES[id]}`).join(', ');
 
 /** Get initial theme from localStorage or default to air-power */
 function getInitialTheme(): ThemeMode {
@@ -28,6 +32,9 @@ function getInitialTheme(): ThemeMode {
   
   try {
     const saved = localStorage.getItem(THEME_STORAGE_KEY);
+    if (saved === 'crystalline') {
+      return 'crystal-line';
+    }
     if (isValidTheme(saved)) {
       return saved;
     }
@@ -73,10 +80,11 @@ export function ThemeProvider({
       body.dataset.theme = newTheme;
     }
     
-    // Handle dark mode for glass-dark
-    if (newTheme === 'glass-dark') {
+    const meta = getThemeMeta(newTheme);
+
+    if (meta.appearance === 'dark') {
       html.classList.add('dark');
-    } else if (newTheme === 'glass-light' || newTheme === 'air-power' || newTheme === 'crystalline') {
+    } else if (meta.appearance === 'light') {
       html.classList.remove('dark');
     } else {
 
@@ -122,12 +130,13 @@ export function ThemeProvider({
   const value = useMemo<ThemeContextValue>(() => ({
     theme,
     setTheme,
-    isGlass: theme === 'glass-light' || theme === 'glass-dark' || theme === 'air-power' || theme === 'crystalline',
+    isGlass: isGlassTheme(theme),
     isGlassLight: theme === 'glass-light',
     isGlassDark: theme === 'glass-dark',
     isBrutalist: theme === 'brutalist',
     isAirPower: theme === 'air-power',
-    isCrystalline: theme === 'crystalline',
+    isCrystalLine: theme === 'crystal-line',
+    isCrystalline: theme === 'crystal-line',
     cycleTheme,
   }), [theme, setTheme, cycleTheme]);
 
@@ -139,7 +148,7 @@ export function ThemeProvider({
       {!hasBackdropSupport && (
         <style>{
           `
-          .theme-glass-light, .theme-glass-dark, .theme-air-power, .theme-crystalline {
+          ${GLASS_THEME_CLASS_SELECTORS} {
             --glass-backdrop: transparent !important;
             --glass-bg-fallback: var(--background) !important;
           }

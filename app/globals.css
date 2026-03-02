@@ -2,9 +2,7 @@
 @import 'highlight.js/styles/github-dark.css';
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "./themes/glass.css";
-@import "./themes/air-power.css";
-@import "./themes/crystalline.css";
+@import "./themes/index.css";
 
 
 @custom-variant dark (&:is(.dark *));
@@ -119,15 +117,6 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
-
-  /* Glass-based themes: transparent body to show aurora */
-  .theme-glass-light body,
-  .theme-glass-dark body,
-  .theme-air-power body,
-  .theme-crystalline body {
-    background: transparent !important;
-  }
-
 }
 
 /* ==========================================================================
@@ -528,150 +517,4 @@ body.theme-picker-open .aura-theme-scope main.glass-card:hover {
 .login-auth-button:hover,
 .login-auth-button:active {
   transform: none !important;
-}
-
-html.theme-glass-dark .login-auth-card:hover {
-  box-shadow: var(--glass-shadow-lg), inset 0 1px 0 var(--glass-inner-highlight), inset 0 -1px 0 var(--glass-inner-shadow);
-  filter: brightness(1.015);
-  transform: none !important;
-}
-
-html.theme-glass-dark .login-auth-input:focus {
-  box-shadow: 0 0 0 3px var(--ring), inset 0 1px 0 var(--glass-inner-highlight);
-}
-
-html.theme-glass-dark .login-auth-button:hover {
-  filter: brightness(1.06);
-}
-
-/* PREMIUM LIGHT THEME REDESIGN */
-html.theme-glass-light .login-auth-card {
-  background:
-    radial-gradient(140% 120% at 8% -8%, rgba(255, 255, 255, 0.84) 0%, rgba(255, 255, 255, 0) 62%),
-    linear-gradient(138deg, rgba(255, 255, 255, 0.78) 0%, rgba(243, 248, 255, 0.58) 45%, rgba(230, 238, 252, 0.48) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.86);
-  box-shadow: 0 30px 74px rgba(24, 42, 74, 0.16), 0 10px 28px rgba(24, 42, 74, 0.08), inset 0 1px 0 rgba(255,255,255,0.98), inset 0 -1px 0 rgba(78, 99, 138, 0.12);
-  backdrop-filter: blur(50px) saturate(220%);
-  -webkit-backdrop-filter: blur(50px) saturate(220%);
-}
-
-html.theme-glass-light .login-auth-card:hover {
-  background:
-    radial-gradient(140% 120% at 8% -8%, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.06) 62%),
-    linear-gradient(138deg, rgba(255, 255, 255, 0.86) 0%, rgba(246, 250, 255, 0.64) 45%, rgba(234, 241, 253, 0.54) 100%);
-  box-shadow: 0 36px 80px rgba(24, 42, 74, 0.2), 0 14px 30px rgba(24, 42, 74, 0.1), inset 0 1px 0 rgba(255,255,255,1), inset 0 -1px 0 rgba(78, 99, 138, 0.14);
-}
-
-html.theme-glass-light .login-auth-input,
-html.theme-glass-dark .login-auth-input {
-  font-family: var(--font-sans-theme);
-  letter-spacing: -0.01em;
-}
-
-html.theme-glass-light .login-auth-input {
-  background: rgba(255, 255, 255, 0.64);
-  border: 1px solid rgba(15, 23, 42, 0.22);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.72), inset 0 2px 4px rgba(0,0,0,0.02);
-  color: #0f172a;
-}
-
-html.theme-glass-light .login-auth-input:hover {
-  background: rgba(255, 255, 255, 0.82);
-  border-color: rgba(15, 23, 42, 0.3);
-}
-
-html.theme-glass-light .login-auth-input:focus {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(82, 106, 149, 0.56);
-  box-shadow: 0 0 0 4px rgba(82, 106, 149, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.78), inset 0 2px 4px rgba(0,0,0,0.01);
-}
-
-html.theme-glass-light .login-auth-button {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0) 62%),
-    linear-gradient(135deg, rgba(93, 114, 153, 0.96) 0%, rgba(79, 102, 145, 0.94) 52%, rgba(63, 84, 124, 0.93) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.52);
-  box-shadow: 0 12px 24px rgba(52, 71, 109, 0.28), 0 4px 10px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.44);
-  color: #f7f9ff;
-  text-shadow: 0 1px 1px rgba(12, 18, 34, 0.28);
-}
-
-html.theme-glass-light .login-auth-button:hover {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.05) 62%),
-    linear-gradient(135deg, rgba(82, 102, 141, 0.98) 0%, rgba(69, 92, 136, 0.96) 52%, rgba(56, 76, 114, 0.96) 100%);
-  box-shadow: 0 16px 30px rgba(52, 71, 109, 0.32), 0 6px 14px rgba(15, 23, 42, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  filter: saturate(1.02);
-  transform: translateY(-1px) !important;
-}
-
-html.theme-glass-light .login-auth-button:active {
-  transform: translateY(1px) !important;
-  box-shadow: 0 6px 14px rgba(52, 71, 109, 0.24), 0 2px 6px rgba(15, 23, 42, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.38);
-}
-
-html.theme-glass-light .login-auth-button:disabled {
-  filter: saturate(0.84);
-  opacity: 0.76;
-  box-shadow: 0 8px 16px rgba(52, 71, 109, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.32);
-}
-
-/* AIR POWER THEME LOGIN STYLES */
-html.theme-air-power .login-auth-card {
-  background:
-    radial-gradient(140% 120% at 8% -8%, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0) 62%),
-    linear-gradient(138deg, rgba(255, 255, 255, 0.68) 0%, rgba(235, 244, 252, 0.48) 45%, rgba(220, 232, 245, 0.38) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.76);
-  box-shadow: 0 28px 68px rgba(30, 58, 95, 0.14), 0 10px 26px rgba(30, 58, 95, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.96), inset 0 -1px 0 rgba(78, 99, 138, 0.1);
-  backdrop-filter: blur(46px) saturate(210%);
-  -webkit-backdrop-filter: blur(46px) saturate(210%);
-}
-
-html.theme-air-power .login-auth-card:hover {
-  background:
-    radial-gradient(140% 120% at 8% -8%, rgba(255, 255, 255, 0.86) 0%, rgba(255, 255, 255, 0.05) 62%),
-    linear-gradient(138deg, rgba(255, 255, 255, 0.76) 0%, rgba(240, 248, 255, 0.56) 45%, rgba(228, 239, 250, 0.46) 100%);
-  box-shadow: 0 34px 74px rgba(30, 58, 95, 0.18), 0 12px 28px rgba(30, 58, 95, 0.1), inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 -1px 0 rgba(78, 99, 138, 0.12);
-}
-
-html.theme-air-power .login-auth-input {
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(15, 23, 42, 0.18);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.65), inset 0 2px 4px rgba(0,0,0,0.02);
-  color: #1E3A5F;
-}
-
-html.theme-air-power .login-auth-input:hover {
-  background: rgba(255, 255, 255, 0.72);
-  border-color: rgba(15, 23, 42, 0.26);
-}
-
-html.theme-air-power .login-auth-input:focus {
-  background: rgba(255, 255, 255, 0.88);
-  border-color: rgba(60, 110, 160, 0.48);
-  box-shadow: 0 0 0 4px rgba(60, 110, 160, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.72), inset 0 2px 4px rgba(0,0,0,0.01);
-}
-
-html.theme-air-power .login-auth-button {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 62%),
-    linear-gradient(135deg, rgba(60, 110, 160, 0.94) 0%, rgba(80, 130, 180, 0.92) 52%, rgba(50, 90, 140, 0.91) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.48);
-  box-shadow: 0 10px 22px rgba(30, 58, 95, 0.26), 0 4px 10px rgba(15, 23, 42, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  color: #ffffff;
-  text-shadow: 0 1px 1px rgba(12, 18, 34, 0.24);
-}
-
-html.theme-air-power .login-auth-button:hover {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.04) 62%),
-    linear-gradient(135deg, rgba(50, 100, 150, 0.96) 0%, rgba(70, 120, 170, 0.94) 52%, rgba(40, 80, 130, 0.94) 100%);
-  box-shadow: 0 14px 28px rgba(30, 58, 95, 0.3), 0 6px 12px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.46);
-  filter: saturate(1.02);
-  transform: translateY(-1px) !important;
-}
-
-html.theme-air-power .login-auth-button:active {
-  transform: translateY(1px) !important;
-  box-shadow: 0 6px 14px rgba(30, 58, 95, 0.22), 0 2px 6px rgba(15, 23, 42, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.36);
 }
