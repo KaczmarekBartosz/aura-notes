@@ -5,8 +5,8 @@ category: system
 
 # INDEX PLIKÓW MD (AUTO)
 
-Wygenerowano: 2026-03-02T12:30:09.038Z
-Liczba notatek: 93
+Wygenerowano: 2026-03-02T14:31:51.280Z
+Liczba notatek: 95
 
 ## ai-agents (17)
 
@@ -160,7 +160,7 @@ Liczba notatek: 93
   - Zaktualizowano: 2026-03-01T01:39:54.000Z
   - Opis: Workflow: Wizualizacje mebli (Nano Banana Pro) Sprawdzony prompt Parametry Resolution: 2K (najlepszy balans jakości/czasu) Tryb: Edycja z flagą (input image) Efekt: Mebel zachowany 1:1, tło zmienione na lifestyle scene Użycie Notatka "Wyniki tego prompta są św
 
-## fitness-health (20)
+## fitness-health (22)
 
 - **memory/2026-01-30-session-log.md**
   - Tytuł: Dziennik sesji - 30 stycznia 2026
@@ -232,6 +232,16 @@ Liczba notatek: 93
   - Utworzono: 2026-02-23T12:00:00.000Z
   - Zaktualizowano: 2026-03-01T01:39:54.000Z
   - Opis: Session: 2026 02 23 10:01:20 UTC Session Key : agent:main:main Session ID : c5628b21 e36c 417e a521 cb04254e54d5 Source : telegram Conversation Summary assistant: [[reply to current]] Jasne. Zrobimy to sensownie — WHOOP + plan treningowy + TRT monitoring , ale
+- **memory/AZ_PEPTIDE_GUIDE_2026.md**
+  - Tytuł: The Broscience A-Z Peptide Guide
+  - Utworzono: 2026-03-02T00:00:00.000Z
+  - Zaktualizowano: 2026-03-02T14:31:45.184Z
+  - Opis: title: "The Broscience A Z Peptide Guide 2026" category: "fitness health" subcategory: "peptides" tags: ["peptides", "hgh", "bpc 157", "tb 500", "cjc 1295", "ipamorelin", "reference", "guide", "bodybuilding", "research"] type: "reference" created: "2026 03 02"
+- **memory/GLP_PROTOCOLS_BEST_PRACTICES.md**
+  - Tytuł: GLPs Protocols and Best Practices
+  - Utworzono: 2026-03-02T00:00:00.000Z
+  - Zaktualizowano: 2026-03-02T14:31:45.184Z
+  - Opis: title: "GLPs Protocols and Best Practices" category: "fitness health" subcategory: "peptides" tags: ["glp 1", "tirzepatide", "retatrutide", "fat loss", "protocol", "dosage", "bodybuilding"] type: "protocol" created: "2026 03 02" updated: "2026 03 02" source: "
 - **memory/GOLD_HGH_TRT_RETATRUTIDE_PROTOCOL.md**
   - Tytuł: Protokół HGH w Kulturystyce i Redukcji
   - Utworzono: 2026-03-02T00:00:00.000Z
