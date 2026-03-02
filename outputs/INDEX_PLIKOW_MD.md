@@ -5,7 +5,7 @@ category: system
 
 # INDEX PLIKÓW MD (AUTO)
 
-Wygenerowano: 2026-03-02T11:36:39.561Z
+Wygenerowano: 2026-03-02T12:30:09.038Z
 Liczba notatek: 93
 
 ## ai-agents (17)
@@ -235,7 +235,7 @@ Liczba notatek: 93
 - **memory/GOLD_HGH_TRT_RETATRUTIDE_PROTOCOL.md**
   - Tytuł: Protokół HGH w Kulturystyce i Redukcji
   - Utworzono: 2026-03-02T00:00:00.000Z
-  - Zaktualizowano: 2026-03-02T09:58:53.000Z
+  - Zaktualizowano: 2026-03-02T11:36:47.000Z
   - Opis: title: "Protokół HGH w Kulturystyce i Redukcji" category: "fitness health" subcategory: "peptides" tags: ["hgh", "trt", "retatrutide", "kulturystyka", "redukcja", "hormony", "bodybuilding", "cutting", "glucagon", "glp1", "protokół"] type: "protocol" created: "
 - **memory/KNOWLEDGE_ACTIONABLE.md**
   - Tytuł: KNOWLEDGE_ACTIONABLE — Wiedza Do Natychmiastowego Działania

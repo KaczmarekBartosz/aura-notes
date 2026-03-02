@@ -1,9 +1,9 @@
 /**
  * Theme type definitions for Aura Notes
- * Supports multi-theme system: brutalist (default), glass-light, glass-dark, air-power
+ * Supports multi-theme system: brutalist (default), glass-light, glass-dark, air-power, crystalline
  */
 
-export type ThemeMode = 'brutalist' | 'glass-light' | 'glass-dark' | 'air-power';
+export type ThemeMode = 'brutalist' | 'glass-light' | 'glass-dark' | 'air-power' | 'crystalline';
 
 export interface ThemeContextValue {
   /** Current active theme */
@@ -20,6 +20,8 @@ export interface ThemeContextValue {
   isBrutalist: boolean;
   /** Check if current theme is air-power */
   isAirPower: boolean;
+  /** Check if current theme is crystalline */
+  isCrystalline: boolean;
   /** Cycle to next theme */
   cycleTheme: () => void;
 }
@@ -78,6 +80,16 @@ export const THEMES: ThemeMeta[] = [
       accent: '#3C6EA0',
     },
   },
+  {
+    id: 'crystalline',
+    label: 'Crystalline',
+    description: 'Ultra-realistyczne szkło optyczne z efektami pryzmatu',
+    preview: {
+      bg: 'radial-gradient(at 0% 0%, rgba(200, 220, 255, 0.4) 0px, transparent 50%)',
+      card: 'rgba(255, 255, 255, 0.65)',
+      accent: '#0f172a',
+    },
+  },
 ];
 
 /** LocalStorage key for theme persistence */
@@ -89,6 +101,7 @@ export const THEME_CLASSNAMES: Record<ThemeMode, string> = {
   'glass-light': 'theme-glass-light',
   'glass-dark': 'theme-glass-dark',
   'air-power': 'theme-air-power',
+  'crystalline': 'theme-crystalline',
 };
 
 /** Get next theme in cycle order */

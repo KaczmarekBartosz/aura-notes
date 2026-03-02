@@ -4,6 +4,8 @@
 @import "shadcn/tailwind.css";
 @import "./themes/glass.css";
 @import "./themes/air-power.css";
+@import "./themes/crystalline.css";
+
 
 @custom-variant dark (&:is(.dark *));
 
@@ -121,9 +123,11 @@
   /* Glass-based themes: transparent body to show aurora */
   .theme-glass-light body,
   .theme-glass-dark body,
-  .theme-air-power body {
+  .theme-air-power body,
+  .theme-crystalline body {
     background: transparent !important;
   }
+
 }
 
 /* ==========================================================================
@@ -409,7 +413,8 @@
 /* Wymuszenie zachowania iOS Safari viewport */
 html, body {
   width: 100%;
-  height: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
   max-width: 100vw;
   background: var(--background);
   overflow: hidden;
@@ -417,6 +422,7 @@ html, body {
   overscroll-behavior: none;
   touch-action: pan-x pan-y;
 }
+
 
 .pt-safe {
   padding-top: env(safe-area-inset-top, 0px);

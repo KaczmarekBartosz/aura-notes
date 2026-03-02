@@ -76,9 +76,10 @@ export function ThemeProvider({
     // Handle dark mode for glass-dark
     if (newTheme === 'glass-dark') {
       html.classList.add('dark');
-    } else if (newTheme === 'glass-light' || newTheme === 'air-power') {
+    } else if (newTheme === 'glass-light' || newTheme === 'air-power' || newTheme === 'crystalline') {
       html.classList.remove('dark');
     } else {
+
       // brutalist - keep existing dark/light behavior
       // Check if user previously had dark mode
       const savedLegacy = localStorage.getItem('aura-theme') as 'light' | 'dark' | null;
@@ -121,13 +122,15 @@ export function ThemeProvider({
   const value = useMemo<ThemeContextValue>(() => ({
     theme,
     setTheme,
-    isGlass: theme === 'glass-light' || theme === 'glass-dark' || theme === 'air-power',
+    isGlass: theme === 'glass-light' || theme === 'glass-dark' || theme === 'air-power' || theme === 'crystalline',
     isGlassLight: theme === 'glass-light',
     isGlassDark: theme === 'glass-dark',
     isBrutalist: theme === 'brutalist',
     isAirPower: theme === 'air-power',
+    isCrystalline: theme === 'crystalline',
     cycleTheme,
   }), [theme, setTheme, cycleTheme]);
+
 
   return (
     <ThemeContext.Provider value={value}>
@@ -136,7 +139,7 @@ export function ThemeProvider({
       {!hasBackdropSupport && (
         <style>{
           `
-          .theme-glass-light, .theme-glass-dark, .theme-air-power {
+          .theme-glass-light, .theme-glass-dark, .theme-air-power, .theme-crystalline {
             --glass-backdrop: transparent !important;
             --glass-bg-fallback: var(--background) !important;
           }
@@ -147,6 +150,7 @@ export function ThemeProvider({
           `
         }</style>
       )}
+
     </ThemeContext.Provider>
   );
 }
