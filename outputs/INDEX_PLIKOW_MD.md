@@ -5,7 +5,7 @@ category: system
 
 # INDEX PLIKÓW MD (AUTO)
 
-Wygenerowano: 2026-03-02T10:05:38.893Z
+Wygenerowano: 2026-03-02T11:36:39.561Z
 Liczba notatek: 93
 
 ## ai-agents (17)
@@ -160,7 +160,7 @@ Liczba notatek: 93
   - Zaktualizowano: 2026-03-01T01:39:54.000Z
   - Opis: Workflow: Wizualizacje mebli (Nano Banana Pro) Sprawdzony prompt Parametry Resolution: 2K (najlepszy balans jakości/czasu) Tryb: Edycja z flagą (input image) Efekt: Mebel zachowany 1:1, tło zmienione na lifestyle scene Użycie Notatka "Wyniki tego prompta są św
 
-## fitness-health (19)
+## fitness-health (20)
 
 - **memory/2026-01-30-session-log.md**
   - Tytuł: Dziennik sesji - 30 stycznia 2026
@@ -232,6 +232,11 @@ Liczba notatek: 93
   - Utworzono: 2026-02-23T12:00:00.000Z
   - Zaktualizowano: 2026-03-01T01:39:54.000Z
   - Opis: Session: 2026 02 23 10:01:20 UTC Session Key : agent:main:main Session ID : c5628b21 e36c 417e a521 cb04254e54d5 Source : telegram Conversation Summary assistant: [[reply to current]] Jasne. Zrobimy to sensownie — WHOOP + plan treningowy + TRT monitoring , ale
+- **memory/GOLD_HGH_TRT_RETATRUTIDE_PROTOCOL.md**
+  - Tytuł: Protokół HGH w Kulturystyce i Redukcji
+  - Utworzono: 2026-03-02T00:00:00.000Z
+  - Zaktualizowano: 2026-03-02T09:58:53.000Z
+  - Opis: title: "Protokół HGH w Kulturystyce i Redukcji" category: "fitness health" subcategory: "peptides" tags: ["hgh", "trt", "retatrutide", "kulturystyka", "redukcja", "hormony", "bodybuilding", "cutting", "glucagon", "glp1", "protokół"] type: "protocol" created: "
 - **memory/KNOWLEDGE_ACTIONABLE.md**
   - Tytuł: KNOWLEDGE_ACTIONABLE — Wiedza Do Natychmiastowego Działania
   - Utworzono: 2026-02-22T13:50:36.000Z
@@ -258,7 +263,7 @@ Liczba notatek: 93
   - Zaktualizowano: 2026-03-01T01:39:54.000Z
   - Opis: Research: Peptydy BPC 157, CJC 1295 i TB 500 Podsumowanie naukowe z X/Twitter i literatury medycznej Zapisano: 2026 02 14 20:41 UTC 1. BPC 157 (Body Protection Compound 157) Działanie i mechanizm BPC 157 to pentadekapeptyd (15 aminokwasów) pochodzący z soku żo
 
-## golden-protocols (12)
+## golden-protocols (11)
 
 - **memory/GOLD_AI_AGENTS_PROTOCOL.md**
   - Tytuł: GOLD AI AGENTS PROTOCOL
@@ -290,11 +295,6 @@ Liczba notatek: 93
   - Utworzono: 2026-02-22T13:50:36.000Z
   - Zaktualizowano: 2026-03-01T01:39:54.000Z
   - Opis: GOLD GROWTH & MARKETING PROTOCOL Kompletny system zdobywania użytkowników, konwersji i skalowania SaaS Wersja: 1.0 Źródło: Kompilacja zakładek X/Twitter (@JulianGoldieSEO, @Hartdrawss, @markproduct, @HeyAliux, @jacobrodri , @alexcooldev, @code rams, @kloss xyz
-- **memory/GOLD_HGH_TRT_RETATRUTIDE_PROTOCOL.md**
-  - Tytuł: Protokół HGH w Kulturystyce i Redukcji
-  - Utworzono: 2026-03-02T09:58:53.000Z
-  - Zaktualizowano: 2026-03-02T09:58:53.000Z
-  - Opis: Protokół HGH w Kulturystyce i Redukcji Autor: Aura Research Data: 2026 03 02 Wersja: 1.0 Spis treści 1. 2. 3. 4. 5. 6. 7. 8. 9. Mechanizm działania HGH HGH (somatotropina) to naturalny hormon peptydowy wydzielany przez przysadkę mózgową. Odpowiada za: Stymulac
 - **memory/GOLD_INDIE_HACKER_PROTOCOL.md**
   - Tytuł: GOLD INDIE HACKER PROTOCOL
   - Utworzono: 2026-02-22T13:50:36.000Z

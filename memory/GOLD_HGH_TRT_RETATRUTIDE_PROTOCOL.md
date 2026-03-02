@@ -1,3 +1,16 @@
+---
+title: "Protokół HGH w Kulturystyce i Redukcji"
+category: "fitness-health"
+subcategory: "peptides"
+tags: ["hgh", "trt", "retatrutide", "kulturystyka", "redukcja", "hormony", "bodybuilding", "cutting", "glucagon", "glp1", "protokół"]
+type: "protocol"
+created: "2026-03-02"
+updated: "2026-03-02"
+source: "research"
+ai_generated: false
+excerpt: "Kompletny protokół użycia hormonu wzrostu (HGH) w kulturystyce, w połączeniu z TRT i Retatrutide dla maksymalnej redukcji tłuszczu przy zachowaniu masy mięśniowej."
+---
+
 # Protokół HGH w Kulturystyce i Redukcji
 
 **Autor:** Aura Research  
