@@ -3,7 +3,7 @@
  * Supports multi-theme system: brutalist (default), glass-light, glass-dark
  */
 
-export type ThemeMode = 'brutalist' | 'glass-light' | 'glass-dark';
+export type ThemeMode = 'brutalist' | 'glass-light' | 'glass-dark' | 'air-power';
 
 export interface ThemeContextValue {
   /** Current active theme */
@@ -18,6 +18,8 @@ export interface ThemeContextValue {
   isGlassDark: boolean;
   /** Check if current theme is brutalist */
   isBrutalist: boolean;
+  /** Check if current theme is air-power */
+  isAirPower: boolean;
   /** Cycle to next theme */
   cycleTheme: () => void;
 }
@@ -66,6 +68,16 @@ export const THEMES: ThemeMeta[] = [
       accent: '#7ee8fa',
     },
   },
+  {
+    id: 'air-power',
+    label: 'Air Power',
+    description: 'Lekki, powietrzny styl z niebieskimi akcentami',
+    preview: {
+      bg: 'linear-gradient(180deg, #A5C3E8 0%, #CBDCF0 40%, #E8EDF3 100%)',
+      card: 'rgba(255,255,255,0.35)',
+      accent: '#3C6EA0',
+    },
+  },
 ];
 
 /** LocalStorage key for theme persistence */
@@ -76,6 +88,7 @@ export const THEME_CLASSNAMES: Record<ThemeMode, string> = {
   'brutalist': 'theme-brutalist',
   'glass-light': 'theme-glass-light',
   'glass-dark': 'theme-glass-dark',
+  'air-power': 'theme-air-power',
 };
 
 /** Get next theme in cycle order */

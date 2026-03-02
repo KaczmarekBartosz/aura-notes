@@ -76,7 +76,7 @@ export function ThemeProvider({
     // Handle dark mode for glass-dark
     if (newTheme === 'glass-dark') {
       html.classList.add('dark');
-    } else if (newTheme === 'glass-light') {
+    } else if (newTheme === 'glass-light' || newTheme === 'air-power') {
       html.classList.remove('dark');
     } else {
       // brutalist - keep existing dark/light behavior
@@ -121,10 +121,11 @@ export function ThemeProvider({
   const value = useMemo<ThemeContextValue>(() => ({
     theme,
     setTheme,
-    isGlass: theme === 'glass-light' || theme === 'glass-dark',
+    isGlass: theme === 'glass-light' || theme === 'glass-dark' || theme === 'air-power',
     isGlassLight: theme === 'glass-light',
     isGlassDark: theme === 'glass-dark',
     isBrutalist: theme === 'brutalist',
+    isAirPower: theme === 'air-power',
     cycleTheme,
   }), [theme, setTheme, cycleTheme]);
 
@@ -135,7 +136,7 @@ export function ThemeProvider({
       {!hasBackdropSupport && (
         <style>{
           `
-          .theme-glass-light, .theme-glass-dark {
+          .theme-glass-light, .theme-glass-dark, .theme-air-power {
             --glass-backdrop: transparent !important;
             --glass-bg-fallback: var(--background) !important;
           }
