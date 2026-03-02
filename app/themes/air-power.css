@@ -532,6 +532,94 @@ html.theme-air-power .custom-scrollbar {
 }
 
 /* --------------------------------------------------------------------------
+   AIR POWER AURORA BACKGROUND
+   -------------------------------------------------------------------------- */
+html.theme-air-power .aurora-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--gradient-aurora);
+  filter: saturate(1.1) contrast(1.02);
+  pointer-events: none;
+}
+
+html.theme-air-power .aurora-bg::before,
+html.theme-air-power .aurora-bg::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: air-aurora-float 25s ease-in-out infinite;
+  opacity: 0.6;
+}
+
+html.theme-air-power .aurora-bg::before {
+  width: 55vw;
+  height: 55vw;
+  background: var(--aurora-1);
+  top: -15%;
+  left: -10%;
+  animation-delay: 0s;
+}
+
+html.theme-air-power .aurora-bg::after {
+  width: 45vw;
+  height: 45vw;
+  background: var(--aurora-2);
+  bottom: -15%;
+  right: -10%;
+  animation-delay: -12s;
+}
+
+html.theme-air-power .aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: air-aurora-float 30s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+html.theme-air-power .aurora-blob-1 {
+  width: 40vw;
+  height: 40vw;
+  background: var(--aurora-3);
+  top: 45%;
+  left: 25%;
+  animation-delay: -8s;
+}
+
+html.theme-air-power .aurora-blob-2 {
+  width: 35vw;
+  height: 35vw;
+  background: var(--aurora-4);
+  top: 5%;
+  right: 20%;
+  animation-delay: -18s;
+}
+
+@keyframes air-aurora-float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(3%, 4%) scale(1.03);
+  }
+  66% {
+    transform: translate(-2%, 5%) scale(0.98);
+  }
+}
+
+/* Reduced motion for air-power */
+@media (prefers-reduced-motion: reduce) {
+  html.theme-air-power .aurora-bg::before,
+  html.theme-air-power .aurora-bg::after,
+  html.theme-air-power .aurora-blob {
+    animation: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
    AIR POWER Z-INDEX LAYERING
    -------------------------------------------------------------------------- */
 html.theme-air-power .aura-theme-scope main,
