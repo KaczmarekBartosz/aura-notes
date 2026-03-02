@@ -785,3 +785,18 @@ html.theme-air-power .aura-theme-scope .markdown-body {
     animation: none;
   }
 }
+
+/* --------------------------------------------------------------------------
+   AIR POWER MAIN CARDS (aside/main specific overrides)
+   -------------------------------------------------------------------------- */
+html.theme-air-power .aura-theme-scope aside.glass-card,
+html.theme-air-power .aura-theme-scope main.glass-card {
+  --glass-bg: rgba(255, 255, 255, 0.28);
+  --glass-bg-hover: rgba(255, 255, 255, 0.38);
+  --glass-sheen: linear-gradient(140deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.22) 46%, rgba(203, 220, 240, 0.1) 100%);
+  --glass-sheen-hover: linear-gradient(140deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.32) 46%, rgba(203, 220, 240, 0.14) 100%);
+  border-color: rgba(255, 255, 255, 0.52);
+  box-shadow: 0 20px 48px rgba(30, 58, 95, 0.14), 0 6px 16px rgba(30, 58, 95, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 rgba(56, 82, 120, 0.08);
+  backdrop-filter: blur(40px) saturate(190%);
+  -webkit-backdrop-filter: blur(40px) saturate(190%);
+}
