@@ -7,11 +7,11 @@ import {
   getNextTheme,
   isValidTheme,
   type ThemeMode,
-} from '../types/theme';
+} from '../types/theme.ts';
 
 test('theme registry includes required themes', () => {
   const ids = THEMES.map((t) => t.id);
-  assert.deepEqual(ids, ['brutalist', 'glass-light', 'glass-dark']);
+  assert.deepEqual(ids, ['brutalist', 'glass-light', 'glass-dark', 'air-power']);
 });
 
 test('theme classnames are mapped for all themes', () => {
@@ -19,6 +19,7 @@ test('theme classnames are mapped for all themes', () => {
     brutalist: 'theme-brutalist',
     'glass-light': 'theme-glass-light',
     'glass-dark': 'theme-glass-dark',
+    'air-power': 'theme-air-power',
   };
 
   assert.deepEqual(THEME_CLASSNAMES, expected);
@@ -27,13 +28,15 @@ test('theme classnames are mapped for all themes', () => {
 test('getNextTheme cycles through all themes in order', () => {
   assert.equal(getNextTheme('brutalist'), 'glass-light');
   assert.equal(getNextTheme('glass-light'), 'glass-dark');
-  assert.equal(getNextTheme('glass-dark'), 'brutalist');
+  assert.equal(getNextTheme('glass-dark'), 'air-power');
+  assert.equal(getNextTheme('air-power'), 'brutalist');
 });
 
 test('isValidTheme accepts only supported themes', () => {
   assert.equal(isValidTheme('brutalist'), true);
   assert.equal(isValidTheme('glass-light'), true);
   assert.equal(isValidTheme('glass-dark'), true);
+  assert.equal(isValidTheme('air-power'), true);
   assert.equal(isValidTheme('dark'), false);
   assert.equal(isValidTheme('light'), false);
   assert.equal(isValidTheme(null), false);

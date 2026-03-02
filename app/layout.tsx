@@ -1,7 +1,14 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
 import { PwaClientEnhancements } from './pwa-client-enhancements';
 import { ThemeProvider } from '@/lib/theme';
 import './globals.css';
+
+const inter = Inter({
+  subsets: ['latin', 'latin-ext'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: 'Aura Notes',
@@ -37,8 +44,8 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pl" suppressHydrationWarning>
-      <body>
-        <ThemeProvider defaultTheme="brutalist">
+      <body className={inter.variable}>
+        <ThemeProvider defaultTheme="air-power">
           <PwaClientEnhancements />
           {children}
         </ThemeProvider>

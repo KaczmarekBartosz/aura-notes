@@ -1,125 +1,121 @@
 /* ==========================================================================
    AIR POWER THEME STYLES
-   Light, airy, sky-inspired theme for Aura Notes
-   Cloud-like glassmorphism with soft blue gradients
+   Inspired by the "Air Power" MVP (soft sky gradient + glassmorphism)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   AIR POWER THEME - Main Styles
+   AIR POWER TOKENS
    -------------------------------------------------------------------------- */
 html.theme-air-power {
   color-scheme: light;
-  
-  /* Base colors - sky inspired */
-  --background: #E8EDF3;
-  --foreground: #1E3A5F;
-  
+
+  /* Core palette */
+  --background: #e8edf3;
+  --foreground: #16324f;
+
   /* Typography */
-  --font-sans-theme: "Inter", "SF Pro Display", "SF Pro Text", system-ui, -apple-system, sans-serif;
-  --font-heading-theme: "Inter", "SF Pro Display", system-ui, -apple-system, sans-serif;
-  --font-mono-theme: "SF Mono", Menlo, Consolas, monospace;
-  
-  /* Glass surfaces - airy, cloud-like */
-  --glass-bg: rgba(255, 255, 255, 0.35);
-  --glass-bg-hover: rgba(255, 255, 255, 0.45);
-  --glass-bg-active: rgba(255, 255, 255, 0.55);
-  --glass-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(203, 220, 240, 0.2) 100%);
-  --glass-sheen-hover: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(203, 220, 240, 0.3) 100%);
-  --glass-border: rgba(255, 255, 255, 0.5);
-  --glass-border-strong: rgba(255, 255, 255, 0.7);
+  --font-sans-theme: var(--font-inter), "Inter", "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-heading-theme: var(--font-inter), "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono-theme: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+
+  /* Glass surfaces */
+  --glass-bg: rgba(255, 255, 255, 0.22);
+  --glass-bg-hover: rgba(255, 255, 255, 0.3);
+  --glass-bg-active: rgba(255, 255, 255, 0.38);
+  --glass-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.76) 0%, rgba(255, 255, 255, 0.28) 48%, rgba(203, 220, 240, 0.14) 100%);
+  --glass-sheen-hover: linear-gradient(135deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 255, 255, 0.38) 48%, rgba(203, 220, 240, 0.2) 100%);
+  --glass-border: rgba(255, 255, 255, 0.36);
+  --glass-border-strong: rgba(255, 255, 255, 0.58);
   --glass-inner-highlight: rgba(255, 255, 255, 0.9);
-  --glass-inner-shadow: rgba(30, 58, 95, 0.06);
-  --glass-reflection: radial-gradient(125% 95% at 0% 0%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 60%);
-  --glass-reflection-hover: radial-gradient(125% 95% at 0% 0%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 62%);
-  --glass-shadow: 0 12px 32px rgba(30, 58, 95, 0.12), 0 4px 12px rgba(30, 58, 95, 0.08);
-  --glass-shadow-lg: 0 24px 56px rgba(30, 58, 95, 0.16), 0 8px 20px rgba(30, 58, 95, 0.1);
-  
+  --glass-inner-shadow: rgba(16, 46, 74, 0.08);
+  --glass-reflection: radial-gradient(125% 95% at 0% 0%, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0) 62%);
+  --glass-reflection-hover: radial-gradient(125% 95% at 0% 0%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 64%);
+  --glass-shadow: 0 16px 34px rgba(22, 50, 79, 0.14), 0 6px 14px rgba(22, 50, 79, 0.1);
+  --glass-shadow-lg: 0 28px 56px rgba(22, 50, 79, 0.2), 0 10px 24px rgba(22, 50, 79, 0.14);
+
   /* Backdrop blur intensities */
-  --glass-blur: blur(20px) saturate(180%);
-  --glass-blur-heavy: blur(32px) saturate(200%);
-  --glass-blur-light: blur(12px) saturate(160%);
-  
-  /* Accent colors - sky blues */
-  --accent-teal: rgba(76, 130, 180, 0.9);
-  --accent-coral: rgba(240, 120, 100, 0.9);
-  --accent-lavender: rgba(140, 120, 200, 0.88);
-  --accent-sky: rgba(100, 160, 220, 0.92);
-  
-  /* Component mappings */
-  --card: rgba(255, 255, 255, 0.35);
-  --card-foreground: #1E3A5F;
-  --popover: rgba(255, 255, 255, 0.6);
-  --popover-foreground: #1E3A5F;
-  
-  --primary: rgba(60, 110, 160, 0.94);
-  --primary-foreground: #FFFFFF;
-  
-  --secondary: rgba(203, 220, 240, 0.6);
-  --secondary-foreground: #1E3A5F;
-  
-  --muted: rgba(255, 255, 255, 0.25);
-  --muted-foreground: rgba(30, 58, 95, 0.7);
-  
-  --accent: rgba(100, 150, 200, 0.22);
-  --accent-foreground: #1E3A5F;
-  
-  --destructive: rgba(220, 80, 80, 0.9);
-  --destructive-foreground: #FFFFFF;
-  
-  --border: rgba(165, 195, 232, 0.4);
-  --input: rgba(255, 255, 255, 0.5);
-  --ring: rgba(60, 110, 160, 0.35);
-  
-  /* Radius - soft, organic shapes */
+  --glass-blur: blur(22px) saturate(165%);
+  --glass-blur-heavy: blur(36px) saturate(180%);
+  --glass-blur-light: blur(14px) saturate(150%);
+
+  /* Accents */
+  --accent-teal: rgba(83, 131, 177, 0.92);
+  --accent-coral: rgba(219, 110, 92, 0.92);
+  --accent-lavender: rgba(120, 125, 198, 0.9);
+  --accent-sky: rgba(112, 170, 220, 0.94);
+
+  /* Semantic mappings */
+  --card: rgba(255, 255, 255, 0.24);
+  --card-foreground: #16324f;
+  --popover: rgba(255, 255, 255, 0.62);
+  --popover-foreground: #16324f;
+
+  --primary: rgba(44, 84, 126, 0.94);
+  --primary-foreground: #ffffff;
+
+  --secondary: rgba(203, 220, 240, 0.56);
+  --secondary-foreground: #16324f;
+
+  --muted: rgba(255, 255, 255, 0.2);
+  --muted-foreground: rgba(22, 50, 79, 0.72);
+
+  --accent: rgba(100, 150, 200, 0.2);
+  --accent-foreground: #16324f;
+
+  --destructive: rgba(210, 82, 82, 0.92);
+  --destructive-foreground: #ffffff;
+
+  --border: rgba(165, 195, 232, 0.45);
+  --input: rgba(255, 255, 255, 0.38);
+  --ring: rgba(44, 84, 126, 0.34);
+
+  /* Radius */
   --radius: 1.5rem;
   --radius-sm: 0.75rem;
   --radius-md: 1.25rem;
   --radius-lg: 1.5rem;
   --radius-xl: 2rem;
   --radius-2xl: 2.5rem;
-  
-  /* Sky gradient background */
+
+  /* Air gradient from the reference */
   --gradient-aurora: linear-gradient(
     180deg,
-    #A5C3E8 0%,
-    #CBDCF0 40%,
-    #E8EDF3 100%
+    #a5c3e8 0%,
+    #cbdcf0 40%,
+    #e8edf3 100%
   );
-  
-  --aurora-1: rgba(165, 195, 232, 0.8);
-  --aurora-2: rgba(203, 220, 240, 0.7);
-  --aurora-3: rgba(140, 180, 220, 0.65);
-  --aurora-4: rgba(180, 200, 230, 0.55);
+
+  --aurora-1: rgba(139, 178, 222, 0.52);
+  --aurora-2: rgba(198, 216, 237, 0.48);
+  --aurora-3: rgba(124, 166, 210, 0.4);
+  --aurora-4: rgba(217, 228, 242, 0.56);
 }
 
-/* --------------------------------------------------------------------------
-   AIR POWER BODY BACKGROUND
-   -------------------------------------------------------------------------- */
 html.theme-air-power body {
-  background: var(--gradient-aurora) !important;
-  background-attachment: fixed !important;
-  background-size: cover !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* --------------------------------------------------------------------------
-   AIR POWER GLASS COMPONENTS
+   CORE GLASS COMPONENTS
    -------------------------------------------------------------------------- */
-
 html.theme-air-power .glass-card {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   background: var(--glass-sheen), var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
-  border-radius: 24px;
+  border-radius: var(--radius-lg);
   box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-inner-highlight), inset 0 -1px 0 var(--glass-inner-shadow);
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
 }
 
-html.theme-air-power .glass-card::before {
-  content: '';
+html.theme-air-power .glass-card::before,
+html.theme-air-power .glass-nav::before {
+  content: "";
   position: absolute;
   inset: 0;
   background: var(--glass-reflection);
@@ -128,7 +124,8 @@ html.theme-air-power .glass-card::before {
   z-index: 0;
 }
 
-html.theme-air-power .glass-card > * {
+html.theme-air-power .glass-card > *,
+html.theme-air-power .glass-nav > * {
   position: relative;
   z-index: 1;
 }
@@ -136,30 +133,30 @@ html.theme-air-power .glass-card > * {
 html.theme-air-power .glass-card:hover {
   background: var(--glass-sheen-hover), var(--glass-bg-hover);
   box-shadow: var(--glass-shadow-lg);
-  transform: translateY(-2px);
+  transform: translateY(-2px) translateZ(0);
 }
 
-html.theme-air-power .glass-card:hover::before {
+html.theme-air-power .glass-card:hover::before,
+html.theme-air-power .glass-nav:hover::before {
   background: var(--glass-reflection-hover);
 }
 
-/* Glass Button */
 html.theme-air-power .glass-button {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   background: var(--glass-sheen), var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   color: var(--foreground);
-  box-shadow: 0 6px 16px rgba(30, 58, 95, 0.1), inset 0 1px 0 var(--glass-inner-highlight);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 18px rgba(16, 46, 74, 0.1), inset 0 1px 0 var(--glass-inner-highlight);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 html.theme-air-power .glass-button::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: var(--glass-reflection);
@@ -171,26 +168,55 @@ html.theme-air-power .glass-button::before {
 html.theme-air-power .glass-button:hover {
   background: var(--glass-sheen-hover), var(--glass-bg-hover);
   border-color: var(--glass-border-strong);
-  transform: scale(1.02);
+  transform: translateY(-1px);
   box-shadow: var(--glass-shadow);
 }
 
 html.theme-air-power .glass-button:active {
   background: var(--glass-sheen-hover), var(--glass-bg-active);
-  transform: scale(0.98);
+  transform: translateY(0);
 }
 
-/* Glass Input */
+html.theme-air-power .glass-button-primary {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0) 62%),
+    linear-gradient(135deg, rgba(14, 34, 56, 0.34) 0%, rgba(21, 46, 72, 0.28) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.44);
+  color: #ffffff;
+  box-shadow: 0 12px 24px rgba(16, 38, 62, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.36);
+}
+
+html.theme-air-power .glass-button-primary:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 15px 28px rgba(16, 38, 62, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+html.theme-air-power .glass-nav {
+  background: var(--glass-sheen), var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-inner-highlight), inset 0 -1px 0 var(--glass-inner-shadow);
+  isolation: isolate;
+  overflow: hidden;
+}
+
 html.theme-air-power .glass-input {
   position: relative;
   background: var(--glass-sheen), var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   color: var(--foreground);
-  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.06), inset 0 1px 0 var(--glass-inner-highlight);
-  transition: all 0.3s ease;
+  box-shadow: 0 6px 14px rgba(16, 46, 74, 0.08), inset 0 1px 0 var(--glass-inner-highlight);
+  transition: all 0.25s ease;
+}
+
+html.theme-air-power .glass-input:hover {
+  border-color: var(--glass-border-strong);
+  background: var(--glass-sheen-hover), var(--glass-bg-hover);
 }
 
 html.theme-air-power .glass-input:focus {
@@ -205,42 +231,29 @@ html.theme-air-power .glass-input::placeholder {
   opacity: 0.9;
 }
 
-/* Glass Navigation */
-html.theme-air-power .glass-nav {
-  background: var(--glass-sheen), var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--glass-shadow-lg), inset 0 1px 0 var(--glass-inner-highlight), inset 0 -1px 0 var(--glass-inner-shadow);
-}
-
-/* Glass Badge */
 html.theme-air-power .glass-badge {
   background: var(--glass-sheen), var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
   border: 1px solid var(--glass-border);
-  box-shadow: inset 0 1px 0 var(--glass-inner-highlight);
   border-radius: 9999px;
-  padding: 0.25rem 0.75rem;
+  box-shadow: inset 0 1px 0 var(--glass-inner-highlight);
+  color: var(--foreground);
   font-size: 0.75rem;
   font-weight: 600;
 }
 
-/* Glass Chip */
 html.theme-air-power .glass-chip {
   background: var(--glass-sheen), var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
   border: 1px solid var(--glass-border);
-  box-shadow: inset 0 1px 0 var(--glass-inner-highlight);
   border-radius: var(--radius-md);
-  padding: 0.5rem 1rem;
+  box-shadow: inset 0 1px 0 var(--glass-inner-highlight);
+  color: var(--foreground);
   font-size: 0.75rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 html.theme-air-power .glass-chip:hover {
@@ -249,93 +262,154 @@ html.theme-air-power .glass-chip:hover {
 }
 
 html.theme-air-power .glass-chip-active {
-  background: linear-gradient(135deg, rgba(60, 110, 160, 0.85) 0%, rgba(80, 130, 180, 0.8) 100%);
-  border-color: rgba(255, 255, 255, 0.5);
-  color: #FFFFFF;
-  box-shadow: 0 8px 20px rgba(60, 110, 160, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.04) 72%),
+    linear-gradient(135deg, rgba(44, 84, 126, 0.82) 0%, rgba(70, 114, 158, 0.78) 100%);
+  border-color: rgba(255, 255, 255, 0.52);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(31, 62, 94, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.42);
 }
 
 /* --------------------------------------------------------------------------
-   AIR POWER TYPOGRAPHY
+   AURORA BACKGROUND
    -------------------------------------------------------------------------- */
-html.theme-air-power h1,
-html.theme-air-power h2,
-html.theme-air-power h3,
-html.theme-air-power h4,
-html.theme-air-power h5,
-html.theme-air-power h6 {
-  font-family: var(--font-heading-theme);
-  font-weight: 600;
-  color: #1E3A5F;
-  letter-spacing: -0.02em;
+html.theme-air-power .aurora-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--gradient-aurora);
+  filter: saturate(1.06) contrast(1.01);
+  pointer-events: none;
 }
 
-html.theme-air-power body {
-  font-family: var(--font-sans-theme);
-  font-weight: 400;
-  color: #1E3A5F;
+html.theme-air-power .aurora-bg::before,
+html.theme-air-power .aurora-bg::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(72px);
+  animation: air-aurora-float 26s ease-in-out infinite;
+  opacity: 0.62;
+}
+
+html.theme-air-power .aurora-bg::before {
+  width: 56vw;
+  height: 56vw;
+  background: var(--aurora-1);
+  top: -16%;
+  left: -8%;
+  animation-delay: 0s;
+}
+
+html.theme-air-power .aurora-bg::after {
+  width: 46vw;
+  height: 46vw;
+  background: var(--aurora-2);
+  bottom: -15%;
+  right: -10%;
+  animation-delay: -12s;
+}
+
+html.theme-air-power .aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(58px);
+  animation: air-aurora-float 30s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+html.theme-air-power .aurora-blob-1 {
+  width: 40vw;
+  height: 40vw;
+  background: var(--aurora-3);
+  top: 44%;
+  left: 24%;
+  animation-delay: -7s;
+}
+
+html.theme-air-power .aurora-blob-2 {
+  width: 36vw;
+  height: 36vw;
+  background: var(--aurora-4);
+  top: 8%;
+  right: 18%;
+  animation-delay: -16s;
+}
+
+@keyframes air-aurora-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(3%, 4%) scale(1.03);
+  }
+  66% {
+    transform: translate(-2%, 5%) scale(0.98);
+  }
 }
 
 /* --------------------------------------------------------------------------
-   AIR POWER MARKDOWN STYLES
+   MARKDOWN
    -------------------------------------------------------------------------- */
 html.theme-air-power .markdown-body {
   font-size: 1.1rem;
   line-height: 1.7;
-  color: #1E3A5F;
+  color: var(--foreground);
 }
 
 html.theme-air-power .markdown-body h1,
 html.theme-air-power .markdown-body h2,
 html.theme-air-power .markdown-body h3,
 html.theme-air-power .markdown-body h4 {
+  font-family: var(--font-heading-theme);
   font-weight: 600;
-  color: #1E3A5F;
+  color: var(--foreground);
   letter-spacing: -0.02em;
   text-transform: none;
 }
 
 html.theme-air-power .markdown-body h1 {
-  margin-top: 1.5em;
+  margin-top: 1.4em;
   margin-bottom: 0.5em;
   font-size: 2rem;
   border-bottom: 1px solid rgba(165, 195, 232, 0.5);
-  padding-bottom: 0.3em;
+  padding-bottom: 0.25em;
 }
 
 html.theme-air-power .markdown-body h2 {
-  font-size: 1.5rem;
+  font-size: 1.55rem;
   border-bottom: 1px solid rgba(165, 195, 232, 0.4);
   padding-bottom: 0.2em;
 }
 
 html.theme-air-power .markdown-body pre {
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  color: #1E3A5F;
+  border-radius: var(--radius-md);
+  color: var(--foreground);
 }
 
 html.theme-air-power .markdown-body pre code {
-  color: #1E3A5F;
+  color: var(--foreground);
 }
 
 html.theme-air-power .markdown-body blockquote {
-  border-left: 4px solid rgba(100, 160, 220, 0.6);
-  background: rgba(255, 255, 255, 0.25);
+  border-left: 4px solid rgba(82, 131, 177, 0.6);
+  background: rgba(255, 255, 255, 0.22);
   padding: 1rem 1rem 1rem 1.5rem;
-  border-radius: 0 16px 16px 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
   font-style: italic;
 }
 
 html.theme-air-power .markdown-body :not(pre) > code {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.34);
   border: 1px solid var(--glass-border);
-  border-radius: 6px;
-  padding: 0.2rem 0.5rem;
-  color: #1E3A5F;
+  border-radius: 0.5rem;
+  color: var(--foreground);
   font-family: var(--font-mono-theme);
 }
 
@@ -345,46 +419,74 @@ html.theme-air-power .markdown-body hr {
   border: none;
 }
 
-html.theme-air-power .markdown-body table th {
-  background: rgba(255, 255, 255, 0.4);
-  color: #1E3A5F;
-  font-weight: 600;
+html.theme-air-power .markdown-body th {
+  background: rgba(255, 255, 255, 0.34);
   border: 1px solid var(--glass-border);
+  color: var(--foreground);
+  text-transform: none;
+  font-weight: 600;
 }
 
-html.theme-air-power .markdown-body table td {
+html.theme-air-power .markdown-body td {
   border: 1px solid var(--glass-border);
 }
 
 /* --------------------------------------------------------------------------
-   AIR POWER COMPONENT OVERRIDES
+   APP-SPECIFIC OVERRIDES
    -------------------------------------------------------------------------- */
-
-/* Transparent body for gradient */
-html.theme-air-power .aura-theme-scope body,
-html.theme-air-power body {
-  background: transparent !important;
+html.theme-air-power .aura-theme-scope {
+  font-family: var(--font-sans-theme);
 }
 
-/* Cards in air-power */
-html.theme-air-power .aura-theme-scope .glass-card,
-html.theme-air-power .aura-theme-scope aside.glass-card,
-html.theme-air-power .aura-theme-scope main.glass-card {
-  border-radius: 24px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+html.theme-air-power .aura-theme-scope::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(120% 80% at 10% -5%, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0) 58%),
+    radial-gradient(120% 90% at 90% 110%, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0) 60%);
 }
 
-/* Chips */
+html.theme-air-power .aura-theme-scope h1,
+html.theme-air-power .aura-theme-scope h2,
+html.theme-air-power .aura-theme-scope h3,
+html.theme-air-power .aura-theme-scope h4,
+html.theme-air-power .aura-theme-scope h5,
+html.theme-air-power .aura-theme-scope h6 {
+  font-family: var(--font-heading-theme);
+}
+
+html.theme-air-power .aura-theme-scope .font-black {
+  font-weight: 600 !important;
+}
+
+html.theme-air-power .aura-theme-scope .uppercase {
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+html.theme-air-power .aura-theme-scope .rounded-none {
+  border-radius: var(--radius-md) !important;
+}
+
+html.theme-air-power .aura-theme-scope .bg-foreground.text-background {
+  background: var(--glass-bg) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: none !important;
+}
+
 html.theme-air-power .aura-theme-scope .chip {
-  background: var(--glass-sheen), var(--glass-bg);
-  border: 1px solid var(--glass-border);
   border-radius: 9999px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-sheen), var(--glass-bg);
   box-shadow: inset 0 1px 0 var(--glass-inner-highlight);
+  color: var(--foreground);
   text-transform: none;
+  letter-spacing: normal;
   font-weight: 600;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 html.theme-air-power .aura-theme-scope .chip:hover {
@@ -392,57 +494,82 @@ html.theme-air-power .aura-theme-scope .chip:hover {
 }
 
 html.theme-air-power .aura-theme-scope .chip-active {
-  background: linear-gradient(135deg, rgba(60, 110, 160, 0.85) 0%, rgba(80, 130, 180, 0.8) 100%);
-  color: #FFFFFF;
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 8px 20px rgba(60, 110, 160, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border-radius: 9999px;
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.04) 72%),
+    linear-gradient(135deg, rgba(44, 84, 126, 0.82) 0%, rgba(70, 114, 158, 0.78) 100%);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.52);
+  box-shadow: 0 10px 24px rgba(31, 62, 94, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.42);
 }
 
-/* Note buttons */
 html.theme-air-power .aura-theme-scope .note-btn {
   border: 1px solid var(--glass-border);
-  background: linear-gradient(140deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 100%);
   box-shadow: inset 0 1px 0 var(--glass-inner-highlight);
-  border-radius: 16px;
+  border-radius: 1rem;
   margin-bottom: 0.4rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
 }
 
 html.theme-air-power .aura-theme-scope .note-btn:hover {
-  background: var(--glass-bg-hover);
+  background: var(--glass-sheen-hover), var(--glass-bg-hover);
 }
 
 html.theme-air-power .aura-theme-scope .note-btn-active {
-  background: linear-gradient(135deg, rgba(60, 110, 160, 0.9) 0%, rgba(80, 130, 180, 0.85) 100%) !important;
-  color: #FFFFFF !important;
+  background: linear-gradient(135deg, rgba(44, 84, 126, 0.92) 0%, rgba(70, 114, 158, 0.88) 100%) !important;
+  color: #ffffff !important;
   border-color: transparent !important;
-  box-shadow: 0 10px 24px rgba(60, 110, 160, 0.28) !important;
+  box-shadow: 0 12px 26px rgba(31, 62, 94, 0.26) !important;
 }
 
 html.theme-air-power .aura-theme-scope .note-btn-active * {
-  color: #FFFFFF !important;
+  color: #ffffff !important;
   opacity: 1 !important;
 }
 
-/* Shadcn component overrides */
 html.theme-air-power .aura-theme-scope [data-slot="button"] {
   border-radius: var(--radius-md);
   border: 1px solid var(--glass-border);
   background: var(--glass-sheen), var(--glass-bg);
   color: var(--foreground);
-  box-shadow: inset 0 1px 0 var(--glass-inner-highlight);
+  box-shadow: none !important;
   text-transform: none;
-  letter-spacing: normal;
+  letter-spacing: -0.01em;
   font-weight: 600;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
+}
+
+html.theme-air-power .aura-theme-scope [data-slot="button"][data-variant="default"],
+html.theme-air-power .aura-theme-scope [data-slot="button"][data-variant="secondary"],
+html.theme-air-power .aura-theme-scope [data-slot="button"][data-variant="outline"] {
+  background: var(--glass-sheen), var(--glass-bg);
+  color: var(--foreground);
+}
+
+html.theme-air-power .aura-theme-scope [data-slot="button"][data-variant="ghost"] {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: var(--glass-bg);
+}
+
+html.theme-air-power .aura-theme-scope [data-slot="button"][data-variant="destructive"] {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+  border-color: transparent;
 }
 
 html.theme-air-power .aura-theme-scope [data-slot="button"]:hover {
-  background: var(--glass-sheen-hover), var(--glass-bg-hover);
+  background: var(--glass-sheen-hover), var(--glass-bg-hover) !important;
+  color: var(--foreground) !important;
   transform: translateY(-1px);
-  box-shadow: var(--glass-shadow);
+  box-shadow: var(--glass-shadow) !important;
+}
+
+html.theme-air-power .aura-theme-scope [data-slot="button"]:focus-visible {
+  border-color: var(--glass-border-strong);
+  box-shadow: 0 0 0 3px var(--ring), var(--glass-shadow) !important;
 }
 
 html.theme-air-power .aura-theme-scope [data-slot="input"],
@@ -451,19 +578,59 @@ html.theme-air-power .aura-theme-scope [data-slot="select-trigger"] {
   border: 1px solid var(--glass-border);
   background: var(--glass-sheen), var(--glass-bg);
   color: var(--foreground);
-  box-shadow: inset 0 1px 0 var(--glass-inner-highlight);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  box-shadow: none !important;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
 }
 
-html.theme-air-power .aura-theme-scope [data-slot="select-content"] {
+html.theme-air-power .aura-theme-scope [data-slot="input"]::placeholder {
+  color: var(--muted-foreground);
+}
+
+html.theme-air-power .aura-theme-scope [data-slot="input"]:hover,
+html.theme-air-power .aura-theme-scope [data-slot="select-trigger"]:hover {
+  background: var(--glass-sheen-hover), var(--glass-bg-hover);
+  border-color: var(--glass-border-strong);
+}
+
+html.theme-air-power .aura-theme-scope [data-slot="input"]:focus,
+html.theme-air-power .aura-theme-scope [data-slot="input"]:focus-visible,
+html.theme-air-power .aura-theme-scope [data-slot="select-trigger"]:focus,
+html.theme-air-power .aura-theme-scope [data-slot="select-trigger"]:focus-visible {
+  border-color: var(--glass-border-strong);
+  box-shadow: 0 0 0 3px var(--ring), var(--glass-shadow) !important;
+  outline: none;
+}
+
+html.theme-air-power .aura-theme-scope [data-slot="select-content"],
+html.theme-air-power [data-slot="select-content"] {
   border-radius: var(--radius-lg);
   border: 1px solid var(--glass-border);
   background: var(--glass-sheen), var(--card);
   color: var(--foreground);
   box-shadow: var(--glass-shadow);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+html.theme-air-power .aura-theme-scope [data-slot="select-item"],
+html.theme-air-power [data-slot="select-item"] {
+  border-radius: 0.75rem;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+html.theme-air-power .aura-theme-scope [data-slot="select-item"]:focus,
+html.theme-air-power .aura-theme-scope [data-slot="select-item"]:hover,
+html.theme-air-power [data-slot="select-item"]:focus,
+html.theme-air-power [data-slot="select-item"]:hover {
+  background: var(--glass-bg-hover);
+  color: var(--foreground);
 }
 
 html.theme-air-power .aura-theme-scope [data-slot="badge"] {
@@ -471,13 +638,75 @@ html.theme-air-power .aura-theme-scope [data-slot="badge"] {
   border: 1px solid var(--glass-border);
   background: var(--glass-bg);
   color: var(--foreground);
-  box-shadow: inset 0 1px 0 var(--glass-inner-highlight);
+  box-shadow: none !important;
   text-transform: none;
+  letter-spacing: normal;
   font-weight: 600;
 }
 
 /* --------------------------------------------------------------------------
-   AIR POWER SCROLLBARS
+   LOGIN SCREEN REFINEMENT
+   -------------------------------------------------------------------------- */
+html.theme-air-power .login-auth-card {
+  background:
+    radial-gradient(140% 120% at 8% -8%, rgba(255, 255, 255, 0.84) 0%, rgba(255, 255, 255, 0) 62%),
+    linear-gradient(138deg, rgba(255, 255, 255, 0.52) 0%, rgba(239, 245, 252, 0.34) 45%, rgba(226, 236, 248, 0.3) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: 0 28px 68px rgba(24, 42, 74, 0.16), 0 10px 28px rgba(24, 42, 74, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.98), inset 0 -1px 0 rgba(78, 99, 138, 0.1);
+  backdrop-filter: var(--glass-blur-heavy);
+  -webkit-backdrop-filter: var(--glass-blur-heavy);
+}
+
+html.theme-air-power .login-auth-card:hover {
+  box-shadow: 0 34px 76px rgba(24, 42, 74, 0.22), 0 14px 30px rgba(24, 42, 74, 0.12), inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 -1px 0 rgba(78, 99, 138, 0.14);
+}
+
+html.theme-air-power .login-auth-input {
+  font-family: var(--font-sans-theme);
+  letter-spacing: -0.01em;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(28, 52, 80, 0.24);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.72), inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  color: var(--foreground);
+}
+
+html.theme-air-power .login-auth-input:hover {
+  background: rgba(255, 255, 255, 0.74);
+  border-color: rgba(28, 52, 80, 0.32);
+}
+
+html.theme-air-power .login-auth-input:focus {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(44, 84, 126, 0.54);
+  box-shadow: 0 0 0 4px rgba(44, 84, 126, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.78), inset 0 2px 4px rgba(0, 0, 0, 0.01);
+}
+
+html.theme-air-power .login-auth-button {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 62%),
+    linear-gradient(135deg, rgba(16, 38, 62, 0.34) 0%, rgba(23, 50, 78, 0.28) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  box-shadow: 0 12px 24px rgba(31, 62, 94, 0.26), 0 4px 10px rgba(15, 23, 42, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.44);
+  color: #ffffff;
+  text-shadow: 0 1px 1px rgba(12, 18, 34, 0.24);
+}
+
+html.theme-air-power .login-auth-button:hover {
+  filter: brightness(1.04);
+  box-shadow: 0 16px 30px rgba(31, 62, 94, 0.3), 0 6px 14px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.48);
+}
+
+html.theme-air-power .login-auth-button:active {
+  box-shadow: 0 7px 16px rgba(31, 62, 94, 0.22), 0 2px 6px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+html.theme-air-power .login-auth-button:disabled {
+  filter: saturate(0.86);
+  opacity: 0.78;
+}
+
+/* --------------------------------------------------------------------------
+   SCROLLBARS
    -------------------------------------------------------------------------- */
 html.theme-air-power .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
@@ -489,23 +718,46 @@ html.theme-air-power .custom-scrollbar::-webkit-scrollbar-track {
 }
 
 html.theme-air-power .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(30, 58, 95, 0.15);
+  background: rgba(22, 50, 79, 0.16);
   border-radius: 10px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 
 html.theme-air-power .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(30, 58, 95, 0.25);
+  background: rgba(22, 50, 79, 0.26);
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 html.theme-air-power .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(30, 58, 95, 0.15) transparent;
+  scrollbar-color: rgba(22, 50, 79, 0.16) transparent;
 }
 
 /* --------------------------------------------------------------------------
-   AIR POWER FALLBACK FOR NO BACKDROP-FILTER
+   LAYERING
+   -------------------------------------------------------------------------- */
+html.theme-air-power .aura-theme-scope .glass-card,
+html.theme-air-power .aura-theme-scope aside.glass-card,
+html.theme-air-power .aura-theme-scope main.glass-card {
+  z-index: 10;
+}
+
+html.theme-air-power .aura-theme-scope .glass-nav,
+html.theme-air-power .aura-theme-scope nav {
+  z-index: 40;
+}
+
+html.theme-air-power .aura-theme-scope main,
+html.theme-air-power .aura-theme-scope aside,
+html.theme-air-power .aura-theme-scope .markdown-body {
+  position: relative;
+  z-index: 10;
+}
+
+/* --------------------------------------------------------------------------
+   FALLBACKS / ACCESSIBILITY
    -------------------------------------------------------------------------- */
 @supports not (backdrop-filter: blur(10px)) {
   html.theme-air-power .glass-card,
@@ -515,13 +767,10 @@ html.theme-air-power .custom-scrollbar {
   html.theme-air-power .glass-chip {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.92);
   }
 }
 
-/* --------------------------------------------------------------------------
-   AIR POWER REDUCED MOTION
-   -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   html.theme-air-power .glass-card,
   html.theme-air-power .glass-button,
@@ -529,111 +778,10 @@ html.theme-air-power .custom-scrollbar {
   html.theme-air-power .glass-input {
     transition: none;
   }
-}
 
-/* --------------------------------------------------------------------------
-   AIR POWER AURORA BACKGROUND
-   -------------------------------------------------------------------------- */
-html.theme-air-power .aurora-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  background: var(--gradient-aurora);
-  filter: saturate(1.1) contrast(1.02);
-  pointer-events: none;
-}
-
-html.theme-air-power .aurora-bg::before,
-html.theme-air-power .aurora-bg::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  animation: air-aurora-float 25s ease-in-out infinite;
-  opacity: 0.6;
-}
-
-html.theme-air-power .aurora-bg::before {
-  width: 55vw;
-  height: 55vw;
-  background: var(--aurora-1);
-  top: -15%;
-  left: -10%;
-  animation-delay: 0s;
-}
-
-html.theme-air-power .aurora-bg::after {
-  width: 45vw;
-  height: 45vw;
-  background: var(--aurora-2);
-  bottom: -15%;
-  right: -10%;
-  animation-delay: -12s;
-}
-
-html.theme-air-power .aurora-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  animation: air-aurora-float 30s ease-in-out infinite;
-  opacity: 0.5;
-}
-
-html.theme-air-power .aurora-blob-1 {
-  width: 40vw;
-  height: 40vw;
-  background: var(--aurora-3);
-  top: 45%;
-  left: 25%;
-  animation-delay: -8s;
-}
-
-html.theme-air-power .aurora-blob-2 {
-  width: 35vw;
-  height: 35vw;
-  background: var(--aurora-4);
-  top: 5%;
-  right: 20%;
-  animation-delay: -18s;
-}
-
-@keyframes air-aurora-float {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(3%, 4%) scale(1.03);
-  }
-  66% {
-    transform: translate(-2%, 5%) scale(0.98);
-  }
-}
-
-/* Reduced motion for air-power */
-@media (prefers-reduced-motion: reduce) {
   html.theme-air-power .aurora-bg::before,
   html.theme-air-power .aurora-bg::after,
   html.theme-air-power .aurora-blob {
     animation: none;
   }
-}
-
-/* --------------------------------------------------------------------------
-   AIR POWER Z-INDEX LAYERING
-   -------------------------------------------------------------------------- */
-html.theme-air-power .aura-theme-scope main,
-html.theme-air-power .aura-theme-scope aside {
-  position: relative;
-  z-index: 10;
-}
-
-html.theme-air-power .aura-theme-scope .glass-nav,
-html.theme-air-power .aura-theme-scope nav {
-  z-index: 40;
-}
-
-html.theme-air-power .aura-theme-scope .markdown-body {
-  position: relative;
-  z-index: 10;
 }

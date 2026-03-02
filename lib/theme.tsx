@@ -22,9 +22,9 @@ import {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-/** Get initial theme from localStorage or default to brutalist */
+/** Get initial theme from localStorage or default to air-power */
 function getInitialTheme(): ThemeMode {
-  if (typeof window === 'undefined') return 'brutalist';
+  if (typeof window === 'undefined') return 'air-power';
   
   try {
     const saved = localStorage.getItem(THEME_STORAGE_KEY);
@@ -35,7 +35,7 @@ function getInitialTheme(): ThemeMode {
     // localStorage not available
   }
   
-  return 'brutalist';
+  return 'air-power';
 }
 
 interface ThemeProviderProps {
@@ -48,7 +48,7 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'brutalist',
+  defaultTheme = 'air-power',
   respectReducedMotion = true,
 }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<ThemeMode>(defaultTheme);

@@ -118,9 +118,10 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Glass theme: transparent body to show aurora */
+  /* Glass-based themes: transparent body to show aurora */
   .theme-glass-light body,
-  .theme-glass-dark body {
+  .theme-glass-dark body,
+  .theme-air-power body {
     background: transparent !important;
   }
 }
@@ -488,6 +489,24 @@ html, body {
 
 .animate-glass-in {
   animation: fade-in-glass 0.4s ease-out forwards;
+}
+
+/* Theme picker modal polish */
+body.theme-picker-open {
+  overflow: hidden;
+}
+
+body.theme-picker-open .aura-theme-scope aside.glass-card:hover,
+body.theme-picker-open .aura-theme-scope main.glass-card:hover {
+  transform: translateY(0) translateZ(0) !important;
+}
+
+@supports not (backdrop-filter: blur(10px)) {
+  body.theme-picker-open .theme-picker-panel {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--card) !important;
+  }
 }
 
 /* Login screen: no hover lift, slower and smoother glow/brighten transitions */

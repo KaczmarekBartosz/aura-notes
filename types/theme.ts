@@ -1,6 +1,6 @@
 /**
  * Theme type definitions for Aura Notes
- * Supports multi-theme system: brutalist (default), glass-light, glass-dark
+ * Supports multi-theme system: brutalist (default), glass-light, glass-dark, air-power
  */
 
 export type ThemeMode = 'brutalist' | 'glass-light' | 'glass-dark' | 'air-power';

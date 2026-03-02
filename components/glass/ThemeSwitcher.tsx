@@ -38,6 +38,21 @@ export function ThemeSwitcher({
     setIsMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const body = document.body;
+    if (isOpen) {
+      body.classList.add('theme-picker-open');
+    } else {
+      body.classList.remove('theme-picker-open');
+    }
+
+    return () => {
+      body.classList.remove('theme-picker-open');
+    };
+  }, [isOpen, isMounted]);
+
   const handleThemeChange = useCallback((newTheme: ThemeMode) => {
     // Add transition class for smooth theme switch
     if (!reducedMotion) {
@@ -62,7 +77,14 @@ export function ThemeSwitcher({
       <div className="fixed inset-0 z-[120]">
         {/* Backdrop */}
         <button
-          className="absolute inset-0 bg-black/10"
+          className={cn(
+            'absolute inset-0 transition-colors duration-200',
+            isGlass
+              ? theme === 'glass-dark'
+                ? 'bg-black/60 backdrop-blur-[2px]'
+                : 'bg-black/45 backdrop-blur-[2px]'
+              : 'bg-black/50'
+          )}
           aria-label="Zamknij wybór motywu"
           onClick={() => setIsOpen(false)}
         />
@@ -74,9 +96,9 @@ export function ThemeSwitcher({
             'left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))]',
             'top-[calc(env(safe-area-inset-top,0px)+4rem)] sm:left-auto sm:right-[max(0.75rem,env(safe-area-inset-right))] sm:w-[320px]',
             isGlass
-              ? 'glass-card'
+              ? 'theme-picker-panel rounded-2xl border border-[var(--glass-border)] bg-[var(--popover)] text-[var(--foreground)] shadow-[0_24px_56px_rgba(8,18,32,0.34)] backdrop-blur-[24px]'
               : 'bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)]',
-            !reducedMotion && 'animate-in fade-in slide-in-from-top-2 duration-200'
+            !reducedMotion && 'animate-in fade-in duration-200'
           )}
           role="listbox"
           aria-label="Wybierz motyw"
@@ -110,6 +132,7 @@ export function ThemeSwitcher({
           variant="ghost"
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
+            '!hover:translate-x-0 !hover:translate-y-0 !active:translate-x-0 !active:translate-y-0 !hover:scale-100 !active:scale-100',
             isOpen && isGlass && 'bg-[var(--glass-bg-hover)]',
             isOpen && !isGlass && 'bg-foreground text-background'
           )}
