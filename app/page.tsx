@@ -21,6 +21,7 @@ import { cn } from '@/lib/utils';
 import { useDebounce, useScrollProgress } from '@/lib/hooks';
 import { useTheme } from '@/lib/theme';
 import { ThemeSwitcher } from '@/components/glass';
+import { PromptArchitectSkill } from '@/components/skills/prompt-architect';
 
 type SortMode = 'updated_desc' | 'updated_asc' | 'created_desc' | 'created_asc' | 'title_asc';
 
@@ -516,7 +517,10 @@ export default function Page() {
                   isGlass ? "rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)]" : "rounded-none border-2 border-foreground"
                 )}>{theme}</Badge>
               </div>
-              <ThemeSwitcher variant="compact" />
+              <div className="flex items-center gap-2">
+                <PromptArchitectSkill />
+                <ThemeSwitcher variant="compact" />
+              </div>
             </div>
 
             <div className="grid grid-cols-[1fr_auto] gap-3">
