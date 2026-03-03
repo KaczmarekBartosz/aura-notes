@@ -1,0 +1,8 @@
+{
+  "outputStyle": "Explanatory",
+  "enabledMcpjsonServers": [
+    "memory",
+    "supabase"
+  ],
+  "enableAllProjectMcpServers": true
+}
