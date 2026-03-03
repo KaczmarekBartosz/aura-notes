@@ -783,6 +783,7 @@ export default function Page() {
           {/* ── Category chips (browse, no category selected) ── */}
           {activeTab === 'browse' && !activeCategory && !isSearchOpen && (
             <div className="chip-scroll chip-scroll-categories shrink-0">
+              <span className="chip-scroll-spacer" aria-hidden />
               <button
                 className={cn('chip', !activeCategory && 'chip-active')}
                 onClick={() => {
@@ -818,6 +819,7 @@ export default function Page() {
           {/* ── Tag chips (browse, category selected) ── */}
           {activeTab === 'browse' && activeCategory && !isSearchOpen && tagsForCategory.length > 0 && (
             <div className="chip-scroll shrink-0">
+              <span className="chip-scroll-spacer" aria-hidden />
               <button
                 className={cn('chip', !activeTag && 'chip-active')}
                 onClick={() => {

@@ -624,19 +624,23 @@ body.theme-picker-open .aura-theme-scope main.glass-card:hover {
   overflow-y: visible;
   -webkit-overflow-scrolling: touch;
   position: relative;
-  padding: 0.75rem calc(1rem + env(safe-area-inset-right, 0px)) 0.875rem calc(1rem + env(safe-area-inset-left, 0px));
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0.75rem calc(0.85rem + env(safe-area-inset-right, 0px)) 0.875rem 0;
   scroll-snap-type: x proximity;
+  scroll-padding-left: calc(1rem + env(safe-area-inset-left, 0px));
   scrollbar-width: none;
-  -webkit-mask-image: linear-gradient(to right, transparent 0, black 12px, black calc(100% - 12px), transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0, black 12px, black calc(100% - 12px), transparent 100%);
-}
-.chip-scroll-categories {
-  padding-left: calc(0.5rem + env(safe-area-inset-left, 0px));
   -webkit-mask-image: linear-gradient(to right, black 0, black calc(100% - 14px), transparent 100%);
   mask-image: linear-gradient(to right, black 0, black calc(100% - 14px), transparent 100%);
 }
-.chip-scroll-categories > .chip:first-of-type {
-  margin-left: 1rem;
+.chip-scroll-categories {
+  scroll-padding-left: calc(1.25rem + env(safe-area-inset-left, 0px));
+}
+.chip-scroll-spacer {
+  flex: 0 0 calc(0.95rem + env(safe-area-inset-left, 0px));
+}
+.chip-scroll-categories .chip-scroll-spacer {
+  flex-basis: calc(1.15rem + env(safe-area-inset-left, 0px));
 }
 .chip-scroll::-webkit-scrollbar {
   display: none;
