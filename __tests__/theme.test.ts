@@ -11,7 +11,7 @@ import {
 
 test('theme registry includes required themes', () => {
   const ids = THEMES.map((t) => t.id);
-  assert.deepEqual(ids, ['brutalist', 'glass-light', 'glass-dark', 'air-power']);
+  assert.deepEqual(ids, ['brutalist', 'glass-light', 'glass-dark', 'air-power', 'crystal-line']);
 });
 
 test('theme classnames are mapped for all themes', () => {
@@ -20,6 +20,7 @@ test('theme classnames are mapped for all themes', () => {
     'glass-light': 'theme-glass-light',
     'glass-dark': 'theme-glass-dark',
     'air-power': 'theme-air-power',
+    'crystal-line': 'theme-crystal-line',
   };
 
   assert.deepEqual(THEME_CLASSNAMES, expected);
@@ -29,7 +30,8 @@ test('getNextTheme cycles through all themes in order', () => {
   assert.equal(getNextTheme('brutalist'), 'glass-light');
   assert.equal(getNextTheme('glass-light'), 'glass-dark');
   assert.equal(getNextTheme('glass-dark'), 'air-power');
-  assert.equal(getNextTheme('air-power'), 'brutalist');
+  assert.equal(getNextTheme('air-power'), 'crystal-line');
+  assert.equal(getNextTheme('crystal-line'), 'brutalist');
 });
 
 test('isValidTheme accepts only supported themes', () => {
@@ -37,6 +39,7 @@ test('isValidTheme accepts only supported themes', () => {
   assert.equal(isValidTheme('glass-light'), true);
   assert.equal(isValidTheme('glass-dark'), true);
   assert.equal(isValidTheme('air-power'), true);
+  assert.equal(isValidTheme('crystal-line'), true);
   assert.equal(isValidTheme('dark'), false);
   assert.equal(isValidTheme('light'), false);
   assert.equal(isValidTheme(null), false);
