@@ -6,10 +6,11 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeSanitize from 'rehype-sanitize';
 import {
-  ArrowLeft, BookOpen, Search, Star, Palette, LayoutGrid,
+  ArrowLeft, BookOpen, Search, Star, SunMoon, LayoutGrid, ChevronLeft,
   SlidersHorizontal, X, Activity, ShieldCheck, Cpu, Bookmark,
   PenTool, Calendar, TrendingUp, Archive, ChefHat, Sparkles
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import type { NotesPayload, Note } from '@/lib/types';
@@ -50,17 +51,17 @@ const CATEGORY_LABELS: Record<string, string> = {
   'taste': 'Taste',
 };
 
-const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  'fitness-health': <Activity />,
-  'golden-protocols': <ShieldCheck />,
-  'ai-agents': <Cpu />,
-  'bookmarks': <Bookmark />,
-  'design': <PenTool />,
-  'daily-log': <Calendar />,
-  'growth-marketing': <TrendingUp />,
-  'outputs': <Archive />,
-  'recipes': <ChefHat />,
-  'taste': <Sparkles />,
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  'fitness-health': Activity,
+  'golden-protocols': ShieldCheck,
+  'ai-agents': Cpu,
+  'bookmarks': Bookmark,
+  'design': PenTool,
+  'daily-log': Calendar,
+  'growth-marketing': TrendingUp,
+  'outputs': Archive,
+  'recipes': ChefHat,
+  'taste': Sparkles,
 };
 
 /* ── Helpers ── */
@@ -97,6 +98,11 @@ function getSnippet(content: string, q: string): string | null {
   return (start > 0 ? '…' : '') + content.slice(start, end).replace(/\n/g, ' ') + (end < content.length ? '…' : '');
 }
 
+function sanitizeTag(tag: string): string | null {
+  const normalized = tag.trim();
+  return normalized.length > 0 ? normalized : null;
+}
+
 /* ═══════════════════════════════════════════════
    MAIN PAGE COMPONENT
    ═══════════════════════════════════════════════ */
@@ -128,7 +134,6 @@ export default function Page() {
   const [showSortMenu, setShowSortMenu] = useState(false);
 
   /* ── Easter eggs ── */
-  const [dogAnim, setDogAnim] = useState(false);
   const [inkSpills, setInkSpills] = useState<{ id: number; x: number; y: number }[]>([]);
 
   /* ── Pull-to-refresh ── */
@@ -302,13 +307,63 @@ export default function Page() {
     const base = activeCategory
       ? notes.filter((n) => n.category === activeCategory)
       : notes.filter((n) => n.category !== 'system');
-    base.forEach((n) => (n.tags || []).forEach((t) => set.add(t)));
+    base.forEach((n) => {
+      (n.tags || []).forEach((t) => {
+        const normalized = sanitizeTag(t);
+        if (normalized) set.add(normalized);
+      });
+    });
     return Array.from(set).sort((a, b) => a.localeCompare(b, 'pl'));
   }, [notes, activeCategory]);
+
+  const tagCountsForCategory = useMemo(() => {
+    const counts = new Map<string, number>();
+    const base = activeCategory
+      ? notes.filter((n) => n.category === activeCategory)
+      : notes.filter((n) => n.category !== 'system');
+
+    base.forEach((n) => {
+      const uniqueTags = new Set<string>();
+      (n.tags || []).forEach((t) => {
+        const normalized = sanitizeTag(t);
+        if (normalized) uniqueTags.add(normalized);
+      });
+
+      uniqueTags.forEach((tag) => {
+        counts.set(tag, (counts.get(tag) ?? 0) + 1);
+      });
+    });
+
+    return counts;
+  }, [notes, activeCategory]);
+
+  const notesInActiveCategory = useMemo(() => {
+    if (activeCategory) {
+      return notes.filter((n) => n.category === activeCategory && n.category !== 'system').length;
+    }
+    return notes.filter((n) => n.category !== 'system').length;
+  }, [notes, activeCategory]);
+
+  const isBrowseChipRowVisible = activeTab === 'browse' && !isSearchOpen && (!activeCategory || tagsForCategory.length > 0);
+
+  const updateRowSpotlight = useCallback((el: HTMLButtonElement, clientX: number, clientY: number) => {
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty('--spotlight-x', `${clientX - rect.left}px`);
+    el.style.setProperty('--spotlight-y', `${clientY - rect.top}px`);
+    el.dataset.spotlight = 'true';
+  }, []);
+
+  const clearRowSpotlight = useCallback((el: HTMLButtonElement) => {
+    el.dataset.spotlight = 'false';
+  }, []);
 
   const filtered = useMemo(() => {
     const q = debouncedQuery.trim().toLowerCase();
     let out = notes.filter((n) => {
+      const normalizedTags = (n.tags || [])
+        .map(sanitizeTag)
+        .filter((tag): tag is string => Boolean(tag));
+
       if (activeTab === 'desk') return n.isFavorite;
       if (activeTab === 'search') {
         if (!q) return false;
@@ -316,19 +371,19 @@ export default function Page() {
         return (
           n.title.toLowerCase().includes(q) ||
           n.content.toLowerCase().includes(q) ||
-          (n.tags || []).some((t) => t.toLowerCase().includes(q)) ||
+          normalizedTags.some((t) => t.toLowerCase().includes(q)) ||
           n.category.toLowerCase().includes(q)
         );
       }
       // Browse tab
       if (n.category === 'system') return false;
       if (activeCategory && n.category !== activeCategory) return false;
-      if (activeTag && !(n.tags || []).includes(activeTag)) return false;
+      if (activeTag && !normalizedTags.includes(activeTag)) return false;
       if (!q) return true;
       return (
         n.title.toLowerCase().includes(q) ||
         n.content.toLowerCase().includes(q) ||
-        (n.tags || []).some((t) => t.toLowerCase().includes(q))
+        normalizedTags.some((t) => t.toLowerCase().includes(q))
       );
     });
 
@@ -391,7 +446,7 @@ export default function Page() {
   if (!token) {
     return (
       <div className={cn(
-        "aura-theme-scope flex min-h-[100svh] min-h-dvh w-full max-w-full flex-col items-center justify-center p-4 relative overflow-hidden box-border pt-safe transition-all duration-[400ms]",
+        "aura-theme-scope flex min-h-[100svh] min-h-dvh w-full max-w-full flex-col items-center justify-center p-5 relative overflow-hidden box-border pt-safe transition-all duration-[400ms]",
         isGlass ? "bg-transparent" : "bg-background",
         unlocking && "opacity-0 scale-95"
       )}>
@@ -412,89 +467,105 @@ export default function Page() {
           <ThemeSwitcher variant="compact" />
         </div>
 
-        {/* Duck Hunt Dog in retro TV */}
-        <button
-          onClick={() => { setDogAnim(true); setTimeout(() => setDogAnim(false), 300); }}
-          className={cn(
-            "absolute bottom-4 right-4 md:bottom-8 md:right-8 origin-bottom hover:scale-105 transition-transform duration-200 pointer-events-auto z-20 cursor-pointer border-none bg-transparent outline-none focus:outline-none flex flex-col items-center",
-            dogAnim && "dog-clicked"
-          )}
-          title="Duck Hunt Mascot!"
-        >
-          <div className="flex gap-4 md:gap-8 mb-[-2px] z-0">
-            <div className="w-1.5 h-8 md:w-2 md:h-14 bg-foreground origin-bottom rotate-[30deg]"></div>
-            <div className="w-1.5 h-6 md:w-2 md:h-10 bg-foreground origin-bottom -rotate-[20deg]"></div>
-          </div>
-          <div className="relative w-48 h-40 md:w-72 md:h-64 bg-foreground p-3 md:p-5 shadow-[8px_8px_0_var(--foreground)/50] flex">
-            <div className="relative flex-1 bg-[#8b9bb4] overflow-hidden border-2 md:border-4 border-background/20 rounded-sm flex items-center justify-center">
-              <div className="absolute inset-0 bg-black/10 rounded-full blur-md md:blur-xl z-10 pointer-events-none scale-110"></div>
-              <div className="absolute inset-0 pointer-events-none z-10 opacity-20" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }}></div>
-              <img src="/duck_hunt_dog.png" alt="Duck Hunt Mascot" className="w-[130%] h-[130%] object-contain pointer-events-none relative z-0 pt-3 md:pt-6 drop-shadow-md" style={{ imageRendering: 'pixelated' }} />
-            </div>
-            <div className="w-8 md:w-12 ml-2 md:ml-4 flex flex-col gap-2 md:gap-4 py-1 md:py-2 items-center">
-              <div className="w-4 h-4 md:w-6 md:h-6 bg-background rounded-full mb-1"></div>
-              <div className="w-4 h-4 md:w-6 md:h-6 bg-background rounded-full"></div>
-              <div className="w-full flex-1 flex flex-col gap-1.5 md:gap-2 justify-end items-center pb-1 md:pb-2 opacity-50">
-                <div className="w-4 md:w-6 h-0.5 md:h-1 bg-background"></div>
-                <div className="w-4 md:w-6 h-0.5 md:h-1 bg-background"></div>
-                <div className="w-4 md:w-6 h-0.5 md:h-1 bg-background"></div>
-              </div>
-            </div>
-          </div>
-          <div className="flex w-full justify-between px-6 md:px-10 mt-[-2px] z-0">
-            <div className="w-3 h-4 md:w-5 md:h-6 bg-foreground skew-x-12"></div>
-            <div className="w-3 h-4 md:w-5 md:h-6 bg-foreground -skew-x-12"></div>
-          </div>
-        </button>
-
         {!isGlass && (
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
         )}
         <div className={cn(
-          "login-auth-card w-full max-w-sm p-8 text-center relative z-10",
+          "login-auth-card w-full max-w-md p-6 sm:p-8 relative z-10 overflow-hidden",
           isGlass
             ? "glass-card"
-            : "bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] hover:shadow-[12px_12px_0_var(--foreground)] hover:brightness-[1.015]"
+            : "rounded-[2rem] border border-foreground/15 bg-card/95 shadow-[0_24px_70px_rgba(7,15,30,0.18)] backdrop-blur-md"
         )}>
-          <h1 className={cn(
-            "text-4xl tracking-tight mb-2",
-            isGlass ? "font-semibold tracking-tighter" : "font-black uppercase"
-          )}>Aura Notes</h1>
-          <p className={cn(
-            "text-sm mb-8",
-            isGlass ? "font-medium opacity-70 tracking-tight" : "font-bold uppercase tracking-widest opacity-60"
-          )}>Bezpieczny sejf</p>
+          <div className="pointer-events-none absolute inset-0">
+            <div className="absolute -right-16 -top-20 h-52 w-52 rounded-full bg-primary/15 blur-3xl" />
+            <div className="absolute -bottom-16 -left-16 h-44 w-44 rounded-full bg-sky-300/20 blur-3xl" />
+          </div>
+
+          <div className="relative">
+            <div className="mb-6 flex items-center justify-between gap-3">
+              <AuraCrystalLogo className="shrink-0" />
+              <span className={cn(
+                "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] tracking-wide",
+                isGlass
+                  ? "border border-[var(--glass-border)] bg-[var(--glass-bg)] font-medium text-foreground/80"
+                  : "border border-foreground/15 bg-background/70 font-semibold text-foreground/70"
+              )}>
+                <ShieldCheck className="h-3.5 w-3.5" strokeWidth={2.2} />
+                Secure Access
+              </span>
+            </div>
+
+            <div className="space-y-2 text-left">
+              <h1 className={cn(
+                "text-[1.9rem] leading-[1.1] tracking-tight",
+                isGlass ? "font-semibold" : "font-bold"
+              )}>
+                Odblokuj Aura Notes
+              </h1>
+              <p className={cn(
+                "text-[0.95rem] leading-relaxed",
+                isGlass ? "text-foreground/70" : "text-foreground/72"
+              )}>
+                Wprowadź hasło główne, aby otworzyć zaszyfrowane notatki i wrócić do pracy.
+              </p>
+            </div>
+
           <form
-            className="space-y-4"
+            className="mt-6 space-y-4"
             onSubmit={(e) => { e.preventDefault(); loadNotes(loginInput); }}
           >
-            <input
-              type="password"
-              value={loginInput}
-              onChange={(e) => setLoginInput(e.target.value)}
-              placeholder="Wprowadź hasło..."
-              className={cn(
-                "login-auth-input h-12 w-full px-4 text-center transition-all outline-none",
-                isGlass ? "font-medium tracking-tight" : "font-mono font-bold",
-                isGlass
-                  ? "glass-input rounded-2xl border border-foreground/30 dark:border-white/20"
-                  : "rounded-none bg-background border-2 border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:-translate-y-1 focus-visible:-translate-x-1 focus-visible:shadow-[8px_8px_0_var(--primary)] placeholder:text-muted-foreground shadow-[4px_4px_0_var(--foreground)]"
-              )}
-            />
+            <label className={cn(
+              "block text-left text-[0.76rem] uppercase tracking-[0.18em]",
+              isGlass ? "text-foreground/62" : "text-foreground/55"
+            )}>
+              Hasło główne
+            </label>
+            <div className="relative">
+              <ShieldCheck className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-55" strokeWidth={2.2} />
+              <input
+                type="password"
+                value={loginInput}
+                onChange={(e) => setLoginInput(e.target.value)}
+                placeholder="Wpisz hasło..."
+                className={cn(
+                  "login-auth-input h-12 w-full pl-10 pr-4 text-left transition-all outline-none",
+                  isGlass ? "font-medium tracking-tight" : "font-medium",
+                  isGlass
+                    ? "glass-input rounded-2xl border border-foreground/30 dark:border-white/20"
+                    : "rounded-2xl bg-background/88 border border-foreground/20 focus-visible:ring-0 focus-visible:border-primary/65 focus-visible:bg-background"
+                )}
+                autoComplete="current-password"
+              />
+            </div>
             <button
               type="submit"
               disabled={loading}
               className={cn(
-                "login-auth-button w-full h-12 transition-all font-black text-lg outline-none",
+                "login-auth-button group w-full h-12 transition-all outline-none inline-flex items-center justify-center gap-2",
                 isGlass
                   ? "glass-button glass-button-primary rounded-2xl border"
-                  : "rounded-none border-2 border-transparent bg-primary text-primary-foreground hover:border-foreground hover:-translate-y-1 hover:shadow-[4px_4px_0_var(--foreground)] hover:bg-foreground hover:text-background active:translate-y-0 active:translate-x-0 active:shadow-none uppercase tracking-wider"
+                  : "rounded-2xl border border-transparent bg-foreground text-background hover:brightness-110 active:brightness-95"
               )}
             >
-              {loading ? 'Odblokowywanie...' : 'Odblokuj'}
+              <span className={cn("text-[0.95rem]", isGlass ? "font-semibold" : "font-semibold tracking-tight")}>
+                {loading ? 'Odblokowywanie...' : 'Wejdź do panelu'}
+              </span>
+              <span className={cn("transition-transform", !loading && "group-hover:translate-x-0.5")}>→</span>
             </button>
-            {loginError && <p className={cn("text-sm text-destructive mt-2", isGlass ? "font-medium" : "font-black uppercase")}>{loginError}</p>}
+            {loginError && (
+              <p className={cn("text-sm text-destructive mt-1 text-left", isGlass ? "font-medium" : "font-semibold")}>
+                {loginError}
+              </p>
+            )}
           </form>
+
+            <p className={cn(
+              "mt-5 text-[0.78rem] leading-relaxed text-left",
+              isGlass ? "text-foreground/60" : "text-foreground/55"
+            )}>
+              Dane są odszyfrowywane lokalnie na urządzeniu. Bez poprawnego hasła dostęp do notatek pozostaje zablokowany.
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -507,6 +578,7 @@ export default function Page() {
   return (
     <div
       ref={appContainerRef}
+      data-glass-theme={isGlass ? 'true' : 'false'}
       className={cn(
         'aura-theme-scope h-[100dvh] min-h-[100svh] w-full max-w-full overflow-hidden text-foreground font-sans relative overscroll-none box-border pt-safe',
         isGlass ? 'bg-transparent' : 'bg-background'
@@ -541,34 +613,46 @@ export default function Page() {
           <div
             className={cn(
               'header-collapsible shrink-0 relative',
+              isBrowseChipRowVisible && 'header-with-pills',
               isGlass
-                ? 'border-b border-[var(--glass-border)] bg-[var(--glass-bg)]'
+                ? 'bg-[var(--glass-bg)]'
                 : 'border-b md:border-b-4 border-foreground/10 md:border-foreground bg-muted/30',
+              isGlass && !isBrowseChipRowVisible && 'border-b border-[var(--glass-border)]',
               isHeaderHidden && 'md:header-hidden'
             )}
           >
             <div className="flex items-center justify-between px-4 py-3">
               {/* Left: Title or breadcrumb */}
               <div className="flex items-center gap-2 min-w-0 flex-1">
-                {activeTab === 'browse' && activeCategory ? (
+                {activeTab === 'browse' ? (
                   <>
-                    <button
-                      onClick={() => selectCategory(null)}
-                      className={cn(
-                        'text-sm opacity-60 hover:opacity-100 transition-opacity shrink-0',
-                        isGlass ? 'font-medium' : 'font-bold uppercase'
-                      )}
-                    >
-                      ← Wszystkie
-                    </button>
-                    <span className="opacity-30">/</span>
-                    <span className={cn(
-                      'text-lg truncate',
-                      isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight'
-                    )}>
-                      {CATEGORY_ICONS[activeCategory]}{' '}
-                      {CATEGORY_LABELS[activeCategory] || activeCategory}
-                    </span>
+                    <AuraCrystalLogo scrollProgress={listProgress} className="shrink-0" />
+                    {activeCategory && (
+                      <>
+                        <button
+                          onClick={() => selectCategory(null)}
+                          className={cn(
+                            'inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[11px] transition-colors shrink-0',
+                            isGlass ? 'border-[var(--glass-border)] bg-[var(--glass-bg)] hover:bg-[var(--glass-bg-hover)] font-medium' : 'border-foreground/20 bg-background/70 font-bold uppercase'
+                          )}
+                          aria-label="Pokaż wszystkie kategorie"
+                        >
+                          <ChevronLeft className="h-3.5 w-3.5" strokeWidth={2.4} />
+                          Wszystkie
+                        </button>
+                        <span className="opacity-30">/</span>
+                        <span className={cn(
+                          'inline-flex items-center gap-1.5 text-sm truncate',
+                          isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight'
+                        )}>
+                          {(() => {
+                            const ActiveIcon = CATEGORY_ICONS[activeCategory];
+                            return ActiveIcon ? <ActiveIcon className="h-4 w-4 shrink-0 opacity-80" strokeWidth={2} /> : null;
+                          })()}
+                          <span className="truncate">{CATEGORY_LABELS[activeCategory] || activeCategory}</span>
+                        </span>
+                      </>
+                    )}
                   </>
                 ) : activeTab === 'desk' ? (
                   <span className={cn('text-lg', isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight')}>
@@ -582,9 +666,7 @@ export default function Page() {
                   <span className={cn('text-lg', isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight')}>
                     Motyw
                   </span>
-                ) : (
-                  <AuraCrystalLogo scrollProgress={listProgress} />
-                )}
+                ) : null}
               </div>
 
               {/* Right: actions */}
@@ -700,22 +782,33 @@ export default function Page() {
 
           {/* ── Category chips (browse, no category selected) ── */}
           {activeTab === 'browse' && !activeCategory && !isSearchOpen && (
-            <div className="chip-scroll shrink-0">
+            <div className="chip-scroll chip-scroll-categories shrink-0">
               <button
                 className={cn('chip', !activeCategory && 'chip-active')}
-                onClick={() => selectCategory(null)}
+                onClick={() => {
+                  triggerHaptic('light');
+                  selectCategory(null);
+                }}
+                aria-pressed={!activeCategory}
               >
                 Wszystkie ({notes.filter(n => n.category !== 'system').length})
               </button>
               {categories.map((cat) => {
                 const count = notes.filter((n) => n.category === cat).length;
+                const CategoryIcon = CATEGORY_ICONS[cat];
                 return (
                   <button
                     key={cat}
                     className={cn('chip', activeCategory === cat && 'chip-active')}
-                    onClick={() => selectCategory(cat)}
+                    onClick={() => {
+                      triggerHaptic('light');
+                      selectCategory(cat);
+                    }}
+                    aria-pressed={activeCategory === cat}
                   >
-                    {CATEGORY_ICONS[cat] || ''} {CATEGORY_LABELS[cat] || cat} ({count})
+                    {CategoryIcon ? <CategoryIcon className="h-3.5 w-3.5 shrink-0" strokeWidth={2.1} /> : null}
+                    <span className="truncate">{CATEGORY_LABELS[cat] || cat}</span>
+                    <span>({count})</span>
                   </button>
                 );
               })}
@@ -727,17 +820,25 @@ export default function Page() {
             <div className="chip-scroll shrink-0">
               <button
                 className={cn('chip', !activeTag && 'chip-active')}
-                onClick={() => setActiveTag(null)}
+                onClick={() => {
+                  triggerHaptic('light');
+                  setActiveTag(null);
+                }}
+                aria-pressed={!activeTag}
               >
-                Wszystkie
+                Wszystkie ({notesInActiveCategory})
               </button>
               {tagsForCategory.map((t) => (
                 <button
                   key={t}
                   className={cn('chip', activeTag === t && 'chip-active')}
-                  onClick={() => setActiveTag(t)}
+                  onClick={() => {
+                    triggerHaptic('light');
+                    setActiveTag(t);
+                  }}
+                  aria-pressed={activeTag === t}
                 >
-                  #{t}
+                  #{t} ({tagCountsForCategory.get(t) ?? 0})
                 </button>
               ))}
             </div>
@@ -788,12 +889,12 @@ export default function Page() {
                 if (!pullActive.current) return;
                 const dy = Math.max(0, e.touches[0].clientY - touchStartY.current);
                 // Wzór na fizyczne napięcie (Rubber-banding) P1
-                const maxPull = 120;
-                const resistance = maxPull * Math.log10(1 + dy / maxPull);
-                if (dy > 0) setPullDistance(Math.min(resistance, 90));
+                const maxPull = 96;
+                const resistance = maxPull * Math.log10(1 + dy / 18);
+                if (dy > 0) setPullDistance(Math.min(resistance, maxPull));
               }}
               onTouchEnd={() => {
-                if (pullDistance > 50 && pass) {
+                if (pullDistance > 42 && pass) {
                   triggerHaptic('medium');
                   setIsRefreshing(true);
                   loadNotes(pass).finally(() => {
@@ -858,47 +959,68 @@ export default function Page() {
               )}
 
               {/* Note rows */}
-              <div>
+              <div className="note-list">
                 {filtered.map((n, index) => {
                   const snippet = debouncedQuery ? getSnippet(n.content, debouncedQuery.trim()) : null;
-                  const excerpt = n.excerpt || (n.plainText ? n.plainText.slice(0, 80) : n.content.replace(/[#*_\[\]]/g, '').slice(0, 80));
+                  const excerpt = n.excerpt || (n.plainText ? n.plainText.slice(0, 120) : n.content.replace(/[#*_\[\]]/g, '').slice(0, 120));
                   return (
                     <button
                       key={n.id}
                       style={{ '--delay': index } as React.CSSProperties}
                       onClick={() => { triggerHaptic('light'); openReader(n.id); }}
+                      onPointerEnter={(e) => updateRowSpotlight(e.currentTarget, e.clientX, e.clientY)}
+                      onPointerMove={(e) => updateRowSpotlight(e.currentTarget, e.clientX, e.clientY)}
+                      onPointerLeave={(e) => clearRowSpotlight(e.currentTarget)}
+                      onTouchStart={(e) => {
+                        const touch = e.touches[0];
+                        if (touch) updateRowSpotlight(e.currentTarget, touch.clientX, touch.clientY);
+                      }}
+                      onTouchMove={(e) => {
+                        const touch = e.touches[0];
+                        if (touch) updateRowSpotlight(e.currentTarget, touch.clientX, touch.clientY);
+                      }}
+                      onTouchEnd={(e) => clearRowSpotlight(e.currentTarget)}
+                      onTouchCancel={(e) => clearRowSpotlight(e.currentTarget)}
                       className={cn(
                         'note-row',
                         selectedId === n.id && 'note-row-active'
                       )}
+                      title={n.title}
                     >
                       <div className="flex w-full justify-between items-start gap-2">
                         <span className={cn(
-                          'line-clamp-1 text-base leading-snug flex-1',
+                          'line-clamp-2 text-[0.95rem] leading-snug flex-1',
                           isGlass ? 'font-semibold tracking-tight' : 'font-bold tracking-tight'
                         )}>
                           {debouncedQuery ? highlightText(n.title, debouncedQuery.trim()) : n.title}
                         </span>
                         <div
-                          onClick={(e) => { e.stopPropagation(); toggleFavorite(e, n.id); }}
+                          onClick={(e) => { triggerHaptic('light'); e.stopPropagation(); toggleFavorite(e, n.id); }}
                           className={cn(
-                            'shrink-0 cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center text-lg',
-                            'hover:scale-125 transition-transform active:scale-90',
-                            n.isFavorite ? 'opacity-100 text-[#D97A35]' : 'opacity-15 hover:opacity-40'
+                            'shrink-0 cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center',
+                            'transition-transform active:scale-90',
+                            n.isFavorite ? 'text-[#D97A35]' : 'text-foreground/40 hover:text-foreground/65'
                           )}
-                        >★</div>
+                          title={n.isFavorite ? 'Usuń z biurka' : 'Dodaj do biurka'}
+                        >
+                          <Star
+                            className="h-5 w-5"
+                            strokeWidth={1.9}
+                            fill={n.isFavorite ? 'currentColor' : 'none'}
+                          />
+                        </div>
                       </div>
 
                       <p className={cn(
-                        'mt-0.5 text-[0.8rem] opacity-50 line-clamp-1',
-                        isGlass ? 'font-normal' : 'font-medium'
+                        'mt-1 text-[0.82rem] leading-snug line-clamp-2',
+                        isGlass ? 'font-normal text-foreground/78' : 'font-medium text-foreground/72'
                       )}>
                         {snippet ? highlightText(snippet, debouncedQuery.trim()) : excerpt}
                       </p>
 
                       <div className={cn(
-                        'mt-1.5 flex items-center gap-2 text-[0.7rem] opacity-40',
-                        isGlass ? 'font-medium' : 'font-semibold uppercase tracking-wider'
+                        'mt-1.5 flex items-center gap-2 text-[0.68rem]',
+                        isGlass ? 'font-medium text-foreground/56' : 'font-semibold uppercase tracking-wider text-foreground/56'
                       )}>
                         <span>{fmtRelative(n.updatedAt)}</span>
                         <span className="w-1 h-1 bg-current rounded-full"></span>
@@ -980,10 +1102,11 @@ export default function Page() {
 
       {/* ═══ BOTTOM NAV ═══ */}
       <nav
+        data-glass={isGlass ? 'true' : 'false'}
         className={cn(
-          'fixed bottom-0 left-0 right-0 z-40 md:hidden',
+          'fixed bottom-0 left-0 right-0 z-40 md:hidden mobile-bottom-nav',
           isGlass
-            ? 'pb-[calc(env(safe-area-inset-bottom,0px)+0.75rem)] px-4 pt-2 bg-transparent pointer-events-none'
+            ? 'px-4 pt-2 bg-transparent pointer-events-none'
             : 'bg-card border-t-2 border-foreground',
           isReaderOpen ? 'bottom-nav-hide' : 'bottom-nav-show'
         )}
@@ -994,20 +1117,25 @@ export default function Page() {
         )}>
           {([
             { id: 'browse' as AppView, icon: LayoutGrid, label: 'Przegląd' },
-            { id: 'desk' as AppView, icon: Star, label: 'Biurko' },
+            { id: 'desk' as AppView, icon: Star, label: 'Biurko', fillOnActive: true },
             { id: 'search' as AppView, icon: Search, label: 'Szukaj' },
-            { id: 'theme' as AppView, icon: Palette, label: 'Motyw' },
-          ]).map(({ id, icon: Icon, label }) => (
+            { id: 'theme' as AppView, icon: SunMoon, label: 'Motyw' },
+          ]).map(({ id, icon: Icon, label, fillOnActive }) => (
             <button
               key={id}
               className="bottom-nav-v2-item relative"
               data-active={activeTab === id}
               onClick={() => {
+                triggerHaptic('light');
                 setActiveTab(id);
                 if (id === 'search') setQuery('');
               }}
             >
-              <Icon className="h-6 w-6" strokeWidth={activeTab === id ? 2.5 : 1.5} />
+              <Icon
+                className="h-6 w-6"
+                strokeWidth={activeTab === id ? 2.5 : 1.5}
+                fill={fillOnActive && activeTab === id ? 'currentColor' : 'none'}
+              />
               <span className={cn(
                 'bottom-nav-v2-label',
                 isGlass ? 'tracking-normal normal-case' : 'uppercase tracking-wider'
@@ -1100,11 +1228,11 @@ function ReaderContent({
   const categoryTint = useMemo(() => {
     if (!isGlass) return 'transparent';
     switch (note.category) {
-      case 'fitness-health': return 'rgba(74, 222, 128, 0.05)';
-      case 'design': return 'rgba(192, 132, 252, 0.05)';
-      case 'golden-protocols': return 'rgba(250, 204, 21, 0.05)';
-      case 'ai-agents': return 'rgba(96, 165, 250, 0.05)';
-      case 'growth-marketing': return 'rgba(248, 113, 113, 0.05)';
+      case 'fitness-health': return 'rgba(74, 222, 128, 0.16)';
+      case 'design': return 'rgba(192, 132, 252, 0.16)';
+      case 'golden-protocols': return 'rgba(250, 204, 21, 0.13)';
+      case 'ai-agents': return 'rgba(96, 165, 250, 0.16)';
+      case 'growth-marketing': return 'rgba(248, 113, 113, 0.16)';
       default: return 'transparent';
     }
   }, [note.category, isGlass]);
@@ -1119,7 +1247,12 @@ function ReaderContent({
       {isGlass && (
         <div 
           className="absolute inset-0 pointer-events-none transition-colors duration-700 z-0" 
-          style={{ background: `radial-gradient(ellipse at top right, ${categoryTint}, transparent 60%)` }}
+          style={{
+            background: `
+              radial-gradient(120% 85% at 92% -8%, ${categoryTint} 0%, transparent 68%),
+              radial-gradient(140% 90% at -20% 130%, rgba(255,255,255,0.08) 0%, transparent 72%)
+            `
+          }}
         />
       )}
 
@@ -1135,6 +1268,7 @@ function ReaderContent({
       <div 
         className={cn(
           'flex items-center gap-2 px-4 py-2 shrink-0 header-collapsible relative z-20 transition-shadow',
+          isGlass && 'reader-header-glass',
           isGlass
             ? 'border-b border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl'
             : 'border-b-2 border-foreground/10 bg-muted/20',
@@ -1189,10 +1323,18 @@ function ReaderContent({
               <button
                 onClick={(e) => { triggerHaptic('medium'); toggleFavorite(e, note.id); }}
                 className={cn(
-                  'mt-1 text-xl hover:scale-125 transition-transform active:scale-90 cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0',
-                  note.isFavorite ? 'opacity-100 text-[#D97A35]' : 'opacity-20 hover:opacity-60'
+                  'mt-1 transition-transform active:scale-90 cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0',
+                  note.isFavorite ? 'text-[#D97A35]' : 'text-foreground/45 hover:text-foreground/72'
                 )}
-              >★</button>
+                aria-label={note.isFavorite ? 'Usuń z biurka' : 'Dodaj do biurka'}
+                aria-pressed={note.isFavorite === true}
+              >
+                <Star
+                  className="h-5 w-5"
+                  strokeWidth={1.9}
+                  fill={note.isFavorite ? 'currentColor' : 'none'}
+                />
+              </button>
             </h1>
 
             <div className={cn(
@@ -1208,7 +1350,10 @@ function ReaderContent({
 
             {note.tags && note.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {note.tags.map((t: string) => (
+                {note.tags
+                  .map((t: string) => sanitizeTag(t))
+                  .filter((t): t is string => Boolean(t))
+                  .map((t: string) => (
                   <Badge key={t} variant="outline" className={cn(
                     'text-[11px] px-2 py-1',
                     isGlass

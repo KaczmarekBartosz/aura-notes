@@ -32,9 +32,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  minimumScale: 1,
   viewportFit: 'cover',
+  interactiveWidget: 'resizes-content',
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#f2f3f7' },
     { media: '(prefers-color-scheme: dark)', color: '#2a2b33' },
@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pl" suppressHydrationWarning>
       <body className={inter.variable}>
-        <ThemeProvider defaultTheme="air-power">
+        <ThemeProvider defaultTheme="crystal-line">
           <PwaClientEnhancements />
           {children}
         </ThemeProvider>

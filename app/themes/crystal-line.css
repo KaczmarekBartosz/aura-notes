@@ -546,6 +546,9 @@ html.theme-crystal-line .aura-theme-scope .chip {
   text-transform: none;
   letter-spacing: normal;
   font-weight: 600;
+  min-height: 2rem;
+  line-height: 1.1;
+  white-space: nowrap;
 }
 
 html.theme-crystal-line .aura-theme-scope .chip:hover {
@@ -560,6 +563,9 @@ html.theme-crystal-line .aura-theme-scope .chip-active {
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.52);
   box-shadow: 0 10px 24px rgba(31, 62, 94, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  transform: none;
+  outline: 2px solid rgba(40, 100, 175, 0.32);
+  outline-offset: 1px;
 }
 
 html.theme-crystal-line .aura-theme-scope .note-btn {
@@ -694,7 +700,9 @@ html.theme-crystal-line [data-slot="select-item"]:hover {
 
 html.theme-crystal-line .aura-theme-scope [data-slot="badge"],
 html.theme-crystal-line .glass-badge {
-  background: rgba(255, 255, 255, 0.15);
+  background:
+    linear-gradient(130deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.08) 100%),
+    rgba(255, 255, 255, 0.18);
   border: 1px solid rgba(255, 255, 255, 0.4);
   /* Spatial Badge Physics - P3: Podwójny inset symulujący załamanie krawędzi góra/dół */
   box-shadow: 
@@ -708,11 +716,12 @@ html.theme-crystal-line .glass-badge {
   text-transform: none;
   letter-spacing: normal;
   font-weight: 600;
+  min-height: 1.5rem;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 /* Progressive blur dla nagłówków (P1) */
-html.theme-crystal-line .header-collapsible {
+html.theme-crystal-line .reader-header-glass {
   border-bottom: none !important;
   -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
   mask-image: linear-gradient(to bottom, black 85%, transparent 100%);

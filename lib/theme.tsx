@@ -26,14 +26,26 @@ import {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 const GLASS_THEME_CLASS_SELECTORS = GLASS_THEME_IDS.map((id) => `.${THEME_CLASSNAMES[id]}`).join(', ');
 
-/** Get initial theme from localStorage or default to air-power */
+const THEME_DEFAULT_MIGRATION_KEY = 'aura-theme-default-v3-migrated';
+
+/** Get initial theme from localStorage or default to crystal-line */
 function getInitialTheme(): ThemeMode {
-  if (typeof window === 'undefined') return 'air-power';
+  if (typeof window === 'undefined') return 'crystal-line';
   
   try {
     const saved = localStorage.getItem(THEME_STORAGE_KEY);
     if (saved === 'crystalline') {
       return 'crystal-line';
+    }
+    // One-time migration from old default to new default.
+    // If user explicitly sets air-power later, we respect it.
+    if (saved === 'air-power') {
+      const migrated = localStorage.getItem(THEME_DEFAULT_MIGRATION_KEY);
+      if (!migrated) {
+        localStorage.setItem(THEME_DEFAULT_MIGRATION_KEY, '1');
+        localStorage.setItem(THEME_STORAGE_KEY, 'crystal-line');
+        return 'crystal-line';
+      }
     }
     if (isValidTheme(saved)) {
       return saved;
@@ -42,7 +54,7 @@ function getInitialTheme(): ThemeMode {
     // localStorage not available
   }
   
-  return 'air-power';
+  return 'crystal-line';
 }
 
 interface ThemeProviderProps {
@@ -55,7 +67,7 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'air-power',
+  defaultTheme = 'crystal-line',
   respectReducedMotion = true,
 }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<ThemeMode>(defaultTheme);
