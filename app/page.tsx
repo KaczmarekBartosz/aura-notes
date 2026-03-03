@@ -7,12 +7,13 @@ import rehypeHighlight from 'rehype-highlight';
 import rehypeSanitize from 'rehype-sanitize';
 import {
   ArrowLeft, BookOpen, Search, Star, Palette, LayoutGrid,
-  SlidersHorizontal, X,
+  SlidersHorizontal, X, Activity, ShieldCheck, Cpu, Bookmark,
+  PenTool, Calendar, TrendingUp, Archive, ChefHat, Sparkles
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import type { NotesPayload, Note } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { cn, triggerHaptic } from '@/lib/utils';
 import {
   useDebounce,
   useScrollProgress,
@@ -21,6 +22,7 @@ import {
 } from '@/lib/hooks';
 import { useTheme } from '@/lib/theme';
 import { ThemeSwitcher } from '@/components/glass';
+import { AuraCrystalLogo } from '@/components/glass/AuraCrystalLogo';
 
 type SortMode = 'updated_desc' | 'updated_asc' | 'created_desc' | 'created_asc' | 'title_asc';
 type AppView = 'browse' | 'desk' | 'search' | 'theme';
@@ -36,7 +38,7 @@ const SORT_LABELS: Record<SortMode, string> = {
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
-  'fitness-health': 'Fitness & Health',
+  'fitness-health': 'Fitness',
   'golden-protocols': 'Gold Protocols',
   'ai-agents': 'AI Agents',
   'bookmarks': 'Bookmarks',
@@ -48,17 +50,17 @@ const CATEGORY_LABELS: Record<string, string> = {
   'taste': 'Taste',
 };
 
-const CATEGORY_ICONS: Record<string, string> = {
-  'fitness-health': 'FIT',
-  'golden-protocols': 'GP',
-  'ai-agents': 'AI',
-  'bookmarks': 'BM',
-  'design': 'DES',
-  'daily-log': 'LOG',
-  'growth-marketing': 'MKT',
-  'outputs': 'OUT',
-  'recipes': 'RCP',
-  'taste': 'TST',
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  'fitness-health': <Activity />,
+  'golden-protocols': <ShieldCheck />,
+  'ai-agents': <Cpu />,
+  'bookmarks': <Bookmark />,
+  'design': <PenTool />,
+  'daily-log': <Calendar />,
+  'growth-marketing': <TrendingUp />,
+  'outputs': <Archive />,
+  'recipes': <ChefHat />,
+  'taste': <Sparkles />,
 };
 
 /* ── Helpers ── */
@@ -145,6 +147,7 @@ export default function Page() {
   const debouncedQuery = useDebounce(query, 150);
   const { progress: desktopReadProgress, scrollY: desktopScrollY } = useScrollProgress(desktopReaderRef);
   const { progress: mobileReadProgress, scrollY: mobileScrollY } = useScrollProgress(mobileReaderRef);
+  const { progress: listProgress } = useScrollProgress(listRef);
   const isHeaderHidden = useCollapsibleHeader(listRef);
 
   /* ── Navigation handlers ── */
@@ -545,9 +548,7 @@ export default function Page() {
                     Motyw
                   </span>
                 ) : (
-                  <span className={cn('text-lg', isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight')}>
-                    Aura Notes
-                  </span>
+                  <AuraCrystalLogo scrollProgress={listProgress} />
                 )}
               </div>
 
@@ -626,40 +627,41 @@ export default function Page() {
           </div>
 
           {/* ── Inline search bar ── */}
-          {isSearchOpen && (
-            <div className={cn(
-              'shrink-0 px-4 py-3',
-              isGlass ? 'border-b border-[var(--glass-border)] bg-[var(--glass-bg)]' : 'border-b md:border-b-4 border-foreground/10 md:border-foreground bg-muted/20'
-            )}>
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" strokeWidth={2} />
-                  <Input
-                    ref={searchRef}
+          <div className={cn("search-bar-wrapper", isSearchOpen ? "is-open" : "")}>
+            <div className="search-bar-inner">
+              <div className={cn(
+                'shrink-0 px-4 py-3',
+                isGlass ? 'border-b border-[var(--glass-border)] bg-[var(--glass-bg)]' : 'border-b md:border-b-4 border-foreground/10 md:border-foreground bg-muted/20'
+              )}>
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" strokeWidth={2} />
+                    <Input
+                      ref={searchRef}
+                      className={cn(
+                        'pl-9 h-11 transition-all',
+                        isGlass
+                          ? 'glass-input rounded-2xl border font-medium'
+                          : 'rounded-none bg-background border-2 border-foreground font-bold focus-visible:ring-0 focus-visible:border-primary'
+                      )}
+                      placeholder={activeCategory ? `Szukaj w ${CATEGORY_LABELS[activeCategory] || activeCategory}...` : 'Szukaj we wszystkich...'}
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                    />
+                  </div>
+                  <button
+                    onClick={() => { triggerHaptic('light'); closeSearch(); }}
                     className={cn(
-                      'pl-9 h-11 transition-all',
-                      isGlass
-                        ? 'glass-input rounded-2xl border font-medium'
-                        : 'rounded-none bg-background border-2 border-foreground font-bold focus-visible:ring-0 focus-visible:border-primary'
+                      'min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0 transition-colors',
+                      isGlass ? 'hover:bg-[var(--glass-bg-hover)] rounded-full' : 'hover:bg-muted'
                     )}
-                    placeholder={activeCategory ? `Szukaj w ${CATEGORY_LABELS[activeCategory] || activeCategory}...` : 'Szukaj we wszystkich...'}
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    autoFocus
-                  />
+                  >
+                    <X className="h-5 w-5" strokeWidth={2} />
+                  </button>
                 </div>
-                <button
-                  onClick={closeSearch}
-                  className={cn(
-                    'min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0',
-                    isGlass ? 'hover:bg-[var(--glass-bg-hover)] rounded-full' : 'hover:bg-muted'
-                  )}
-                >
-                  <X className="h-5 w-5" strokeWidth={2} />
-                </button>
               </div>
             </div>
-          )}
+          </div>
 
           {/* ── Category chips (browse, no category selected) ── */}
           {activeTab === 'browse' && !activeCategory && !isSearchOpen && (
@@ -750,14 +752,19 @@ export default function Page() {
               onTouchMove={(e) => {
                 if (!pullActive.current) return;
                 const dy = Math.max(0, e.touches[0].clientY - touchStartY.current);
-                if (dy > 0) setPullDistance(Math.min(dy * 0.5, 80));
+                // Wzór na fizyczne napięcie (Rubber-banding) P1
+                const maxPull = 120;
+                const resistance = maxPull * Math.log10(1 + dy / maxPull);
+                if (dy > 0) setPullDistance(Math.min(resistance, 90));
               }}
               onTouchEnd={() => {
                 if (pullDistance > 50 && pass) {
+                  triggerHaptic('medium');
                   setIsRefreshing(true);
                   loadNotes(pass).finally(() => {
                     setIsRefreshing(false);
                     setPullDistance(0);
+                    triggerHaptic('light');
                   });
                 } else {
                   setPullDistance(0);
@@ -817,13 +824,14 @@ export default function Page() {
 
               {/* Note rows */}
               <div>
-                {filtered.map((n) => {
+                {filtered.map((n, index) => {
                   const snippet = debouncedQuery ? getSnippet(n.content, debouncedQuery.trim()) : null;
                   const excerpt = n.excerpt || (n.plainText ? n.plainText.slice(0, 80) : n.content.replace(/[#*_\[\]]/g, '').slice(0, 80));
                   return (
                     <button
                       key={n.id}
-                      onClick={() => openReader(n.id)}
+                      style={{ '--delay': index } as React.CSSProperties}
+                      onClick={() => { triggerHaptic('light'); openReader(n.id); }}
                       className={cn(
                         'note-row',
                         selectedId === n.id && 'note-row-active'
@@ -940,12 +948,15 @@ export default function Page() {
         className={cn(
           'fixed bottom-0 left-0 right-0 z-40 md:hidden',
           isGlass
-            ? 'bg-[var(--glass-bg)] backdrop-blur-xl border-t border-[var(--glass-border)]'
+            ? 'pb-[calc(env(safe-area-inset-bottom,0px)+0.75rem)] px-4 pt-2 bg-transparent pointer-events-none'
             : 'bg-card border-t-2 border-foreground',
           isReaderOpen ? 'bottom-nav-hide' : 'bottom-nav-show'
         )}
       >
-        <div className="bottom-nav-v2">
+        <div className={cn(
+          "bottom-nav-v2 pointer-events-auto",
+          isGlass ? "glass-nav rounded-[2rem]" : ""
+        )}>
           {([
             { id: 'browse' as AppView, icon: LayoutGrid, label: 'Przegląd' },
             { id: 'desk' as AppView, icon: Star, label: 'Biurko' },
@@ -1050,8 +1061,33 @@ function ReaderContent({
   onBack: (() => void) | undefined;
   toggleFavorite: (e: React.MouseEvent, id: string) => void;
 }) {
+  // Contextual Theming (P3)
+  const categoryTint = useMemo(() => {
+    if (!isGlass) return 'transparent';
+    switch (note.category) {
+      case 'fitness-health': return 'rgba(74, 222, 128, 0.05)';
+      case 'design': return 'rgba(192, 132, 252, 0.05)';
+      case 'golden-protocols': return 'rgba(250, 204, 21, 0.05)';
+      case 'ai-agents': return 'rgba(96, 165, 250, 0.05)';
+      case 'growth-marketing': return 'rgba(248, 113, 113, 0.05)';
+      default: return 'transparent';
+    }
+  }, [note.category, isGlass]);
+
+  // Scroll-Driven Shadows (P1)
+  const shadowOpacity = Math.min(readerScrollY / 50, 0.15);
+  const borderOpacity = Math.min(readerScrollY / 20, 0.6);
+
   return (
-    <div className="flex flex-col h-full" key={note.id}>
+    <div className="flex flex-col h-full relative" key={note.id}>
+      {/* Contextual gradient background */}
+      {isGlass && (
+        <div 
+          className="absolute inset-0 pointer-events-none transition-colors duration-700 z-0" 
+          style={{ background: `radial-gradient(ellipse at top right, ${categoryTint}, transparent 60%)` }}
+        />
+      )}
+
       {/* Progress bar */}
       <div className="absolute top-0 left-0 right-0 h-[2px] z-30 bg-foreground/5">
         <div
@@ -1061,16 +1097,22 @@ function ReaderContent({
       </div>
 
       {/* Header */}
-      <div className={cn(
-        'flex items-center gap-2 px-4 py-2 shrink-0 header-collapsible',
-        isGlass
-          ? 'border-b border-[var(--glass-border)] bg-[var(--glass-bg)]'
-          : 'border-b-2 border-foreground/10 bg-muted/20',
-        readerScrollY > 100 && !onBack && 'header-hidden'
-      )}>
+      <div 
+        className={cn(
+          'flex items-center gap-2 px-4 py-2 shrink-0 header-collapsible relative z-20 transition-shadow',
+          isGlass
+            ? 'border-b border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl'
+            : 'border-b-2 border-foreground/10 bg-muted/20',
+          readerScrollY > 100 && !onBack && 'header-hidden'
+        )}
+        style={isGlass ? {
+          boxShadow: `0 4px 24px rgba(0,0,0,${shadowOpacity})`,
+          borderBottomColor: `rgba(255,255,255,${borderOpacity * 0.5})`
+        } : undefined}
+      >
         {onBack && (
           <button
-            onClick={onBack}
+            onClick={() => { triggerHaptic('light'); onBack(); }}
             className={cn(
               'min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors',
               isGlass ? 'hover:bg-[var(--glass-bg-hover)] rounded-full' : 'hover:bg-muted'
@@ -1097,20 +1139,20 @@ function ReaderContent({
       <div
         ref={readerRef}
         className={cn(
-          'min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-5 md:p-12 custom-scrollbar selection:bg-foreground selection:text-background overscroll-y-contain touch-pan-y',
+          'min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-6 md:p-12 custom-scrollbar selection:bg-foreground selection:text-background overscroll-y-contain touch-pan-y relative z-10',
           isGlass ? 'bg-transparent' : 'bg-background'
         )}
       >
-        <article className="markdown-body mx-auto max-w-[750px] pb-24">
+        <article className="markdown-body mx-auto pb-24">
           {/* Note header */}
-          <div className={cn('mb-10 pb-6', isGlass ? 'border-b border-[var(--glass-border)]' : 'border-b-2 border-foreground/10')}>
+          <div className={cn('mb-12 pb-6', isGlass ? 'border-b border-[var(--glass-border)]' : 'border-b-2 border-foreground/10')}>
             <h1 className={cn(
               'text-3xl md:text-[2.5rem] leading-[1.1] mb-4 break-words border-none pb-0 flex items-start gap-3',
               isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tighter'
             )}>
               {note.title}
               <button
-                onClick={(e) => toggleFavorite(e, note.id)}
+                onClick={(e) => { triggerHaptic('medium'); toggleFavorite(e, note.id); }}
                 className={cn(
                   'mt-1 text-xl hover:scale-125 transition-transform active:scale-90 cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0',
                   note.isFavorite ? 'opacity-100 text-[#D97A35]' : 'opacity-20 hover:opacity-60'
@@ -1130,12 +1172,12 @@ function ReaderContent({
             </div>
 
             {note.tags && note.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {note.tags.map((t: string) => (
                   <Badge key={t} variant="outline" className={cn(
-                    'text-[10px] px-2 py-0.5',
+                    'text-[11px] px-2 py-1',
                     isGlass
-                      ? 'rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] font-medium'
+                      ? 'rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] font-medium shadow-none'
                       : 'rounded-none border border-foreground/20 uppercase font-bold'
                   )}>#{t}</Badge>
                 ))}

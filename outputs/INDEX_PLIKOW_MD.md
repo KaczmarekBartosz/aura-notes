@@ -5,7 +5,7 @@ category: system
 
 # INDEX PLIKÓW MD (AUTO)
 
-Wygenerowano: 2026-03-03T08:33:42.001Z
+Wygenerowano: 2026-03-03T13:19:56.725Z
 Liczba notatek: 95
 
 ## ai-agents (17)

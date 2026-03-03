@@ -14,6 +14,7 @@ npm run build        # build:index + next build (index MUST run first)
 npm run build:index  # Regenerate netlify/functions/data/notes-index.json from markdown files
 npm run start        # Production server locally
 npm run lint         # ESLint (next/core-web-vitals)
+npm run test         # Node built-in test runner (node:test + assert) — tests in __tests__/
 ```
 
 **Build order matters:** `build:index` generates `netlify/functions/data/notes-index.json` from markdown files. This file must exist before `next build` runs. The `build` script handles this automatically.
@@ -64,7 +65,27 @@ No `.env` file needed for local dev — the dev route uses hardcoded password `"
 - **Netlify** deployment with `@netlify/plugin-nextjs`
 - **PWA** with hand-written Service Worker (`public/sw.js`)
 
-No `src/` directory — files are at root level (`app/`, `lib/`, `components/`). Path alias `@/*` maps to project root.
+No `src/` directory — files are at root level (`app/`, `lib/`, `components/`, `types/`). Path alias `@/*` maps to project root.
+
+### Theme System
+
+Five named themes managed by a custom `ThemeProvider` context (`lib/theme.tsx`), **not** `next-themes`:
+
+| Theme ID | Appearance | Type |
+|---|---|---|
+| `brutalist` | system | Base (no glass) |
+| `glass-light` | light | Glassmorphism |
+| `glass-dark` | dark | Glassmorphism |
+| `air-power` | light | Glassmorphism (default) |
+| `crystal-line` | dark | Glassmorphism |
+
+**Single-registry architecture** — all theme metadata lives in `THEME_REGISTRY` array in `types/theme.ts`. Adding a new theme only requires adding one entry there; types, classnames, and cycling order are derived from it automatically.
+
+- Theme stored in `localStorage` key `aura-theme-v2`
+- Applied by toggling CSS classes (`theme-brutalist`, `theme-glass-light`, etc.) on `<html>` and `<body>`
+- Glass themes have a `backdrop-filter` capability check; a CSS fallback is injected via `ThemeProvider` when unsupported
+- Glass UI components live in `components/glass/` (`GlassCard`, `GlassButton`, `GlassNav`, `ThemeSwitcher`)
+- Theme CSS per glass theme in `app/themes/` (`air-power.css`, `crystal-line.css`, `glass.css`)
 
 ## Design System — Brutalist Matte E-Reader
 
@@ -78,12 +99,12 @@ Core visual rules:
 
 Custom CSS classes in `globals.css`: `.chip`/`.chip-active` (tag filters), `.note-btn`/`.note-btn-active` (note list items), `.markdown-body` (reader), `.vignette-grain` (e-ink texture overlay), `.animate-ink-spill` (shake easter egg).
 
-Theme toggle is manual (`document.documentElement.classList.toggle('dark')` + `localStorage` key `aura-theme`). Does **not** use `next-themes`.
+Theme is managed by `ThemeProvider` from `lib/theme.tsx` — a custom React Context, **not** `next-themes` (package is installed but unused). Default theme: `air-power`. Legacy `aura-theme` key in localStorage is still read to preserve the dark/light preference for the `brutalist` theme only.
 
 ## Key Conventions
 
 - shadcn components in `components/ui/` are **heavily modified** — don't blindly sync with upstream shadcn templates
-- Theming via manual classList + localStorage, not next-themes
+- Theming via `ThemeProvider` context (`lib/theme.tsx`) — applies CSS classes to `<html>`/`<body>`, persists to localStorage
 - `cn()` utility from `lib/utils.ts` (clsx + tailwind-merge)
 - iOS PWA: viewport `cover`, safe-area insets via `.pt-safe`/`.pb-safe`/`.px-safe`, gesture/zoom blocking
 - Service Worker registered by `PwaClientEnhancements` component in layout

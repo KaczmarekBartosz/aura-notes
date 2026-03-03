@@ -19,26 +19,39 @@ html.theme-crystal-line {
   --font-mono-theme: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
 
   /* Glass surfaces - thick optical material */
-  --glass-bg: rgba(255, 255, 255, 0.26);
-  --glass-bg-hover: rgba(255, 255, 255, 0.36);
-  --glass-bg-active: rgba(255, 255, 255, 0.48);
-  --glass-sheen: linear-gradient(138deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.36) 42%, rgba(162, 199, 255, 0.12) 100%);
-  --glass-sheen-hover: linear-gradient(138deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.5) 42%, rgba(198, 170, 255, 0.14) 100%);
-  --glass-border: rgba(246, 251, 255, 0.78);
-  --glass-border-strong: rgba(255, 255, 255, 0.92);
-  --glass-edge-outer: rgba(15, 44, 84, 0.28);
-  --glass-inner-highlight: rgba(255, 255, 255, 0.97);
-  --glass-inner-shadow: rgba(8, 26, 56, 0.1);
-  --glass-reflection: radial-gradient(130% 100% at 0% 0%, rgba(255, 255, 255, 0.84) 0%, rgba(255, 255, 255, 0) 62%);
-  --glass-reflection-hover: radial-gradient(130% 100% at 0% 0%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.06) 64%, rgba(255, 255, 255, 0) 72%);
-  --glass-prism: linear-gradient(118deg, rgba(255, 77, 173, 0.22) 0%, rgba(95, 202, 255, 0.24) 32%, rgba(255, 255, 255, 0.12) 56%, rgba(139, 92, 246, 0.22) 100%);
-  --glass-shadow: 0 22px 46px rgba(16, 44, 89, 0.2), 0 8px 18px rgba(18, 58, 112, 0.12), 0 1px 0 rgba(255, 255, 255, 0.78) inset;
-  --glass-shadow-lg: 0 32px 68px rgba(10, 34, 74, 0.28), 0 14px 30px rgba(20, 64, 120, 0.18), 0 1px 0 rgba(255, 255, 255, 0.88) inset;
+  --glass-bg: rgba(255, 255, 255, 0.15);
+  --glass-bg-hover: rgba(255, 255, 255, 0.25);
+  --glass-bg-active: rgba(255, 255, 255, 0.35);
+  --glass-sheen: linear-gradient(138deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.25) 42%, rgba(162, 199, 255, 0.1) 100%);
+  --glass-sheen-hover: linear-gradient(138deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.35) 42%, rgba(198, 170, 255, 0.15) 100%);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-border-strong: rgba(255, 255, 255, 0.95);
+  --glass-edge-outer: rgba(15, 44, 84, 0.35);
+  --glass-inner-highlight: rgba(255, 255, 255, 0.95);
+  --glass-inner-shadow: rgba(8, 26, 56, 0.15);
+  --glass-reflection: radial-gradient(130% 100% at 0% 0%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 62%);
+  --glass-reflection-hover: radial-gradient(130% 100% at 0% 0%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.05) 64%, rgba(255, 255, 255, 0) 72%);
+  --glass-prism: linear-gradient(118deg, rgba(255, 77, 173, 0.2) 0%, rgba(95, 202, 255, 0.2) 32%, rgba(255, 255, 255, 0.1) 56%, rgba(139, 92, 246, 0.2) 100%);
+  
+  /* Deep refractive shadows */
+  --glass-shadow: 
+    0 32px 64px rgba(10, 34, 74, 0.18), 
+    0 12px 24px rgba(18, 58, 112, 0.12), 
+    0 4px 12px rgba(22, 65, 125, 0.08),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1.5px 0 rgba(11, 34, 68, 0.05);
+    
+  --glass-shadow-lg: 
+    0 42px 84px rgba(8, 28, 62, 0.24), 
+    0 18px 36px rgba(16, 52, 100, 0.16), 
+    0 6px 16px rgba(20, 60, 115, 0.1),
+    inset 0 1.5px 0 rgba(255, 255, 255, 1),
+    inset 0 -1.5px 0 rgba(11, 34, 68, 0.08);
 
-  /* Backdrop blur intensities */
-  --glass-blur: blur(26px) saturate(188%);
-  --glass-blur-heavy: blur(44px) saturate(215%);
-  --glass-blur-light: blur(18px) saturate(165%);
+  /* Backdrop blur intensities - increased for frosted look */
+  --glass-blur: blur(36px) saturate(200%);
+  --glass-blur-heavy: blur(54px) saturate(240%);
+  --glass-blur-light: blur(24px) saturate(180%);
 
   /* Accents */
   --accent-teal: rgba(46, 136, 216, 0.95);
@@ -679,15 +692,30 @@ html.theme-crystal-line [data-slot="select-item"]:hover {
   color: var(--foreground);
 }
 
-html.theme-crystal-line .aura-theme-scope [data-slot="badge"] {
+html.theme-crystal-line .aura-theme-scope [data-slot="badge"],
+html.theme-crystal-line .glass-badge {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  /* Spatial Badge Physics - P3: Podwójny inset symulujący załamanie krawędzi góra/dół */
+  box-shadow: 
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 1px rgba(10, 30, 60, 0.1),
+    0 4px 6px rgba(0, 0, 0, 0.05) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 9999px;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-bg);
   color: var(--foreground);
-  box-shadow: none !important;
   text-transform: none;
   letter-spacing: normal;
   font-weight: 600;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Progressive blur dla nagłówków (P1) */
+html.theme-crystal-line .header-collapsible {
+  border-bottom: none !important;
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
 }
 
 /* --------------------------------------------------------------------------
