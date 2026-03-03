@@ -140,8 +140,42 @@ export default function Page() {
   const mobileReaderRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const appContainerRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef(0);
   const pullActive = useRef(false);
+
+  /* ── Aura Spotlight (Pointer Tracking) ── */
+  useEffect(() => {
+    if (!isGlass || !appContainerRef.current) return;
+    const container = appContainerRef.current;
+    
+    const updatePointer = (clientX: number, clientY: number) => {
+      const rect = container.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      container.style.setProperty('--pointer-x', `${x}px`);
+      container.style.setProperty('--pointer-y', `${y}px`);
+    };
+
+    const handlePointerMove = (e: PointerEvent) => {
+      updatePointer(e.clientX, e.clientY);
+    };
+
+    // Use touch move as well to keep the spotlight alive while dragging
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches[0]) {
+        updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, [isGlass]);
 
   /* ── Derived hooks ── */
   const debouncedQuery = useDebounce(query, 150);
@@ -472,6 +506,7 @@ export default function Page() {
 
   return (
     <div
+      ref={appContainerRef}
       className={cn(
         'aura-theme-scope h-[100dvh] min-h-[100svh] w-full max-w-full overflow-hidden text-foreground font-sans relative overscroll-none box-border pt-safe',
         isGlass ? 'bg-transparent' : 'bg-background'

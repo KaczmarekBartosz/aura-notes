@@ -13,8 +13,34 @@ interface AuraCrystalLogoProps {
 export function AuraCrystalLogo({ scrollProgress = 0, className, onClick }: AuraCrystalLogoProps) {
   const { isGlass } = useTheme();
   const [isPressed, setIsPressed] = useState(false);
-  const requestRef = useRef<number>();
+  const requestRef = useRef<number | null>(null);
   const [time, setTime] = useState(0);
+  
+  // Gyroscopic Tilt State
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  // Device orientation listener (Gyroscopic Glass Effect)
+  useEffect(() => {
+    if (!isGlass || typeof window === 'undefined' || !window.DeviceOrientationEvent) return;
+
+    const handleOrientation = (e: DeviceOrientationEvent) => {
+      // e.gamma is left-to-right tilt in degrees, where right is positive (-90 to 90)
+      // e.beta is front-to-back tilt in degrees, where front is positive (-180 to 180)
+      if (e.gamma !== null && e.beta !== null) {
+        // Constrain and normalize to a -1 to 1 range
+        const maxTilt = 30; // degrees
+        const x = Math.max(-1, Math.min(1, e.gamma / maxTilt));
+        // beta usually rests at around 45deg when holding phone naturally
+        const y = Math.max(-1, Math.min(1, (e.beta - 45) / maxTilt));
+        
+        // Smooth out the values slightly (lerp) could be done here, but simple assignment is okay for 60hz events
+        setTilt({ x, y });
+      }
+    };
+
+    window.addEventListener('deviceorientation', handleOrientation);
+    return () => window.removeEventListener('deviceorientation', handleOrientation);
+  }, [isGlass]);
 
   // Smooth animation loop for the breathing effect
   useEffect(() => {
@@ -58,6 +84,12 @@ export function AuraCrystalLogo({ scrollProgress = 0, className, onClick }: Aura
   const breathingOpacity = 0.7 + Math.sin(time * 1.5) * 0.3;
   const innerRotation = time * 20;
 
+  // Gyro applied transforms
+  const lightShiftX = tilt.x * 20; // Move highlight up to 20%
+  const lightShiftY = tilt.y * 20;
+  const parallaxX = tilt.x * 4; // Move inner core by 4px
+  const parallaxY = tilt.y * 4;
+
   return (
     <div 
       className={cn(
@@ -68,17 +100,21 @@ export function AuraCrystalLogo({ scrollProgress = 0, className, onClick }: Aura
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
+      style={{ perspective: '200px' }}
     >
       <div className={cn(
         "relative w-7 h-7 flex items-center justify-center transition-all duration-400 ease-out",
         isPressed ? "scale-85" : "group-hover:scale-105"
-      )}>
+      )}
+      style={{
+        transform: `rotateX(${-tilt.y * 15}deg) rotateY(${tilt.x * 15}deg)`
+      }}>
         
         {/* Ambient Glow */}
         <div 
           className="absolute inset-[-40%] rounded-full blur-[10px] transition-opacity duration-500 z-0"
           style={{
-            background: `radial-gradient(circle at center, rgba(162, 199, 255, ${breathingOpacity * 0.6}), transparent 70%)`,
+            background: `radial-gradient(circle at ${50 + lightShiftX}% ${50 + lightShiftY}%, rgba(162, 199, 255, ${breathingOpacity * 0.6}), transparent 70%)`,
             transform: `scale(${breathingScale})`,
             opacity: isPressed ? 1 : 0.6
           }}
@@ -109,8 +145,9 @@ export function AuraCrystalLogo({ scrollProgress = 0, className, onClick }: Aura
             className="transition-transform duration-700"
             style={{ transform: `rotate(${scrollProgress * 90}deg)`, transformOrigin: 'center' }}
           />
-          {/* Edge highlight */}
-          <circle cx="50" cy="50" r="46" fill="transparent" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
+          {/* Edge highlight responding to Gyro */}
+          <circle cx="50" cy="50" r="46" fill="transparent" stroke="rgba(255,255,255,0.4)" strokeWidth="1" 
+                  style={{ transform: `translate(${tilt.x * 2}px, ${tilt.y * 2}px)` }}/>
           <circle cx="50" cy="50" r="38" fill="transparent" stroke="rgba(10,30,60,0.1)" strokeWidth="1" />
         </svg>
 
@@ -118,10 +155,10 @@ export function AuraCrystalLogo({ scrollProgress = 0, className, onClick }: Aura
         <div 
           className="absolute z-20 w-[42%] h-[42%] bg-white rounded-full overflow-hidden transition-transform duration-300"
           style={{ 
-            transform: `scale(${isPressed ? 0.8 : breathingScale})`,
+            transform: `scale(${isPressed ? 0.8 : breathingScale}) translate(${parallaxX}px, ${parallaxY}px)`,
             boxShadow: `
-              0 0 12px rgba(255,255,255,0.8),
-              inset 0 2px 4px rgba(0,0,0,0.2)
+              ${-tilt.x * 2}px ${-tilt.y * 2}px 12px rgba(255,255,255,0.8),
+              inset ${tilt.x * 2}px ${tilt.y * 2}px 4px rgba(0,0,0,0.2)
             `
           }}
         >

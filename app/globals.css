@@ -691,6 +691,63 @@ nav:has(.glass-nav) .bottom-nav-v2 {
 }
 
 /* ==========================================================================
+   MAGNETIC LUMINESCENCE (AURA SPOTLIGHT)
+   ========================================================================== */
+
+/* Variables tracked by JS */
+:root {
+  --pointer-x: 50vw;
+  --pointer-y: 50vh;
+}
+
+/* Global spotlight container logic */
+.aura-theme-scope {
+  position: relative;
+}
+
+/* Base style for note rows interacting with spotlight */
+html.theme-crystal-line .note-row {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  transition: transform 100ms ease, border-color 200ms ease;
+}
+
+/* Dynamic Spotlight highlight for interactive items */
+html.theme-crystal-line .note-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    800px circle at var(--pointer-x) var(--pointer-y),
+    rgba(255, 255, 255, 0.06),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+html.theme-crystal-line .note-row:hover::before {
+  opacity: 1;
+}
+
+html.theme-crystal-line .note-row > * {
+  position: relative;
+  z-index: 1;
+}
+
+html.theme-crystal-line .note-row:hover {
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ==========================================================================
    NAVIGATION REDESIGN — COMPACT NOTE ROW
    ========================================================================== */
 
