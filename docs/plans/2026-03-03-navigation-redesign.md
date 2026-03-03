@@ -1,3 +1,315 @@
+# Navigation Redesign Implementation Plan
+
+> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+
+**Goal:** Redesign Aura Notes navigation to hierarchical category-based browsing with 4-tab bottom nav, collapsing header, slide transitions, and contextual empty states — achieving premium native-grade mobile UX.
+
+**Architecture:** Single-file SPA stays in `app/page.tsx`. New hooks extracted to `lib/hooks.ts`. CSS animations in `globals.css`. ThemeSwitcher gets full-screen "Motyw" tab variant. All changes respect dual-rendering pattern (`isGlass ? ... : ...`).
+
+**Tech Stack:** React 19, Next.js 15, Tailwind CSS v4, Lucide React icons, existing theme system (5 themes).
+
+---
+
+## Task 1: Add new hooks to `lib/hooks.ts`
+
+**Files:**
+- Modify: `lib/hooks.ts`
+
+**Step 1: Add `useRelativeTime` hook**
+
+```typescript
+export function useRelativeTime(iso?: string | null): string {
+  if (!iso) return '—';
+  const date = new Date(iso);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return 'dzisiaj';
+  if (diffDays === 1) return 'wczoraj';
+  if (diffDays < 7) return `${diffDays} dni temu`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} tyg. temu`;
+  return new Date(iso).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' });
+}
+```
+
+**Step 2: Add `useCollapsibleHeader` hook**
+
+```typescript
+export function useCollapsibleHeader(scrollRef: React.RefObject<HTMLElement | null>, threshold = 10) {
+  const [isHidden, setIsHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      const currentY = el.scrollTop;
+      if (currentY > lastScrollY.current && currentY > threshold) {
+        setIsHidden(true);
+      } else if (currentY < lastScrollY.current) {
+        setIsHidden(false);
+      }
+      lastScrollY.current = currentY;
+    };
+
+    el.addEventListener('scroll', handleScroll, { passive: true });
+    return () => el.removeEventListener('scroll', handleScroll);
+  }, [scrollRef, threshold]);
+
+  return isHidden;
+}
+```
+
+**Step 3: Add `useEdgeSwipe` hook**
+
+```typescript
+export function useEdgeSwipe(onSwipe: () => void, edgeWidth = 20) {
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const isEdge = useRef(false);
+
+  const handlers = {
+    onTouchStart: (e: React.TouchEvent) => {
+      const x = e.touches[0].clientX;
+      touchStartX.current = x;
+      touchStartY.current = e.touches[0].clientY;
+      isEdge.current = x <= edgeWidth;
+    },
+    onTouchEnd: (e: React.TouchEvent) => {
+      if (!isEdge.current) return;
+      const dx = e.changedTouches[0].clientX - touchStartX.current;
+      const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current);
+      if (dx > 80 && dy < 100) {
+        onSwipe();
+      }
+      isEdge.current = false;
+    },
+  };
+
+  return handlers;
+}
+```
+
+**Step 4: Verify file compiles**
+
+Run: `npx tsc --noEmit`
+Expected: No errors related to hooks.ts
+
+**Step 5: Commit**
+
+```bash
+git add lib/hooks.ts
+git commit -m "feat(hooks): add useRelativeTime, useCollapsibleHeader, useEdgeSwipe"
+```
+
+---
+
+## Task 2: Add CSS animations and new utility classes to `globals.css`
+
+**Files:**
+- Modify: `app/globals.css`
+
+**Step 1: Add slide transition animations**
+
+Append after the existing `/* Login screen */` section at the end of the file:
+
+```css
+/* ==========================================================================
+   NAVIGATION REDESIGN — SLIDE TRANSITIONS
+   ========================================================================== */
+
+/* Reader slide-in from right */
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes slide-out-right {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+.reader-enter {
+  animation: slide-in-right 300ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+.reader-exit {
+  animation: slide-out-right 250ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+/* Bottom nav hide/show in reader mode */
+@keyframes nav-slide-down {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(100%); opacity: 0; }
+}
+@keyframes nav-slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.bottom-nav-hide {
+  animation: nav-slide-down 250ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+.bottom-nav-show {
+  animation: nav-slide-up 300ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+/* Collapsing header */
+.header-collapsible {
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+.header-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   NAVIGATION REDESIGN — HORIZONTAL CHIP SCROLL
+   ========================================================================== */
+
+.chip-scroll {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  padding: 0.75rem 1rem;
+}
+.chip-scroll::-webkit-scrollbar {
+  display: none;
+}
+.chip-scroll .chip {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+/* ==========================================================================
+   NAVIGATION REDESIGN — SEARCH OVERLAY
+   ========================================================================== */
+
+.search-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ==========================================================================
+   NAVIGATION REDESIGN — BOTTOM NAV v2
+   ========================================================================== */
+
+.bottom-nav-v2 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 0.5rem 0.75rem;
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+.bottom-nav-v2-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  padding: 0.5rem 0;
+  min-height: 48px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--muted-foreground);
+  transition: color 150ms ease, transform 150ms ease;
+}
+
+.bottom-nav-v2-item:active {
+  transform: scale(0.92);
+}
+
+.bottom-nav-v2-item[data-active="true"] {
+  color: var(--primary);
+}
+
+.bottom-nav-v2-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Active indicator dot */
+.bottom-nav-v2-item[data-active="true"]::before {
+  content: '';
+  position: absolute;
+  top: 0.25rem;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+/* Compact note row */
+.note-row {
+  display: flex;
+  flex-direction: column;
+  padding: 0.875rem 1rem;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  min-height: 64px;
+  transition: background-color 150ms ease;
+}
+
+.note-row:active {
+  transform: scale(0.985);
+}
+
+.note-row:hover {
+  background: var(--muted);
+}
+
+.note-row-active {
+  border-left: 3px solid var(--primary);
+  background: color-mix(in oklch, var(--primary) 8%, transparent);
+}
+```
+
+**Step 2: Verify CSS parses correctly**
+
+Run: `npm run dev` (briefly check console for CSS errors)
+
+**Step 3: Commit**
+
+```bash
+git add app/globals.css
+git commit -m "feat(css): add slide transitions, chip scroll, bottom nav v2, and note row styles"
+```
+
+---
+
+## Task 3: Rewrite `app/page.tsx` — Navigation state and bottom nav
+
+This is the largest task. We rewrite page.tsx with the new navigation architecture.
+
+**Files:**
+- Modify: `app/page.tsx`
+
+**Step 1: Replace state declarations and imports**
+
+Replace the entire import block and state declarations (lines 1-86) with:
+
+```typescript
 'use client';
 
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
@@ -11,13 +323,14 @@ import {
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import type { NotesPayload, Note } from '@/lib/types';
+import type { NotesPayload } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import {
   useDebounce,
   useScrollProgress,
   useCollapsibleHeader,
   useEdgeSwipe,
+  useRelativeTime,
 } from '@/lib/hooks';
 import { useTheme } from '@/lib/theme';
 import { ThemeSwitcher } from '@/components/glass';
@@ -49,56 +362,24 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const CATEGORY_ICONS: Record<string, string> = {
-  'fitness-health': 'FIT',
-  'golden-protocols': 'GP',
-  'ai-agents': 'AI',
-  'bookmarks': 'BM',
-  'design': 'DES',
-  'daily-log': 'LOG',
-  'growth-marketing': 'MKT',
-  'outputs': 'OUT',
-  'recipes': 'RCP',
-  'taste': 'TST',
+  'fitness-health': '💪',
+  'golden-protocols': '⚗️',
+  'ai-agents': '🤖',
+  'bookmarks': '🔖',
+  'design': '🎨',
+  'daily-log': '📅',
+  'growth-marketing': '📈',
+  'outputs': '📤',
+  'recipes': '🍳',
+  'taste': '👅',
 };
+```
 
-/* ── Helpers ── */
+**Step 2: Replace the Page component state block**
 
-function fmtRelative(iso?: string | null): string {
-  if (!iso) return '—';
-  const date = new Date(iso);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return 'dzisiaj';
-  if (diffDays === 1) return 'wczoraj';
-  if (diffDays < 7) return `${diffDays} dni temu`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)} tyg. temu`;
-  return date.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' });
-}
+Replace state declarations inside `export default function Page()` with the new navigation state model:
 
-function highlightText(text: string, q: string): React.ReactNode {
-  if (!q.trim()) return text;
-  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regex = new RegExp(`(${escaped})`, 'gi');
-  const parts = text.split(regex);
-  return parts.map((part, i) =>
-    regex.test(part) ? <mark key={i} className="bg-primary/30 text-foreground px-0.5 font-bold">{part}</mark> : part
-  );
-}
-
-function getSnippet(content: string, q: string): string | null {
-  if (!q.trim()) return null;
-  const idx = content.toLowerCase().indexOf(q.toLowerCase());
-  if (idx === -1) return null;
-  const start = Math.max(0, idx - 40);
-  const end = Math.min(content.length, idx + q.length + 40);
-  return (start > 0 ? '…' : '') + content.slice(start, end).replace(/\n/g, ' ') + (end < content.length ? '…' : '');
-}
-
-/* ═══════════════════════════════════════════════
-   MAIN PAGE COMPONENT
-   ═══════════════════════════════════════════════ */
-
+```typescript
 export default function Page() {
   const { theme, isGlass } = useTheme();
 
@@ -111,7 +392,7 @@ export default function Page() {
   const [payload, setPayload] = useState<NotesPayload | null>(null);
   const [unlocking, setUnlocking] = useState(false);
 
-  /* ── Navigation state ── */
+  /* ── Navigation state (NEW) ── */
   const [activeTab, setActiveTab] = useState<AppView>('browse');
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [activeTag, setActiveTag] = useState<string | null>(null);
@@ -125,17 +406,16 @@ export default function Page() {
   const [sort, setSort] = useState<SortMode>('updated_desc');
   const [showSortMenu, setShowSortMenu] = useState(false);
 
-  /* ── Easter eggs ── */
+  /* ── Easter eggs (preserved) ── */
   const [dogAnim, setDogAnim] = useState(false);
   const [inkSpills, setInkSpills] = useState<{ id: number; x: number; y: number }[]>([]);
 
-  /* ── Pull-to-refresh ── */
+  /* ── Pull-to-refresh (preserved) ── */
   const [pullDistance, setPullDistance] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   /* ── Refs ── */
-  const desktopReaderRef = useRef<HTMLDivElement>(null);
-  const mobileReaderRef = useRef<HTMLDivElement>(null);
+  const readerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const touchStartY = useRef(0);
@@ -143,18 +423,20 @@ export default function Page() {
 
   /* ── Derived hooks ── */
   const debouncedQuery = useDebounce(query, 150);
-  const { progress: desktopReadProgress, scrollY: desktopScrollY } = useScrollProgress(desktopReaderRef);
-  const { progress: mobileReadProgress, scrollY: mobileScrollY } = useScrollProgress(mobileReaderRef);
+  const { progress: readProgress, scrollY: readerScrollY } = useScrollProgress(readerRef);
   const isHeaderHidden = useCollapsibleHeader(listRef);
+```
 
+**Step 3: Replace `handleSelectNote` and add new navigation handlers**
+
+```typescript
   /* ── Navigation handlers ── */
 
   const openReader = useCallback((id: string) => {
     setSelectedId(id);
     setIsReaderOpen(true);
     setIsReaderExiting(false);
-    mobileReaderRef.current?.scrollTo(0, 0);
-    desktopReaderRef.current?.scrollTo(0, 0);
+    readerRef.current?.scrollTo(0, 0);
   }, []);
 
   const closeReader = useCallback(() => {
@@ -162,12 +444,12 @@ export default function Page() {
     setTimeout(() => {
       setIsReaderOpen(false);
       setIsReaderExiting(false);
-    }, 250);
+    }, 250); // match slide-out-right duration
   }, []);
 
   const selectCategory = useCallback((cat: string | null) => {
     setActiveCategory(cat);
-    setActiveTag(null);
+    setActiveTag(null); // reset tag when category changes
   }, []);
 
   const openSearch = useCallback(() => {
@@ -181,76 +463,17 @@ export default function Page() {
   }, []);
 
   const edgeSwipeHandlers = useEdgeSwipe(closeReader);
+```
 
-  /* ── Ink spill Easter egg ── */
-  useEffect(() => {
-    let lastTime = 0;
+**Step 4: Keep existing effects (ink spill, data loading, pull-to-refresh) — no changes**
 
-    function handleMotion(e: DeviceMotionEvent) {
-      if (!e.accelerationIncludingGravity) return;
-      const { x, y, z } = e.accelerationIncludingGravity;
-      if (x === null || y === null || z === null) return;
+The existing `useEffect` blocks for ink spill Easter egg (lines 108-139), `loadNotes` function (lines 144-171), `toggleFavorite` (lines 177-185), and pull-to-refresh handlers (lines 308-332) should be kept as-is.
 
-      const acceleration = Math.sqrt(x * x + y * y + z * z);
-      if (acceleration > 20) {
-        const now = Date.now();
-        if (now - lastTime > 1000) {
-          lastTime = now;
-          setInkSpills(prev => [...prev, {
-            id: now,
-            x: Math.random() * 80 + 10,
-            y: Math.random() * 80 + 10,
-          }]);
-          setTimeout(() => {
-            setInkSpills(prev => prev.filter(spill => spill.id !== now));
-          }, 2500);
-        }
-      }
-    }
+**Step 5: Replace derived data computations (filtered, tags, categories)**
 
-    if (typeof window !== 'undefined' && window.DeviceMotionEvent && typeof (DeviceMotionEvent as any).requestPermission !== 'function') {
-      window.addEventListener('devicemotion', handleMotion);
-      return () => window.removeEventListener('devicemotion', handleMotion);
-    }
-  }, []);
-
-  /* ── Data loading ── */
-
-  async function loadNotes(password: string) {
-    setLoading(true);
-    setLoginError('');
-    try {
-      const endpoint = process.env.NODE_ENV === 'development' ? '/api/notes' : '/.netlify/functions/notes';
-      const res = await fetch(endpoint, { headers: { 'x-aura-pass': password } });
-      const json = await res.json().catch(() => ({}));
-      if (res.status === 401) { setLoginError('Błędne hasło.'); return; }
-      if (!res.ok || !json.ok) { setLoginError(json.error || 'Błąd API notatek'); return; }
-      setUnlocking(true);
-      await new Promise(r => setTimeout(r, 400));
-      setPass(password);
-      setToken(password);
-      setPayload(json.data);
-      if (json.data?.notes?.length) setSelectedId(json.data.notes[0].id);
-    } catch {
-      setLoginError('Błąd sieci.');
-    } finally {
-      setLoading(false);
-    }
-  }
-
+```typescript
   /* ── Derived data ── */
-
   const notes = useMemo(() => payload?.notes ?? [], [payload]);
-
-  const toggleFavorite = useCallback((e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    if (payload) {
-      setPayload({
-        ...payload,
-        notes: payload.notes.map(n => n.id === id ? { ...n, isFavorite: !n.isFavorite } : n),
-      });
-    }
-  }, [payload]);
 
   const categories = useMemo(() => {
     const set = new Set<string>();
@@ -272,10 +495,13 @@ export default function Page() {
   const filtered = useMemo(() => {
     const q = debouncedQuery.trim().toLowerCase();
     let out = notes.filter((n) => {
+      // Tab-level filtering
       if (activeTab === 'desk') return n.isFavorite;
       if (activeTab === 'search') {
-        if (!q) return false;
-        if (n.category === 'system') return false;
+        // Global search — search all non-system notes
+        if (!q) return false; // don't show anything until user types
+        const isSystem = n.category === 'system';
+        if (isSystem) return false;
         return (
           n.title.toLowerCase().includes(q) ||
           n.content.toLowerCase().includes(q) ||
@@ -283,8 +509,10 @@ export default function Page() {
           n.category.toLowerCase().includes(q)
         );
       }
+
       // Browse tab
-      if (n.category === 'system') return false;
+      const isSystem = n.category === 'system';
+      if (isSystem) return false;
       if (activeCategory && n.category !== activeCategory) return false;
       if (activeTag && !(n.tags || []).includes(activeTag)) return false;
       if (!q) return true;
@@ -297,18 +525,28 @@ export default function Page() {
 
     return out.sort((a, b) => {
       switch (sort) {
-        case 'updated_asc': return +new Date(a.updatedAt) - +new Date(b.updatedAt);
-        case 'created_desc': return +new Date(b.createdAt || b.updatedAt) - +new Date(a.createdAt || a.updatedAt);
-        case 'created_asc': return +new Date(a.createdAt || a.updatedAt) - +new Date(b.createdAt || b.updatedAt);
-        case 'title_asc': return a.title.localeCompare(b.title, 'pl');
-        default: return +new Date(b.updatedAt) - +new Date(a.updatedAt);
+        case 'updated_asc':
+          return +new Date(a.updatedAt) - +new Date(b.updatedAt);
+        case 'created_desc':
+          return +new Date(b.createdAt || b.updatedAt) - +new Date(a.createdAt || a.updatedAt);
+        case 'created_asc':
+          return +new Date(a.createdAt || a.updatedAt) - +new Date(b.createdAt || b.updatedAt);
+        case 'title_asc':
+          return a.title.localeCompare(b.title, 'pl');
+        default:
+          return +new Date(b.updatedAt) - +new Date(a.updatedAt);
       }
     });
   }, [notes, activeTab, activeCategory, activeTag, debouncedQuery, sort]);
 
-  const selected = filtered.find((n) => n.id === selectedId) || notes.find((n) => n.id === selectedId) || null;
+  const selected = filtered.find((n) => n.id === selectedId)
+    || notes.find((n) => n.id === selectedId)
+    || null;
+```
 
-  /* ── Keyboard shortcuts ── */
+**Step 6: Replace keyboard shortcuts**
+
+```typescript
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       const tag = (e.target as HTMLElement)?.tagName;
@@ -331,138 +569,85 @@ export default function Page() {
         const next = e.key === 'ArrowDown' ? idx + 1 : idx - 1;
         if (next >= 0 && next < filtered.length) {
           setSelectedId(filtered[next].id);
-          desktopReaderRef.current?.scrollTo(0, 0);
+          readerRef.current?.scrollTo(0, 0);
         }
       }
     }
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [filtered, selectedId, isReaderOpen, isSearchOpen, activeTab, closeReader, closeSearch, openSearch]);
+```
 
-  /* ── Close sort menu on outside click ── */
-  useEffect(() => {
-    if (!showSortMenu) return;
-    const handler = () => setShowSortMenu(false);
-    setTimeout(() => document.addEventListener('click', handler), 0);
-    return () => document.removeEventListener('click', handler);
-  }, [showSortMenu]);
+**Step 7: Keep helper functions** — `highlightText`, `getSnippet`, pull-to-refresh handlers from existing code. No changes needed.
 
-  /* ═══════════════════════════════════════════════
-     LOGIN SCREEN
-     ═══════════════════════════════════════════════ */
+**Step 8: Add relative time formatting helper**
 
-  if (!token) {
-    return (
-      <div className={cn(
-        "aura-theme-scope flex min-h-[100svh] min-h-dvh w-full max-w-full flex-col items-center justify-center p-4 relative overflow-hidden box-border pt-safe transition-all duration-[400ms]",
-        isGlass ? "bg-transparent" : "bg-background",
-        unlocking && "opacity-0 scale-95"
-      )}>
-        {isGlass && (
-          <div className="aurora-bg" aria-hidden>
-            <div className="aurora-blob aurora-blob-1" />
-            <div className="aurora-blob aurora-blob-2" />
-          </div>
-        )}
-
-        <div
-          className="absolute z-[90] pointer-events-auto"
-          style={{
-            top: 'calc(env(safe-area-inset-top, 0px) + 0.75rem)',
-            right: 'calc(env(safe-area-inset-right, 0px) + 0.75rem)',
-          }}
-        >
-          <ThemeSwitcher variant="compact" />
-        </div>
-
-        {/* Duck Hunt Dog in retro TV */}
-        <button
-          onClick={() => { setDogAnim(true); setTimeout(() => setDogAnim(false), 300); }}
-          className={cn(
-            "absolute bottom-4 right-4 md:bottom-8 md:right-8 origin-bottom hover:scale-105 transition-transform duration-200 pointer-events-auto z-20 cursor-pointer border-none bg-transparent outline-none focus:outline-none flex flex-col items-center",
-            dogAnim && "dog-clicked"
-          )}
-          title="Duck Hunt Mascot!"
-        >
-          <div className="flex gap-4 md:gap-8 mb-[-2px] z-0">
-            <div className="w-1.5 h-8 md:w-2 md:h-14 bg-foreground origin-bottom rotate-[30deg]"></div>
-            <div className="w-1.5 h-6 md:w-2 md:h-10 bg-foreground origin-bottom -rotate-[20deg]"></div>
-          </div>
-          <div className="relative w-48 h-40 md:w-72 md:h-64 bg-foreground p-3 md:p-5 shadow-[8px_8px_0_var(--foreground)/50] flex">
-            <div className="relative flex-1 bg-[#8b9bb4] overflow-hidden border-2 md:border-4 border-background/20 rounded-sm flex items-center justify-center">
-              <div className="absolute inset-0 bg-black/10 rounded-full blur-md md:blur-xl z-10 pointer-events-none scale-110"></div>
-              <div className="absolute inset-0 pointer-events-none z-10 opacity-20" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }}></div>
-              <img src="/duck_hunt_dog.png" alt="Duck Hunt Mascot" className="w-[130%] h-[130%] object-contain pointer-events-none relative z-0 pt-3 md:pt-6 drop-shadow-md" style={{ imageRendering: 'pixelated' }} />
-            </div>
-            <div className="w-8 md:w-12 ml-2 md:ml-4 flex flex-col gap-2 md:gap-4 py-1 md:py-2 items-center">
-              <div className="w-4 h-4 md:w-6 md:h-6 bg-background rounded-full mb-1"></div>
-              <div className="w-4 h-4 md:w-6 md:h-6 bg-background rounded-full"></div>
-              <div className="w-full flex-1 flex flex-col gap-1.5 md:gap-2 justify-end items-center pb-1 md:pb-2 opacity-50">
-                <div className="w-4 md:w-6 h-0.5 md:h-1 bg-background"></div>
-                <div className="w-4 md:w-6 h-0.5 md:h-1 bg-background"></div>
-                <div className="w-4 md:w-6 h-0.5 md:h-1 bg-background"></div>
-              </div>
-            </div>
-          </div>
-          <div className="flex w-full justify-between px-6 md:px-10 mt-[-2px] z-0">
-            <div className="w-3 h-4 md:w-5 md:h-6 bg-foreground skew-x-12"></div>
-            <div className="w-3 h-4 md:w-5 md:h-6 bg-foreground -skew-x-12"></div>
-          </div>
-        </button>
-
-        {!isGlass && (
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
-        )}
-        <div className={cn(
-          "login-auth-card w-full max-w-sm p-8 text-center relative z-10",
-          isGlass
-            ? "glass-card"
-            : "bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)] hover:shadow-[12px_12px_0_var(--foreground)] hover:brightness-[1.015]"
-        )}>
-          <h1 className={cn(
-            "text-4xl tracking-tight mb-2",
-            isGlass ? "font-semibold tracking-tighter" : "font-black uppercase"
-          )}>Aura Notes</h1>
-          <p className={cn(
-            "text-sm mb-8",
-            isGlass ? "font-medium opacity-70 tracking-tight" : "font-bold uppercase tracking-widest opacity-60"
-          )}>Bezpieczny sejf</p>
-          <form
-            className="space-y-4"
-            onSubmit={(e) => { e.preventDefault(); loadNotes(loginInput); }}
-          >
-            <input
-              type="password"
-              value={loginInput}
-              onChange={(e) => setLoginInput(e.target.value)}
-              placeholder="Wprowadź hasło..."
-              className={cn(
-                "login-auth-input h-12 w-full px-4 text-center transition-all outline-none",
-                isGlass ? "font-medium tracking-tight" : "font-mono font-bold",
-                isGlass
-                  ? "glass-input rounded-2xl border border-foreground/30 dark:border-white/20"
-                  : "rounded-none bg-background border-2 border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:-translate-y-1 focus-visible:-translate-x-1 focus-visible:shadow-[8px_8px_0_var(--primary)] placeholder:text-muted-foreground shadow-[4px_4px_0_var(--foreground)]"
-              )}
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className={cn(
-                "login-auth-button w-full h-12 transition-all font-black text-lg outline-none",
-                isGlass
-                  ? "glass-button glass-button-primary rounded-2xl border"
-                  : "rounded-none border-2 border-transparent bg-primary text-primary-foreground hover:border-foreground hover:-translate-y-1 hover:shadow-[4px_4px_0_var(--foreground)] hover:bg-foreground hover:text-background active:translate-y-0 active:translate-x-0 active:shadow-none uppercase tracking-wider"
-              )}
-            >
-              {loading ? 'Odblokowywanie...' : 'Odblokuj'}
-            </button>
-            {loginError && <p className={cn("text-sm text-destructive mt-2", isGlass ? "font-medium" : "font-black uppercase")}>{loginError}</p>}
-          </form>
-        </div>
-      </div>
-    );
+```typescript
+  function fmtRelative(iso?: string | null): string {
+    if (!iso) return '—';
+    const date = new Date(iso);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays === 0) return 'dzisiaj';
+    if (diffDays === 1) return 'wczoraj';
+    if (diffDays < 7) return `${diffDays} dni temu`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} tyg. temu`;
+    return date.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' });
   }
+```
 
+**Step 9: Commit state/logic refactor**
+
+```bash
+git add app/page.tsx
+git commit -m "refactor(page): new navigation state model with hierarchical browsing"
+```
+
+---
+
+## Task 4: Rewrite `app/page.tsx` — Login screen (keep mostly as-is)
+
+**Files:**
+- Modify: `app/page.tsx`
+
+**Step 1: Keep the login screen JSX unchanged**
+
+The login screen (`if (!token)` block, lines 338-468) stays identical — it's already well-designed with dual theme support.
+
+No code changes needed.
+
+---
+
+## Task 5: Rewrite `app/page.tsx` — Main app layout with 4-tab architecture
+
+**Files:**
+- Modify: `app/page.tsx`
+
+**Step 1: Replace the main app return block**
+
+Replace everything from `/* MAIN APP */` to end of component with the new layout. The structure:
+
+```
+<div> (root container, h-[100dvh])
+  ├── {isGlass && aurora-bg}
+  ├── {!isGlass && dot pattern}
+  ├── <div> (content area, flex, full height)
+  │   ├── Desktop: sidebar + main side-by-side
+  │   └── Mobile: single panel switching by activeTab
+  │       ├── browse: categories → tags → note list
+  │       ├── desk: flat favorites list
+  │       ├── search: search overlay
+  │       └── theme: ThemeSwitcher preview variant
+  ├── Reader (absolute overlay, slide-in when isReaderOpen)
+  ├── Bottom Nav (4 tabs, hidden in reader)
+  └── Overlays (vignette, ink spills)
+</div>
+```
+
+The full JSX follows. This is the largest piece of code:
+
+```tsx
   /* ═══════════════════════════════════════════════
      MAIN APP
      ═══════════════════════════════════════════════ */
@@ -488,27 +673,29 @@ export default function Page() {
         />
       )}
 
-      {/* Content area */}
-      <div className="mx-auto flex h-full w-full max-w-[1600px] gap-0 md:gap-6 md:p-6 relative z-10 pb-[calc(env(safe-area-inset-bottom,0px)+3.75rem)] md:pb-0">
+      {/* ── Content area ── */}
+      <div className="mx-auto flex h-full w-full max-w-[1600px] gap-0 md:gap-6 md:p-8 relative z-10 pb-[calc(env(safe-area-inset-bottom,0px)+4rem)] md:pb-0">
 
-        {/* ═══ SIDEBAR ═══ */}
+        {/* ═══ SIDEBAR (desktop: always visible, mobile: activeTab controls content) ═══ */}
         <aside
           className={cn(
             'flex flex-col w-full md:w-[400px] md:shrink-0 h-full',
             isGlass ? 'md:glass-card' : 'md:bg-card md:border-4 md:border-foreground md:shadow-[8px_8px_0_var(--foreground)]',
+            // On mobile, hide sidebar when reader is open
             isReaderOpen && 'hidden md:flex'
           )}
         >
-          {/* ── Header ── */}
+          {/* ── Collapsible Header ── */}
           <div
             className={cn(
-              'header-collapsible shrink-0 relative',
+              'header-collapsible shrink-0',
               isGlass
                 ? 'border-b border-[var(--glass-border)] bg-[var(--glass-bg)]'
                 : 'border-b md:border-b-4 border-foreground/10 md:border-foreground bg-muted/30',
-              isHeaderHidden && 'md:header-hidden'
+              isHeaderHidden && 'md:header-hidden' // Only collapse on desktop; mobile header stays
             )}
           >
+            {/* Header row */}
             <div className="flex items-center justify-between px-4 py-3">
               {/* Left: Title or breadcrumb */}
               <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -528,24 +715,36 @@ export default function Page() {
                       'text-lg truncate',
                       isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight'
                     )}>
-                      {CATEGORY_ICONS[activeCategory]}{' '}
+                      {CATEGORY_ICONS[activeCategory] || '📁'}{' '}
                       {CATEGORY_LABELS[activeCategory] || activeCategory}
                     </span>
                   </>
                 ) : activeTab === 'desk' ? (
-                  <span className={cn('text-lg', isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight')}>
+                  <span className={cn(
+                    'text-lg',
+                    isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight'
+                  )}>
                     ★ Biurko
                   </span>
                 ) : activeTab === 'search' ? (
-                  <span className={cn('text-lg', isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight')}>
+                  <span className={cn(
+                    'text-lg',
+                    isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight'
+                  )}>
                     Szukaj
                   </span>
                 ) : activeTab === 'theme' ? (
-                  <span className={cn('text-lg', isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight')}>
+                  <span className={cn(
+                    'text-lg',
+                    isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight'
+                  )}>
                     Motyw
                   </span>
                 ) : (
-                  <span className={cn('text-lg', isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight')}>
+                  <span className={cn(
+                    'text-lg',
+                    isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-tight'
+                  )}>
                     Aura Notes
                   </span>
                 )}
@@ -567,7 +766,7 @@ export default function Page() {
                 )}
                 {activeTab === 'browse' && (
                   <button
-                    onClick={(e) => { e.stopPropagation(); setShowSortMenu(!showSortMenu); }}
+                    onClick={() => setShowSortMenu(!showSortMenu)}
                     className={cn(
                       'min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors relative',
                       isGlass ? 'hover:bg-[var(--glass-bg-hover)] rounded-full' : 'hover:bg-muted'
@@ -583,17 +782,14 @@ export default function Page() {
               </div>
             </div>
 
-            {/* Sort dropdown — desktop only */}
+            {/* Sort dropdown (if open) */}
             {showSortMenu && (
-              <div
-                className={cn(
-                  'hidden md:block absolute right-4 top-14 z-50 min-w-[160px]',
-                  isGlass
-                    ? 'glass-card rounded-2xl border border-[var(--glass-border)] p-2'
-                    : 'bg-card border-2 border-foreground shadow-[4px_4px_0_var(--foreground)] p-2'
-                )}
-                onClick={(e) => e.stopPropagation()}
-              >
+              <div className={cn(
+                'absolute right-4 top-14 z-50 min-w-[160px]',
+                isGlass
+                  ? 'glass-card rounded-2xl border border-[var(--glass-border)] p-2'
+                  : 'bg-card border-2 border-foreground shadow-[4px_4px_0_var(--foreground)] p-2'
+              )}>
                 {Object.entries(SORT_LABELS).map(([k, v]) => (
                   <button
                     key={k}
@@ -618,52 +814,56 @@ export default function Page() {
                 'px-4 pb-2 text-[11px] opacity-50',
                 isGlass ? 'font-medium' : 'font-bold uppercase tracking-wider'
               )}>
-                {activeTab === 'search' && !debouncedQuery
-                  ? 'Wpisz frazę aby szukać'
-                  : `${filtered.length} notatek`}
+                {filtered.length} notatek
               </div>
             )}
           </div>
 
-          {/* ── Inline search bar ── */}
+          {/* ── Search overlay ── */}
           {isSearchOpen && (
-            <div className={cn(
-              'shrink-0 px-4 py-3',
-              isGlass ? 'border-b border-[var(--glass-border)] bg-[var(--glass-bg)]' : 'border-b md:border-b-4 border-foreground/10 md:border-foreground bg-muted/20'
-            )}>
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" strokeWidth={2} />
-                  <Input
-                    ref={searchRef}
+            <div className="search-overlay">
+              <div className={cn(
+                'search-overlay-backdrop',
+                isGlass ? 'bg-[var(--background)]/90' : 'bg-background/95'
+              )} />
+              <div className="relative z-10 p-4">
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" strokeWidth={2} />
+                    <Input
+                      ref={searchRef}
+                      className={cn(
+                        'pl-9 h-11 transition-all',
+                        isGlass
+                          ? 'glass-input rounded-2xl border font-medium'
+                          : 'rounded-none bg-background border-2 border-foreground font-bold focus-visible:ring-0 focus-visible:border-primary'
+                      )}
+                      placeholder={activeCategory ? `Szukaj w ${CATEGORY_LABELS[activeCategory] || activeCategory}...` : 'Szukaj we wszystkich...'}
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      autoFocus
+                    />
+                  </div>
+                  <button
+                    onClick={closeSearch}
                     className={cn(
-                      'pl-9 h-11 transition-all',
-                      isGlass
-                        ? 'glass-input rounded-2xl border font-medium'
-                        : 'rounded-none bg-background border-2 border-foreground font-bold focus-visible:ring-0 focus-visible:border-primary'
+                      'min-w-[44px] min-h-[44px] flex items-center justify-center',
+                      isGlass ? 'hover:bg-[var(--glass-bg-hover)] rounded-full' : 'hover:bg-muted'
                     )}
-                    placeholder={activeCategory ? `Szukaj w ${CATEGORY_LABELS[activeCategory] || activeCategory}...` : 'Szukaj we wszystkich...'}
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    autoFocus
-                  />
+                  >
+                    <X className="h-5 w-5" strokeWidth={2} />
+                  </button>
                 </div>
-                <button
-                  onClick={closeSearch}
-                  className={cn(
-                    'min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0',
-                    isGlass ? 'hover:bg-[var(--glass-bg-hover)] rounded-full' : 'hover:bg-muted'
-                  )}
-                >
-                  <X className="h-5 w-5" strokeWidth={2} />
-                </button>
               </div>
             </div>
           )}
 
-          {/* ── Category chips (browse, no category selected) ── */}
+          {/* ── Category chips (browse tab, no active category) ── */}
           {activeTab === 'browse' && !activeCategory && !isSearchOpen && (
-            <div className="chip-scroll shrink-0">
+            <div className={cn(
+              'chip-scroll shrink-0',
+              isGlass ? 'border-b border-[var(--glass-border)]' : 'border-b md:border-b-4 border-foreground/10 md:border-foreground'
+            )}>
               <button
                 className={cn('chip', !activeCategory && 'chip-active')}
                 onClick={() => selectCategory(null)}
@@ -685,9 +885,12 @@ export default function Page() {
             </div>
           )}
 
-          {/* ── Tag chips (browse, category selected) ── */}
+          {/* ── Tag chips (browse tab, category selected) ── */}
           {activeTab === 'browse' && activeCategory && !isSearchOpen && tagsForCategory.length > 0 && (
-            <div className="chip-scroll shrink-0">
+            <div className={cn(
+              'chip-scroll shrink-0',
+              isGlass ? 'border-b border-[var(--glass-border)]' : 'border-b md:border-b-4 border-foreground/10 md:border-foreground'
+            )}>
               <button
                 className={cn('chip', !activeTag && 'chip-active')}
                 onClick={() => setActiveTag(null)}
@@ -706,7 +909,7 @@ export default function Page() {
             </div>
           )}
 
-          {/* ── Search tab: always-visible input ── */}
+          {/* ── Search tab: always-visible search input ── */}
           {activeTab === 'search' && !isSearchOpen && (
             <div className={cn(
               'p-4 shrink-0',
@@ -729,7 +932,7 @@ export default function Page() {
             </div>
           )}
 
-          {/* ── Theme tab ── */}
+          {/* ── Theme tab: full-screen theme picker ── */}
           {activeTab === 'theme' && (
             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
               <ThemeSwitcher variant="preview" />
@@ -798,7 +1001,7 @@ export default function Page() {
                   ) : activeTab === 'search' && debouncedQuery ? (
                     <>
                       <Search className="w-12 h-12 opacity-20" strokeWidth={1.5} />
-                      <p className={cn('text-lg', isGlass ? 'font-semibold' : 'font-black uppercase')}>Nie znaleziono „{debouncedQuery}”</p>
+                      <p className={cn('text-lg', isGlass ? 'font-semibold' : 'font-black uppercase')}>Nie znaleziono „{debouncedQuery}"</p>
                       <p className={cn('text-sm opacity-50', isGlass ? 'font-medium' : 'font-bold uppercase')}>Spróbuj inne słowa kluczowe</p>
                     </>
                   ) : (
@@ -846,6 +1049,7 @@ export default function Page() {
                         >★</div>
                       </div>
 
+                      {/* Excerpt or search snippet */}
                       <p className={cn(
                         'mt-0.5 text-[0.8rem] opacity-50 line-clamp-1',
                         isGlass ? 'font-normal' : 'font-medium'
@@ -853,6 +1057,7 @@ export default function Page() {
                         {snippet ? highlightText(snippet, debouncedQuery.trim()) : excerpt}
                       </p>
 
+                      {/* Meta row */}
                       <div className={cn(
                         'mt-1.5 flex items-center gap-2 text-[0.7rem] opacity-40',
                         isGlass ? 'font-medium' : 'font-semibold uppercase tracking-wider'
@@ -875,10 +1080,11 @@ export default function Page() {
           )}
         </aside>
 
-        {/* ═══ DESKTOP READER ═══ */}
+        {/* ═══ READER / MAIN CONTENT (desktop: side panel, mobile: slide overlay) ═══ */}
         <main
           className={cn(
             'flex flex-col min-w-0 flex-1 relative overflow-hidden',
+            // Desktop: always visible
             'hidden md:flex',
             isGlass ? 'glass-card' : 'bg-card border-4 border-foreground shadow-[8px_8px_0_var(--foreground)]'
           )}
@@ -892,7 +1098,9 @@ export default function Page() {
               <div className="text-center">
                 <p className={cn(
                   'text-2xl px-6 py-3',
-                  isGlass ? 'font-semibold tracking-tight' : 'font-black uppercase tracking-wider'
+                  isGlass
+                    ? 'font-semibold tracking-tight'
+                    : 'font-black uppercase tracking-wider'
                 )}>Wybierz notatkę</p>
                 <p className={cn('mt-3 text-sm opacity-40', isGlass ? 'font-medium' : 'font-bold uppercase')}>
                   {filtered.length} notatek dostępnych
@@ -902,12 +1110,13 @@ export default function Page() {
           ) : (
             <ReaderContent
               note={selected}
-              readProgress={desktopReadProgress}
-              readerScrollY={desktopScrollY}
-              readerRef={desktopReaderRef}
+              readProgress={readProgress}
+              readerScrollY={readerScrollY}
+              readerRef={readerRef}
               isGlass={isGlass}
               onBack={undefined}
               toggleFavorite={toggleFavorite}
+              fmtRelative={fmtRelative}
             />
           )}
         </main>
@@ -925,17 +1134,18 @@ export default function Page() {
         >
           <ReaderContent
             note={selected}
-            readProgress={mobileReadProgress}
-            readerScrollY={mobileScrollY}
-            readerRef={mobileReaderRef}
+            readProgress={readProgress}
+            readerScrollY={readerScrollY}
+            readerRef={readerRef}
             isGlass={isGlass}
             onBack={closeReader}
             toggleFavorite={toggleFavorite}
+            fmtRelative={fmtRelative}
           />
         </div>
       )}
 
-      {/* ═══ BOTTOM NAV ═══ */}
+      {/* ═══ BOTTOM NAV (mobile only, hidden in reader) ═══ */}
       <nav
         className={cn(
           'fixed bottom-0 left-0 right-0 z-40 md:hidden',
@@ -958,7 +1168,9 @@ export default function Page() {
               data-active={activeTab === id}
               onClick={() => {
                 setActiveTab(id);
-                if (id === 'search') setQuery('');
+                if (id === 'search') {
+                  setQuery('');
+                }
               }}
             >
               <Icon className="h-6 w-6" strokeWidth={activeTab === id ? 2.5 : 1.5} />
@@ -971,51 +1183,10 @@ export default function Page() {
         </div>
       </nav>
 
-      {/* ═══ MOBILE SORT BOTTOM SHEET ═══ */}
-      {showSortMenu && (
-        <div className="fixed inset-0 z-50 md:hidden" onClick={() => setShowSortMenu(false)}>
-          <div className="absolute inset-0 bg-black/30" />
-          <div
-            className={cn(
-              'absolute bottom-0 left-0 right-0 pb-safe',
-              isGlass
-                ? 'bg-[var(--glass-bg)] backdrop-blur-xl border-t border-[var(--glass-border)] rounded-t-3xl'
-                : 'bg-card border-t-2 border-foreground'
-            )}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex justify-center py-3">
-              <div className={cn('w-10 h-1 rounded-full', isGlass ? 'bg-foreground/20' : 'bg-foreground/30')} />
-            </div>
-            <div className="px-4 pb-4 space-y-1">
-              <p className={cn(
-                'text-xs opacity-50 px-3 pb-2',
-                isGlass ? 'font-medium' : 'font-bold uppercase tracking-wider'
-              )}>Sortuj wg</p>
-              {Object.entries(SORT_LABELS).map(([k, v]) => (
-                <button
-                  key={k}
-                  onClick={() => { setSort(k as SortMode); setShowSortMenu(false); }}
-                  className={cn(
-                    'w-full text-left px-4 py-3 text-sm transition-colors',
-                    isGlass
-                      ? 'hover:bg-[var(--glass-bg-hover)] rounded-2xl font-medium'
-                      : 'hover:bg-foreground hover:text-background font-bold uppercase',
-                    sort === k && (isGlass ? 'bg-[var(--glass-bg-hover)] rounded-2xl' : 'bg-foreground text-background')
-                  )}
-                >
-                  {v}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Brutalist paper texture */}
+      {/* Brutalist paper texture overlay */}
       {!isGlass && <div className="vignette-grain" />}
 
-      {/* Ink spill Easter Egg */}
+      {/* Ink spill Easter Egg (preserved) */}
       <div className="fixed inset-0 pointer-events-none z-[60] overflow-hidden">
         {inkSpills.map(spill => (
           <svg key={spill.id} className="absolute animate-ink-spill origin-center" style={{ left: `${spill.x}%`, top: `${spill.y}%`, width: '150px', height: '150px', fill: 'var(--foreground)', transform: 'translate(-50%, -50%)' }} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -1028,9 +1199,13 @@ export default function Page() {
     </div>
   );
 }
+```
 
+**Step 2: Add the extracted `ReaderContent` component at the bottom of the file**
+
+```tsx
 /* ═══════════════════════════════════════════════
-   READER CONTENT (shared between desktop and mobile)
+   READER CONTENT (shared between desktop panel and mobile overlay)
    ═══════════════════════════════════════════════ */
 
 function ReaderContent({
@@ -1041,14 +1216,16 @@ function ReaderContent({
   isGlass,
   onBack,
   toggleFavorite,
+  fmtRelative,
 }: {
-  note: Note;
+  note: NonNullable<ReturnType<typeof Array.prototype.find>>;
   readProgress: number;
   readerScrollY: number;
   readerRef: React.RefObject<HTMLDivElement | null>;
   isGlass: boolean;
   onBack: (() => void) | undefined;
   toggleFavorite: (e: React.MouseEvent, id: string) => void;
+  fmtRelative: (iso?: string | null) => string;
 }) {
   return (
     <div className="flex flex-col h-full" key={note.id}>
@@ -1066,7 +1243,7 @@ function ReaderContent({
         isGlass
           ? 'border-b border-[var(--glass-border)] bg-[var(--glass-bg)]'
           : 'border-b-2 border-foreground/10 bg-muted/20',
-        readerScrollY > 100 && !onBack && 'header-hidden'
+        readerScrollY > 100 && !onBack && 'header-hidden' // desktop only auto-hide
       )}>
         {onBack && (
           <button
@@ -1152,3 +1329,56 @@ function ReaderContent({
     </div>
   );
 }
+```
+
+**Step 3: Verify the build**
+
+Run: `npx tsc --noEmit`
+Run: `npm run dev` (visual check)
+
+**Step 4: Commit**
+
+```bash
+git add app/page.tsx
+git commit -m "feat(ui): implement hierarchical navigation, 4-tab bottom nav, slide reader, contextual empty states"
+```
+
+---
+
+## Task 6: Final CSS polish and visual QA
+
+**Files:**
+- Modify: `app/globals.css` (minor tweaks if needed)
+
+**Step 1: Verify visual rendering**
+
+Run: `npm run dev`
+
+Check:
+- [ ] Bottom nav shows 4 tabs, correct icons, active state
+- [ ] Categories scroll horizontally on mobile
+- [ ] Tags appear after selecting a category
+- [ ] Note rows show title + excerpt + meta
+- [ ] Reader slides in from right on mobile
+- [ ] Back button and edge-swipe close reader
+- [ ] Bottom nav hides during reader
+- [ ] Empty states show correct messages for each context
+- [ ] Theme tab shows full preview cards
+- [ ] Search overlay opens/closes correctly
+- [ ] All 5 themes render correctly (brutalist + 4 glass)
+- [ ] Desktop sidebar + reader panel layout works
+- [ ] Pull-to-refresh still works
+
+**Step 2: Fix any visual issues found**
+
+**Step 3: Build verification**
+
+Run: `npm run build`
+Expected: Success, no TypeScript errors
+
+**Step 4: Final commit**
+
+```bash
+git add -A
+git commit -m "feat(ui): navigation redesign — complete premium mobile-first UX overhaul"
+```
