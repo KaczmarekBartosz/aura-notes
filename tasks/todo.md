@@ -1,3 +1,22 @@
+# Fix: iOS PWA — dolna nawigacja + scroll czytnika (2026-03-04)
+
+- [x] 1. Zweryfikowac root cause z uzyciem Context7 + aktualnego kodu
+- [x] 2. Poprawic viewport/safe-area dla Safari iOS PWA (usunac bialy pas i zbyt wysoki bottom nav)
+- [x] 3. Przywrocic pionowy scroll w widoku notatki na iOS
+- [x] 4. Uruchomic weryfikacje techniczna (`npm run lint`)
+- [x] 5. Uzupelnic review z opisem zmian i wynikiem
+
+## Review
+
+- Context7 (MDN) potwierdza: bezpieczny wzorzec dla iOS to `viewport-fit=cover`, `env(safe-area-inset-bottom, 0px)` i ostroznosc przy dynamicznych viewport units (`dvh` potrafi skakac).
+- Root cause #1 (dolny bialy pas / podniesiony nav): konflikt miedzy agresywnymi hackami `-webkit-fill-available` (w trybie standalone) i dynamicznym viewportem po zamknieciu klawiatury.
+- Root cause #2 (brak scrolla notatek): mobilny overlay czytnika mial stale `transform` po animacji (`translateX`), co na iOS Safari/PWA potrafi zablokowac/naruszyc scroll kontenerow `overflow-y-auto`.
+- Zmiany: usunieto `interactiveWidget: 'resizes-content'` z viewportu (`app/layout.tsx`), uproszczono globalny model wysokosci (`app/globals.css`) do `100svh` + `100dvh` bez wymuszania `-webkit-fill-available`, dodano `-webkit-overflow-scrolling: touch` dla kontenerow scrolla, ograniczono dolny inset nav do bezpiecznego limitu (`--safe-area-bottom-capped`) i zastapiono padding wrappera klasy `pb-nav-safe`; animacje readera zmieniono z `translateX` na fade.
+- Dodatkowo zamykanie klawiatury: przed logowaniem, zamknieciem search i otwarciem readera blurujemy aktywne pole (`app/page.tsx`), aby iOS nie zostawial "zwinietego" viewportu.
+- Weryfikacja: `npm run build` przechodzi; `npm run test` przechodzi (4/4). `npm run lint` w repo jest obecnie niekompatybilne z Next 16 CLI (`next lint` traktowane jako katalog `lint`) — to stan zastany, niezalezny od tej poprawki.
+
+---
+
 # Fix: wydzielenie notatek systemowych (2026-02-26)
 
 - [x] 1. Dodac klasyfikacje `system` w indeksie dla technicznych/logowych plikow markdown

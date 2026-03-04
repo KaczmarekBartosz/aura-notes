@@ -192,6 +192,9 @@ export default function Page() {
   /* ── Navigation handlers ── */
 
   const openReader = useCallback((id: string) => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     setSelectedId(id);
     setIsReaderOpen(true);
     setIsReaderExiting(false);
@@ -218,6 +221,9 @@ export default function Page() {
   }, []);
 
   const closeSearch = useCallback(() => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     setIsSearchOpen(false);
     setQuery('');
   }, []);
@@ -512,7 +518,13 @@ export default function Page() {
 
           <form
             className="mt-6 space-y-4"
-            onSubmit={(e) => { e.preventDefault(); loadNotes(loginInput); }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+              }
+              loadNotes(loginInput);
+            }}
           >
             <label className={cn(
               "block text-left text-[0.76rem] uppercase tracking-[0.18em]",
@@ -599,7 +611,7 @@ export default function Page() {
       )}
 
       {/* Content area */}
-      <div className="mx-auto flex h-full w-full max-w-[1600px] gap-0 md:gap-6 md:p-6 relative z-10 pb-[calc(env(safe-area-inset-bottom,0px)+3.75rem)] md:pb-0">
+      <div className="mx-auto flex h-full w-full max-w-[1600px] gap-0 md:gap-6 md:p-6 relative z-10 pb-nav-safe">
 
         {/* ═══ SIDEBAR ═══ */}
         <aside

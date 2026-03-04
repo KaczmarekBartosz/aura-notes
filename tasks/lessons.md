@@ -9,3 +9,5 @@
 - **Safe-area insets:** Używaj `env(safe-area-inset-*, 0px)` z fallbackiem `0px` zgodnie z MDN — `max(env(...), 0px)` nie jest wymagane i może być problematyczne.
 - Jeśli użytkownik zgłasza, że zmiany są na `origin/main`, najpierw zweryfikuj `git branch -vv` i wykonaj `git pull --ff-only` przed analizą przyczyny błędu lokalnie.
 - Po rozszerzeniu indeksowania do "wszystkich .md" trzeba od razu zapewnić warstwę UX do separacji notatek systemowych (osobna kategoria/filtr), inaczej lista użytkownika robi się nieczytelna.
+- **iOS PWA + klawiatura:** Nie łącz `interactive-widget=resizes-content` z ręcznym wymuszaniem `-webkit-fill-available` na `html/body` lub głównym kontenerze — po zamknięciu klawiatury viewport potrafi zostać "zaniżony" i tworzyć biały pas na dole.
+- **iOS scroll:** Unikaj trwałego `transform` (np. `translateX` po animacji `forwards`) na wrapperze zawierającym `overflow-y-auto`; Safari iOS potrafi wtedy blokować przewijanie treści.
