@@ -710,7 +710,7 @@ body.theme-picker-open .aura-theme-scope main.glass-card:hover {
   /* Fallback path for iOS where display-mode media queries can be unreliable. */
   @media (max-width: 767px) {
     html.ios-standalone .mobile-bottom-nav {
-      bottom: 0 !important;
+      bottom: calc(env(safe-area-inset-bottom, 0px) * -1) !important;
       left: 0 !important;
       right: 0 !important;
       padding-inline: 0 !important;
@@ -741,7 +741,7 @@ body.theme-picker-open .aura-theme-scope main.glass-card:hover {
   /* Standards path for browsers where display-mode media query is available. */
   @media (max-width: 767px) and (display-mode: standalone) {
     .mobile-bottom-nav {
-      bottom: 0 !important;
+      bottom: calc(env(safe-area-inset-bottom, 0px) * -1) !important;
       left: 0 !important;
       right: 0 !important;
       padding-inline: 0 !important;
