@@ -1,4 +1,9 @@
 node_modules
 .next
+.expo
+mobile_sdk54_template
+dist
+web-build
 .DS_Store
 *.log
+*.tsbuildinfo

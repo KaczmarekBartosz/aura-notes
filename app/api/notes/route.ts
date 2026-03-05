@@ -16,7 +16,8 @@ export async function GET(request: Request) {
     const dataPath = path.join(process.cwd(), 'netlify/functions/data/notes-index.json');
     const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
     return NextResponse.json({ ok: true, data }, { status: 200 });
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: 'Failed to load notes', detail: e?.message || 'unknown' }, { status: 500 });
+  } catch (error: unknown) {
+    const detail = error instanceof Error ? error.message : 'unknown';
+    return NextResponse.json({ ok: false, error: 'Failed to load notes', detail }, { status: 500 });
   }
 }

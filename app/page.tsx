@@ -27,8 +27,9 @@ import { AuraCrystalLogo } from '@/components/glass/AuraCrystalLogo';
 
 type SortMode = 'updated_desc' | 'updated_asc' | 'created_desc' | 'created_asc' | 'title_asc';
 type AppView = 'browse' | 'desk' | 'search' | 'theme';
-
-const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? 'local';
+type DeviceMotionEventWithPermission = typeof DeviceMotionEvent & {
+  requestPermission?: () => Promise<'granted' | 'denied'>;
+};
 
 const SORT_LABELS: Record<SortMode, string> = {
   updated_desc: 'Najnowsze',
@@ -85,7 +86,7 @@ function highlightText(text: string, q: string): React.ReactNode {
   const regex = new RegExp(`(${escaped})`, 'gi');
   const parts = text.split(regex);
   return parts.map((part, i) =>
-    regex.test(part) ? <mark key={i} className="bg-primary/30 text-foreground px-0.5 font-bold">{part}</mark> : part
+    i % 2 === 1 ? <mark key={i} className="bg-primary/30 text-foreground px-0.5 font-bold">{part}</mark> : part
   );
 }
 
@@ -108,7 +109,7 @@ function sanitizeTag(tag: string): string | null {
    ═══════════════════════════════════════════════ */
 
 export default function Page() {
-  const { theme, isGlass } = useTheme();
+  const { isGlass } = useTheme();
 
   /* ── Auth state ── */
   const [token, setToken] = useState<string | null>(null);
@@ -256,7 +257,11 @@ export default function Page() {
       }
     }
 
-    if (typeof window !== 'undefined' && window.DeviceMotionEvent && typeof (DeviceMotionEvent as any).requestPermission !== 'function') {
+    if (typeof window !== 'undefined' && window.DeviceMotionEvent) {
+      const DeviceMotionCtor = window.DeviceMotionEvent as DeviceMotionEventWithPermission;
+      if (typeof DeviceMotionCtor.requestPermission === 'function') {
+        return;
+      }
       window.addEventListener('devicemotion', handleMotion);
       return () => window.removeEventListener('devicemotion', handleMotion);
     }
@@ -365,7 +370,7 @@ export default function Page() {
 
   const filtered = useMemo(() => {
     const q = debouncedQuery.trim().toLowerCase();
-    let out = notes.filter((n) => {
+    const out = notes.filter((n) => {
       const normalizedTags = (n.tags || [])
         .map(sanitizeTag)
         .filter((tag): tag is string => Boolean(tag));
@@ -1282,6 +1287,7 @@ function ReaderContent({
       <div 
         className={cn(
           'flex items-center gap-2 px-4 py-2 shrink-0 header-collapsible relative z-20 transition-shadow',
+          onBack && 'reader-header-safe',
           isGlass && 'reader-header-glass',
           isGlass
             ? 'border-b border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl'

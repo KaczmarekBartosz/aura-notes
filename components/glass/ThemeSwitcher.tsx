@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import { useTheme, useReducedMotion } from '@/lib/theme';
 import { GlassCard, GlassCardTitle } from './GlassCard';
-import { GlassButton, GlassIconButton } from './GlassButton';
+import { GlassIconButton } from './GlassButton';
 import { THEMES, type ThemeMode, type ThemeMetadata } from '@/types/theme';
 import { Palette, Check, Sparkles } from 'lucide-react';
 
@@ -32,14 +32,10 @@ export function ThemeSwitcher({
   const { theme, setTheme, isGlass } = useTheme();
   const reducedMotion = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const canUseDOM = typeof document !== 'undefined';
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isMounted) return;
+    if (!canUseDOM) return;
 
     const body = document.body;
     if (isOpen) {
@@ -51,7 +47,7 @@ export function ThemeSwitcher({
     return () => {
       body.classList.remove('theme-picker-open');
     };
-  }, [isOpen, isMounted]);
+  }, [canUseDOM, isOpen]);
 
   const handleThemeChange = useCallback((newTheme: ThemeMode) => {
     // Add transition class for smooth theme switch
@@ -144,7 +140,7 @@ export function ThemeSwitcher({
         </GlassIconButton>
 
         {/* Theme picker dropdown */}
-        {isOpen && isMounted && createPortal(pickerOverlay, document.body)}
+        {isOpen && canUseDOM && createPortal(pickerOverlay, document.body)}
       </div>
     );
   }
@@ -377,7 +373,8 @@ export function ThemeBadge({ className }: { className?: string }) {
       'inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium',
       isGlass
         ? 'glass-badge'
-        : 'border-2 border-foreground bg-card'
+        : 'border-2 border-foreground bg-card',
+      className
     )}>
       <Palette className="size-3" />
       {currentTheme?.label ?? theme}

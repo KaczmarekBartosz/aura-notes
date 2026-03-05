@@ -4,8 +4,8 @@
  * Automatically analyzes markdown files and adds YAML frontmatter
  */
 
-const fs = require('fs');
-const path = require('path');
+let fs;
+let path;
 
 const MEMORY_DIR = '/home/ubuntu/clawd/aura-notes/memory';
 
@@ -92,7 +92,7 @@ function inferCategory(filename, content) {
   return { category: 'note', subcategory: null };
 }
 
-function inferType(filename, content) {
+function inferType(filename) {
   const lowerFile = filename.toLowerCase();
   
   if (lowerFile.startsWith('gold_')) return 'protocol';
@@ -124,9 +124,8 @@ function inferSource(filename, content) {
   return 'manual';
 }
 
-function generateTags(filename, content, category, subcategory) {
+function generateTags(content, category, subcategory) {
   const tags = [];
-  const lowerFile = filename.toLowerCase();
   const lowerContent = content.toLowerCase().slice(0, 3000);
   
   // Category-based tags
@@ -192,9 +191,9 @@ function generateFrontmatter(filePath) {
   
   const title = extractTitle(content, filename);
   const { category, subcategory } = inferCategory(filename, content);
-  const type = inferType(filename, content);
+  const type = inferType(filename);
   const source = inferSource(filename, content);
-  const tags = generateTags(filename, content, category, subcategory);
+  const tags = generateTags(content, category, subcategory);
   const created = extractDate(filename) || '2026-02-01';
   const updated = created;
   
@@ -251,24 +250,30 @@ function findMarkdownFiles(dir) {
   return files;
 }
 
-// Main execution
-console.log('=== Frontmatter Generator for Aura Notes ===\n');
+async function main() {
+  ({ default: fs } = await import('node:fs'));
+  ({ default: path } = await import('node:path'));
 
-const files = findMarkdownFiles(MEMORY_DIR);
-console.log(`Found ${files.length} markdown files\n`);
+  console.log('=== Frontmatter Generator for Aura Notes ===\n');
 
-let processed = 0;
-let skipped = 0;
+  const files = findMarkdownFiles(MEMORY_DIR);
+  console.log(`Found ${files.length} markdown files\n`);
 
-for (const file of files) {
-  if (processFile(file)) {
-    processed++;
-  } else {
-    skipped++;
+  let processed = 0;
+  let skipped = 0;
+
+  for (const file of files) {
+    if (processFile(file)) {
+      processed++;
+    } else {
+      skipped++;
+    }
   }
+
+  console.log(`\n=== Summary ===`);
+  console.log(`Processed: ${processed}`);
+  console.log(`Skipped (already has frontmatter): ${skipped}`);
+  console.log(`Total: ${files.length}`);
 }
 
-console.log(`\n=== Summary ===`);
-console.log(`Processed: ${processed}`);
-console.log(`Skipped (already has frontmatter): ${skipped}`);
-console.log(`Total: ${files.length}`);
+void main();

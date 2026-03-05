@@ -4,7 +4,6 @@ import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/lib/theme';
 import { 
@@ -294,7 +293,7 @@ export function PromptArchitectSkill() {
             </div>
             <div>
               <label className={cn("block text-sm mb-2", isGlass ? "font-medium" : "font-bold uppercase tracking-wider")}>
-                Recipient's reaction (what should they think/feel/do?)
+                Recipient&apos;s reaction (what should they think/feel/do?)
               </label>
               <Input
                 placeholder='e.g., "This person did their research and understands my problem. Worth a call."'

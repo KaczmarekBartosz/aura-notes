@@ -1,5 +1,3 @@
-const crypto = require('crypto');
-
 function json(statusCode, body, extraHeaders = {}) {
   return {
     statusCode,
@@ -9,6 +7,11 @@ function json(statusCode, body, extraHeaders = {}) {
     },
     body: JSON.stringify(body),
   };
+}
+
+async function createSessionToken(secret) {
+  const { createHash } = await import('node:crypto');
+  return createHash('sha256').update(secret).digest('hex');
 }
 
 exports.handler = async (event) => {
@@ -24,7 +27,7 @@ exports.handler = async (event) => {
     return json(401, { ok: false, error: 'Invalid password' });
   }
 
-  const token = crypto.createHash('sha256').update(expected).digest('hex');
+  const token = await createSessionToken(expected);
   const cookie = `aura_session=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${60 * 60 * 24 * 30}`;
   return json(200, { ok: true, token }, { 'Set-Cookie': cookie });
 };

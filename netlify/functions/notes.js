@@ -9,6 +9,14 @@ function json(statusCode, body) {
   };
 }
 
+async function readNotesIndex() {
+  const { readFile } = await import('node:fs/promises');
+  const { join } = await import('node:path');
+  const filePath = join(__dirname, 'data', 'notes-index.json');
+  const raw = await readFile(filePath, 'utf-8');
+  return JSON.parse(raw);
+}
+
 exports.handler = async (event) => {
   const expected = process.env.NOTEBOOK_PASSWORD || '';
   if (!expected) return json(500, { ok: false, error: 'Password not configured' });
@@ -19,9 +27,10 @@ exports.handler = async (event) => {
   }
 
   try {
-    const data = require('./data/notes-index.json');
+    const data = await readNotesIndex();
     return json(200, { ok: true, data });
-  } catch (e) {
-    return json(500, { ok: false, error: 'Failed to load notes', detail: e?.message || 'unknown' });
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : 'unknown';
+    return json(500, { ok: false, error: 'Failed to load notes', detail });
   }
 };

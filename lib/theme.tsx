@@ -70,8 +70,10 @@ export function ThemeProvider({
   defaultTheme = 'crystal-line',
   respectReducedMotion = true,
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<ThemeMode>(defaultTheme);
-  const [hasBackdropSupport, setHasBackdropSupport] = useState(true);
+  const [theme, setThemeState] = useState<ThemeMode>(() =>
+    typeof window === 'undefined' ? defaultTheme : getInitialTheme()
+  );
+  const [hasBackdropSupport] = useState(() => supportsBackdropFilter());
 
   // Apply theme classes to document
   const applyThemeClasses = useCallback((newTheme: ThemeMode) => {
@@ -111,14 +113,22 @@ export function ThemeProvider({
     }
   }, []);
 
-  // Initialize theme on mount
   useEffect(() => {
-    setHasBackdropSupport(supportsBackdropFilter());
+    applyThemeClasses(theme);
 
-    const initial = getInitialTheme();
-    setThemeState(initial);
-    applyThemeClasses(initial);
-  }, [applyThemeClasses]);
+    const html = document.documentElement;
+    const body = document.body;
+    const motionPreference = respectReducedMotion ? 'system' : 'full';
+    html.dataset.motionPreference = motionPreference;
+    if (body) {
+      body.dataset.motionPreference = motionPreference;
+    }
+
+    return () => {
+      html.removeAttribute('data-motion-preference');
+      body?.removeAttribute('data-motion-preference');
+    };
+  }, [applyThemeClasses, respectReducedMotion, theme]);
 
   // Set theme with persistence
   const setTheme = useCallback((newTheme: ThemeMode) => {
@@ -129,9 +139,7 @@ export function ThemeProvider({
     } catch {
       // localStorage not available
     }
-    
-    applyThemeClasses(newTheme);
-  }, [applyThemeClasses]);
+  }, []);
 
   // Cycle through themes
   const cycleTheme = useCallback(() => {
@@ -187,16 +195,23 @@ export function useTheme(): ThemeContextValue {
 
 /** Hook for reduced motion preference */
 export function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
+  const [reduced, setReduced] = useState(() => prefersReducedMotion());
   
   useEffect(() => {
-    setReduced(prefersReducedMotion());
-    
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
-    
-    mediaQuery.addEventListener('change', handler);
-    return () => mediaQuery.removeEventListener('change', handler);
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handler);
+      return () => mediaQuery.removeEventListener('change', handler);
+    }
+
+    mediaQuery.addListener(handler);
+    return () => mediaQuery.removeListener(handler);
   }, []);
   
   return reduced;

@@ -22,22 +22,38 @@ function blobRadius(time: number, phase: number): string {
   return `${a}% ${b}% ${c}% ${d}% / ${d}% ${c}% ${b}% ${a}%`;
 }
 
+type DeviceOrientationEventWithPermission = typeof DeviceOrientationEvent & {
+  requestPermission?: () => Promise<'granted' | 'denied'>;
+};
+
+function getMotionSupport() {
+  if (typeof window === 'undefined' || !window.DeviceOrientationEvent) {
+    return { supported: false, needsPermission: false };
+  }
+
+  const DeviceOrientationCtor = window.DeviceOrientationEvent as DeviceOrientationEventWithPermission;
+  return {
+    supported: true,
+    needsPermission: typeof DeviceOrientationCtor.requestPermission === 'function',
+  };
+}
+
 export function AuraCrystalLogo({ scrollProgress = 0, className, onClick }: AuraCrystalLogoProps) {
   const { isGlass } = useTheme();
   const [isPressed, setIsPressed] = useState(false);
   const requestRef = useRef<number | null>(null);
   const [time, setTime] = useState(0);
   const [motionGranted, setMotionGranted] = useState(false);
-  const [needsMotionPermission, setNeedsMotionPermission] = useState(false);
   
   // Gyroscopic Tilt State
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const motionSupport = getMotionSupport();
+  const needsMotionPermission = isGlass && motionSupport.supported && motionSupport.needsPermission;
+  const motionAllowed = isGlass && motionSupport.supported && (!motionSupport.needsPermission || motionGranted);
 
   const ensureMotionPermission = useCallback(async () => {
-    if (typeof window === 'undefined' || !window.DeviceOrientationEvent) return;
-    const DeviceOrientationCtor = window.DeviceOrientationEvent as typeof DeviceOrientationEvent & {
-      requestPermission?: () => Promise<'granted' | 'denied'>;
-    };
+    if (!needsMotionPermission || typeof window === 'undefined' || !window.DeviceOrientationEvent) return;
+    const DeviceOrientationCtor = window.DeviceOrientationEvent as DeviceOrientationEventWithPermission;
 
     if (typeof DeviceOrientationCtor.requestPermission === 'function') {
       try {
@@ -50,28 +66,11 @@ export function AuraCrystalLogo({ scrollProgress = 0, className, onClick }: Aura
     }
 
     setMotionGranted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isGlass || typeof window === 'undefined' || !window.DeviceOrientationEvent) {
-      setNeedsMotionPermission(false);
-      setMotionGranted(false);
-      return;
-    }
-
-    const DeviceOrientationCtor = window.DeviceOrientationEvent as typeof DeviceOrientationEvent & {
-      requestPermission?: () => Promise<'granted' | 'denied'>;
-    };
-    const requiresPermission = typeof DeviceOrientationCtor.requestPermission === 'function';
-    setNeedsMotionPermission(requiresPermission);
-    if (!requiresPermission) {
-      setMotionGranted(true);
-    }
-  }, [isGlass]);
+  }, [needsMotionPermission]);
 
   // Device orientation listener (Gyroscopic Glass Effect)
   useEffect(() => {
-    if (!isGlass || !motionGranted || typeof window === 'undefined' || !window.DeviceOrientationEvent) return;
+    if (!motionAllowed || typeof window === 'undefined' || !window.DeviceOrientationEvent) return;
 
     const handleOrientation = (e: DeviceOrientationEvent) => {
       // e.gamma is left-to-right tilt in degrees, where right is positive (-90 to 90)
@@ -90,11 +89,11 @@ export function AuraCrystalLogo({ scrollProgress = 0, className, onClick }: Aura
 
     window.addEventListener('deviceorientation', handleOrientation);
     return () => window.removeEventListener('deviceorientation', handleOrientation);
-  }, [isGlass, motionGranted]);
+  }, [motionAllowed]);
 
   // Smooth animation loop
   useEffect(() => {
-    let startTime = performance.now();
+    const startTime = performance.now();
     
     const animate = (now: number) => {
       setTime((now - startTime) * 0.001); // Convert to seconds
@@ -141,14 +140,14 @@ export function AuraCrystalLogo({ scrollProgress = 0, className, onClick }: Aura
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
       onPointerMove={(e) => {
-        if (isGlass && motionGranted) return;
+        if (motionAllowed) return;
         const rect = e.currentTarget.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
         const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
         setTilt({ x: clamp(x, -1, 1), y: clamp(y, -1, 1) });
       }}
       onPointerOut={() => {
-        if (!isGlass || !motionGranted) {
+        if (!motionAllowed) {
           setTilt({ x: 0, y: 0 });
         }
       }}
