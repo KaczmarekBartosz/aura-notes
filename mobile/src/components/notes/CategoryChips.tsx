@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ScrollView, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import type { Note } from "../../types/note";
 import { getCategoryIcon, getCategoryLabel } from "../../constants/categories";
@@ -26,7 +26,7 @@ export function CategoryChips({ notes, activeCategory, onSelect }: CategoryChips
   );
 
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
       <View style={styles.row}>
         <CategoryChip
           label="Wszystkie"
@@ -45,7 +45,7 @@ export function CategoryChips({ notes, activeCategory, onSelect }: CategoryChips
               count={count}
               active={activeCategory === category}
               onPress={() => onSelect(category)}
-              icon={<Icon size={12} color={activeCategory === category ? colors.primaryForeground : colors.primary} />}
+              icon={<Icon size={13} color={activeCategory === category ? colors.primaryForeground : colors.primary} />}
               colors={colors}
             />
           );
@@ -73,6 +73,8 @@ function CategoryChip({
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`Filtruj po kategorii ${label}`}
       style={[
         styles.chip,
         {
@@ -101,20 +103,21 @@ function CategoryChip({
 }
 
 const styles = StyleSheet.create({
+  scrollContent: {
+    paddingRight: 16
+  },
   row: {
     flexDirection: "row",
-    gap: 10,
-    paddingRight: 16
+    gap: 10
   },
   chip: {
     overflow: "hidden",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 10
+    paddingHorizontal: 13,
+    paddingVertical: 10,
+    minHeight: 42,
+    justifyContent: "center"
   },
   content: {
     position: "relative",
@@ -128,15 +131,15 @@ const styles = StyleSheet.create({
     fontWeight: "700"
   },
   countBubble: {
-    minWidth: 22,
-    height: 22,
+    minWidth: 24,
+    height: 24,
     borderRadius: 999,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 6
+    paddingHorizontal: 7
   },
   countText: {
     fontSize: 11,
-    fontWeight: "700"
+    fontWeight: "800"
   }
 });

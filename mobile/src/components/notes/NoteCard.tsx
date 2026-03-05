@@ -1,5 +1,6 @@
+import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Star } from "lucide-react-native";
+import { ArrowUpRight, Star } from "lucide-react-native";
 import type { Note } from "../../types/note";
 import { HighlightedText } from "../common/HighlightedText";
 import { formatRelativeDate } from "../../utils/date";
@@ -19,37 +20,69 @@ export function NoteCard({ note, query, onPress, onToggleFavorite }: NoteCardPro
   const { colors, isGlass } = useAppTheme();
   const CategoryIcon = getCategoryIcon(note.category);
   const preview = getQuerySnippet(note, query);
+  const primaryTag = note.tags[0];
 
   return (
     <SurfaceCard
       onPress={() => onPress(note.id)}
       accessibilityRole="button"
       accessibilityLabel={`Otwórz notatkę ${note.title}`}
+      accessibilityHint="Przechodzi do czytnika markdown"
       contentStyle={styles.content}
       style={{
-        borderColor: colors.border,
+        borderColor: isGlass ? colors.borderStrong : colors.border,
         shadowColor: colors.shadow
       }}
+      intensity={isGlass ? 52 : undefined}
     >
-      <View style={styles.headerRow}>
-        <View style={styles.headerMeta}>
-          <View
-            style={[
-              styles.categoryPill,
-              {
-                backgroundColor: colors.tagBackground,
-                borderColor: colors.border
-              }
-            ]}
-          >
-            <CategoryIcon size={12} color={colors.primary} />
-            <Text style={[styles.categoryText, { color: colors.muted }]}>{getCategoryLabel(note.category)}</Text>
-          </View>
+      <LinearGradient colors={[...colors.activeGradient]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={styles.accentRail} />
 
+      <View style={styles.topRow}>
+        <View
+          style={[
+            styles.categoryPill,
+            {
+              backgroundColor: colors.tagBackground,
+              borderColor: colors.border
+            }
+          ]}
+        >
+          <CategoryIcon size={12} color={colors.primary} />
+          <Text style={[styles.categoryText, { color: colors.foreground }]}>{getCategoryLabel(note.category)}</Text>
+        </View>
+
+        <View
+          style={[
+            styles.metaPill,
+            {
+              backgroundColor: colors.primarySoft,
+              borderColor: colors.border
+            }
+          ]}
+        >
+          <Text style={[styles.metaPillText, { color: colors.primary }]}>{formatRelativeDate(note.updatedAt)}</Text>
+        </View>
+      </View>
+
+      <View style={styles.mainRow}>
+        <View style={styles.copyCol}>
           <HighlightedText
             text={note.title}
             query={query}
+            numberOfLines={2}
             style={[styles.title, { color: colors.foreground }]}
+            highlightStyle={{
+              color: colors.primary,
+              backgroundColor: colors.primarySoft,
+              fontWeight: "800"
+            }}
+          />
+
+          <HighlightedText
+            text={preview}
+            query={query}
+            numberOfLines={4}
+            style={[styles.excerpt, { color: colors.muted }]}
             highlightStyle={{
               color: colors.primary,
               backgroundColor: colors.primarySoft,
@@ -70,40 +103,29 @@ export function NoteCard({ note, query, onPress, onToggleFavorite }: NoteCardPro
           style={[
             styles.favoriteButton,
             {
-              backgroundColor: isGlass ? colors.tagBackground : colors.surface,
-              borderColor: colors.border
+              backgroundColor: note.isFavorite ? colors.warning : isGlass ? colors.tagBackground : colors.surface,
+              borderColor: note.isFavorite ? colors.warning : colors.border
             }
           ]}
         >
-          <Star
-            size={16}
-            color={note.isFavorite ? colors.warning : colors.subtle}
-            fill={note.isFavorite ? colors.warning : "none"}
-          />
+          <Star size={15} color={note.isFavorite ? colors.primaryForeground : colors.subtle} fill={note.isFavorite ? colors.primaryForeground : "none"} />
         </Pressable>
       </View>
 
-      <HighlightedText
-        text={preview}
-        query={query}
-        style={[styles.excerpt, { color: colors.muted }]}
-        highlightStyle={{
-          color: colors.primary,
-          backgroundColor: colors.primarySoft,
-          fontWeight: "600"
-        }}
-      />
-
       <View style={styles.footerRow}>
-        <Text style={[styles.metaText, { color: colors.subtle }]}>{formatRelativeDate(note.updatedAt)}</Text>
-        <View style={[styles.dot, { backgroundColor: colors.subtle }]} />
-        <Text style={[styles.metaText, { color: colors.subtle }]}>{note.readingMinutes} min</Text>
-        {!!note.tags.length && (
-          <>
-            <View style={[styles.dot, { backgroundColor: colors.subtle }]} />
-            <Text style={[styles.metaText, { color: colors.subtle }]}>#{note.tags[0]}</Text>
-          </>
-        )}
+        <View style={[styles.footerPill, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
+          <Text style={[styles.footerText, { color: colors.foreground }]}>{note.readingMinutes} min</Text>
+        </View>
+        <View style={[styles.footerPill, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
+          <Text style={[styles.footerText, { color: colors.foreground }]}>{note.words} słów</Text>
+        </View>
+        {primaryTag ? (
+          <View style={[styles.footerPill, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
+            <Text style={[styles.footerText, { color: colors.primary }]}>#{primaryTag}</Text>
+          </View>
+        ) : null}
+        <View style={styles.grow} />
+        <ArrowUpRight size={14} color={colors.subtle} />
       </View>
     </SurfaceCard>
   );
@@ -111,63 +133,95 @@ export function NoteCard({ note, query, onPress, onToggleFavorite }: NoteCardPro
 
 const styles = StyleSheet.create({
   content: {
-    padding: 16
+    padding: 16,
+    gap: 14
   },
-  headerRow: {
+  accentRail: {
+    position: "absolute",
+    top: 0,
+    left: 16,
+    right: 16,
+    height: 4,
+    borderBottomLeftRadius: 999,
+    borderBottomRightRadius: 999,
+    opacity: 0.72
+  },
+  topRow: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 12
-  },
-  headerMeta: {
-    flex: 1,
-    gap: 10
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    marginTop: 2
   },
   categoryPill: {
-    alignSelf: "flex-start",
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
     borderWidth: 1,
     borderRadius: 999,
     paddingHorizontal: 10,
-    paddingVertical: 6
+    paddingVertical: 7
   },
   categoryText: {
     fontSize: 12,
-    fontWeight: "600"
+    fontWeight: "700"
+  },
+  metaPill: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 7
+  },
+  metaPillText: {
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 0.3
+  },
+  mainRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 14
+  },
+  copyCol: {
+    flex: 1,
+    gap: 10
   },
   title: {
-    fontSize: 17,
-    lineHeight: 22,
-    fontWeight: "700",
-    letterSpacing: -0.4
+    fontSize: 18,
+    lineHeight: 23,
+    fontWeight: "800",
+    letterSpacing: -0.6
+  },
+  excerpt: {
+    fontSize: 14,
+    lineHeight: 21
   },
   favoriteButton: {
-    width: 36,
-    height: 36,
+    width: 38,
+    height: 38,
     borderRadius: 999,
     borderWidth: 1,
     alignItems: "center",
-    justifyContent: "center"
-  },
-  excerpt: {
-    marginTop: 12,
-    fontSize: 14,
-    lineHeight: 21
+    justifyContent: "center",
+    marginTop: 2
   },
   footerRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    marginTop: 14
+    flexWrap: "wrap"
   },
-  metaText: {
-    fontSize: 12,
-    fontWeight: "600"
+  footerPill: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 7
   },
-  dot: {
-    width: 3,
-    height: 3,
-    borderRadius: 999
+  footerText: {
+    fontSize: 11,
+    fontWeight: "700"
+  },
+  grow: {
+    flex: 1
   }
 });

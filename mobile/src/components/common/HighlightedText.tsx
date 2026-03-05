@@ -6,13 +6,14 @@ type HighlightedTextProps = {
   className?: string;
   style?: StyleProp<TextStyle>;
   highlightStyle?: StyleProp<TextStyle>;
+  numberOfLines?: number;
 };
 
-export function HighlightedText({ text, query, className, style, highlightStyle }: HighlightedTextProps) {
+export function HighlightedText({ text, query, className, style, highlightStyle, numberOfLines }: HighlightedTextProps) {
   const normalizedQuery = query.trim();
   if (!normalizedQuery) {
     return (
-      <Text className={className} style={style}>
+      <Text className={className} style={style} numberOfLines={numberOfLines}>
         {text}
       </Text>
     );
@@ -24,7 +25,7 @@ export function HighlightedText({ text, query, className, style, highlightStyle 
   const parts = text.split(splitRegex);
 
   return (
-    <Text className={className} style={style}>
+    <Text className={className} style={style} numberOfLines={numberOfLines}>
       {parts.map((part, index) =>
         exactRegex.test(part) ? (
           <Text key={`${part}-${index}`} style={highlightStyle}>

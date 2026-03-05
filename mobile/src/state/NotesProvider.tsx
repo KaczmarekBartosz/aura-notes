@@ -23,6 +23,7 @@ const NotesContext = createContext<NotesContextValue | null>(null);
 
 export function NotesProvider({ children }: PropsWithChildren) {
   const isMountedRef = useRef(true);
+  const refreshInFlightRef = useRef(false);
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -40,26 +41,43 @@ export function NotesProvider({ children }: PropsWithChildren) {
     }
   }, []);
 
+  const runRefresh = useCallback(
+    async (showSpinner: boolean) => {
+      if (!isMountedRef.current || refreshInFlightRef.current) return;
+
+      refreshInFlightRef.current = true;
+      if (showSpinner && isMountedRef.current) {
+        setRefreshing(true);
+      }
+      setError(null);
+
+      try {
+        const result = await syncNotes();
+        if (!isMountedRef.current) return;
+        setNotes(result.notes);
+        setSource(result.source);
+        await reloadCacheInfo();
+      } catch (err) {
+        if (isMountedRef.current) {
+          setError(err instanceof Error ? err.message : "Nie udało się odświeżyć notatek.");
+        }
+      } finally {
+        refreshInFlightRef.current = false;
+        if (showSpinner && isMountedRef.current) {
+          setRefreshing(false);
+        }
+      }
+    },
+    [reloadCacheInfo]
+  );
+
   const refresh = useCallback(async () => {
-    if (!isMountedRef.current) return;
-    setRefreshing(true);
-    setError(null);
-    try {
-      const result = await syncNotes();
-      if (!isMountedRef.current) return;
-      setNotes(result.notes);
-      setSource(result.source);
-      await reloadCacheInfo();
-    } catch (err) {
-      if (isMountedRef.current) {
-        setError(err instanceof Error ? err.message : "Nie udało się odświeżyć notatek.");
-      }
-    } finally {
-      if (isMountedRef.current) {
-        setRefreshing(false);
-      }
-    }
-  }, [reloadCacheInfo]);
+    await runRefresh(true);
+  }, [runRefresh]);
+
+  const backgroundRefresh = useCallback(async () => {
+    await runRefresh(false);
+  }, [runRefresh]);
 
   const toggleFavoriteById = useCallback(async (noteId: string) => {
     setNotes((current) =>
@@ -85,11 +103,6 @@ export function NotesProvider({ children }: PropsWithChildren) {
     await reloadCacheInfo();
   }, [reloadCacheInfo]);
 
-  const refreshSafely = useCallback(async () => {
-    if (refreshing) return;
-    await refresh();
-  }, [refresh, refreshing]);
-
   useEffect(() => {
     isMountedRef.current = true;
     let mounted = true;
@@ -111,14 +124,14 @@ export function NotesProvider({ children }: PropsWithChildren) {
       }
 
       if (!mounted) return;
-      await refresh();
+      await backgroundRefresh();
     })();
 
     return () => {
       mounted = false;
       isMountedRef.current = false;
     };
-  }, [refresh, reloadCacheInfo]);
+  }, [backgroundRefresh, reloadCacheInfo]);
 
   useEffect(() => {
     let currentAppState: AppStateStatus = AppState.currentState;
@@ -126,7 +139,7 @@ export function NotesProvider({ children }: PropsWithChildren) {
 
     const triggerSyncIfReady = async () => {
       if (!online) return;
-      await refreshSafely();
+      await backgroundRefresh();
     };
 
     const unsubscribeNetInfo = NetInfo.addEventListener((state) => {
@@ -150,7 +163,7 @@ export function NotesProvider({ children }: PropsWithChildren) {
       unsubscribeNetInfo();
       appStateSubscription.remove();
     };
-  }, [refreshSafely]);
+  }, [backgroundRefresh]);
 
   const value = useMemo<NotesContextValue>(() => {
     return {

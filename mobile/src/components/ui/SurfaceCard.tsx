@@ -1,6 +1,7 @@
 import { BlurView } from "expo-blur";
+import { GlassView, isGlassEffectAPIAvailable } from "expo-glass-effect";
 import { LinearGradient } from "expo-linear-gradient";
-import { Pressable, StyleSheet, View, type PressableProps, type ViewStyle } from "react-native";
+import { Pressable, Platform, StyleSheet, View, type PressableProps, type ViewStyle } from "react-native";
 import type { PropsWithChildren } from "react";
 import { useAppTheme } from "../../theme/ThemeProvider";
 
@@ -19,13 +20,14 @@ export function SurfaceCard({
   onPress,
   style,
   contentStyle,
-  intensity = 42,
+  intensity,
   accessibilityRole,
   accessibilityLabel,
   accessibilityHint
 }: SurfaceCardProps) {
   const { colors, visuals, isGlass, resolvedTheme } = useAppTheme();
-  const blurIntensity = intensity ?? visuals.blurIntensity;
+  const blurIntensity = intensity ?? visuals.heavyBlurIntensity;
+  const useNativeGlass = isGlass && Platform.OS === "ios" && isGlassEffectAPIAvailable();
 
   const body = (
     <View
@@ -49,17 +51,28 @@ export function SurfaceCard({
     >
       {isGlass ? (
         <>
-          <BlurView
-            intensity={blurIntensity}
-            tint={resolvedTheme === "dark" ? "dark" : "light"}
-            style={StyleSheet.absoluteFillObject}
+          {useNativeGlass ? (
+            <GlassView
+              glassEffectStyle={resolvedTheme === "dark" ? "regular" : "clear"}
+              tintColor={colors.surfaceOverlay}
+              style={StyleSheet.absoluteFillObject}
+            />
+          ) : (
+            <BlurView
+              intensity={blurIntensity}
+              tint={resolvedTheme === "dark" ? "dark" : "light"}
+              style={StyleSheet.absoluteFillObject}
+            />
+          )}
+          <LinearGradient
+            colors={[...colors.surfaceGradient]}
+            style={[StyleSheet.absoluteFillObject, styles.surfaceGradient]}
           />
-          <LinearGradient colors={[...colors.surfaceGradient]} style={StyleSheet.absoluteFillObject} />
           <LinearGradient
             colors={[...visuals.highlightGradient]}
             start={{ x: 0.02, y: 0 }}
             end={{ x: 1, y: 0.78 }}
-            style={StyleSheet.absoluteFillObject}
+            style={[StyleSheet.absoluteFillObject, styles.highlightLayer]}
           />
           {visuals.prismGradient.some((entry) => entry !== "rgba(0,0,0,0)") ? (
             <LinearGradient
@@ -69,7 +82,13 @@ export function SurfaceCard({
               style={styles.prismSweep}
             />
           ) : null}
-          <View style={[StyleSheet.absoluteFillObject, { backgroundColor: colors.surfaceOverlay }]} />
+          <View style={[StyleSheet.absoluteFillObject, styles.overlaySoftener, { backgroundColor: colors.surfaceOverlay }]} />
+          <LinearGradient
+            colors={["rgba(255,255,255,0.56)", "rgba(255,255,255,0.12)", "rgba(255,255,255,0)"]}
+            start={{ x: 0.08, y: 0 }}
+            end={{ x: 0.92, y: 0.88 }}
+            style={styles.specularSweep}
+          />
           <View style={[styles.edgeSpecular, { borderColor: colors.borderStrong, borderRadius: visuals.surfaceRadius }]} />
         </>
       ) : null}
@@ -87,7 +106,11 @@ export function SurfaceCard({
       accessibilityRole={accessibilityRole}
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
-      style={({ pressed }) => [styles.pressable, { borderRadius: visuals.surfaceRadius }, pressed && { transform: [{ scale: visuals.pressScale }] }]}
+      style={({ pressed }) => [
+        styles.pressable,
+        { borderRadius: visuals.surfaceRadius },
+        pressed && { transform: [{ scale: visuals.pressScale }] }
+      ]}
     >
       {body}
     </Pressable>
@@ -95,8 +118,7 @@ export function SurfaceCard({
 }
 
 const styles = StyleSheet.create({
-  pressable: {
-  },
+  pressable: {},
   shell: {
     overflow: "hidden",
     elevation: 10
@@ -110,10 +132,23 @@ const styles = StyleSheet.create({
     opacity: 0.48,
     transform: [{ rotate: "-12deg" }]
   },
+  surfaceGradient: {
+    opacity: 0.82
+  },
+  highlightLayer: {
+    opacity: 0.9
+  },
+  overlaySoftener: {
+    opacity: 0.72
+  },
+  specularSweep: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.54
+  },
   edgeSpecular: {
     ...StyleSheet.absoluteFillObject,
     borderWidth: 1,
-    opacity: 0.42
+    opacity: 0.48
   },
   content: {
     position: "relative",

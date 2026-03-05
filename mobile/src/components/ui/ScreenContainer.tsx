@@ -1,3 +1,4 @@
+import { BlurView } from "expo-blur";
 import { StyleSheet, View, type ViewStyle } from "react-native";
 import { SafeAreaView, type Edge } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -16,26 +17,41 @@ export function ScreenContainer({
   contentStyle,
   withHorizontalPadding = true
 }: ScreenContainerProps) {
-  const { colors, visuals, isGlass } = useAppTheme();
+  const { colors, visuals, isGlass, resolvedTheme } = useAppTheme();
+  const backgroundBlurIntensity = Math.max(18, Math.round(visuals.blurIntensity * 0.6));
 
   return (
     <SafeAreaView edges={edges} style={[styles.safeArea, { backgroundColor: colors.background }]}>
       <View style={styles.container}>
         <LinearGradient colors={[...colors.screenGradient]} style={StyleSheet.absoluteFillObject} />
-        <LinearGradient
-          colors={[...visuals.ambientOverlay]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFillObject}
-        />
         {isGlass ? (
           <>
-            <View style={[styles.orb, styles.orbOne, { backgroundColor: colors.orbOne }]} />
-            <View style={[styles.orb, styles.orbTwo, { backgroundColor: colors.orbTwo }]} />
-            <View style={[styles.orb, styles.orbThree, { backgroundColor: colors.orbThree }]} />
-            <View style={[styles.veil, { backgroundColor: colors.surfaceOverlay }]} />
+            <View pointerEvents="none" style={[styles.orb, styles.orbOne, { backgroundColor: colors.orbOne }]} />
+            <View pointerEvents="none" style={[styles.orb, styles.orbTwo, { backgroundColor: colors.orbTwo }]} />
+            <View pointerEvents="none" style={[styles.orb, styles.orbThree, { backgroundColor: colors.orbThree }]} />
+            <BlurView
+              pointerEvents="none"
+              intensity={backgroundBlurIntensity}
+              tint={resolvedTheme === "dark" ? "dark" : "light"}
+              style={StyleSheet.absoluteFillObject}
+            />
+            <LinearGradient
+              pointerEvents="none"
+              colors={[...visuals.ambientOverlay]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={StyleSheet.absoluteFillObject}
+            />
+            <View pointerEvents="none" style={[styles.veil, { backgroundColor: colors.surfaceOverlay }]} />
           </>
-        ) : null}
+        ) : (
+          <LinearGradient
+            colors={[...visuals.ambientOverlay]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFillObject}
+          />
+        )}
         <View
           style={[
             styles.content,
@@ -71,25 +87,25 @@ const styles = StyleSheet.create({
     opacity: 1
   },
   orbOne: {
-    width: 260,
-    height: 260,
-    top: -64,
-    left: -56
+    width: 320,
+    height: 320,
+    top: -88,
+    left: -72
   },
   orbTwo: {
-    width: 240,
-    height: 240,
-    top: 140,
-    right: -92
+    width: 300,
+    height: 300,
+    top: 132,
+    right: -116
   },
   orbThree: {
-    width: 220,
-    height: 220,
-    bottom: -92,
-    left: 32
+    width: 280,
+    height: 280,
+    bottom: -112,
+    left: 18
   },
   veil: {
     ...StyleSheet.absoluteFillObject,
-    opacity: 0.42
+    opacity: 0.22
   }
 });

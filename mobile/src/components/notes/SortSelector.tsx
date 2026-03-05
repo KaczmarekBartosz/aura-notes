@@ -20,7 +20,7 @@ export function SortSelector({ value, onChange }: SortSelectorProps) {
   const { colors } = useAppTheme();
 
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
       <View style={styles.row}>
         {SORT_OPTIONS.map((option) => {
           const active = option.id === value;
@@ -28,6 +28,8 @@ export function SortSelector({ value, onChange }: SortSelectorProps) {
             <Pressable
               key={option.id}
               onPress={() => onChange(option.id)}
+              accessibilityRole="button"
+              accessibilityLabel={`Sortuj: ${option.label}`}
               style={[
                 styles.option,
                 {
@@ -47,17 +49,21 @@ export function SortSelector({ value, onChange }: SortSelectorProps) {
 }
 
 const styles = StyleSheet.create({
+  scrollContent: {
+    paddingRight: 16
+  },
   row: {
     flexDirection: "row",
-    gap: 10,
-    paddingRight: 16
+    gap: 10
   },
   option: {
     overflow: "hidden",
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 9
+    paddingHorizontal: 13,
+    paddingVertical: 10,
+    minHeight: 40,
+    justifyContent: "center"
   },
   label: {
     position: "relative",

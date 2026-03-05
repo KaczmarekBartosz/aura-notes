@@ -1,7 +1,9 @@
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
-import { ArrowLeft, DatabaseBackup, RefreshCw, Trash2 } from "lucide-react-native";
+import { DatabaseBackup, RefreshCw, Trash2, X } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import { ScreenContainer } from "../src/components/ui/ScreenContainer";
 import { SurfaceCard } from "../src/components/ui/SurfaceCard";
 import { useNotes } from "../src/state/NotesProvider";
@@ -10,91 +12,109 @@ import { useAppTheme } from "../src/theme/ThemeProvider";
 import { triggerHaptic } from "../src/utils/haptics";
 
 export default function SettingsScreen() {
-  const { theme, themes, setTheme, colors, themeLabel, themeDescription } = useAppTheme();
+  const { theme, themes, setTheme, colors, themeLabel, themeDescription, resolvedTheme, reduceMotionEnabled } = useAppTheme();
   const { cacheInfo, resetCache, refresh, refreshing } = useNotes();
+  const insets = useSafeAreaInsets();
   const coreThemeIds = new Set(["system", "light", "dark", "crystal-line"]);
   const primaryThemes = themes.filter((entry) => coreThemeIds.has(entry.id));
   const otherThemes = themes.filter((entry) => !coreThemeIds.has(entry.id));
 
-  const renderThemeCard = (entry: (typeof themes)[number]) => {
+  const renderThemeCard = (entry: (typeof themes)[number], index: number) => {
     const active = theme === entry.id;
     return (
-      <SurfaceCard
-        key={entry.id}
-        onPress={() => {
-          void triggerHaptic("light");
-          void setTheme(entry.id);
-        }}
-        style={styles.themeCard}
-        contentStyle={styles.themeCardInner}
-        accessibilityRole="button"
-        accessibilityLabel={`Wybierz motyw ${entry.label}`}
-      >
-        <LinearGradient colors={entry.preview.gradient ?? [entry.preview.bg, entry.preview.bg]} style={styles.themePreview}>
-          <View style={[styles.previewCard, { backgroundColor: entry.preview.card, borderColor: "rgba(255,255,255,0.34)" }]} />
-          <View style={[styles.previewAccent, { backgroundColor: entry.preview.accent }]} />
-        </LinearGradient>
-        <Text style={[styles.themeName, { color: colors.foreground }]}>{entry.label}</Text>
-        <Text style={[styles.themeDescriptionText, { color: colors.muted }]}>{entry.description}</Text>
-        <View
-          style={[
-            styles.activeBadge,
-            {
-              backgroundColor: active ? colors.primary : colors.tagBackground,
-              borderColor: active ? colors.primary : colors.border
-            }
-          ]}
+      <Animated.View key={entry.id} entering={reduceMotionEnabled ? undefined : FadeInDown.delay(60 + index * 35).duration(260)}>
+        <SurfaceCard
+          onPress={() => {
+            void triggerHaptic(active ? "selection" : "light");
+            void setTheme(entry.id);
+          }}
+          style={styles.themeCard}
+          contentStyle={styles.themeCardInner}
+          accessibilityRole="button"
+          accessibilityLabel={`Wybierz motyw ${entry.label}`}
         >
-          <Text style={[styles.activeBadgeText, { color: active ? colors.primaryForeground : colors.foreground }]}>
-            {active ? "Aktywny" : "Wybierz"}
-          </Text>
-        </View>
-      </SurfaceCard>
+          <LinearGradient colors={entry.preview.gradient ?? [entry.preview.bg, entry.preview.bg]} style={styles.themePreview}>
+            <View style={[styles.previewFloatingCard, { backgroundColor: entry.preview.card, borderColor: "rgba(255,255,255,0.34)" }]} />
+            <View style={styles.previewFooterRow}>
+              <View style={[styles.previewMiniPill, { backgroundColor: entry.preview.card, borderColor: "rgba(255,255,255,0.34)" }]} />
+              <View style={[styles.previewAccent, { backgroundColor: entry.preview.accent }]} />
+            </View>
+          </LinearGradient>
+
+          <View style={styles.themeBody}>
+            <View style={styles.themeCopy}>
+              <Text style={[styles.themeName, { color: colors.foreground }]}>{entry.label}</Text>
+              <Text style={[styles.themeDescriptionText, { color: colors.muted }]}>{entry.description}</Text>
+            </View>
+            <View
+              style={[
+                styles.activeBadge,
+                {
+                  backgroundColor: active ? colors.primary : colors.tagBackground,
+                  borderColor: active ? colors.primary : colors.border
+                }
+              ]}
+            >
+              <Text style={[styles.activeBadgeText, { color: active ? colors.primaryForeground : colors.foreground }]}>
+                {active ? "Aktywny" : "Wybierz"}
+              </Text>
+            </View>
+          </View>
+        </SurfaceCard>
+      </Animated.View>
     );
   };
 
   return (
     <ScreenContainer edges={["top", "left", "right", "bottom"]}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[styles.content, { paddingBottom: Math.max(44, insets.bottom + 20) }]}
+      >
+        <View style={[styles.handle, { backgroundColor: colors.borderStrong }]} />
+
         <View style={styles.header}>
+          <View style={styles.headerCopy}>
+            <Text style={[styles.title, { color: colors.foreground }]}>Settings</Text>
+            <Text style={[styles.subtitle, { color: colors.muted }]}>Motywy, cache, synchronizacja i zachowanie aplikacji na iPhone.</Text>
+          </View>
           <Pressable
             onPress={() => {
               void triggerHaptic("light");
               router.back();
             }}
-            style={[styles.backButton, { backgroundColor: colors.surfaceElevated, borderColor: colors.border }]}
+            accessibilityRole="button"
+            accessibilityLabel="Zamknij ustawienia"
+            style={[styles.closeButton, { backgroundColor: colors.surfaceElevated, borderColor: colors.borderStrong }]}
           >
-            <ArrowLeft size={18} color={colors.foreground} />
+            <X size={18} color={colors.foreground} />
           </Pressable>
-          <View style={styles.headerCopy}>
-            <Text style={[styles.title, { color: colors.foreground }]}>Settings</Text>
-            <Text style={[styles.subtitle, { color: colors.muted }]}>Tematy, synchronizacja i lokalny vault.</Text>
-          </View>
         </View>
 
-        <SurfaceCard style={styles.section} contentStyle={styles.sectionInner}>
-          <Text style={[styles.sectionEyebrow, { color: colors.primary }]}>Active Theme</Text>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>{themeLabel}</Text>
-          <Text style={[styles.sectionDescription, { color: colors.muted }]}>{themeDescription}</Text>
-        </SurfaceCard>
+        <Animated.View entering={reduceMotionEnabled ? undefined : FadeInDown.duration(280)}>
+          <SurfaceCard style={styles.section} contentStyle={styles.sectionInner} intensity={resolvedTheme === "dark" ? 60 : 56}>
+            <Text style={[styles.sectionEyebrow, { color: colors.primary }]}>Current Theme</Text>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>{themeLabel}</Text>
+            <Text style={[styles.sectionDescription, { color: colors.muted }]}>{themeDescription}</Text>
+            <Text style={[styles.sectionCaption, { color: colors.subtle }]}>
+              {resolvedTheme === "dark" ? "Ciemna baza" : "Jasna baza"} • {reduceMotionEnabled ? "Reduce Motion aktywne" : "Pełne motion aktywne"}
+            </Text>
+          </SurfaceCard>
+        </Animated.View>
 
         <SurfaceCard style={styles.section} contentStyle={styles.sectionInner}>
           <Text style={[styles.sectionEyebrow, { color: colors.primary }]}>Core Modes</Text>
           <Text style={[styles.sectionTitleSmall, { color: colors.foreground }]}>System, Light, Dark, Crystal Line</Text>
-          <Text style={[styles.sectionCaption, { color: colors.muted }]}>
-            Szybkie tryby bazowe oraz Twój najnowszy motyw jako domyślna ścieżka premium.
-          </Text>
+          <Text style={[styles.sectionCaption, { color: colors.muted }]}>Tryby bazowe oraz najnowszy premium motyw jako główna ścieżka wizualna.</Text>
           <View style={styles.grid}>{primaryThemes.map(renderThemeCard)}</View>
         </SurfaceCard>
 
         {otherThemes.length > 0 ? (
           <SurfaceCard style={styles.section} contentStyle={styles.sectionInner}>
             <Text style={[styles.sectionEyebrow, { color: colors.primary }]}>Aura Presets</Text>
-            <Text style={[styles.sectionTitleSmall, { color: colors.foreground }]}>Pozostałe warianty</Text>
-            <Text style={[styles.sectionCaption, { color: colors.muted }]}>
-              Dodatkowe presetowe kierunki wizualne zachowane do szybkiego testowania.
-            </Text>
-            <View style={styles.grid}>{otherThemes.map(renderThemeCard)}</View>
+            <Text style={[styles.sectionTitleSmall, { color: colors.foreground }]}>Pozostałe kierunki graficzne</Text>
+            <Text style={[styles.sectionCaption, { color: colors.muted }]}>Każdy preset ma własny materiał, gradienty i charakter powierzchni.</Text>
+            <View style={styles.grid}>{otherThemes.map((entry, index) => renderThemeCard(entry, index + primaryThemes.length))}</View>
           </SurfaceCard>
         ) : null}
 
@@ -104,10 +124,16 @@ export default function SettingsScreen() {
             <Text style={[styles.sectionTitleSmall, { color: colors.foreground }]}>Offline Cache</Text>
           </View>
           <View style={styles.statsList}>
-            <Text style={[styles.statText, { color: colors.muted }]}>Notatek w SQLite: {cacheInfo.count}</Text>
-            <Text style={[styles.statText, { color: colors.muted }]}>
-              Ostatnia synchronizacja: {cacheInfo.lastSyncedAt ? formatRelativeDate(cacheInfo.lastSyncedAt) : "brak"}
-            </Text>
+            <View style={styles.statRow}>
+              <Text style={[styles.statLabel, { color: colors.muted }]}>Notatek w SQLite</Text>
+              <Text style={[styles.statValue, { color: colors.foreground }]}>{cacheInfo.count}</Text>
+            </View>
+            <View style={styles.statRow}>
+              <Text style={[styles.statLabel, { color: colors.muted }]}>Ostatnia synchronizacja</Text>
+              <Text style={[styles.statValue, { color: colors.foreground }]}>
+                {cacheInfo.lastSyncedAt ? formatRelativeDate(cacheInfo.lastSyncedAt) : "brak"}
+              </Text>
+            </View>
           </View>
 
           <View style={styles.buttonRow}>
@@ -130,7 +156,7 @@ export default function SettingsScreen() {
                     text: "Wyczyść",
                     style: "destructive",
                     onPress: () => {
-                      void triggerHaptic("medium");
+                      void triggerHaptic("warning");
                       void resetCache();
                     }
                   }
@@ -150,15 +176,36 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   content: {
-    paddingBottom: 36
+    paddingTop: 8,
+    gap: 16
+  },
+  handle: {
+    alignSelf: "center",
+    width: 42,
+    height: 5,
+    borderRadius: 999,
+    marginTop: 2
   },
   header: {
     flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    marginTop: 8
+    alignItems: "flex-start",
+    gap: 12
   },
-  backButton: {
+  headerCopy: {
+    flex: 1
+  },
+  title: {
+    fontSize: 27,
+    fontWeight: "800",
+    letterSpacing: -0.8
+  },
+  subtitle: {
+    marginTop: 4,
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: "600"
+  },
+  closeButton: {
     width: 44,
     height: 44,
     borderRadius: 999,
@@ -166,22 +213,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  headerCopy: {
-    flex: 1
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "800",
-    letterSpacing: -0.6
-  },
-  subtitle: {
-    marginTop: 2,
-    fontSize: 13,
-    fontWeight: "600"
-  },
-  section: {
-    marginTop: 16
-  },
+  section: {},
   sectionInner: {
     padding: 16
   },
@@ -193,9 +225,9 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     marginTop: 6,
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: "800",
-    letterSpacing: -0.6
+    letterSpacing: -0.7
   },
   sectionDescription: {
     marginTop: 6,
@@ -213,28 +245,48 @@ const styles = StyleSheet.create({
   },
   themeCard: {},
   themeCardInner: {
-    padding: 14
+    padding: 14,
+    gap: 12
   },
   themePreview: {
-    height: 96,
-    borderRadius: 20,
+    height: 108,
+    borderRadius: 22,
     overflow: "hidden",
     justifyContent: "space-between",
     padding: 12
   },
-  previewCard: {
-    width: "68%",
-    height: 30,
-    borderRadius: 14,
+  previewFloatingCard: {
+    width: "72%",
+    height: 34,
+    borderRadius: 16,
+    borderWidth: 1
+  },
+  previewFooterRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  previewMiniPill: {
+    width: 72,
+    height: 18,
+    borderRadius: 999,
     borderWidth: 1
   },
   previewAccent: {
-    width: 40,
-    height: 6,
+    width: 42,
+    height: 7,
     borderRadius: 999
   },
+  themeBody: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12
+  },
+  themeCopy: {
+    flex: 1
+  },
   themeName: {
-    marginTop: 12,
     fontSize: 16,
     fontWeight: "700"
   },
@@ -244,12 +296,10 @@ const styles = StyleSheet.create({
     lineHeight: 18
   },
   activeBadge: {
-    alignSelf: "flex-start",
     borderWidth: 1,
     borderRadius: 999,
     paddingHorizontal: 10,
-    paddingVertical: 6,
-    marginTop: 12
+    paddingVertical: 6
   },
   activeBadgeText: {
     fontSize: 11,
@@ -261,16 +311,28 @@ const styles = StyleSheet.create({
     gap: 8
   },
   sectionTitleSmall: {
-    fontSize: 16,
-    fontWeight: "700"
+    fontSize: 17,
+    fontWeight: "700",
+    letterSpacing: -0.3
   },
   statsList: {
-    marginTop: 12,
-    gap: 6
+    marginTop: 14,
+    gap: 10
   },
-  statText: {
+  statRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12
+  },
+  statLabel: {
     fontSize: 14,
     lineHeight: 20
+  },
+  statValue: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: "700"
   },
   buttonRow: {
     flexDirection: "row",

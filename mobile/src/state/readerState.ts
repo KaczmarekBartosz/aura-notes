@@ -2,6 +2,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LAST_NOTE_KEY = "aura-notes.reader.last-note-id";
 const NOTE_SCROLL_PREFIX = "aura-notes.reader.scroll.";
+const READER_FONT_SCALE_KEY = "aura-notes.reader.font-scale";
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
 
 export async function saveLastOpenedNoteId(noteId: string) {
   try {
@@ -36,3 +41,20 @@ export async function readReaderScroll(noteId: string): Promise<number> {
   }
 }
 
+export async function saveReaderFontScale(scale: number) {
+  try {
+    await AsyncStorage.setItem(READER_FONT_SCALE_KEY, String(clamp(scale, 0.92, 1.28)));
+  } catch {
+    // Best-effort.
+  }
+}
+
+export async function readReaderFontScale(): Promise<number> {
+  try {
+    const value = await AsyncStorage.getItem(READER_FONT_SCALE_KEY);
+    if (!value) return 1;
+    return clamp(Number(value) || 1, 0.92, 1.28);
+  } catch {
+    return 1;
+  }
+}

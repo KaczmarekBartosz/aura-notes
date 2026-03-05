@@ -1,16 +1,31 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import Markdown from "react-native-markdown-display";
-import { ArrowLeft, Star } from "lucide-react-native";
+import { ArrowLeft, Clock3, Folder, Hash, Minus, Plus, Star } from "lucide-react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Animated, {
+  Extrapolation,
+  FadeInDown,
+  interpolate,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue
+} from "react-native-reanimated";
 import SyntaxHighlighter from "react-native-syntax-highlighter";
 import { atomOneDark, atomOneLight } from "react-syntax-highlighter/styles/hljs";
 import { ScreenContainer } from "../../src/components/ui/ScreenContainer";
 import { SurfaceCard } from "../../src/components/ui/SurfaceCard";
+import { getCategoryLabel } from "../../src/constants/categories";
 import { useNotes } from "../../src/state/NotesProvider";
-import { readReaderScroll, saveLastOpenedNoteId, saveReaderScroll } from "../../src/state/readerState";
+import {
+  readReaderFontScale,
+  readReaderScroll,
+  saveLastOpenedNoteId,
+  saveReaderFontScale,
+  saveReaderScroll
+} from "../../src/state/readerState";
 import { useAppTheme } from "../../src/theme/ThemeProvider";
 import { formatRelativeDate } from "../../src/utils/date";
 import { triggerHaptic } from "../../src/utils/haptics";
@@ -20,29 +35,55 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
+const MIN_FONT_SCALE = 0.9;
+const MAX_FONT_SCALE = 1.35;
+const DEFAULT_FONT_SCALE = 1;
+
 export default function ReaderScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { notes, toggleFavoriteById } = useNotes();
-  const { colors, resolvedTheme } = useAppTheme();
+  const { colors, resolvedTheme, reduceMotionEnabled } = useAppTheme();
+  const insets = useSafeAreaInsets();
   const [progress, setProgress] = useState(0);
-  const scrollViewRef = useRef<ScrollView>(null);
+  const [fontScale, setFontScale] = useState(DEFAULT_FONT_SCALE);
+  const [isReady, setIsReady] = useState(false);
+  const scrollViewRef = useRef<any>(null);
   const initialScrollYRef = useRef(0);
   const currentScrollYRef = useRef(0);
   const shouldRestoreScrollRef = useRef(false);
   const lastSavedAtRef = useRef(0);
+  const fontScaleRef = useRef(DEFAULT_FONT_SCALE);
 
   const note = useMemo(() => notes.find((item) => item.id === id) ?? null, [id, notes]);
 
-  const scale = useSharedValue(1);
-  const baseScale = useSharedValue(1);
+  const scrollY = useSharedValue(0);
+  const pinchPreviewScale = useSharedValue(1);
   const edgeSwipeActive = useSharedValue(false);
+
+  const applyFontScale = useCallback((nextScale: number) => {
+    const clamped = Math.max(MIN_FONT_SCALE, Math.min(MAX_FONT_SCALE, nextScale));
+    fontScaleRef.current = clamped;
+    setFontScale(clamped);
+    void saveReaderFontScale(clamped);
+  }, []);
+
+  const adjustFontScale = useCallback(
+    (delta: number) => {
+      void triggerHaptic("selection");
+      applyFontScale(fontScaleRef.current + delta);
+    },
+    [applyFontScale]
+  );
 
   const pinch = Gesture.Pinch()
     .onUpdate((event) => {
-      scale.value = clamp(baseScale.value * event.scale, 0.96, 1.42);
+      pinchPreviewScale.value = clamp(event.scale, 0.94, 1.14);
     })
-    .onEnd(() => {
-      baseScale.value = scale.value;
+    .onEnd((event) => {
+      pinchPreviewScale.value = 1;
+      const nextScale = clamp(fontScaleRef.current * event.scale, MIN_FONT_SCALE, MAX_FONT_SCALE);
+      runOnJS(triggerHaptic)("selection");
+      runOnJS(applyFontScale)(nextScale);
     });
 
   const edgeSwipeBack = Gesture.Pan()
@@ -59,8 +100,27 @@ export default function ReaderScreen() {
     });
 
   const gesture = Gesture.Simultaneous(pinch, edgeSwipeBack);
-  const contentStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }]
+
+  const compactHeaderStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(scrollY.value, [28, 140], [0, 1], Extrapolation.CLAMP);
+    const translateY = interpolate(scrollY.value, [0, 140], [-14, 0], Extrapolation.CLAMP);
+    return {
+      opacity,
+      transform: [{ translateY }]
+    };
+  });
+
+  const heroStyle = useAnimatedStyle(() => {
+    const translateY = interpolate(scrollY.value, [0, 160], [0, -12], Extrapolation.CLAMP);
+    const opacity = interpolate(scrollY.value, [0, 180], [1, 0.95], Extrapolation.CLAMP);
+    return {
+      opacity,
+      transform: [{ translateY }]
+    };
+  });
+
+  const pinchPreviewStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pinchPreviewScale.value }]
   }));
 
   const markdownRules = useMemo(
@@ -73,7 +133,7 @@ export default function ReaderScreen() {
             <SyntaxHighlighter
               language={lang}
               style={resolvedTheme === "dark" ? atomOneDark : atomOneLight}
-              fontSize={12}
+              fontSize={12 * fontScale}
               highlighter="hljs"
             >
               {code}
@@ -88,7 +148,7 @@ export default function ReaderScreen() {
             <SyntaxHighlighter
               language="text"
               style={resolvedTheme === "dark" ? atomOneDark : atomOneLight}
-              fontSize={12}
+              fontSize={12 * fontScale}
               highlighter="hljs"
             >
               {code}
@@ -97,7 +157,7 @@ export default function ReaderScreen() {
         );
       }
     }),
-    [resolvedTheme]
+    [fontScale, resolvedTheme]
   );
 
   useEffect(() => {
@@ -105,10 +165,13 @@ export default function ReaderScreen() {
     let mounted = true;
     (async () => {
       await saveLastOpenedNoteId(note.id);
-      const savedScroll = await readReaderScroll(note.id);
+      const [savedScroll, savedFontScale] = await Promise.all([readReaderScroll(note.id), readReaderFontScale()]);
       if (!mounted) return;
       initialScrollYRef.current = savedScroll;
       shouldRestoreScrollRef.current = true;
+      fontScaleRef.current = savedFontScale;
+      setFontScale(savedFontScale);
+      setIsReady(true);
     })();
     return () => {
       mounted = false;
@@ -134,77 +197,66 @@ export default function ReaderScreen() {
 
   return (
     <ScreenContainer edges={["top", "left", "right", "bottom"]} withHorizontalPadding={false}>
-      <View style={[styles.progressTrack, { backgroundColor: colors.progressTrack }]}>
-        <View style={[styles.progressFill, { backgroundColor: colors.primary, width: `${Math.round(progress * 100)}%` }]} />
-      </View>
-
-      <View style={[styles.header, { borderBottomColor: colors.border, backgroundColor: colors.surfaceElevated }]}>
-        <Pressable
-          onPress={() => {
-            void triggerHaptic("light");
-            router.back();
-          }}
-          style={[styles.headerButton, { borderColor: colors.border, backgroundColor: colors.tagBackground }]}
-          accessibilityRole="button"
-          accessibilityLabel="Wróć do listy notatek"
-        >
-          <ArrowLeft size={18} color={colors.foreground} />
-        </Pressable>
-
-        <View style={styles.headerCopy}>
-          <Text numberOfLines={1} style={[styles.headerTitle, { color: colors.foreground }]}>
-            {note.title}
-          </Text>
-          <Text style={[styles.headerMeta, { color: colors.muted }]}>
-            {formatRelativeDate(note.updatedAt)} • {note.readingMinutes} min
-          </Text>
-        </View>
-
-        <Pressable
-          onPress={() => {
-            void triggerHaptic("medium");
-            void toggleFavoriteById(note.id);
-          }}
-          style={[styles.headerButton, { borderColor: colors.border, backgroundColor: colors.tagBackground }]}
-          accessibilityRole="button"
-          accessibilityLabel={note.isFavorite ? "Usuń z ulubionych" : "Dodaj do ulubionych"}
-        >
-          <Star size={18} color={note.isFavorite ? colors.warning : colors.foreground} fill={note.isFavorite ? colors.warning : "none"} />
-        </Pressable>
-      </View>
-
       <GestureDetector gesture={gesture}>
-        <Animated.View style={[styles.reader, contentStyle]}>
-          <ScrollView
-            ref={scrollViewRef}
-            contentContainerStyle={styles.readerContent}
-            onContentSizeChange={() => {
-              if (!shouldRestoreScrollRef.current) return;
-              shouldRestoreScrollRef.current = false;
-              scrollViewRef.current?.scrollTo({ y: initialScrollYRef.current, animated: false });
-            }}
-            onScroll={(event) => {
-              const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-              const maxScroll = contentSize.height - layoutMeasurement.height;
-              setProgress(maxScroll <= 0 ? 0 : contentOffset.y / maxScroll);
-              currentScrollYRef.current = contentOffset.y;
+        <Animated.ScrollView
+          ref={scrollViewRef}
+          keyboardDismissMode="interactive"
+          contentContainerStyle={[
+            styles.readerContent,
+            {
+              paddingTop: insets.top + 94,
+              paddingBottom: Math.max(96, insets.bottom + 56),
+              paddingHorizontal: 16
+            }
+          ]}
+          onContentSizeChange={() => {
+            if (!shouldRestoreScrollRef.current) return;
+            shouldRestoreScrollRef.current = false;
+            scrollViewRef.current?.scrollTo({ y: initialScrollYRef.current, animated: false });
+          }}
+          onScroll={(event) => {
+            const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+            scrollY.value = contentOffset.y;
+            const maxScroll = contentSize.height - layoutMeasurement.height;
+            setProgress(maxScroll <= 0 ? 0 : contentOffset.y / maxScroll);
+            currentScrollYRef.current = contentOffset.y;
 
-              const now = Date.now();
-              if (now - lastSavedAtRef.current > 700) {
-                lastSavedAtRef.current = now;
-                if (note.id) {
-                  void saveReaderScroll(note.id, contentOffset.y);
-                }
-              }
-            }}
-            scrollEventThrottle={16}
-          >
-            <SurfaceCard style={styles.heroCard} contentStyle={styles.heroContent}>
+            const now = Date.now();
+            if (note.id && now - lastSavedAtRef.current > 700) {
+              lastSavedAtRef.current = now;
+              void saveReaderScroll(note.id, contentOffset.y);
+            }
+          }}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+        >
+          <Animated.View style={heroStyle}>
+            <SurfaceCard style={styles.heroCard} contentStyle={styles.heroContent} intensity={resolvedTheme === "dark" ? 62 : 56}>
+              <Text style={[styles.heroEyebrow, { color: colors.primary }]}>{getCategoryLabel(note.category)}</Text>
               <Text style={[styles.heroTitle, { color: colors.foreground }]}>{note.title}</Text>
-              <Text style={[styles.heroSummary, { color: colors.muted }]}>
-                {note.words} słów • {note.readingMinutes} min czytania • aktualizacja {formatRelativeDate(note.updatedAt)}
-              </Text>
-              {!!note.tags.length && (
+              <Text style={[styles.heroSummary, { color: colors.muted }]}>Luksusowy reader z lokalnym restore scrolla, markdownem i code highlightingiem.</Text>
+
+              <View style={styles.metaGrid}>
+                <View style={[styles.metaChip, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
+                  <Clock3 size={13} color={colors.primary} />
+                  <Text style={[styles.metaChipText, { color: colors.foreground }]}>{note.readingMinutes} min czytania</Text>
+                </View>
+                <View style={[styles.metaChip, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
+                  <Hash size={13} color={colors.primary} />
+                  <Text style={[styles.metaChipText, { color: colors.foreground }]}>{note.words} słów</Text>
+                </View>
+                <View style={[styles.metaChip, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
+                  <Folder size={13} color={colors.primary} />
+                  <Text style={[styles.metaChipText, { color: colors.foreground }]} numberOfLines={1}>{note.folder}</Text>
+                </View>
+              </View>
+
+              <View style={styles.heroFooter}>
+                <Text style={[styles.heroFooterText, { color: colors.subtle }]}>Aktualizacja {formatRelativeDate(note.updatedAt)}</Text>
+                <Text style={[styles.heroFooterText, { color: colors.subtle }]}>{Math.round(progress * 100)}% przeczytane</Text>
+              </View>
+
+              {!!note.tags.length ? (
                 <View style={styles.tagsRow}>
                   {note.tags.map((tag) => (
                     <View
@@ -215,163 +267,262 @@ export default function ReaderScreen() {
                     </View>
                   ))}
                 </View>
-              )}
+              ) : null}
             </SurfaceCard>
+          </Animated.View>
 
-            <View style={styles.markdownWrap}>
-              <Markdown
-                rules={markdownRules}
-                style={{
-                  body: {
-                    color: colors.foreground,
-                    fontSize: 17,
-                    lineHeight: 29
-                  },
-                  heading1: {
-                    color: colors.foreground,
-                    fontSize: 32,
-                    lineHeight: 36,
-                    marginTop: 8,
-                    marginBottom: 14,
-                    fontWeight: "700"
-                  },
-                  heading2: {
-                    color: colors.foreground,
-                    fontSize: 26,
-                    lineHeight: 30,
-                    marginTop: 18,
-                    marginBottom: 10,
-                    fontWeight: "700"
-                  },
-                  heading3: {
-                    color: colors.foreground,
-                    fontSize: 21,
-                    lineHeight: 25,
-                    marginTop: 16,
-                    marginBottom: 8,
-                    fontWeight: "700"
-                  },
-                  paragraph: {
-                    marginTop: 0,
-                    marginBottom: 14
-                  },
-                  bullet_list: {
-                    marginBottom: 14
-                  },
-                  ordered_list: {
-                    marginBottom: 14
-                  },
-                  list_item: {
-                    color: colors.foreground
-                  },
-                  code_inline: {
-                    backgroundColor: colors.codeBackground,
-                    borderRadius: 8,
-                    paddingHorizontal: 6,
-                    paddingVertical: 2,
-                    color: colors.codeForeground
-                  },
-                  blockquote: {
-                    borderLeftWidth: 3,
-                    borderLeftColor: colors.quoteBorder,
-                    paddingLeft: 12,
-                    paddingVertical: 4,
-                    marginBottom: 14,
-                    color: colors.muted,
-                    backgroundColor: colors.quoteBackground
-                  },
-                  link: {
-                    color: colors.primary,
-                    textDecorationLine: "underline"
-                  },
-                  hr: {
-                    backgroundColor: colors.border,
-                    height: 1
-                  }
-                }}
-                onLinkPress={(url) => {
-                  void triggerHaptic("light");
-                  void Linking.openURL(url);
-                  return false;
-                }}
-              >
-                {note.content}
-              </Markdown>
-            </View>
-          </ScrollView>
-        </Animated.View>
+          <Animated.View
+            entering={reduceMotionEnabled ? undefined : FadeInDown.delay(120).duration(360)}
+            style={styles.contentCardWrap}
+          >
+            <SurfaceCard contentStyle={styles.markdownCardContent} intensity={resolvedTheme === "dark" ? 60 : 54}>
+              <Animated.View style={pinchPreviewStyle}>
+                <Markdown
+                  rules={markdownRules}
+                  style={{
+                    body: {
+                      color: colors.foreground,
+                      fontSize: 17 * fontScale,
+                      lineHeight: 29 * fontScale,
+                      fontWeight: "500"
+                    },
+                    heading1: {
+                      color: colors.foreground,
+                      fontSize: 32 * fontScale,
+                      lineHeight: 36 * fontScale,
+                      marginTop: 12,
+                      marginBottom: 14,
+                      fontWeight: "800"
+                    },
+                    heading2: {
+                      color: colors.foreground,
+                      fontSize: 26 * fontScale,
+                      lineHeight: 31 * fontScale,
+                      marginTop: 20,
+                      marginBottom: 10,
+                      fontWeight: "800"
+                    },
+                    heading3: {
+                      color: colors.foreground,
+                      fontSize: 21 * fontScale,
+                      lineHeight: 26 * fontScale,
+                      marginTop: 18,
+                      marginBottom: 8,
+                      fontWeight: "700"
+                    },
+                    paragraph: {
+                      marginTop: 0,
+                      marginBottom: 14
+                    },
+                    bullet_list: {
+                      marginBottom: 14
+                    },
+                    ordered_list: {
+                      marginBottom: 14
+                    },
+                    list_item: {
+                      color: colors.foreground
+                    },
+                    code_inline: {
+                      backgroundColor: colors.codeBackground,
+                      borderRadius: 8,
+                      paddingHorizontal: 6,
+                      paddingVertical: 2,
+                      color: colors.codeForeground
+                    },
+                    blockquote: {
+                      borderLeftWidth: 3,
+                      borderLeftColor: colors.quoteBorder,
+                      paddingLeft: 14,
+                      paddingVertical: 8,
+                      marginBottom: 14,
+                      color: colors.muted,
+                      backgroundColor: colors.quoteBackground,
+                      borderTopRightRadius: 12,
+                      borderBottomRightRadius: 12
+                    },
+                    link: {
+                      color: colors.primary,
+                      textDecorationLine: "underline"
+                    },
+                    hr: {
+                      backgroundColor: colors.border,
+                      height: 1,
+                      marginTop: 8,
+                      marginBottom: 16
+                    }
+                  }}
+                  onLinkPress={(url) => {
+                    void triggerHaptic("light");
+                    void Linking.openURL(url);
+                    return false;
+                  }}
+                >
+                  {note.content}
+                </Markdown>
+              </Animated.View>
+            </SurfaceCard>
+          </Animated.View>
+        </Animated.ScrollView>
       </GestureDetector>
+
+      <View style={[styles.progressTrack, { backgroundColor: colors.progressTrack, top: insets.top + 84 }]}> 
+        <View style={[styles.progressFill, { backgroundColor: colors.primary, width: `${Math.round(progress * 100)}%` }]} />
+      </View>
+
+      <Animated.View
+        pointerEvents="box-none"
+        style={[styles.floatingHeaderWrap, { top: Math.max(8, insets.top + 4), left: 16, right: 16 }, compactHeaderStyle]}
+      >
+        <SurfaceCard contentStyle={styles.floatingHeaderContent} intensity={resolvedTheme === "dark" ? 64 : 58}>
+          <HeaderControlButton
+            icon={<ArrowLeft size={17} color={colors.foreground} />}
+            label="Wróć do listy notatek"
+            onPress={() => {
+              void triggerHaptic("light");
+              router.back();
+            }}
+          />
+
+          <View style={styles.floatingTitleWrap}>
+            <Text numberOfLines={1} style={[styles.floatingTitle, { color: colors.foreground }]}>
+              {note.title}
+            </Text>
+            <Text style={[styles.floatingMeta, { color: colors.muted }]}>
+              {Math.round(progress * 100)}% • {fontScale.toFixed(2)}x
+            </Text>
+          </View>
+
+          <View style={styles.controlRow}>
+            <HeaderControlButton
+              icon={<Minus size={15} color={colors.foreground} />}
+              label="Zmniejsz rozmiar tekstu"
+              onPress={() => adjustFontScale(-0.05)}
+              disabled={fontScale <= MIN_FONT_SCALE + 0.01}
+            />
+            <HeaderControlButton
+              icon={<Plus size={15} color={colors.foreground} />}
+              label="Powiększ rozmiar tekstu"
+              onPress={() => adjustFontScale(0.05)}
+              disabled={fontScale >= MAX_FONT_SCALE - 0.01}
+            />
+            <HeaderControlButton
+              icon={<Star size={16} color={note.isFavorite ? colors.warning : colors.foreground} fill={note.isFavorite ? colors.warning : "none"} />}
+              label={note.isFavorite ? "Usuń z ulubionych" : "Dodaj do ulubionych"}
+              onPress={() => {
+                void triggerHaptic("medium");
+                void toggleFavoriteById(note.id);
+              }}
+            />
+          </View>
+        </SurfaceCard>
+      </Animated.View>
+
+      {!isReady ? (
+        <View pointerEvents="none" style={styles.loadingOverlay}>
+          <SurfaceCard contentStyle={styles.loadingCard} intensity={resolvedTheme === "dark" ? 64 : 58}>
+            <Text style={[styles.loadingLabel, { color: colors.foreground }]}>Przywracam pozycję czytania...</Text>
+          </SurfaceCard>
+        </View>
+      ) : null}
     </ScreenContainer>
   );
 }
 
+function HeaderControlButton({
+  icon,
+  label,
+  onPress,
+  disabled = false
+}: {
+  icon: React.ReactNode;
+  label: string;
+  onPress: () => void;
+  disabled?: boolean;
+}) {
+  const { colors } = useAppTheme();
+  return (
+    <Pressable
+      onPress={disabled ? undefined : onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      disabled={disabled}
+      style={[
+        styles.controlButton,
+        {
+          borderColor: colors.borderStrong,
+          backgroundColor: disabled ? colors.primarySoft : colors.tagBackground,
+          opacity: disabled ? 0.45 : 1
+        }
+      ]}
+    >
+      {icon}
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
-  progressTrack: {
-    height: 3,
-    width: "100%"
-  },
-  progressFill: {
-    height: 3
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1
-  },
-  headerButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 999,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  headerCopy: {
-    flex: 1
-  },
-  headerTitle: {
-    fontSize: 15,
-    fontWeight: "700",
-    letterSpacing: -0.2
-  },
-  headerMeta: {
-    marginTop: 2,
-    fontSize: 12,
-    fontWeight: "600"
-  },
-  reader: {
-    flex: 1
-  },
   readerContent: {
-    paddingHorizontal: 16,
-    paddingVertical: 18,
-    paddingBottom: 96
+    gap: 18
   },
   heroCard: {
-    marginBottom: 18
+    marginTop: 4
   },
   heroContent: {
-    padding: 18
+    padding: 20,
+    gap: 12
+  },
+  heroEyebrow: {
+    fontSize: 11,
+    fontWeight: "800",
+    textTransform: "uppercase",
+    letterSpacing: 0.8
   },
   heroTitle: {
-    fontSize: 30,
-    lineHeight: 34,
+    fontSize: 32,
+    lineHeight: 37,
     fontWeight: "800",
     letterSpacing: -1
   },
   heroSummary: {
-    marginTop: 8,
     fontSize: 14,
-    lineHeight: 20
+    lineHeight: 20,
+    fontWeight: "600"
+  },
+  metaGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10
+  },
+  metaChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    maxWidth: "100%"
+  },
+  metaChipText: {
+    fontSize: 12,
+    fontWeight: "700",
+    maxWidth: 180
+  },
+  heroFooter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12
+  },
+  heroFooterText: {
+    fontSize: 12,
+    fontWeight: "600"
   },
   tagsRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
-    marginTop: 14
+    gap: 8
   },
   tag: {
     borderWidth: 1,
@@ -383,13 +534,83 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "700"
   },
-  markdownWrap: {
-    paddingHorizontal: 2
+  contentCardWrap: {
+    marginBottom: 8
+  },
+  markdownCardContent: {
+    paddingHorizontal: 18,
+    paddingVertical: 20
   },
   codeBlockWrap: {
     marginBottom: 14,
     borderRadius: 14,
     overflow: "hidden"
+  },
+  progressTrack: {
+    position: "absolute",
+    left: 16,
+    right: 16,
+    height: 3,
+    borderRadius: 999,
+    overflow: "hidden",
+    zIndex: 45
+  },
+  progressFill: {
+    height: 3,
+    borderRadius: 999
+  },
+  floatingHeaderWrap: {
+    position: "absolute",
+    zIndex: 50
+  },
+  floatingHeaderContent: {
+    minHeight: 70,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10
+  },
+  floatingTitleWrap: {
+    flex: 1,
+    minWidth: 0
+  },
+  floatingTitle: {
+    fontSize: 15,
+    fontWeight: "800",
+    letterSpacing: -0.3
+  },
+  floatingMeta: {
+    marginTop: 3,
+    fontSize: 12,
+    fontWeight: "600"
+  },
+  controlRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8
+  },
+  controlButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 999,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24
+  },
+  loadingCard: {
+    paddingHorizontal: 18,
+    paddingVertical: 14
+  },
+  loadingLabel: {
+    fontSize: 13,
+    fontWeight: "700"
   },
   missingWrap: {
     flex: 1,

@@ -1,6 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type PropsWithChildren } from "react";
-import { useColorScheme } from "react-native";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type PropsWithChildren
+} from "react";
+import { AccessibilityInfo, useColorScheme } from "react-native";
 import { useColorScheme as useNativeWindColorScheme } from "nativewind";
 import {
   getNextTheme,
@@ -26,6 +34,7 @@ type ThemeContextValue = {
   isGlass: boolean;
   themeLabel: string;
   themeDescription: string;
+  reduceMotionEnabled: boolean;
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -35,6 +44,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   const { setColorScheme } = useNativeWindColorScheme();
   const systemTheme: ResolvedTheme = systemScheme === "dark" ? "dark" : "light";
   const [theme, setThemeState] = useState<ThemeMode>("crystal-line");
+  const [reduceMotionEnabled, setReduceMotionEnabled] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -52,6 +62,31 @@ export function ThemeProvider({ children }: PropsWithChildren) {
 
     return () => {
       mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    AccessibilityInfo.isReduceMotionEnabled()
+      .then((enabled: boolean) => {
+        if (mounted) {
+          setReduceMotionEnabled(enabled);
+        }
+      })
+      .catch(() => {
+        if (mounted) {
+          setReduceMotionEnabled(false);
+        }
+      });
+
+    const subscription = AccessibilityInfo.addEventListener("reduceMotionChanged", (enabled: boolean) => {
+      setReduceMotionEnabled(Boolean(enabled));
+    });
+
+    return () => {
+      mounted = false;
+      subscription.remove();
     };
   }, []);
 
@@ -81,9 +116,10 @@ export function ThemeProvider({ children }: PropsWithChildren) {
       visuals: resolved.theme.visuals,
       isGlass: resolved.theme.isGlass,
       themeLabel: resolved.theme.label,
-      themeDescription: resolved.theme.description
+      themeDescription: resolved.theme.description,
+      reduceMotionEnabled
     };
-  }, [cycleTheme, persistTheme, systemTheme, theme]);
+  }, [cycleTheme, persistTheme, reduceMotionEnabled, systemTheme, theme]);
 
   useEffect(() => {
     setColorScheme(value.resolvedTheme);

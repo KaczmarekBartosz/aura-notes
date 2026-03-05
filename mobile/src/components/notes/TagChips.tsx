@@ -14,7 +14,7 @@ export function TagChips({ tags, activeTag, onSelect }: TagChipsProps) {
   if (tags.length === 0) return null;
 
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
       <View style={styles.row}>
         <TagChip label="Wszystkie tagi" active={activeTag === null} onPress={() => onSelect(null)} colors={colors} />
         {tags.map((tag) => (
@@ -45,6 +45,8 @@ function TagChip({
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`Filtruj po tagu ${label}`}
       style={[
         styles.chip,
         {
@@ -60,17 +62,21 @@ function TagChip({
 }
 
 const styles = StyleSheet.create({
+  scrollContent: {
+    paddingRight: 16
+  },
   row: {
     flexDirection: "row",
-    gap: 10,
-    paddingRight: 16
+    gap: 10
   },
   chip: {
     overflow: "hidden",
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 9
+    paddingHorizontal: 13,
+    paddingVertical: 10,
+    minHeight: 40,
+    justifyContent: "center"
   },
   label: {
     position: "relative",
