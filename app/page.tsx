@@ -598,7 +598,7 @@ export default function Page() {
       ref={appContainerRef}
       data-glass-theme={isGlass ? 'true' : 'false'}
       className={cn(
-        'aura-theme-scope h-[100svh] min-h-[100svh] md:h-[100dvh] w-full max-w-full overflow-hidden text-foreground font-sans relative overscroll-none box-border pt-safe',
+        'aura-theme-scope min-h-[100dvh] w-full max-w-full overflow-x-hidden text-foreground font-sans relative box-border pt-safe',
         isGlass ? 'bg-transparent' : 'bg-background'
       )}
     >
@@ -617,7 +617,7 @@ export default function Page() {
       )}
 
       {/* Content area */}
-      <div className="mx-auto flex h-full w-full max-w-[1600px] gap-0 md:gap-6 md:p-6 relative z-10 pb-nav-safe">
+      <div className="mx-auto flex min-h-[100dvh] w-full max-w-[1600px] gap-0 md:gap-6 md:p-6 relative z-10 pb-nav-safe">
 
         {/* ═══ SIDEBAR ═══ */}
         <aside
