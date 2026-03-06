@@ -1,11 +1,11 @@
-const STATIC_CACHE = 'aura-static-v1';
+const STATIC_CACHE = 'aura-static-v2';
 const HTML_CACHE = 'aura-html-v1';
 const OFFLINE_FALLBACK = '/';
 
 const APP_SHELL_ASSETS = [
   '/',
   '/manifest.webmanifest',
-  '/duck_hunt_dog.png',
+  '/icon.png',
   '/sketchbook.png',
   '/texture.png',
 ];

@@ -288,6 +288,7 @@ export default function Page() {
   const loadNotes = useCallback(async (password: string) => {
     setLoading(true);
     setLoginError('');
+    setUnlocking(false);
     try {
       const endpoint = process.env.NODE_ENV === 'development' ? '/api/notes' : '/.netlify/functions/notes';
       const res = await fetch(endpoint, { headers: { 'x-aura-pass': password } });
@@ -447,7 +448,10 @@ export default function Page() {
     });
   }, [notes, noteTimestamps, activeTab, activeCategory, activeTag, debouncedQuery, sort]);
 
-  const selected = filtered.find((n) => n.id === selectedId) || notes.find((n) => n.id === selectedId) || null;
+  const selected = useMemo(
+    () => filtered.find((n) => n.id === selectedId) || notes.find((n) => n.id === selectedId) || null,
+    [filtered, notes, selectedId]
+  );
 
   /* ── Keyboard shortcuts ── */
   useEffect(() => {
