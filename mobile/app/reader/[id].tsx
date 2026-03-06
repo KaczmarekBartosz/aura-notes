@@ -9,7 +9,7 @@ import Animated, {
   Extrapolation,
   FadeInDown,
   interpolate,
-  runOnJS,
+  useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue
 } from "react-native-reanimated";
@@ -66,11 +66,8 @@ export default function ReaderScreen() {
   const [isReady, setIsReady] = useState(false);
   const scrollViewRef = useRef<any>(null);
   const initialScrollYRef = useRef(0);
-  const currentScrollYRef = useRef(0);
   const shouldRestoreScrollRef = useRef(false);
-  const lastSavedAtRef = useRef(0);
   const fontScaleRef = useRef(DEFAULT_FONT_SCALE);
-  const progressPercentRef = useRef(0);
 
   const note = useMemo(() => notes.find((item) => item.id === id) ?? null, [id, notes]);
   const displayContent = useMemo(() => stripFrontmatter(note?.content ?? ""), [note?.content]);
@@ -83,7 +80,6 @@ export default function ReaderScreen() {
   const scrollY = useSharedValue(0);
   const progressValue = useSharedValue(0);
   const pinchPreviewScale = useSharedValue(1);
-  const edgeSwipeActive = useSharedValue(false);
 
   const applyFontScale = useCallback((nextScale: number) => {
     const clamped = Math.max(MIN_FONT_SCALE, Math.min(MAX_FONT_SCALE, nextScale));
@@ -107,24 +103,9 @@ export default function ReaderScreen() {
     .onEnd((event) => {
       pinchPreviewScale.value = 1;
       const nextScale = clamp(fontScaleRef.current * event.scale, MIN_FONT_SCALE, MAX_FONT_SCALE);
-      runOnJS(triggerHaptic)("selection");
-      runOnJS(applyFontScale)(nextScale);
+      void triggerHaptic("selection");
+      applyFontScale(nextScale);
     });
-
-  const edgeSwipeBack = Gesture.Pan()
-    .onBegin((event) => {
-      edgeSwipeActive.value = event.absoluteX <= 28;
-    })
-    .onEnd((event) => {
-      if (!edgeSwipeActive.value) return;
-      if (event.translationX > 96 && Math.abs(event.translationY) < 120) {
-        runOnJS(triggerHaptic)("light");
-        runOnJS(router.back)();
-      }
-      edgeSwipeActive.value = false;
-    });
-
-  const gesture = Gesture.Simultaneous(pinch, edgeSwipeBack);
 
   const compactHeaderStyle = useAnimatedStyle(() => {
     const opacity = interpolate(scrollY.value, [28, 140], [0, 1], Extrapolation.CLAMP);
@@ -151,6 +132,37 @@ export default function ReaderScreen() {
   const progressFillStyle = useAnimatedStyle(() => ({
     width: `${Math.round(progressValue.value * 100)}%`
   }));
+
+  const syncReadingState = useCallback(
+    (offsetY: number, contentHeight: number, layoutHeight: number, persist: boolean) => {
+      const maxScroll = contentHeight - layoutHeight;
+      const nextPercent = maxScroll <= 0 ? 0 : Math.round((offsetY / maxScroll) * 100);
+      setProgressPercent((current) => (current === nextPercent ? current : nextPercent));
+
+      if (persist && note?.id) {
+        void saveReaderScroll(note.id, offsetY);
+      }
+    },
+    [note?.id]
+  );
+
+  const handleScrollSettled = useCallback(
+    (event: { nativeEvent: { contentOffset: { y: number }; contentSize: { height: number }; layoutMeasurement: { height: number } } }) => {
+      syncReadingState(
+        event.nativeEvent.contentOffset.y,
+        event.nativeEvent.contentSize.height,
+        event.nativeEvent.layoutMeasurement.height,
+        true
+      );
+    },
+    [syncReadingState]
+  );
+
+  const scrollHandler = useAnimatedScrollHandler((event) => {
+    scrollY.value = event.contentOffset.y;
+    const maxScroll = event.contentSize.height - event.layoutMeasurement.height;
+    progressValue.value = maxScroll <= 0 ? 0 : event.contentOffset.y / maxScroll;
+  });
 
   const markdownRules = useMemo(
     () => ({
@@ -270,7 +282,6 @@ export default function ReaderScreen() {
     if (!note?.id) return;
     setIsReady(false);
     setProgressPercent(0);
-    progressPercentRef.current = 0;
     progressValue.value = 0;
     let mounted = true;
     (async () => {
@@ -285,9 +296,9 @@ export default function ReaderScreen() {
     })();
     return () => {
       mounted = false;
-      void saveReaderScroll(note.id, currentScrollYRef.current);
+      void saveReaderScroll(note.id, scrollY.value);
     };
-  }, [note?.id]);
+  }, [note?.id, scrollY]);
 
   if (!note) {
     return (
@@ -307,7 +318,7 @@ export default function ReaderScreen() {
 
   return (
     <ScreenContainer edges={["top", "left", "right", "bottom"]} withHorizontalPadding={false}>
-      <GestureDetector gesture={gesture}>
+      <GestureDetector gesture={pinch}>
         <Animated.ScrollView
           ref={scrollViewRef}
           keyboardDismissMode="interactive"
@@ -324,25 +335,9 @@ export default function ReaderScreen() {
             shouldRestoreScrollRef.current = false;
             scrollViewRef.current?.scrollTo({ y: initialScrollYRef.current, animated: false });
           }}
-          onScroll={(event) => {
-            const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-            scrollY.value = contentOffset.y;
-            const maxScroll = contentSize.height - layoutMeasurement.height;
-            const nextProgress = maxScroll <= 0 ? 0 : contentOffset.y / maxScroll;
-            progressValue.value = nextProgress;
-            const nextPercent = Math.round(nextProgress * 100);
-            if (nextPercent !== progressPercentRef.current) {
-              progressPercentRef.current = nextPercent;
-              setProgressPercent(nextPercent);
-            }
-            currentScrollYRef.current = contentOffset.y;
-
-            const now = Date.now();
-            if (note.id && now - lastSavedAtRef.current > 700) {
-              lastSavedAtRef.current = now;
-              void saveReaderScroll(note.id, contentOffset.y);
-            }
-          }}
+          onScroll={scrollHandler}
+          onScrollEndDrag={handleScrollSettled}
+          onMomentumScrollEnd={handleScrollSettled}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
         >

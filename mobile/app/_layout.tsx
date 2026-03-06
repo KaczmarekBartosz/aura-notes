@@ -18,12 +18,19 @@ function RootNavigator() {
             backgroundColor: colors.background
           },
           animation: "fade_from_bottom",
-          fullScreenGestureEnabled: true,
           gestureEnabled: true
         }}
       >
         <Stack.Screen name="index" />
-        <Stack.Screen name="reader/[id]" options={{ presentation: "card", animation: "slide_from_right" }} />
+        <Stack.Screen
+          name="reader/[id]"
+          options={{
+            presentation: "card",
+            animation: "slide_from_right",
+            gestureEnabled: true,
+            fullScreenGestureEnabled: false
+          }}
+        />
         <Stack.Screen name="search" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
         <Stack.Screen name="settings" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
       </Stack>
