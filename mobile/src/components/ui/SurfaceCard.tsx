@@ -1,7 +1,6 @@
 import { BlurView } from "expo-blur";
-import { GlassView, isGlassEffectAPIAvailable } from "expo-glass-effect";
 import { LinearGradient } from "expo-linear-gradient";
-import { Pressable, Platform, StyleSheet, View, type PressableProps, type StyleProp, type ViewStyle } from "react-native";
+import { Platform, Pressable, StyleSheet, View, type PressableProps, type StyleProp, type ViewStyle } from "react-native";
 import type { PropsWithChildren } from "react";
 import { useAppTheme } from "../../theme/ThemeProvider";
 import { uiCard, type SurfacePreset } from "../../theme/ui";
@@ -34,19 +33,19 @@ export function SurfaceCard({
 }: SurfaceCardProps) {
   const { colors, visuals, isGlass, resolvedTheme } = useAppTheme();
   const blurIntensity = intensity ?? visuals.heavyBlurIntensity;
-  const useNativeGlass = isGlass && Platform.OS === "ios" && isGlassEffectAPIAvailable();
   const shellPreset = uiCard[preset];
   const resolvedContentPreset = contentPreset ?? preset;
   const bodyPadding = resolvedContentPreset === "none" ? null : uiCard[resolvedContentPreset];
   const useLiteMaterial = isGlass && materialVariant === "lite";
   const renderFullGlass = isGlass && !useLiteMaterial;
+  const blurPlatformProps = Platform.OS === "android" ? { experimentalBlurMethod: "dimezisBlurView" as const } : {};
 
   const body = (
     <View
       style={[
         styles.shell,
         {
-          backgroundColor: isGlass ? colors.surface : colors.surfaceElevated,
+          backgroundColor: isGlass ? "transparent" : colors.surfaceElevated,
           borderColor: isGlass ? colors.borderStrong : colors.border,
           borderWidth: visuals.surfaceBorderWidth,
           borderRadius: shellPreset.radius,
@@ -63,19 +62,13 @@ export function SurfaceCard({
     >
       {renderFullGlass ? (
         <>
-          {useNativeGlass ? (
-            <GlassView
-              glassEffectStyle={resolvedTheme === "dark" ? "regular" : "clear"}
-              tintColor={colors.surfaceOverlay}
-              style={StyleSheet.absoluteFillObject}
-            />
-          ) : (
-            <BlurView
-              intensity={blurIntensity}
-              tint={resolvedTheme === "dark" ? "dark" : "light"}
-              style={StyleSheet.absoluteFillObject}
-            />
-          )}
+          <BlurView
+            {...blurPlatformProps}
+            intensity={blurIntensity}
+            tint={resolvedTheme === "dark" ? "dark" : "light"}
+            style={StyleSheet.absoluteFillObject}
+          />
+          <View style={[StyleSheet.absoluteFillObject, { backgroundColor: colors.surface }]} />
           <LinearGradient
             colors={[...colors.surfaceGradient]}
             style={[StyleSheet.absoluteFillObject, styles.surfaceGradient]}

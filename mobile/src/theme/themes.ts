@@ -78,37 +78,37 @@ export type ThemeDefinition = {
 };
 
 const crystalLight: ThemePalette = {
-  background: "#F3F7FF",
-  backgroundAlt: "#EEF4FF",
-  surface: "rgba(255,255,255,0.30)",
-  surfaceElevated: "rgba(255,255,255,0.42)",
-  surfaceOverlay: "rgba(255,255,255,0.08)",
-  border: "rgba(170,202,240,0.50)",
+  background: "#F8F9FA",
+  backgroundAlt: "#FFFFFF",
+  surface: "rgba(255,255,255,0.45)",
+  surfaceElevated: "rgba(255,255,255,0.55)",
+  surfaceOverlay: "rgba(255,255,255,0.25)",
+  border: "rgba(255,255,255,0.70)",
   borderStrong: "rgba(255,255,255,0.95)",
-  foreground: "#071A33",
-  muted: "rgba(20,48,80,0.72)",
-  subtle: "rgba(20,48,80,0.52)",
-  primary: "#17457F",
-  primarySoft: "rgba(23,69,127,0.12)",
+  foreground: "#0B1530",
+  muted: "rgba(11,21,48,0.72)",
+  subtle: "rgba(11,21,48,0.52)",
+  primary: "#2868E0",
+  primarySoft: "rgba(40,104,224,0.12)",
   primaryForeground: "#FFFFFF",
-  accent: "#66BCFF",
-  destructive: "#DB4E6D",
-  warning: "#D97A35",
-  success: "#269E6D",
-  shadow: "rgba(10,34,72,0.22)",
-  progressTrack: "rgba(12,39,76,0.08)",
-  codeBackground: "rgba(255,255,255,0.30)",
-  codeForeground: "#102A51",
-  quoteBackground: "rgba(255,255,255,0.22)",
-  quoteBorder: "rgba(82,131,177,0.60)",
-  searchPlaceholder: "rgba(20,48,80,0.46)",
-  tagBackground: "rgba(255,255,255,0.18)",
-  screenGradient: ["#E4F1FF", "#EEF4FF", "#F4F2FF", "#EEF8FF"],
-  surfaceGradient: ["rgba(255,255,255,0.80)", "rgba(255,255,255,0.25)", "rgba(162,199,255,0.10)"],
-  activeGradient: ["rgba(20,63,118,0.88)", "rgba(52,120,196,0.82)", "rgba(102,188,255,0.74)"],
-  orbOne: "rgba(74,161,255,0.58)",
-  orbTwo: "rgba(180,127,255,0.46)",
-  orbThree: "rgba(116,230,255,0.52)"
+  accent: "#A855F7",
+  destructive: "#E11D48",
+  warning: "#EA580C",
+  success: "#16A34A",
+  shadow: "rgba(11,21,48,0.12)",
+  progressTrack: "rgba(11,21,48,0.06)",
+  codeBackground: "rgba(255,255,255,0.60)",
+  codeForeground: "#0B1530",
+  quoteBackground: "rgba(255,255,255,0.40)",
+  quoteBorder: "rgba(168,85,247,0.60)",
+  searchPlaceholder: "rgba(11,21,48,0.46)",
+  tagBackground: "rgba(255,255,255,0.50)",
+  screenGradient: ["#F8FAFC", "#F1F5F9", "#E2E8F0", "#CBD5E1"],
+  surfaceGradient: ["rgba(255,255,255,0.6)", "rgba(255,255,255,0)", "rgba(255,255,255,0.15)"],
+  activeGradient: ["#3B82F6", "#8B5CF6", "#EC4899"],
+  orbOne: "rgba(56,189,248,0.65)",
+  orbTwo: "rgba(236,72,153,0.55)",
+  orbThree: "rgba(139,92,246,0.60)"
 };
 
 const defaultLight: ThemePalette = {
@@ -420,17 +420,17 @@ const airPowerVisuals: ThemeVisuals = {
 };
 
 const crystalLineVisuals: ThemeVisuals = {
-  surfaceRadius: 32,
-  blurIntensity: 34,
-  heavyBlurIntensity: 46,
-  surfaceBorderWidth: 1,
+  surfaceRadius: 24,
+  blurIntensity: 50,
+  heavyBlurIntensity: 70,
+  surfaceBorderWidth: 1.5,
   pressScale: 0.995,
-  shadowOpacity: 0.24,
-  shadowRadius: 34,
-  shadowOffsetY: 20,
-  ambientOverlay: ["rgba(255,255,255,0.34)", "rgba(255,255,255,0.10)", "rgba(198,170,255,0.04)"],
-  highlightGradient: ["rgba(255,255,255,0.82)", "rgba(255,255,255,0.22)", "rgba(162,199,255,0.08)"],
-  prismGradient: ["rgba(255,91,180,0.16)", "rgba(102,195,255,0.12)", "rgba(139,92,246,0.16)"]
+  shadowOpacity: 0.16,
+  shadowRadius: 30,
+  shadowOffsetY: 12,
+  ambientOverlay: ["rgba(255,255,255,0.40)", "rgba(255,255,255,0)", "rgba(255,255,255,0.1)"],
+  highlightGradient: ["rgba(255,255,255,0.9)", "rgba(255,255,255,0)", "rgba(255,255,255,0)"],
+  prismGradient: ["rgba(56,189,248,0.10)", "rgba(236,72,153,0.06)", "rgba(139,92,246,0.10)"]
 };
 
 export const THEMES: readonly ThemeDefinition[] = [
@@ -562,10 +562,10 @@ export const THEMES: readonly ThemeDefinition[] = [
     appearance: "light",
     isGlass: true,
     preview: {
-      bg: "#E4F1FF",
-      card: "rgba(255,255,255,0.30)",
-      accent: "#17457F",
-      gradient: ["#E4F1FF", "#EEF4FF", "#F4F2FF"]
+      bg: "#E2E8F0",
+      card: "rgba(255,255,255,0.45)",
+      accent: "#8B5CF6",
+      gradient: ["#F8FAFC", "#E2E8F0", "#CBD5E1"]
     },
     visuals: crystalLineVisuals,
     palettes: {

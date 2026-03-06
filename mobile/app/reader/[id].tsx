@@ -133,6 +133,24 @@ export default function ReaderScreen() {
     width: `${Math.round(progressValue.value * 100)}%`
   }));
 
+  const renderCodeBlock = useCallback(
+    (key: string, content: string, language = "text") => (
+      <View key={key} style={styles.codeBlockWrap}>
+        <SyntaxHighlighter
+          language={language}
+          style={resolvedTheme === "dark" ? atomOneDark : atomOneLight}
+          fontSize={12 * fontScale}
+          highlighter="highlightjs"
+          PreTag={View}
+          CodeTag={View}
+        >
+          {content}
+        </SyntaxHighlighter>
+      </View>
+    ),
+    [fontScale, resolvedTheme]
+  );
+
   const syncReadingState = useCallback(
     (offsetY: number, contentHeight: number, layoutHeight: number, persist: boolean) => {
       const maxScroll = contentHeight - layoutHeight;
@@ -169,36 +187,22 @@ export default function ReaderScreen() {
       fence: (node: any) => {
         const code = String(node?.content ?? "");
         const lang = String(node?.sourceInfo ?? "text").trim().split(/\s+/)[0] || "text";
-        return (
-          <View key={node.key} style={styles.codeBlockWrap}>
-            <SyntaxHighlighter
-              language={lang}
-              style={resolvedTheme === "dark" ? atomOneDark : atomOneLight}
-              fontSize={12 * fontScale}
-              highlighter="hljs"
-            >
-              {code}
-            </SyntaxHighlighter>
-          </View>
-        );
+        return renderCodeBlock(node.key, code, lang);
       },
       code_block: (node: any) => {
         const code = String(node?.content ?? "");
-        return (
-          <View key={node.key} style={styles.codeBlockWrap}>
-            <SyntaxHighlighter
-              language="text"
-              style={resolvedTheme === "dark" ? atomOneDark : atomOneLight}
-              fontSize={12 * fontScale}
-              highlighter="hljs"
-            >
-              {code}
-            </SyntaxHighlighter>
-          </View>
-        );
+        return renderCodeBlock(node.key, code, "text");
+      },
+      code: (node: any) => {
+        const code = String(node?.content ?? node?.children?.map((child: any) => child?.content ?? "").join("") ?? "");
+        return renderCodeBlock(node.key, code, "text");
+      },
+      pre: (node: any) => {
+        const code = String(node?.content ?? node?.children?.map((child: any) => child?.content ?? "").join("") ?? "");
+        return renderCodeBlock(node.key, code, "text");
       }
     }),
-    [fontScale, resolvedTheme]
+    [renderCodeBlock]
   );
 
   const markdownStyles = useMemo(

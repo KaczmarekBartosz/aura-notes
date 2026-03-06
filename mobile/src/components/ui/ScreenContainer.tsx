@@ -1,5 +1,4 @@
 import { BlurView } from "expo-blur";
-import { GlassView, isGlassEffectAPIAvailable } from "expo-glass-effect";
 import { Platform, StyleSheet, View, type ViewStyle } from "react-native";
 import { SafeAreaView, type Edge } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -19,10 +18,8 @@ export function ScreenContainer({
   withHorizontalPadding = true
 }: ScreenContainerProps) {
   const { colors, visuals, isGlass, resolvedTheme } = useAppTheme();
-  const primaryBackgroundBlurIntensity = Math.max(44, Math.round(visuals.heavyBlurIntensity * 0.92));
-  const secondaryBackgroundBlurIntensity = Math.max(26, Math.round(visuals.heavyBlurIntensity * 0.68));
-  const tertiaryBackgroundBlurIntensity = Math.max(18, Math.round(visuals.blurIntensity * 0.96));
-  const useNativeGlassBackdrop = isGlass && Platform.OS === "ios" && isGlassEffectAPIAvailable();
+  const primaryBackgroundBlurIntensity = isGlass ? visuals.blurIntensity : 0;
+  const blurPlatformProps = Platform.OS === "android" ? { experimentalBlurMethod: "dimezisBlurView" as const } : {};
 
   return (
     <SafeAreaView edges={edges} style={[styles.safeArea, { backgroundColor: isGlass ? "transparent" : colors.background }]}>
@@ -48,32 +45,15 @@ export function ScreenContainer({
               end={{ x: 0.9, y: 1 }}
               style={styles.bottomAura}
             />
-            {useNativeGlassBackdrop ? (
-              <GlassView
-                glassEffectStyle={resolvedTheme === "dark" ? "regular" : "clear"}
-                tintColor={colors.surfaceOverlay}
-                style={StyleSheet.absoluteFillObject}
-              />
-            ) : (
+            {primaryBackgroundBlurIntensity > 0 ? (
               <BlurView
                 pointerEvents="none"
+                {...blurPlatformProps}
                 intensity={primaryBackgroundBlurIntensity}
                 tint={resolvedTheme === "dark" ? "dark" : "light"}
                 style={StyleSheet.absoluteFillObject}
               />
-            )}
-            <BlurView
-              pointerEvents="none"
-              intensity={secondaryBackgroundBlurIntensity}
-              tint={resolvedTheme === "dark" ? "dark" : "light"}
-              style={[StyleSheet.absoluteFillObject, styles.secondaryBlur]}
-            />
-            <BlurView
-              pointerEvents="none"
-              intensity={tertiaryBackgroundBlurIntensity}
-              tint={resolvedTheme === "dark" ? "dark" : "light"}
-              style={[StyleSheet.absoluteFillObject, styles.tertiaryBlur]}
-            />
+            ) : null}
             <LinearGradient
               pointerEvents="none"
               colors={[...visuals.ambientOverlay]}
@@ -165,13 +145,6 @@ const styles = StyleSheet.create({
     bottom: -48,
     height: 240,
     opacity: 0.4
-  },
-  secondaryBlur: {
-    opacity: 0.74
-  },
-  tertiaryBlur: {
-    opacity: 0.42,
-    transform: [{ scale: 1.04 }]
   },
   veil: {
     ...StyleSheet.absoluteFillObject,
