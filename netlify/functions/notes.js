@@ -13,13 +13,37 @@ function json(statusCode, body) {
 let notesIndexCache = null;
 
 function getNotesIndex() {
-  if (!notesIndexCache) {
-    const { join } = require('node:path');
-    const { readFileSync } = require('node:fs');
-    const filePath = join(__dirname, 'data', 'notes-index.json');
-    notesIndexCache = JSON.parse(readFileSync(filePath, 'utf-8'));
+  if (notesIndexCache) return notesIndexCache;
+
+  // 1) Prefer static require so Netlify bundler keeps JSON with function package.
+  try {
+    // eslint-disable-next-line global-require, import/no-dynamic-require
+    notesIndexCache = require('./data/notes-index.json');
+    return notesIndexCache;
+  } catch {}
+
+  // 2) Fallbacks for local/dev and bundle path differences.
+  const { join } = require('node:path');
+  const { readFileSync } = require('node:fs');
+
+  const candidates = [
+    join(__dirname, 'data', 'notes-index.json'),
+    join(process.cwd(), 'netlify', 'functions', 'data', 'notes-index.json'),
+    join(process.cwd(), '.netlify', 'functions', 'notes', 'data', 'notes-index.json'),
+    join(process.cwd(), '.netlify', 'functions-serve', 'notes', 'data', 'notes-index.json'),
+  ];
+
+  let lastError = null;
+  for (const filePath of candidates) {
+    try {
+      notesIndexCache = JSON.parse(readFileSync(filePath, 'utf-8'));
+      return notesIndexCache;
+    } catch (error) {
+      lastError = error;
+    }
   }
-  return notesIndexCache;
+
+  throw lastError || new Error('notes-index.json not found in known locations');
 }
 
 exports.handler = async (event) => {
