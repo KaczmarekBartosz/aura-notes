@@ -2,6 +2,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import type { SortMode } from "../../types/note";
 import { useAppTheme } from "../../theme/ThemeProvider";
+import { uiControl, uiRadius, uiSpacing, uiType } from "../../theme/ui";
 
 const SORT_OPTIONS: Array<{ id: SortMode; label: string }> = [
   { id: "updated_desc", label: "Najnowsze" },
@@ -39,7 +40,7 @@ export function SortSelector({ value, onChange }: SortSelectorProps) {
               ]}
             >
               {active ? <LinearGradient colors={[...colors.activeGradient]} style={StyleSheet.absoluteFillObject} /> : null}
-              <Text style={[styles.label, { color: active ? colors.primaryForeground : colors.foreground }]}>{option.label}</Text>
+              <Text style={[uiType.meta, styles.label, { color: active ? colors.primaryForeground : colors.foreground }]}>{option.label}</Text>
             </Pressable>
           );
         })}
@@ -50,26 +51,24 @@ export function SortSelector({ value, onChange }: SortSelectorProps) {
 
 const styles = StyleSheet.create({
   scrollContent: {
-    paddingHorizontal: 16,
-    paddingRight: 24
+    paddingHorizontal: 0,
+    paddingRight: uiSpacing.xs
   },
   row: {
     flexDirection: "row",
-    gap: 8
+    gap: uiSpacing.xs
   },
   option: {
     overflow: "hidden",
     borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    minHeight: 36,
+    borderRadius: uiRadius.pill,
+    paddingHorizontal: uiSpacing.md,
+    minHeight: uiControl.minTouch,
     justifyContent: "center"
   },
   label: {
     position: "relative",
     zIndex: 1,
-    fontSize: 11,
     fontWeight: "700"
   }
 });

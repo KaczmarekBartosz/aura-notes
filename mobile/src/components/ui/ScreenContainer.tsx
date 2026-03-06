@@ -19,8 +19,9 @@ export function ScreenContainer({
   withHorizontalPadding = true
 }: ScreenContainerProps) {
   const { colors, visuals, isGlass, resolvedTheme } = useAppTheme();
-  const primaryBackgroundBlurIntensity = Math.max(30, Math.round(visuals.heavyBlurIntensity * 0.74));
-  const secondaryBackgroundBlurIntensity = Math.max(16, Math.round(visuals.blurIntensity * 0.62));
+  const primaryBackgroundBlurIntensity = Math.max(44, Math.round(visuals.heavyBlurIntensity * 0.92));
+  const secondaryBackgroundBlurIntensity = Math.max(26, Math.round(visuals.heavyBlurIntensity * 0.68));
+  const tertiaryBackgroundBlurIntensity = Math.max(18, Math.round(visuals.blurIntensity * 0.96));
   const useNativeGlassBackdrop = isGlass && Platform.OS === "ios" && isGlassEffectAPIAvailable();
 
   return (
@@ -66,6 +67,12 @@ export function ScreenContainer({
               intensity={secondaryBackgroundBlurIntensity}
               tint={resolvedTheme === "dark" ? "dark" : "light"}
               style={[StyleSheet.absoluteFillObject, styles.secondaryBlur]}
+            />
+            <BlurView
+              pointerEvents="none"
+              intensity={tertiaryBackgroundBlurIntensity}
+              tint={resolvedTheme === "dark" ? "dark" : "light"}
+              style={[StyleSheet.absoluteFillObject, styles.tertiaryBlur]}
             />
             <LinearGradient
               pointerEvents="none"
@@ -116,7 +123,7 @@ const styles = StyleSheet.create({
   orb: {
     position: "absolute",
     borderRadius: 999,
-    opacity: 0.82
+    opacity: 0.78
   },
   orbOne: {
     width: 416,
@@ -141,7 +148,7 @@ const styles = StyleSheet.create({
     height: 260,
     top: "44%",
     right: "12%",
-    opacity: 0.34
+    opacity: 0.3
   },
   topAura: {
     position: "absolute",
@@ -160,10 +167,14 @@ const styles = StyleSheet.create({
     opacity: 0.4
   },
   secondaryBlur: {
-    opacity: 0.62
+    opacity: 0.74
+  },
+  tertiaryBlur: {
+    opacity: 0.42,
+    transform: [{ scale: 1.04 }]
   },
   veil: {
     ...StyleSheet.absoluteFillObject,
-    opacity: 0.06
+    opacity: 0.08
   }
 });

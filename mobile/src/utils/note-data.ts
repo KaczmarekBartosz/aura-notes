@@ -1,5 +1,27 @@
 import type { Note } from "../types/note";
 
+function stripFrontmatter(source: string) {
+  return source.replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/, "");
+}
+
+function stripMarkdown(source: string) {
+  return source
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/!\[[^\]]*]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]+)]\(([^)]+)\)/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^\s*[-*+]\s+/gm, "")
+    .replace(/^\s*\d+\.\s+/gm, "")
+    .replace(/^\s*>\s?/gm, "")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/__([^_]+)__/g, "$1")
+    .replace(/_([^_]+)_/g, "$1")
+    .replace(/\|/g, " ")
+    .replace(/---+/g, " ");
+}
+
 function sanitizeString(value: unknown, fallback = "") {
   const normalized = typeof value === "string" ? value.trim() : "";
   return normalized || fallback;
@@ -21,15 +43,16 @@ function sanitizeTags(value: unknown): string[] {
 }
 
 function countWords(source: string) {
-  const normalized = source.replace(/[`*_>#\-]+/g, " ").replace(/\s+/g, " ").trim();
+  const normalized = stripMarkdown(stripFrontmatter(source)).replace(/\s+/g, " ").trim();
   if (!normalized) return 0;
   return normalized.split(" ").length;
 }
 
 export function buildExcerpt(source: string, fallback = "", limit = 180) {
-  const normalizedSource = source.replace(/\s+/g, " ").trim();
-  const normalizedFallback = fallback.replace(/\s+/g, " ").trim();
-  const base = normalizedFallback || normalizedSource;
+  const normalizedSource = stripMarkdown(stripFrontmatter(source)).replace(/\s+/g, " ").trim();
+  const normalizedFallback = stripMarkdown(fallback).replace(/\s+/g, " ").trim();
+  const shouldPreferSource = /^(title|category|tags|created|updated|excerpt)\s*:/i.test(normalizedFallback);
+  const base = shouldPreferSource ? normalizedSource : normalizedFallback || normalizedSource;
   if (!base) return "Brak podglądu notatki.";
   if (base.length <= limit) return base;
   return `${base.slice(0, limit).trimEnd()}...`;

@@ -1,5 +1,6 @@
 import * as SQLite from "expo-sqlite";
 import type { Note } from "../types/note";
+import { normalizeNotePayload } from "../utils/note-data";
 
 const DB_NAME = "aura_notes.db";
 
@@ -14,8 +15,7 @@ async function getDb() {
 
 function safeParseNote(payload: string): Note | null {
   try {
-    const parsed = JSON.parse(payload) as Note;
-    return parsed && typeof parsed.id === "string" ? parsed : null;
+    return normalizeNotePayload(JSON.parse(payload));
   } catch {
     return null;
   }

@@ -1,14 +1,17 @@
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
-import { DatabaseBackup, RefreshCw, Trash2, X } from "lucide-react-native";
+import { DatabaseBackup, RefreshCw, Trash2 } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { ScreenContainer } from "../src/components/ui/ScreenContainer";
+import { ScreenHeader } from "../src/components/ui/ScreenHeader";
+import { SectionBlock } from "../src/components/ui/SectionBlock";
 import { SurfaceCard } from "../src/components/ui/SurfaceCard";
 import { useNotes } from "../src/state/NotesProvider";
 import { formatRelativeDate } from "../src/utils/date";
 import { useAppTheme } from "../src/theme/ThemeProvider";
+import { uiControl, uiRadius, uiSpacing, uiType } from "../src/theme/ui";
 import { triggerHaptic } from "../src/utils/haptics";
 
 export default function SettingsScreen() {
@@ -24,12 +27,13 @@ export default function SettingsScreen() {
     return (
       <Animated.View key={entry.id} entering={reduceMotionEnabled ? undefined : FadeInDown.delay(60 + index * 35).duration(260)}>
         <SurfaceCard
+          preset="list"
+          contentPreset="list"
           onPress={() => {
             void triggerHaptic(active ? "selection" : "light");
             void setTheme(entry.id);
           }}
           style={styles.themeCard}
-          contentStyle={styles.themeCardInner}
           accessibilityRole="button"
           accessibilityLabel={`Wybierz motyw ${entry.label}`}
         >
@@ -43,7 +47,7 @@ export default function SettingsScreen() {
 
           <View style={styles.themeBody}>
             <View style={styles.themeHeading}>
-              <Text style={[styles.themeName, { color: colors.foreground }]}>{entry.label}</Text>
+              <Text style={[uiType.sectionTitle, styles.themeName, { color: colors.foreground }]}>{entry.label}</Text>
               <View
                 style={[
                   styles.activeBadge,
@@ -53,16 +57,14 @@ export default function SettingsScreen() {
                   }
                 ]}
               >
-                <Text style={[styles.activeBadgeText, { color: active ? colors.primaryForeground : colors.foreground }]}>
+                <Text style={[uiType.caption, styles.activeBadgeText, { color: active ? colors.primaryForeground : colors.foreground }]}>
                   {active ? "Aktywny" : "Wybierz"}
                 </Text>
               </View>
             </View>
-            <View style={styles.themeCopy}>
-              <Text numberOfLines={2} style={[styles.themeDescriptionText, { color: colors.muted }]}>
-                {entry.description}
-              </Text>
-            </View>
+            <Text numberOfLines={2} style={[uiType.meta, { color: colors.muted }]}>
+              {entry.description}
+            </Text>
           </View>
         </SurfaceCard>
       </Animated.View>
@@ -73,68 +75,60 @@ export default function SettingsScreen() {
     <ScreenContainer edges={["top", "left", "right", "bottom"]}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.content, { paddingBottom: Math.max(44, insets.bottom + 20) }]}
+        contentContainerStyle={[styles.content, { paddingBottom: Math.max(uiControl.minTouch, insets.bottom + uiSpacing.xl) }]}
       >
-        <View style={[styles.handle, { backgroundColor: colors.borderStrong }]} />
-
-        <View style={styles.header}>
-          <View style={styles.headerCopy}>
-            <Text style={[styles.title, { color: colors.foreground }]}>Ustawienia</Text>
-            <Text style={[styles.subtitle, { color: colors.muted }]}>Motywy, cache, synchronizacja i zachowanie aplikacji na iPhone.</Text>
-          </View>
-          <Pressable
-            onPress={() => {
-              void triggerHaptic("light");
-              router.back();
-            }}
-            accessibilityRole="button"
-            accessibilityLabel="Zamknij ustawienia"
-            style={[styles.closeButton, { backgroundColor: colors.surfaceElevated, borderColor: colors.borderStrong }]}
-          >
-            <X size={18} color={colors.foreground} />
-          </Pressable>
-        </View>
+        <ScreenHeader
+          title="Ustawienia"
+          subtitle="Motywy, cache, synchronizacja i zachowanie aplikacji na iPhone w jednym spokojnym panelu."
+          closeLabel="Zamknij ustawienia"
+          onClose={() => {
+            void triggerHaptic("light");
+            router.back();
+          }}
+        />
 
         <Animated.View entering={reduceMotionEnabled ? undefined : FadeInDown.duration(280)}>
-          <SurfaceCard style={styles.section} contentStyle={styles.sectionInner} intensity={resolvedTheme === "dark" ? 60 : 56}>
-            <Text style={[styles.sectionEyebrow, { color: colors.primary }]}>Aktywny motyw</Text>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>{themeLabel}</Text>
-            <Text style={[styles.sectionDescription, { color: colors.muted }]}>{themeDescription}</Text>
-            <Text style={[styles.sectionCaption, { color: colors.subtle }]}>
-              {resolvedTheme === "dark" ? "Ciemna baza" : "Jasna baza"} • {reduceMotionEnabled ? "Reduce Motion aktywne" : "Pełne motion aktywne"}
-            </Text>
-          </SurfaceCard>
+          <SectionBlock
+            eyebrow="Aktywny motyw"
+            title={themeLabel}
+            titleStyle={uiType.title3}
+            description={themeDescription}
+            caption={`${resolvedTheme === "dark" ? "Ciemna baza" : "Jasna baza"} • ${reduceMotionEnabled ? "Reduce Motion aktywne" : "Pełne motion aktywne"}`}
+            intensity={resolvedTheme === "dark" ? 60 : 56}
+          />
         </Animated.View>
 
-        <SurfaceCard style={styles.section} contentStyle={styles.sectionInner}>
-          <Text style={[styles.sectionEyebrow, { color: colors.primary }]}>Tryby główne</Text>
-          <Text style={[styles.sectionTitleSmall, { color: colors.foreground }]}>System, Light, Dark, Crystal Line</Text>
-          <Text style={[styles.sectionCaption, { color: colors.muted }]}>Tryby bazowe oraz najnowszy premium motyw jako główna ścieżka wizualna.</Text>
+        <SectionBlock
+          eyebrow="Tryby główne"
+          title="System, Light, Dark, Crystal Line"
+          description="Tryby bazowe oraz najnowszy premium motyw jako główna ścieżka wizualna."
+        >
           <View style={styles.grid}>{primaryThemes.map(renderThemeCard)}</View>
-        </SurfaceCard>
+        </SectionBlock>
 
         {otherThemes.length > 0 ? (
-          <SurfaceCard style={styles.section} contentStyle={styles.sectionInner}>
-            <Text style={[styles.sectionEyebrow, { color: colors.primary }]}>Aura Presets</Text>
-            <Text style={[styles.sectionTitleSmall, { color: colors.foreground }]}>Pozostałe kierunki graficzne</Text>
-            <Text style={[styles.sectionCaption, { color: colors.muted }]}>Każdy preset ma własny materiał, gradienty i charakter powierzchni.</Text>
+          <SectionBlock
+            eyebrow="Aura Presets"
+            title="Pozostałe kierunki graficzne"
+            description="Każdy preset ma własny materiał, gradienty i charakter powierzchni, ale dziedziczy ten sam system spacingu."
+          >
             <View style={styles.grid}>{otherThemes.map((entry, index) => renderThemeCard(entry, index + primaryThemes.length))}</View>
-          </SurfaceCard>
+          </SectionBlock>
         ) : null}
 
-        <SurfaceCard style={styles.section} contentStyle={styles.sectionInner}>
-          <View style={styles.sectionHeading}>
-            <DatabaseBackup size={16} color={colors.primary} />
-            <Text style={[styles.sectionTitleSmall, { color: colors.foreground }]}>Offline Cache</Text>
-          </View>
+        <SectionBlock
+          title="Offline Cache"
+          accessory={<DatabaseBackup size={18} color={colors.primary} />}
+          description="Lokalna baza trzyma notatki offline i odtwarza je natychmiast po starcie aplikacji."
+        >
           <View style={styles.statsList}>
             <View style={styles.statRow}>
-              <Text style={[styles.statLabel, { color: colors.muted }]}>Notatek w SQLite</Text>
-              <Text style={[styles.statValue, { color: colors.foreground }]}>{cacheInfo.count}</Text>
+              <Text style={[uiType.meta, { color: colors.muted }]}>Notatek w SQLite</Text>
+              <Text style={[uiType.meta, styles.statValue, { color: colors.foreground }]}>{cacheInfo.count}</Text>
             </View>
             <View style={styles.statRow}>
-              <Text style={[styles.statLabel, { color: colors.muted }]}>Ostatnia synchronizacja</Text>
-              <Text style={[styles.statValue, { color: colors.foreground }]}>
+              <Text style={[uiType.meta, { color: colors.muted }]}>Ostatnia synchronizacja</Text>
+              <Text style={[uiType.meta, styles.statValue, { color: colors.foreground }]}>
                 {cacheInfo.lastSyncedAt ? formatRelativeDate(cacheInfo.lastSyncedAt) : "brak"}
               </Text>
             </View>
@@ -149,7 +143,7 @@ export default function SettingsScreen() {
               style={[styles.actionButton, { backgroundColor: colors.primarySoft, borderColor: colors.border }]}
             >
               <RefreshCw size={14} color={colors.primary} />
-              <Text style={[styles.actionLabel, { color: colors.primary }]}>{refreshing ? "Sync..." : "Synchronizuj"}</Text>
+              <Text style={[uiType.meta, styles.actionLabel, { color: colors.primary }]}>{refreshing ? "Sync..." : "Synchronizuj"}</Text>
             </Pressable>
 
             <Pressable
@@ -169,10 +163,10 @@ export default function SettingsScreen() {
               style={[styles.actionButton, { backgroundColor: "rgba(219,78,109,0.1)", borderColor: "rgba(219,78,109,0.22)" }]}
             >
               <Trash2 size={14} color={colors.destructive} />
-              <Text style={[styles.actionLabel, { color: colors.destructive }]}>Wyczyść cache</Text>
+              <Text style={[uiType.meta, styles.actionLabel, { color: colors.destructive }]}>Wyczyść cache</Text>
             </Pressable>
           </View>
-        </SurfaceCard>
+        </SectionBlock>
       </ScrollView>
     </ScreenContainer>
   );
@@ -180,87 +174,22 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   content: {
-    paddingTop: 6,
-    gap: 14
-  },
-  handle: {
-    alignSelf: "center",
-    width: 38,
-    height: 4,
-    borderRadius: 999,
-    marginTop: 2
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 12
-  },
-  headerCopy: {
-    flex: 1
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "800",
-    letterSpacing: -0.7
-  },
-  subtitle: {
-    marginTop: 4,
-    fontSize: 13,
-    lineHeight: 18,
-    fontWeight: "600"
-  },
-  closeButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 999,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  section: {},
-  sectionInner: {
-    padding: 14
-  },
-  sectionEyebrow: {
-    fontSize: 10,
-    fontWeight: "800",
-    textTransform: "uppercase",
-    letterSpacing: 0.7
-  },
-  sectionTitle: {
-    marginTop: 6,
-    fontSize: 21,
-    fontWeight: "800",
-    letterSpacing: -0.5
-  },
-  sectionDescription: {
-    marginTop: 6,
-    fontSize: 13,
-    lineHeight: 18
-  },
-  sectionCaption: {
-    marginTop: 6,
-    fontSize: 12,
-    lineHeight: 17
+    paddingTop: uiSpacing.xs,
+    gap: uiSpacing.xl
   },
   grid: {
-    gap: 12,
-    marginTop: 14
+    gap: uiSpacing.md
   },
-  themeCard: {},
-  themeCardInner: {
-    padding: 12,
-    gap: 12,
-    flexDirection: "row",
-    alignItems: "center"
+  themeCard: {
+    minHeight: 116
   },
   themePreview: {
-    width: 112,
-    height: 82,
-    borderRadius: 20,
+    width: 108,
+    height: 80,
+    borderRadius: uiRadius.inner,
     overflow: "hidden",
     justifyContent: "space-between",
-    padding: 10
+    padding: uiSpacing.sm
   },
   previewFloatingCard: {
     width: "72%",
@@ -276,93 +205,67 @@ const styles = StyleSheet.create({
   previewMiniPill: {
     width: 64,
     height: 16,
-    borderRadius: 999,
+    borderRadius: uiRadius.pill,
     borderWidth: 1
   },
   previewAccent: {
     width: 34,
     height: 6,
-    borderRadius: 999
+    borderRadius: uiRadius.pill
   },
   themeBody: {
     flex: 1,
-    gap: 6
+    gap: uiSpacing.xs
   },
   themeHeading: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "space-between",
-    gap: 12
-  },
-  themeCopy: {
-    gap: 2
+    gap: uiSpacing.sm
   },
   themeName: {
-    fontSize: 15,
-    fontWeight: "700"
-  },
-  themeDescriptionText: {
-    marginTop: 4,
-    fontSize: 12,
-    lineHeight: 17
+    flex: 1
   },
   activeBadge: {
     borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 9,
-    paddingVertical: 5
+    borderRadius: uiRadius.pill,
+    paddingHorizontal: uiSpacing.sm,
+    paddingVertical: uiSpacing.xs
   },
   activeBadgeText: {
-    fontSize: 10,
     fontWeight: "800"
   },
-  sectionHeading: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8
-  },
-  sectionTitleSmall: {
-    fontSize: 16,
-    fontWeight: "700",
-    letterSpacing: -0.3
-  },
   statsList: {
-    marginTop: 12,
-    gap: 8
+    gap: uiSpacing.sm
   },
   statRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: 12
-  },
-  statLabel: {
-    fontSize: 13,
-    lineHeight: 18
+    gap: uiSpacing.sm
   },
   statValue: {
-    fontSize: 13,
-    lineHeight: 18,
     fontWeight: "700"
   },
   buttonRow: {
     flexDirection: "row",
-    gap: 10,
-    marginTop: 14
+    gap: uiSpacing.sm,
+    flexWrap: "wrap"
   },
   actionButton: {
     flex: 1,
+    minWidth: 160,
+    minHeight: uiControl.minTouch,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
-    borderRadius: 999,
+    gap: uiSpacing.xs,
+    borderRadius: uiRadius.pill,
     borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 11
+    paddingHorizontal: uiSpacing.md,
+    paddingVertical: uiSpacing.sm
   },
   actionLabel: {
-    fontSize: 11,
-    fontWeight: "800"
+    fontWeight: "700"
   }
 });

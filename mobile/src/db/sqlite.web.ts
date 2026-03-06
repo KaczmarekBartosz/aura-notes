@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Note } from "../types/note";
+import { normalizeNotePayload } from "../utils/note-data";
 
 const NOTES_KEY = "aura-notes.web.notes";
 const FAVORITES_KEY = "aura-notes.web.favorites";
@@ -11,7 +12,12 @@ async function readNotesMap(): Promise<Record<string, Note>> {
   const raw = await AsyncStorage.getItem(NOTES_KEY);
   if (!raw) return {};
   try {
-    return JSON.parse(raw) as Record<string, Note>;
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    return Object.fromEntries(
+      Object.entries(parsed)
+        .map(([key, value]) => [key, normalizeNotePayload(value)])
+        .filter((entry): entry is [string, Note] => Boolean(entry[1]))
+    );
   } catch {
     return {};
   }

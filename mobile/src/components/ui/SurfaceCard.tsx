@@ -1,18 +1,21 @@
 import { BlurView } from "expo-blur";
 import { GlassView, isGlassEffectAPIAvailable } from "expo-glass-effect";
 import { LinearGradient } from "expo-linear-gradient";
-import { Pressable, Platform, StyleSheet, View, type PressableProps, type ViewStyle } from "react-native";
+import { Pressable, Platform, StyleSheet, View, type PressableProps, type StyleProp, type ViewStyle } from "react-native";
 import type { PropsWithChildren } from "react";
 import { useAppTheme } from "../../theme/ThemeProvider";
+import { uiCard, type SurfacePreset } from "../../theme/ui";
 
 type SurfaceCardProps = PropsWithChildren<{
   onPress?: PressableProps["onPress"];
-  style?: ViewStyle;
-  contentStyle?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
+  contentStyle?: StyleProp<ViewStyle>;
   intensity?: number;
   accessibilityRole?: PressableProps["accessibilityRole"];
   accessibilityLabel?: PressableProps["accessibilityLabel"];
   accessibilityHint?: PressableProps["accessibilityHint"];
+  preset?: SurfacePreset;
+  contentPreset?: SurfacePreset | "none";
 }>;
 
 export function SurfaceCard({
@@ -23,11 +26,16 @@ export function SurfaceCard({
   intensity,
   accessibilityRole,
   accessibilityLabel,
-  accessibilityHint
+  accessibilityHint,
+  preset = "section",
+  contentPreset
 }: SurfaceCardProps) {
   const { colors, visuals, isGlass, resolvedTheme } = useAppTheme();
   const blurIntensity = intensity ?? visuals.heavyBlurIntensity;
   const useNativeGlass = isGlass && Platform.OS === "ios" && isGlassEffectAPIAvailable();
+  const shellPreset = uiCard[preset];
+  const resolvedContentPreset = contentPreset ?? preset;
+  const bodyPadding = resolvedContentPreset === "none" ? null : uiCard[resolvedContentPreset];
 
   const body = (
     <View
@@ -37,10 +45,10 @@ export function SurfaceCard({
           backgroundColor: isGlass ? colors.surface : colors.surfaceElevated,
           borderColor: isGlass ? colors.borderStrong : colors.border,
           borderWidth: visuals.surfaceBorderWidth,
-          borderRadius: visuals.surfaceRadius,
+          borderRadius: shellPreset.radius,
           shadowColor: colors.shadow,
-          shadowOpacity: visuals.shadowOpacity,
-          shadowRadius: visuals.shadowRadius,
+          shadowOpacity: visuals.shadowOpacity * (preset === "list" ? 0.82 : 0.92),
+          shadowRadius: visuals.shadowRadius * (preset === "list" ? 0.92 : 1),
           shadowOffset: {
             width: 0,
             height: visuals.shadowOffsetY
@@ -83,22 +91,36 @@ export function SurfaceCard({
             />
           ) : null}
           <LinearGradient
-            colors={["rgba(255,255,255,0.18)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
+            colors={["rgba(255,255,255,0.14)", "rgba(255,255,255,0.03)", "rgba(255,255,255,0)"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0.88, y: 1 }}
             style={styles.topGlow}
           />
           <View style={[StyleSheet.absoluteFillObject, styles.overlaySoftener, { backgroundColor: colors.surfaceOverlay }]} />
           <LinearGradient
-            colors={["rgba(255,255,255,0.56)", "rgba(255,255,255,0.12)", "rgba(255,255,255,0)"]}
+            colors={["rgba(255,255,255,0.44)", "rgba(255,255,255,0.1)", "rgba(255,255,255,0)"]}
             start={{ x: 0.08, y: 0 }}
             end={{ x: 0.92, y: 0.88 }}
             style={styles.specularSweep}
           />
-          <View style={[styles.edgeSpecular, { borderColor: colors.borderStrong, borderRadius: visuals.surfaceRadius }]} />
+          <View style={[styles.edgeSpecular, { borderColor: colors.borderStrong, borderRadius: shellPreset.radius }]} />
         </>
       ) : null}
-      <View style={[styles.content, contentStyle]}>{children}</View>
+      <View
+        style={[
+          styles.content,
+          bodyPadding
+            ? {
+                paddingHorizontal: bodyPadding.paddingHorizontal,
+                paddingVertical: bodyPadding.paddingVertical,
+                gap: bodyPadding.gap
+              }
+            : null,
+          contentStyle
+        ]}
+      >
+        {children}
+      </View>
     </View>
   );
 
@@ -114,7 +136,7 @@ export function SurfaceCard({
       accessibilityHint={accessibilityHint}
       style={({ pressed }) => [
         styles.pressable,
-        { borderRadius: visuals.surfaceRadius },
+        { borderRadius: shellPreset.radius },
         pressed && { transform: [{ scale: visuals.pressScale }] }
       ]}
     >
@@ -127,7 +149,7 @@ const styles = StyleSheet.create({
   pressable: {},
   shell: {
     overflow: "hidden",
-    elevation: 10
+    elevation: 8
   },
   prismSweep: {
     position: "absolute",
@@ -135,30 +157,30 @@ const styles = StyleSheet.create({
     bottom: "-10%",
     left: "-6%",
     right: "-6%",
-    opacity: 0.48,
+    opacity: 0.4,
     transform: [{ rotate: "-12deg" }]
   },
   surfaceGradient: {
-    opacity: 0.56
+    opacity: 0.5
   },
   highlightLayer: {
-    opacity: 0.72
+    opacity: 0.62
   },
   topGlow: {
     ...StyleSheet.absoluteFillObject,
-    opacity: 0.58
+    opacity: 0.52
   },
   overlaySoftener: {
-    opacity: 0.28
+    opacity: 0.24
   },
   specularSweep: {
     ...StyleSheet.absoluteFillObject,
-    opacity: 0.42
+    opacity: 0.32
   },
   edgeSpecular: {
     ...StyleSheet.absoluteFillObject,
     borderWidth: 1,
-    opacity: 0.62
+    opacity: 0.48
   },
   content: {
     position: "relative",

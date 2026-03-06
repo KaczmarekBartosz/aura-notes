@@ -6,9 +6,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { NoteCard } from "../src/components/notes/NoteCard";
 import { ScreenContainer } from "../src/components/ui/ScreenContainer";
+import { ScreenHeader } from "../src/components/ui/ScreenHeader";
+import { SectionBlock } from "../src/components/ui/SectionBlock";
 import { SurfaceCard } from "../src/components/ui/SurfaceCard";
 import { useNotes } from "../src/state/NotesProvider";
 import { useAppTheme } from "../src/theme/ThemeProvider";
+import { uiControl, uiSpacing, uiType } from "../src/theme/ui";
 import { filterAndSortNotes } from "../src/utils/noteFilters";
 import { triggerHaptic } from "../src/utils/haptics";
 
@@ -37,60 +40,54 @@ export default function SearchScreen() {
         data={results}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.listContent, { paddingBottom: Math.max(44, insets.bottom + 24) }]}
+        contentContainerStyle={[
+          styles.listContent,
+          { paddingBottom: Math.max(uiControl.minTouch, insets.bottom + uiSpacing.xl) }
+        ]}
         ListHeaderComponent={
-          <Animated.View entering={reduceMotionEnabled ? undefined : FadeInDown.duration(320)}>
-            <View style={[styles.handle, { backgroundColor: colors.borderStrong }]} />
-            <View style={styles.header}>
-              <View style={styles.headerCopy}>
-                <Text style={[styles.title, { color: colors.foreground }]}>Szukaj w vault</Text>
-                <Text style={[styles.subtitle, { color: colors.muted }]}>Tytuły, treść, tagi i kategorie. Wyniki pojawiają się natychmiast.</Text>
+          <Animated.View entering={reduceMotionEnabled ? undefined : FadeInDown.duration(320)} style={styles.headerStack}>
+            <ScreenHeader
+              title="Szukaj w vault"
+              subtitle="Tytuły, treść, tagi i kategorie. Wyniki pojawiają się natychmiast i otwierają się bezpośrednio w readerze."
+              closeLabel="Zamknij wyszukiwarkę"
+              onClose={() => {
+                void triggerHaptic("light");
+                router.back();
+              }}
+            />
+
+            <SurfaceCard preset="section" contentPreset="section" intensity={56}>
+              <View style={styles.searchRow}>
+                <Search size={18} color={colors.muted} />
+                <TextInput
+                  autoFocus={Platform.OS !== "web"}
+                  value={query}
+                  onChangeText={setQuery}
+                  placeholder="Szukaj w całym vault..."
+                  placeholderTextColor={colors.searchPlaceholder}
+                  style={[uiType.bodyStrong, styles.searchInput, { color: colors.foreground }]}
+                  accessibilityLabel="Szukaj w całym vault"
+                  returnKeyType="search"
+                />
+                {query.trim() ? (
+                  <Pressable
+                    onPress={() => setQuery("")}
+                    hitSlop={10}
+                    accessibilityRole="button"
+                    accessibilityLabel="Wyczyść frazę wyszukiwania"
+                    style={[styles.clearButton, { backgroundColor: colors.primarySoft, borderColor: colors.border }]}
+                  >
+                    <X size={14} color={colors.primary} />
+                  </Pressable>
+                ) : null}
               </View>
-              <Pressable
-                onPress={() => {
-                  void triggerHaptic("light");
-                  router.back();
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Zamknij wyszukiwarkę"
-                style={[styles.closeButton, { backgroundColor: colors.surfaceElevated, borderColor: colors.borderStrong }]}
-              >
-                <X size={18} color={colors.foreground} />
-              </Pressable>
-            </View>
-
-            <SurfaceCard style={styles.searchCard} contentStyle={styles.searchInner} intensity={56}>
-              <Search size={18} color={colors.muted} />
-              <TextInput
-                autoFocus={Platform.OS !== "web"}
-                value={query}
-                onChangeText={setQuery}
-                placeholder="Szukaj w całym vault..."
-                placeholderTextColor={colors.searchPlaceholder}
-                style={[styles.searchInput, { color: colors.foreground }]}
-                accessibilityLabel="Szukaj w całym vault"
-                returnKeyType="search"
-              />
-              {query.trim() ? (
-                <Pressable
-                  onPress={() => setQuery("")}
-                  hitSlop={10}
-                  accessibilityRole="button"
-                  accessibilityLabel="Wyczyść frazę wyszukiwania"
-                  style={[styles.clearButton, { backgroundColor: colors.primarySoft, borderColor: colors.border }]}
-                >
-                  <X size={14} color={colors.primary} />
-                </Pressable>
-              ) : null}
             </SurfaceCard>
 
-            <SurfaceCard style={styles.summaryCard} contentStyle={styles.summaryContent}>
-              <Text style={[styles.summaryEyebrow, { color: colors.primary }]}>Wyszukiwanie</Text>
-              <Text style={[styles.summaryTitle, { color: colors.foreground }]}>
-                {query.trim() ? `${results.length} dopasowań` : "Wpisz frazę, żeby przeszukać cały vault"}
-              </Text>
-              <Text style={[styles.summaryText, { color: colors.muted }]}>Notatki otwierają się bezpośrednio w readerze i zachowują ulubione.</Text>
-            </SurfaceCard>
+            <SectionBlock
+              eyebrow="Wyszukiwanie"
+              title={query.trim() ? `${results.length} dopasowań` : "Wpisz frazę, żeby przeszukać cały vault"}
+              description="Wyniki są ułożone od najnowszych aktualizacji, dzięki czemu najświeższe notatki trafiają od razu na górę."
+            />
           </Animated.View>
         }
         renderItem={({ item, index }) => (
@@ -109,16 +106,18 @@ export default function SearchScreen() {
             />
           </Animated.View>
         )}
-        ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+        ItemSeparatorComponent={() => <View style={{ height: uiSpacing.md }} />}
         ListEmptyComponent={
-          <SurfaceCard style={styles.emptyCard} contentStyle={styles.emptyContent}>
-            <Text style={[styles.emptyTitle, { color: colors.foreground }]}>{query.trim() ? "Brak wyników" : "Zacznij od frazy"}</Text>
-            <Text style={[styles.emptyText, { color: colors.muted }]}>
-              {query.trim()
+          <SectionBlock
+            preset="compact"
+            title={query.trim() ? "Brak wyników" : "Zacznij od frazy"}
+            description={
+              query.trim()
                 ? "Spróbuj innego słowa, tagu albo kategorii. Search działa na treści całego vaultu."
-                : "Reader i lista zostają czyste, dlatego search siedzi w osobnym sheetcie."}
-            </Text>
-          </SurfaceCard>
+                : "Reader i lista zostają czyste, dlatego search siedzi w osobnym sheetcie."
+            }
+            contentStyle={styles.emptyContent}
+          />
         }
       />
     </ScreenContainer>
@@ -127,107 +126,30 @@ export default function SearchScreen() {
 
 const styles = StyleSheet.create({
   listContent: {
-    paddingTop: 6
+    paddingTop: uiSpacing.xs,
+    paddingHorizontal: uiSpacing.lg
   },
-  handle: {
-    alignSelf: "center",
-    width: 38,
-    height: 4,
-    borderRadius: 999,
-    marginTop: 2,
-    marginBottom: 16
+  headerStack: {
+    gap: uiSpacing.md,
+    marginBottom: uiSpacing.xl
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 12
-  },
-  headerCopy: {
-    flex: 1
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "800",
-    letterSpacing: -0.7
-  },
-  subtitle: {
-    marginTop: 4,
-    fontSize: 13,
-    lineHeight: 18,
-    fontWeight: "600"
-  },
-  closeButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 999,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  searchCard: {
-    marginTop: 16
-  },
-  searchInner: {
+  searchRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-    paddingHorizontal: 15,
-    paddingVertical: 13
+    gap: uiSpacing.sm
   },
   searchInput: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: "600"
+    flex: 1
   },
   clearButton: {
-    width: 30,
-    height: 30,
-    borderRadius: 999,
+    width: uiControl.minTouch,
+    height: uiControl.minTouch,
+    borderRadius: uiControl.minTouch,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center"
   },
-  summaryCard: {
-    marginTop: 12,
-    marginBottom: 16
-  },
-  summaryContent: {
-    padding: 14,
-    gap: 5
-  },
-  summaryEyebrow: {
-    fontSize: 10,
-    fontWeight: "800",
-    textTransform: "uppercase",
-    letterSpacing: 0.7
-  },
-  summaryTitle: {
-    fontSize: 17,
-    lineHeight: 21,
-    fontWeight: "800",
-    letterSpacing: -0.4
-  },
-  summaryText: {
-    fontSize: 12,
-    lineHeight: 17
-  },
-  emptyCard: {
-    marginTop: 10
-  },
   emptyContent: {
-    alignItems: "center",
-    paddingHorizontal: 24,
-    paddingVertical: 28,
-    gap: 8
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    textAlign: "center"
-  },
-  emptyText: {
-    fontSize: 14,
-    lineHeight: 20,
-    textAlign: "center"
+    alignItems: "center"
   }
 });

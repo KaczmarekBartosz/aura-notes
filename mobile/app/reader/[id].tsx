@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import Markdown from "react-native-markdown-display";
 import { ArrowLeft, Clock3, Folder, Hash, Minus, Plus, Star } from "lucide-react-native";
@@ -27,12 +27,29 @@ import {
   saveReaderScroll
 } from "../../src/state/readerState";
 import { useAppTheme } from "../../src/theme/ThemeProvider";
+import { uiControl, uiRadius, uiSpacing, uiType } from "../../src/theme/ui";
 import { formatRelativeDate } from "../../src/utils/date";
 import { triggerHaptic } from "../../src/utils/haptics";
 
 function clamp(value: number, min: number, max: number) {
   "worklet";
   return Math.min(Math.max(value, min), max);
+}
+
+function stripFrontmatter(content: string) {
+  return content.replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/, "");
+}
+
+function fallbackExcerptFromContent(content: string) {
+  return stripFrontmatter(content)
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`]*`/g, " ")
+    .replace(/!\[[^\]]*\]\([^\)]*\)/g, " ")
+    .replace(/\[[^\]]*\]\([^\)]*\)/g, " ")
+    .replace(/[#>*_\-]{1,}/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 220);
 }
 
 const MIN_FONT_SCALE = 0.9;
@@ -56,6 +73,12 @@ export default function ReaderScreen() {
   const progressPercentRef = useRef(0);
 
   const note = useMemo(() => notes.find((item) => item.id === id) ?? null, [id, notes]);
+  const displayContent = useMemo(() => stripFrontmatter(note?.content ?? ""), [note?.content]);
+  const displayExcerpt = useMemo(() => {
+    if (!note) return "";
+    const raw = note.excerpt.trim();
+    return /^(title|category|tags|created|updated)\s*:/i.test(raw) ? fallbackExcerptFromContent(note.content) : raw;
+  }, [note]);
 
   const scrollY = useSharedValue(0);
   const progressValue = useSharedValue(0);
@@ -114,7 +137,7 @@ export default function ReaderScreen() {
 
   const heroStyle = useAnimatedStyle(() => {
     const translateY = interpolate(scrollY.value, [0, 160], [0, -12], Extrapolation.CLAMP);
-    const opacity = interpolate(scrollY.value, [0, 180], [1, 0.95], Extrapolation.CLAMP);
+    const opacity = interpolate(scrollY.value, [0, 180], [1, 0.96], Extrapolation.CLAMP);
     return {
       opacity,
       transform: [{ translateY }]
@@ -270,12 +293,12 @@ export default function ReaderScreen() {
     return (
       <ScreenContainer edges={["top", "left", "right", "bottom"]}>
         <View style={styles.missingWrap}>
-          <Text style={[styles.missingTitle, { color: colors.foreground }]}>Nie znaleziono notatki</Text>
+          <Text style={[uiType.title3, { color: colors.foreground }]}>Nie znaleziono notatki</Text>
           <Pressable
             onPress={() => router.back()}
             style={[styles.backFallback, { backgroundColor: colors.primarySoft, borderColor: colors.border }]}
           >
-            <Text style={[styles.backFallbackLabel, { color: colors.primary }]}>Wróć</Text>
+            <Text style={[uiType.meta, styles.backFallbackLabel, { color: colors.primary }]}>Wróć</Text>
           </Pressable>
         </View>
       </ScreenContainer>
@@ -291,9 +314,9 @@ export default function ReaderScreen() {
           contentContainerStyle={[
             styles.readerContent,
             {
-              paddingTop: insets.top + 84,
-              paddingBottom: Math.max(88, insets.bottom + 48),
-              paddingHorizontal: 16
+              paddingTop: insets.top + 88,
+              paddingBottom: Math.max(88, insets.bottom + 52),
+              paddingHorizontal: uiSpacing.lg
             }
           ]}
           onContentSizeChange={() => {
@@ -324,45 +347,42 @@ export default function ReaderScreen() {
           showsVerticalScrollIndicator={false}
         >
           <Animated.View style={heroStyle}>
-            <SurfaceCard style={styles.heroCard} contentStyle={styles.heroContent} intensity={resolvedTheme === "dark" ? 58 : 52}>
-              <Text style={[styles.heroEyebrow, { color: colors.primary }]}>{getCategoryLabel(note.category)}</Text>
-              <Text style={[styles.heroTitle, { color: colors.foreground }]}>{note.title}</Text>
-              <Text numberOfLines={3} style={[styles.heroSummary, { color: colors.muted }]}>
-                {note.excerpt}
+            <SurfaceCard preset="hero" contentPreset="hero" style={styles.heroCard} intensity={resolvedTheme === "dark" ? 58 : 52}>
+              <Text style={[uiType.eyebrow, { color: colors.primary }]}>{getCategoryLabel(note.category)}</Text>
+              <Text style={[uiType.title1, styles.heroTitle, { color: colors.foreground }]}>{note.title}</Text>
+              <Text numberOfLines={3} style={[uiType.body, styles.heroSummary, { color: colors.muted }]}>
+                {displayExcerpt}
               </Text>
 
               <View style={styles.metaLine}>
                 <View style={styles.metaInline}>
-                  <Clock3 size={13} color={colors.primary} />
-                  <Text style={[styles.metaInlineText, { color: colors.foreground }]}>{note.readingMinutes} min</Text>
+                  <Clock3 size={14} color={colors.primary} />
+                  <Text style={[uiType.meta, { color: colors.foreground }]}>{note.readingMinutes} min</Text>
                 </View>
                 <View style={[styles.metaDivider, { backgroundColor: colors.border }]} />
                 <View style={styles.metaInline}>
-                  <Hash size={13} color={colors.primary} />
-                  <Text style={[styles.metaInlineText, { color: colors.foreground }]}>{note.words} słów</Text>
+                  <Hash size={14} color={colors.primary} />
+                  <Text style={[uiType.meta, { color: colors.foreground }]}>{note.words} słów</Text>
                 </View>
                 <View style={[styles.metaDivider, { backgroundColor: colors.border }]} />
                 <View style={styles.metaInline}>
-                  <Folder size={13} color={colors.primary} />
-                  <Text style={[styles.metaInlineText, { color: colors.foreground }]} numberOfLines={1}>
+                  <Folder size={14} color={colors.primary} />
+                  <Text style={[uiType.meta, { color: colors.foreground }]} numberOfLines={1}>
                     {note.folder}
                   </Text>
                 </View>
               </View>
 
               <View style={styles.heroFooter}>
-                <Text style={[styles.heroFooterText, { color: colors.subtle }]}>Aktualizacja {formatRelativeDate(note.updatedAt)}</Text>
-                <Text style={[styles.heroFooterText, { color: colors.subtle }]}>{progressPercent}% przeczytane</Text>
+                <Text style={[uiType.caption, { color: colors.subtle }]}>Aktualizacja {formatRelativeDate(note.updatedAt)}</Text>
+                <Text style={[uiType.caption, { color: colors.subtle }]}>{progressPercent}% przeczytane</Text>
               </View>
 
               {!!note.tags.length ? (
                 <View style={styles.tagsRow}>
                   {note.tags.map((tag) => (
-                    <View
-                      key={tag}
-                      style={[styles.tag, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}
-                    >
-                      <Text style={[styles.tagText, { color: colors.foreground }]}>#{tag}</Text>
+                    <View key={tag} style={[styles.tag, { backgroundColor: colors.tagBackground }]}> 
+                      <Text style={[uiType.meta, styles.tagText, { color: colors.foreground }]}>#{tag}</Text>
                     </View>
                   ))}
                 </View>
@@ -370,11 +390,8 @@ export default function ReaderScreen() {
             </SurfaceCard>
           </Animated.View>
 
-          <Animated.View
-            entering={reduceMotionEnabled ? undefined : FadeInDown.delay(120).duration(360)}
-            style={styles.contentCardWrap}
-          >
-            <SurfaceCard contentStyle={styles.markdownCardContent} intensity={resolvedTheme === "dark" ? 60 : 54}>
+          <Animated.View entering={reduceMotionEnabled ? undefined : FadeInDown.delay(120).duration(360)} style={styles.contentCardWrap}>
+            <SurfaceCard preset="section" intensity={resolvedTheme === "dark" ? 60 : 54} contentStyle={styles.markdownCardContent}>
               <Animated.View style={pinchPreviewStyle}>
                 <Markdown
                   rules={markdownRules}
@@ -385,7 +402,7 @@ export default function ReaderScreen() {
                     return false;
                   }}
                 >
-                  {note.content}
+                  {displayContent}
                 </Markdown>
               </Animated.View>
             </SurfaceCard>
@@ -393,17 +410,17 @@ export default function ReaderScreen() {
         </Animated.ScrollView>
       </GestureDetector>
 
-      <View style={[styles.progressTrack, { backgroundColor: colors.progressTrack, top: insets.top + 74 }]}>
+      <View style={[styles.progressTrack, { backgroundColor: colors.progressTrack, top: insets.top + 76 }]}>
         <Animated.View style={[styles.progressFill, { backgroundColor: colors.primary }, progressFillStyle]} />
       </View>
 
       <Animated.View
         pointerEvents="box-none"
-        style={[styles.floatingHeaderWrap, { top: Math.max(8, insets.top + 4), left: 16, right: 16 }, compactHeaderStyle]}
+        style={[styles.floatingHeaderWrap, { top: Math.max(uiSpacing.xs, insets.top + uiSpacing.xxs), left: uiSpacing.lg, right: uiSpacing.lg }, compactHeaderStyle]}
       >
-        <SurfaceCard contentStyle={styles.floatingHeaderContent} intensity={resolvedTheme === "dark" ? 64 : 58}>
+        <SurfaceCard preset="toolbar" contentPreset="toolbar" intensity={resolvedTheme === "dark" ? 64 : 58}>
           <HeaderControlButton
-            icon={<ArrowLeft size={17} color={colors.foreground} />}
+            icon={<ArrowLeft size={18} color={colors.foreground} />}
             label="Wróć do listy notatek"
             onPress={() => {
               void triggerHaptic("light");
@@ -412,10 +429,10 @@ export default function ReaderScreen() {
           />
 
           <View style={styles.floatingTitleWrap}>
-            <Text numberOfLines={1} style={[styles.floatingTitle, { color: colors.foreground }]}>
+            <Text numberOfLines={1} style={[uiType.meta, styles.floatingTitle, { color: colors.foreground }]}>
               {note.title}
             </Text>
-            <Text style={[styles.floatingMeta, { color: colors.muted }]}>
+            <Text style={[uiType.caption, { color: colors.muted }]}>
               {progressPercent}% • {fontScale.toFixed(2)}x
             </Text>
           </View>
@@ -447,8 +464,8 @@ export default function ReaderScreen() {
 
       {!isReady ? (
         <View pointerEvents="none" style={styles.loadingOverlay}>
-          <SurfaceCard contentStyle={styles.loadingCard} intensity={resolvedTheme === "dark" ? 64 : 58}>
-            <Text style={[styles.loadingLabel, { color: colors.foreground }]}>Przywracam pozycję czytania...</Text>
+          <SurfaceCard preset="compact" contentPreset="compact" intensity={resolvedTheme === "dark" ? 64 : 58}>
+            <Text style={[uiType.meta, styles.loadingLabel, { color: colors.foreground }]}>Przywracam pozycję czytania...</Text>
           </SurfaceCard>
         </View>
       ) : null}
@@ -462,7 +479,7 @@ function HeaderControlButton({
   onPress,
   disabled = false
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   onPress: () => void;
   disabled?: boolean;
@@ -490,140 +507,100 @@ function HeaderControlButton({
 
 const styles = StyleSheet.create({
   readerContent: {
-    gap: 14
+    gap: uiSpacing.xl
   },
   heroCard: {
-    marginTop: 2
-  },
-  heroContent: {
-    padding: 16,
-    gap: 10
-  },
-  heroEyebrow: {
-    fontSize: 10,
-    fontWeight: "800",
-    textTransform: "uppercase",
-    letterSpacing: 0.7
+    marginTop: uiSpacing.xxs
   },
   heroTitle: {
-    fontSize: 28,
-    lineHeight: 32,
-    fontWeight: "800",
-    letterSpacing: -0.8
+    fontSize: 30,
+    lineHeight: 36
   },
-  heroSummary: {
-    fontSize: 13,
-    lineHeight: 18,
-    fontWeight: "600"
-  },
+  heroSummary: {},
   metaLine: {
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
-    gap: 8
+    gap: uiSpacing.xs
   },
   metaInline: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: uiSpacing.xs,
     maxWidth: "100%"
   },
   metaDivider: {
     width: 4,
     height: 4,
-    borderRadius: 999
-  },
-  metaInlineText: {
-    fontSize: 12,
-    fontWeight: "700",
-    maxWidth: 180
+    borderRadius: uiRadius.pill
   },
   heroFooter: {
     flexDirection: "row",
     alignItems: "center",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    gap: 12
-  },
-  heroFooterText: {
-    fontSize: 11,
-    fontWeight: "600"
+    gap: uiSpacing.sm
   },
   tagsRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 7
+    gap: uiSpacing.xs
   },
   tag: {
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 9,
-    paddingVertical: 5
+    borderRadius: uiRadius.pill,
+    paddingHorizontal: uiSpacing.sm,
+    paddingVertical: uiSpacing.xs,
+    opacity: 0.92
   },
   tagText: {
-    fontSize: 11,
-    fontWeight: "700"
+    fontWeight: "600"
   },
   contentCardWrap: {
-    marginBottom: 6
+    marginBottom: uiSpacing.xs
   },
   markdownCardContent: {
-    paddingHorizontal: 16,
-    paddingVertical: 18
+    paddingHorizontal: uiSpacing.lg,
+    paddingVertical: uiSpacing.xl
   },
   codeBlockWrap: {
-    marginBottom: 14,
-    borderRadius: 14,
+    marginBottom: uiSpacing.md,
+    borderRadius: uiRadius.inner,
     overflow: "hidden"
   },
   progressTrack: {
     position: "absolute",
-    left: 16,
-    right: 16,
-    height: 3,
-    borderRadius: 999,
+    left: uiSpacing.lg,
+    right: uiSpacing.lg,
+    height: uiControl.progressHeight,
+    borderRadius: uiRadius.pill,
     overflow: "hidden",
     zIndex: 45
   },
   progressFill: {
-    height: 3,
-    borderRadius: 999
+    height: uiControl.progressHeight,
+    borderRadius: uiRadius.pill
   },
   floatingHeaderWrap: {
     position: "absolute",
     zIndex: 50
   },
-  floatingHeaderContent: {
-    minHeight: 64,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 9
-  },
   floatingTitleWrap: {
     flex: 1,
-    minWidth: 0
+    minWidth: 0,
+    gap: 2
   },
   floatingTitle: {
-    fontSize: 14,
-    fontWeight: "800",
-    letterSpacing: -0.3
-  },
-  floatingMeta: {
-    marginTop: 2,
-    fontSize: 11,
-    fontWeight: "600"
+    fontWeight: "700"
   },
   controlRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8
+    gap: uiSpacing.xs
   },
   controlButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 999,
+    width: uiControl.minTouch,
+    height: uiControl.minTouch,
+    borderRadius: uiRadius.pill,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center"
@@ -632,35 +609,27 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 24
-  },
-  loadingCard: {
-    paddingHorizontal: 18,
-    paddingVertical: 14
+    paddingHorizontal: uiSpacing.xl
   },
   loadingLabel: {
-    fontSize: 13,
     fontWeight: "700"
   },
   missingWrap: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 24,
-    gap: 12
-  },
-  missingTitle: {
-    fontSize: 20,
-    fontWeight: "700"
+    paddingHorizontal: uiSpacing.xl,
+    gap: uiSpacing.sm
   },
   backFallback: {
     borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 10
+    borderRadius: uiRadius.pill,
+    minHeight: uiControl.minTouch,
+    paddingHorizontal: uiSpacing.md,
+    alignItems: "center",
+    justifyContent: "center"
   },
   backFallbackLabel: {
-    fontSize: 13,
-    fontWeight: "800"
+    fontWeight: "700"
   }
 });

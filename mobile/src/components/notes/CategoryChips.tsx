@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import type { Note } from "../../types/note";
 import { getCategoryIcon, getCategoryLabel } from "../../constants/categories";
 import { useAppTheme } from "../../theme/ThemeProvider";
+import { uiControl, uiRadius, uiSpacing, uiType } from "../../theme/ui";
 
 type CategoryChipsProps = {
   notes: Note[];
@@ -45,7 +46,7 @@ export function CategoryChips({ notes, activeCategory, onSelect }: CategoryChips
               count={count}
               active={activeCategory === category}
               onPress={() => onSelect(category)}
-              icon={<Icon size={13} color={activeCategory === category ? colors.primaryForeground : colors.primary} />}
+              icon={<Icon size={14} color={activeCategory === category ? colors.primaryForeground : colors.primary} />}
               colors={colors}
             />
           );
@@ -86,7 +87,9 @@ function CategoryChip({
       {active ? <LinearGradient colors={[...colors.activeGradient]} style={StyleSheet.absoluteFillObject} /> : null}
       <View style={styles.content}>
         {icon ? icon : null}
-        <Text style={[styles.label, { color: active ? colors.primaryForeground : colors.foreground }]}>{label}</Text>
+        <Text numberOfLines={1} style={[uiType.meta, styles.label, { color: active ? colors.primaryForeground : colors.foreground }]}>
+          {label}
+        </Text>
         <View
           style={[
             styles.countBubble,
@@ -95,7 +98,7 @@ function CategoryChip({
             }
           ]}
         >
-          <Text style={[styles.countText, { color: active ? colors.primaryForeground : colors.primary }]}>{count}</Text>
+          <Text style={[uiType.caption, styles.countText, { color: active ? colors.primaryForeground : colors.primary }]}>{count}</Text>
         </View>
       </View>
     </Pressable>
@@ -104,20 +107,19 @@ function CategoryChip({
 
 const styles = StyleSheet.create({
   scrollContent: {
-    paddingHorizontal: 16,
-    paddingRight: 24
+    paddingHorizontal: 0,
+    paddingRight: uiSpacing.xs
   },
   row: {
     flexDirection: "row",
-    gap: 8
+    gap: uiSpacing.xs
   },
   chip: {
     overflow: "hidden",
     borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    minHeight: 38,
+    borderRadius: uiRadius.pill,
+    paddingHorizontal: uiSpacing.md,
+    minHeight: uiControl.minTouch,
     justifyContent: "center"
   },
   content: {
@@ -125,22 +127,20 @@ const styles = StyleSheet.create({
     zIndex: 1,
     flexDirection: "row",
     alignItems: "center",
-    gap: 8
+    gap: uiSpacing.xs
   },
   label: {
-    fontSize: 12,
     fontWeight: "700"
   },
   countBubble: {
-    minWidth: 22,
-    height: 22,
-    borderRadius: 999,
+    minWidth: 24,
+    height: 24,
+    borderRadius: uiRadius.pill,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 6
   },
   countText: {
-    fontSize: 10,
     fontWeight: "800"
   }
 });

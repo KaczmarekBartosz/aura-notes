@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { ArrowUpRight, Star } from "lucide-react-native";
 import type { Note } from "../../types/note";
@@ -9,6 +8,7 @@ import { getCategoryIcon, getCategoryLabel } from "../../constants/categories";
 import { getQuerySnippet } from "../../utils/noteFilters";
 import { SurfaceCard } from "../ui/SurfaceCard";
 import { useAppTheme } from "../../theme/ThemeProvider";
+import { uiControl, uiRadius, uiSpacing, uiType } from "../../theme/ui";
 
 type NoteCardProps = {
   note: Note;
@@ -25,71 +25,25 @@ function NoteCardComponent({ note, query, onPress, onToggleFavorite }: NoteCardP
 
   return (
     <SurfaceCard
+      preset="list"
+      contentPreset="list"
       onPress={() => onPress(note.id)}
       accessibilityRole="button"
       accessibilityLabel={`Otwórz notatkę ${note.title}`}
       accessibilityHint="Przechodzi do czytnika markdown"
-      contentStyle={styles.content}
       style={{
         borderColor: isGlass ? colors.borderStrong : colors.border,
         shadowColor: colors.shadow
       }}
       intensity={isGlass ? 52 : undefined}
     >
-      <LinearGradient colors={[...colors.activeGradient]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={styles.accentRail} />
-
-      <View style={styles.topRow}>
-        <View
-          style={[
-            styles.categoryPill,
-            {
-              backgroundColor: colors.tagBackground,
-              borderColor: colors.border
-            }
-          ]}
-        >
-          <CategoryIcon size={12} color={colors.primary} />
-          <Text style={[styles.categoryText, { color: colors.foreground }]}>{getCategoryLabel(note.category)}</Text>
-        </View>
-
-        <View
-          style={[
-            styles.metaPill,
-            {
-              backgroundColor: colors.primarySoft,
-              borderColor: colors.border
-            }
-          ]}
-        >
-          <Text style={[styles.metaPillText, { color: colors.primary }]}>{formatRelativeDate(note.updatedAt)}</Text>
-        </View>
-      </View>
-
-      <View style={styles.mainRow}>
-        <View style={styles.copyCol}>
-          <HighlightedText
-            text={note.title}
-            query={query}
-            numberOfLines={2}
-            style={[styles.title, { color: colors.foreground }]}
-            highlightStyle={{
-              color: colors.primary,
-              backgroundColor: colors.primarySoft,
-              fontWeight: "800"
-            }}
-          />
-
-          <HighlightedText
-            text={preview}
-            query={query}
-            numberOfLines={4}
-            style={[styles.excerpt, { color: colors.muted }]}
-            highlightStyle={{
-              color: colors.primary,
-              backgroundColor: colors.primarySoft,
-              fontWeight: "700"
-            }}
-          />
+      <View style={styles.headerRow}>
+        <View style={styles.metaLeading}>
+          <View style={[styles.categoryBadge, { backgroundColor: colors.primarySoft }]}> 
+            <CategoryIcon size={13} color={colors.primary} />
+            <Text style={[uiType.meta, styles.categoryText, { color: colors.foreground }]}>{getCategoryLabel(note.category)}</Text>
+          </View>
+          <Text style={[uiType.meta, styles.updatedText, { color: colors.muted }]}>{formatRelativeDate(note.updatedAt)}</Text>
         </View>
 
         <Pressable
@@ -104,29 +58,57 @@ function NoteCardComponent({ note, query, onPress, onToggleFavorite }: NoteCardP
           style={[
             styles.favoriteButton,
             {
-              backgroundColor: note.isFavorite ? colors.warning : isGlass ? colors.tagBackground : colors.surface,
+              backgroundColor: note.isFavorite ? colors.warning : colors.tagBackground,
               borderColor: note.isFavorite ? colors.warning : colors.border
             }
           ]}
         >
-          <Star size={15} color={note.isFavorite ? colors.primaryForeground : colors.subtle} fill={note.isFavorite ? colors.primaryForeground : "none"} />
+          <Star size={17} color={note.isFavorite ? colors.primaryForeground : colors.subtle} fill={note.isFavorite ? colors.primaryForeground : "none"} />
         </Pressable>
       </View>
 
+      <View style={styles.copyBlock}>
+        <HighlightedText
+          text={note.title}
+          query={query}
+          numberOfLines={2}
+          style={[uiType.sectionTitle, styles.title, { color: colors.foreground }]}
+          highlightStyle={{
+            color: colors.primary,
+            backgroundColor: colors.primarySoft,
+            fontWeight: "800"
+          }}
+        />
+
+        <HighlightedText
+          text={preview}
+          query={query}
+          numberOfLines={4}
+          style={[uiType.body, styles.excerpt, { color: colors.muted }]}
+          highlightStyle={{
+            color: colors.primary,
+            backgroundColor: colors.primarySoft,
+            fontWeight: "700"
+          }}
+        />
+      </View>
+
       <View style={styles.footerRow}>
-        <View style={[styles.footerPill, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
-          <Text style={[styles.footerText, { color: colors.foreground }]}>{note.readingMinutes} min</Text>
+        <View style={styles.footerMetaGroup}>
+          <Text style={[uiType.meta, { color: colors.foreground }]}>{note.readingMinutes} min</Text>
+          <View style={[styles.metaDot, { backgroundColor: colors.borderStrong }]} />
+          <Text style={[uiType.meta, { color: colors.foreground }]}>{note.words} słów</Text>
+          {primaryTag ? (
+            <>
+              <View style={[styles.metaDot, { backgroundColor: colors.borderStrong }]} />
+              <Text style={[uiType.meta, { color: colors.primary }]}>#{primaryTag}</Text>
+            </>
+          ) : null}
         </View>
-        <View style={[styles.footerPill, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
-          <Text style={[styles.footerText, { color: colors.foreground }]}>{note.words} słów</Text>
+
+        <View style={styles.disclosureWrap}>
+          <ArrowUpRight size={15} color={colors.subtle} />
         </View>
-        {primaryTag ? (
-          <View style={[styles.footerPill, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
-            <Text style={[styles.footerText, { color: colors.primary }]}>#{primaryTag}</Text>
-          </View>
-        ) : null}
-        <View style={styles.grow} />
-        <ArrowUpRight size={14} color={colors.subtle} />
       </View>
     </SurfaceCard>
   );
@@ -150,97 +132,73 @@ function areEqual(prev: NoteCardProps, next: NoteCardProps) {
 export const NoteCard = memo(NoteCardComponent, areEqual);
 
 const styles = StyleSheet.create({
-  content: {
-    paddingHorizontal: 15,
-    paddingVertical: 14,
-    gap: 12
-  },
-  accentRail: {
-    position: "absolute",
-    top: 0,
-    left: 16,
-    right: 16,
-    height: 3,
-    borderBottomLeftRadius: 999,
-    borderBottomRightRadius: 999,
-    opacity: 0.82
-  },
-  topRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
-    marginTop: 2
-  },
-  categoryPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 9,
-    paddingVertical: 6
-  },
-  categoryText: {
-    fontSize: 11,
-    fontWeight: "700"
-  },
-  metaPill: {
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 9,
-    paddingVertical: 6
-  },
-  metaPillText: {
-    fontSize: 10,
-    fontWeight: "800",
-    letterSpacing: 0.3
-  },
-  mainRow: {
+  headerRow: {
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 14
+    justifyContent: "space-between",
+    gap: uiSpacing.sm
   },
-  copyCol: {
+  metaLeading: {
     flex: 1,
-    gap: 8
+    gap: uiSpacing.xs,
+    minWidth: 0
   },
-  title: {
-    fontSize: 17,
-    lineHeight: 22,
-    fontWeight: "800",
-    letterSpacing: -0.6
+  categoryBadge: {
+    alignSelf: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: uiSpacing.xs,
+    borderRadius: uiRadius.pill,
+    paddingHorizontal: uiSpacing.sm,
+    paddingVertical: uiSpacing.xs
   },
-  excerpt: {
-    fontSize: 13,
-    lineHeight: 19
+  categoryText: {
+    fontWeight: "700"
+  },
+  updatedText: {
+    paddingLeft: uiSpacing.xs
   },
   favoriteButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 999,
+    width: uiControl.minTouch,
+    height: uiControl.minTouch,
+    borderRadius: uiRadius.pill,
     borderWidth: 1,
     alignItems: "center",
-    justifyContent: "center",
-    marginTop: 2
+    justifyContent: "center"
+  },
+  copyBlock: {
+    gap: uiSpacing.xs
+  },
+  title: {
+    fontSize: 18,
+    lineHeight: 24
+  },
+  excerpt: {
+    fontSize: 15,
+    lineHeight: 21
   },
   footerRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    flexWrap: "wrap"
+    justifyContent: "space-between",
+    gap: uiSpacing.sm
   },
-  footerPill: {
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 9,
-    paddingVertical: 6
+  footerMetaGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: uiSpacing.xs,
+    flexWrap: "wrap",
+    flex: 1,
+    minWidth: 0
   },
-  footerText: {
-    fontSize: 10,
-    fontWeight: "700"
+  metaDot: {
+    width: 4,
+    height: 4,
+    borderRadius: uiRadius.pill
   },
-  grow: {
-    flex: 1
+  disclosureWrap: {
+    width: uiControl.minTouch,
+    alignItems: "flex-end",
+    justifyContent: "center"
   }
 });
