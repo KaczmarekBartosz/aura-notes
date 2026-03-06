@@ -711,8 +711,20 @@ body.theme-picker-open .aura-theme-scope main.glass-card:hover {
 
 /* iOS PWA: dock nav to bottom edge and move safe area inside the nav itself */
 @supports (-webkit-touch-callout: none) {
-  /* Fallback path for iOS where display-mode media queries can be unreliable. */
+  /* Fill top safe-area strip in iOS standalone so header doesn't look cut off. */
   @media (max-width: 767px) {
+    html.ios-standalone .aura-theme-scope::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: env(safe-area-inset-top, 0px);
+      background: var(--background);
+      z-index: 12;
+      pointer-events: none;
+    }
+
     html.ios-standalone .mobile-bottom-nav {
       bottom: 0 !important;
       left: 0 !important;

@@ -598,7 +598,7 @@ export default function Page() {
       ref={appContainerRef}
       data-glass-theme={isGlass ? 'true' : 'false'}
       className={cn(
-        'aura-theme-scope h-[100dvh] min-h-[100svh] w-full max-w-full overflow-hidden text-foreground font-sans relative overscroll-none box-border pt-safe',
+        'aura-theme-scope h-[100svh] min-h-[100svh] md:h-[100dvh] w-full max-w-full overflow-hidden text-foreground font-sans relative overscroll-none box-border pt-safe',
         isGlass ? 'bg-transparent' : 'bg-background'
       )}
     >
@@ -831,6 +831,7 @@ export default function Page() {
                   </button>
                 );
               })}
+              <span className="chip-scroll-spacer" aria-hidden />
             </div>
           )}
 
@@ -861,6 +862,7 @@ export default function Page() {
                   #{t} ({tagCountsForCategory.get(t) ?? 0})
                 </button>
               ))}
+              <span className="chip-scroll-spacer" aria-hidden />
             </div>
           )}
 
