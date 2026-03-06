@@ -25,7 +25,7 @@ export function ScreenContainer({
   const useNativeGlassBackdrop = isGlass && Platform.OS === "ios" && isGlassEffectAPIAvailable();
 
   return (
-    <SafeAreaView edges={edges} style={[styles.safeArea, { backgroundColor: colors.background }]}>
+    <SafeAreaView edges={edges} style={[styles.safeArea, { backgroundColor: isGlass ? "transparent" : colors.background }]}>
       <View style={styles.container}>
         <LinearGradient colors={[...colors.screenGradient]} style={StyleSheet.absoluteFillObject} />
         {isGlass ? (

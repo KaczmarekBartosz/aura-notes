@@ -39,8 +39,7 @@ import { filterAndSortNotes } from "../src/utils/noteFilters";
 import { triggerHaptic } from "../src/utils/haptics";
 
 const PAGE_SIZE = 18;
-const COMPACT_HEADER_HEIGHT = 72;
-const HERO_TOP_SPACING = 84;
+const HERO_TOP_SPACING = uiSpacing.md;
 
 const SOURCE_LABELS: Record<string, string> = {
   boot: "start",
@@ -196,7 +195,7 @@ export default function HomeScreen() {
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingTop: HERO_TOP_SPACING + insets.top,
+            paddingTop: HERO_TOP_SPACING,
             paddingBottom: Math.max(uiControl.minTouch, insets.bottom + uiSpacing.xl),
             paddingHorizontal: uiSpacing.lg
           }
@@ -446,9 +445,15 @@ export default function HomeScreen() {
 
       <Animated.View
         pointerEvents="box-none"
-        style={[styles.compactHeaderWrap, { top: Math.max(uiSpacing.xs, insets.top + uiSpacing.xxs), left: uiSpacing.lg, right: uiSpacing.lg }, compactHeaderStyle]}
+        style={[styles.compactHeaderWrap, { top: uiSpacing.xs, left: uiSpacing.md, right: uiSpacing.md }, compactHeaderStyle]}
       >
-        <SurfaceCard preset="toolbar" contentPreset="toolbar" intensity={resolvedTheme === "dark" ? 62 : 56}>
+        <SurfaceCard
+          preset="toolbar"
+          contentPreset="toolbar"
+          intensity={resolvedTheme === "dark" ? 84 : 78}
+          style={styles.compactHeaderCard}
+          contentStyle={styles.compactHeaderContent}
+        >
           <View style={styles.compactHeaderTitleWrap}>
             <Text style={[uiType.meta, styles.compactHeaderTitle, { color: colors.foreground }]}>Aura Notes</Text>
             <Text style={[uiType.caption, { color: colors.muted }]}>
@@ -712,16 +717,24 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 50
   },
+  compactHeaderCard: {
+    shadowOpacity: 0.22,
+    shadowRadius: 20
+  },
+  compactHeaderContent: {
+    paddingHorizontal: uiSpacing.sm,
+    paddingVertical: 10
+  },
   compactHeaderTitleWrap: {
     flex: 1,
-    gap: 2
+    gap: 1
   },
   compactHeaderTitle: {
     fontWeight: "700"
   },
   compactHeaderActions: {
     flexDirection: "row",
-    gap: uiSpacing.xs
+    gap: 6
   },
   headerAction: {
     width: uiControl.minTouch,
