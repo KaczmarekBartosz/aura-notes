@@ -42,21 +42,25 @@ export default function SettingsScreen() {
           </LinearGradient>
 
           <View style={styles.themeBody}>
-            <View style={styles.themeCopy}>
+            <View style={styles.themeHeading}>
               <Text style={[styles.themeName, { color: colors.foreground }]}>{entry.label}</Text>
-              <Text style={[styles.themeDescriptionText, { color: colors.muted }]}>{entry.description}</Text>
+              <View
+                style={[
+                  styles.activeBadge,
+                  {
+                    backgroundColor: active ? colors.primary : colors.tagBackground,
+                    borderColor: active ? colors.primary : colors.border
+                  }
+                ]}
+              >
+                <Text style={[styles.activeBadgeText, { color: active ? colors.primaryForeground : colors.foreground }]}>
+                  {active ? "Aktywny" : "Wybierz"}
+                </Text>
+              </View>
             </View>
-            <View
-              style={[
-                styles.activeBadge,
-                {
-                  backgroundColor: active ? colors.primary : colors.tagBackground,
-                  borderColor: active ? colors.primary : colors.border
-                }
-              ]}
-            >
-              <Text style={[styles.activeBadgeText, { color: active ? colors.primaryForeground : colors.foreground }]}>
-                {active ? "Aktywny" : "Wybierz"}
+            <View style={styles.themeCopy}>
+              <Text numberOfLines={2} style={[styles.themeDescriptionText, { color: colors.muted }]}>
+                {entry.description}
               </Text>
             </View>
           </View>
@@ -176,13 +180,13 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   content: {
-    paddingTop: 8,
-    gap: 16
+    paddingTop: 6,
+    gap: 14
   },
   handle: {
     alignSelf: "center",
-    width: 42,
-    height: 5,
+    width: 38,
+    height: 4,
     borderRadius: 999,
     marginTop: 2
   },
@@ -195,19 +199,19 @@ const styles = StyleSheet.create({
     flex: 1
   },
   title: {
-    fontSize: 27,
+    fontSize: 24,
     fontWeight: "800",
-    letterSpacing: -0.8
+    letterSpacing: -0.7
   },
   subtitle: {
     marginTop: 4,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13,
+    lineHeight: 18,
     fontWeight: "600"
   },
   closeButton: {
-    width: 44,
-    height: 44,
+    width: 42,
+    height: 42,
     borderRadius: 999,
     borderWidth: 1,
     alignItems: "center",
@@ -215,50 +219,53 @@ const styles = StyleSheet.create({
   },
   section: {},
   sectionInner: {
-    padding: 16
+    padding: 14
   },
   sectionEyebrow: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "800",
     textTransform: "uppercase",
-    letterSpacing: 0.8
+    letterSpacing: 0.7
   },
   sectionTitle: {
     marginTop: 6,
-    fontSize: 24,
+    fontSize: 21,
     fontWeight: "800",
-    letterSpacing: -0.7
+    letterSpacing: -0.5
   },
   sectionDescription: {
     marginTop: 6,
-    fontSize: 14,
-    lineHeight: 20
+    fontSize: 13,
+    lineHeight: 18
   },
   sectionCaption: {
     marginTop: 6,
-    fontSize: 13,
-    lineHeight: 19
+    fontSize: 12,
+    lineHeight: 17
   },
   grid: {
-    gap: 14,
-    marginTop: 16
+    gap: 12,
+    marginTop: 14
   },
   themeCard: {},
   themeCardInner: {
-    padding: 14,
-    gap: 12
+    padding: 12,
+    gap: 12,
+    flexDirection: "row",
+    alignItems: "center"
   },
   themePreview: {
-    height: 108,
-    borderRadius: 22,
+    width: 112,
+    height: 82,
+    borderRadius: 20,
     overflow: "hidden",
     justifyContent: "space-between",
-    padding: 12
+    padding: 10
   },
   previewFloatingCard: {
     width: "72%",
-    height: 34,
-    borderRadius: 16,
+    height: 28,
+    borderRadius: 14,
     borderWidth: 1
   },
   previewFooterRow: {
@@ -267,42 +274,46 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   previewMiniPill: {
-    width: 72,
-    height: 18,
+    width: 64,
+    height: 16,
     borderRadius: 999,
     borderWidth: 1
   },
   previewAccent: {
-    width: 42,
-    height: 7,
+    width: 34,
+    height: 6,
     borderRadius: 999
   },
   themeBody: {
+    flex: 1,
+    gap: 6
+  },
+  themeHeading: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
     gap: 12
   },
   themeCopy: {
-    flex: 1
+    gap: 2
   },
   themeName: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "700"
   },
   themeDescriptionText: {
     marginTop: 4,
-    fontSize: 13,
-    lineHeight: 18
+    fontSize: 12,
+    lineHeight: 17
   },
   activeBadge: {
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 6
+    paddingHorizontal: 9,
+    paddingVertical: 5
   },
   activeBadgeText: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "800"
   },
   sectionHeading: {
@@ -311,13 +322,13 @@ const styles = StyleSheet.create({
     gap: 8
   },
   sectionTitleSmall: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: "700",
     letterSpacing: -0.3
   },
   statsList: {
-    marginTop: 14,
-    gap: 10
+    marginTop: 12,
+    gap: 8
   },
   statRow: {
     flexDirection: "row",
@@ -326,18 +337,18 @@ const styles = StyleSheet.create({
     gap: 12
   },
   statLabel: {
-    fontSize: 14,
-    lineHeight: 20
+    fontSize: 13,
+    lineHeight: 18
   },
   statValue: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13,
+    lineHeight: 18,
     fontWeight: "700"
   },
   buttonRow: {
     flexDirection: "row",
     gap: 10,
-    marginTop: 16
+    marginTop: 14
   },
   actionButton: {
     flex: 1,
@@ -348,10 +359,10 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 1,
     paddingHorizontal: 12,
-    paddingVertical: 12
+    paddingVertical: 11
   },
   actionLabel: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "800"
   }
 });

@@ -151,18 +151,19 @@ export const NoteCard = memo(NoteCardComponent, areEqual);
 
 const styles = StyleSheet.create({
   content: {
-    padding: 16,
-    gap: 14
+    paddingHorizontal: 15,
+    paddingVertical: 14,
+    gap: 12
   },
   accentRail: {
     position: "absolute",
     top: 0,
     left: 16,
     right: 16,
-    height: 4,
+    height: 3,
     borderBottomLeftRadius: 999,
     borderBottomRightRadius: 999,
-    opacity: 0.72
+    opacity: 0.82
   },
   topRow: {
     flexDirection: "row",
@@ -177,21 +178,21 @@ const styles = StyleSheet.create({
     gap: 6,
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 7
+    paddingHorizontal: 9,
+    paddingVertical: 6
   },
   categoryText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "700"
   },
   metaPill: {
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 7
+    paddingHorizontal: 9,
+    paddingVertical: 6
   },
   metaPillText: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "800",
     letterSpacing: 0.3
   },
@@ -202,21 +203,21 @@ const styles = StyleSheet.create({
   },
   copyCol: {
     flex: 1,
-    gap: 10
+    gap: 8
   },
   title: {
-    fontSize: 18,
-    lineHeight: 23,
+    fontSize: 17,
+    lineHeight: 22,
     fontWeight: "800",
     letterSpacing: -0.6
   },
   excerpt: {
-    fontSize: 14,
-    lineHeight: 21
+    fontSize: 13,
+    lineHeight: 19
   },
   favoriteButton: {
-    width: 38,
-    height: 38,
+    width: 36,
+    height: 36,
     borderRadius: 999,
     borderWidth: 1,
     alignItems: "center",
@@ -232,11 +233,11 @@ const styles = StyleSheet.create({
   footerPill: {
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 7
+    paddingHorizontal: 9,
+    paddingVertical: 6
   },
   footerText: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "700"
   },
   grow: {

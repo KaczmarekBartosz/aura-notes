@@ -127,15 +127,15 @@ export default function SearchScreen() {
 
 const styles = StyleSheet.create({
   listContent: {
-    paddingTop: 8
+    paddingTop: 6
   },
   handle: {
     alignSelf: "center",
-    width: 42,
-    height: 5,
+    width: 38,
+    height: 4,
     borderRadius: 999,
     marginTop: 2,
-    marginBottom: 18
+    marginBottom: 16
   },
   header: {
     flexDirection: "row",
@@ -146,37 +146,37 @@ const styles = StyleSheet.create({
     flex: 1
   },
   title: {
-    fontSize: 27,
+    fontSize: 24,
     fontWeight: "800",
-    letterSpacing: -0.8
+    letterSpacing: -0.7
   },
   subtitle: {
     marginTop: 4,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13,
+    lineHeight: 18,
     fontWeight: "600"
   },
   closeButton: {
-    width: 44,
-    height: 44,
+    width: 42,
+    height: 42,
     borderRadius: 999,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center"
   },
   searchCard: {
-    marginTop: 18
+    marginTop: 16
   },
   searchInner: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14
+    paddingHorizontal: 15,
+    paddingVertical: 13
   },
   searchInput: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "600"
   },
   clearButton: {
@@ -188,31 +188,31 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   summaryCard: {
-    marginTop: 14,
-    marginBottom: 18
+    marginTop: 12,
+    marginBottom: 16
   },
   summaryContent: {
-    padding: 16,
-    gap: 6
+    padding: 14,
+    gap: 5
   },
   summaryEyebrow: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "800",
     textTransform: "uppercase",
-    letterSpacing: 0.8
+    letterSpacing: 0.7
   },
   summaryTitle: {
-    fontSize: 18,
-    lineHeight: 23,
+    fontSize: 17,
+    lineHeight: 21,
     fontWeight: "800",
     letterSpacing: -0.4
   },
   summaryText: {
-    fontSize: 13,
-    lineHeight: 19
+    fontSize: 12,
+    lineHeight: 17
   },
   emptyCard: {
-    marginTop: 12
+    marginTop: 10
   },
   emptyContent: {
     alignItems: "center",

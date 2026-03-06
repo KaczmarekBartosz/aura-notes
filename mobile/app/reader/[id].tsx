@@ -291,8 +291,8 @@ export default function ReaderScreen() {
           contentContainerStyle={[
             styles.readerContent,
             {
-              paddingTop: insets.top + 94,
-              paddingBottom: Math.max(96, insets.bottom + 56),
+              paddingTop: insets.top + 84,
+              paddingBottom: Math.max(88, insets.bottom + 48),
               paddingHorizontal: 16
             }
           ]}
@@ -324,23 +324,29 @@ export default function ReaderScreen() {
           showsVerticalScrollIndicator={false}
         >
           <Animated.View style={heroStyle}>
-            <SurfaceCard style={styles.heroCard} contentStyle={styles.heroContent} intensity={resolvedTheme === "dark" ? 62 : 56}>
+            <SurfaceCard style={styles.heroCard} contentStyle={styles.heroContent} intensity={resolvedTheme === "dark" ? 58 : 52}>
               <Text style={[styles.heroEyebrow, { color: colors.primary }]}>{getCategoryLabel(note.category)}</Text>
               <Text style={[styles.heroTitle, { color: colors.foreground }]}>{note.title}</Text>
-              <Text style={[styles.heroSummary, { color: colors.muted }]}>{note.excerpt}</Text>
+              <Text numberOfLines={3} style={[styles.heroSummary, { color: colors.muted }]}>
+                {note.excerpt}
+              </Text>
 
-              <View style={styles.metaGrid}>
-                <View style={[styles.metaChip, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
+              <View style={styles.metaLine}>
+                <View style={styles.metaInline}>
                   <Clock3 size={13} color={colors.primary} />
-                  <Text style={[styles.metaChipText, { color: colors.foreground }]}>{note.readingMinutes} min czytania</Text>
+                  <Text style={[styles.metaInlineText, { color: colors.foreground }]}>{note.readingMinutes} min</Text>
                 </View>
-                <View style={[styles.metaChip, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
+                <View style={[styles.metaDivider, { backgroundColor: colors.border }]} />
+                <View style={styles.metaInline}>
                   <Hash size={13} color={colors.primary} />
-                  <Text style={[styles.metaChipText, { color: colors.foreground }]}>{note.words} słów</Text>
+                  <Text style={[styles.metaInlineText, { color: colors.foreground }]}>{note.words} słów</Text>
                 </View>
-                <View style={[styles.metaChip, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
+                <View style={[styles.metaDivider, { backgroundColor: colors.border }]} />
+                <View style={styles.metaInline}>
                   <Folder size={13} color={colors.primary} />
-                  <Text style={[styles.metaChipText, { color: colors.foreground }]} numberOfLines={1}>{note.folder}</Text>
+                  <Text style={[styles.metaInlineText, { color: colors.foreground }]} numberOfLines={1}>
+                    {note.folder}
+                  </Text>
                 </View>
               </View>
 
@@ -387,7 +393,7 @@ export default function ReaderScreen() {
         </Animated.ScrollView>
       </GestureDetector>
 
-      <View style={[styles.progressTrack, { backgroundColor: colors.progressTrack, top: insets.top + 84 }]}>
+      <View style={[styles.progressTrack, { backgroundColor: colors.progressTrack, top: insets.top + 74 }]}>
         <Animated.View style={[styles.progressFill, { backgroundColor: colors.primary }, progressFillStyle]} />
       </View>
 
@@ -484,48 +490,50 @@ function HeaderControlButton({
 
 const styles = StyleSheet.create({
   readerContent: {
-    gap: 18
+    gap: 14
   },
   heroCard: {
-    marginTop: 4
+    marginTop: 2
   },
   heroContent: {
-    padding: 20,
-    gap: 12
-  },
-  heroEyebrow: {
-    fontSize: 11,
-    fontWeight: "800",
-    textTransform: "uppercase",
-    letterSpacing: 0.8
-  },
-  heroTitle: {
-    fontSize: 32,
-    lineHeight: 37,
-    fontWeight: "800",
-    letterSpacing: -1
-  },
-  heroSummary: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: "600"
-  },
-  metaGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    padding: 16,
     gap: 10
   },
-  metaChip: {
+  heroEyebrow: {
+    fontSize: 10,
+    fontWeight: "800",
+    textTransform: "uppercase",
+    letterSpacing: 0.7
+  },
+  heroTitle: {
+    fontSize: 28,
+    lineHeight: 32,
+    fontWeight: "800",
+    letterSpacing: -0.8
+  },
+  heroSummary: {
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: "600"
+  },
+  metaLine: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: 8
+  },
+  metaInline: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    gap: 6,
     maxWidth: "100%"
   },
-  metaChipText: {
+  metaDivider: {
+    width: 4,
+    height: 4,
+    borderRadius: 999
+  },
+  metaInlineText: {
     fontSize: 12,
     fontWeight: "700",
     maxWidth: 180
@@ -533,34 +541,35 @@ const styles = StyleSheet.create({
   heroFooter: {
     flexDirection: "row",
     alignItems: "center",
+    flexWrap: "wrap",
     justifyContent: "space-between",
     gap: 12
   },
   heroFooterText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "600"
   },
   tagsRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8
+    gap: 7
   },
   tag: {
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 6
+    paddingHorizontal: 9,
+    paddingVertical: 5
   },
   tagText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "700"
   },
   contentCardWrap: {
-    marginBottom: 8
+    marginBottom: 6
   },
   markdownCardContent: {
-    paddingHorizontal: 18,
-    paddingVertical: 20
+    paddingHorizontal: 16,
+    paddingVertical: 18
   },
   codeBlockWrap: {
     marginBottom: 14,
@@ -585,25 +594,25 @@ const styles = StyleSheet.create({
     zIndex: 50
   },
   floatingHeaderContent: {
-    minHeight: 70,
+    minHeight: 64,
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
     paddingHorizontal: 12,
-    paddingVertical: 10
+    paddingVertical: 9
   },
   floatingTitleWrap: {
     flex: 1,
     minWidth: 0
   },
   floatingTitle: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "800",
     letterSpacing: -0.3
   },
   floatingMeta: {
-    marginTop: 3,
-    fontSize: 12,
+    marginTop: 2,
+    fontSize: 11,
     fontWeight: "600"
   },
   controlRow: {
@@ -612,8 +621,8 @@ const styles = StyleSheet.create({
     gap: 8
   },
   controlButton: {
-    width: 38,
-    height: 38,
+    width: 36,
+    height: 36,
     borderRadius: 999,
     borderWidth: 1,
     alignItems: "center",

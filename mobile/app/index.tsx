@@ -47,8 +47,8 @@ import { filterAndSortNotes, getAllTags } from "../src/utils/noteFilters";
 import { triggerHaptic } from "../src/utils/haptics";
 
 const PAGE_SIZE = 18;
-const COMPACT_HEADER_HEIGHT = 74;
-const HERO_TOP_SPACING = 94;
+const COMPACT_HEADER_HEIGHT = 68;
+const HERO_TOP_SPACING = 82;
 
 const SOURCE_LABELS: Record<string, string> = {
   boot: "start",
@@ -241,43 +241,48 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Animated.View style={heroStyle}>
-          <View style={styles.heroRow}>
-            <View style={styles.heroCopy}>
+          <SurfaceCard style={styles.heroCard} contentStyle={styles.heroCardContent} intensity={resolvedTheme === "dark" ? 56 : 50}>
+            <LinearGradient colors={[...colors.activeGradient]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.heroAccent} />
+            <View style={styles.heroTopBar}>
               <View style={[styles.eyebrowPill, { backgroundColor: colors.tagBackground, borderColor: colors.borderStrong }]}>
                 <Sparkles size={12} color={colors.primary} />
                 <Text style={[styles.eyebrowText, { color: colors.primary }]}>{themeLabel}</Text>
               </View>
+              <View style={styles.heroActionsRow}>
+                <HeaderIconButton
+                  icon={<Search size={17} color={colors.foreground} />}
+                  label="Otwórz pełny ekran wyszukiwania"
+                  onPress={() => router.push("/search")}
+                />
+                <HeaderIconButton
+                  icon={<Settings2 size={17} color={colors.foreground} />}
+                  label="Otwórz ustawienia"
+                  onPress={() => router.push("/settings")}
+                />
+              </View>
+            </View>
+
+            <View style={styles.heroCopy}>
               <Text style={[styles.heroTitle, { color: colors.foreground }]}>Aura Notes</Text>
               <Text style={[styles.heroSubtitle, { color: colors.muted }]}>
-                Lokalny markdown vault z offline cache, szybkim czytnikiem i motywami klasy premium.
+                Lokalny vault markdown, szybkie czytanie i pełne działanie offline.
               </Text>
               <Text style={[styles.heroDescription, { color: colors.subtle }]}>{themeDescription}</Text>
             </View>
 
-            <View style={styles.heroActionsColumn}>
-              <HeaderIconButton
-                icon={<Search size={18} color={colors.foreground} />}
-                label="Otwórz pełny ekran wyszukiwania"
-                onPress={() => router.push("/search")}
-              />
-              <HeaderIconButton
-                icon={<Settings2 size={18} color={colors.foreground} />}
-                label="Otwórz ustawienia"
-                onPress={() => router.push("/settings")}
-              />
-            </View>
-          </View>
-
-          <SurfaceCard style={styles.heroCard} contentStyle={styles.heroCardContent} intensity={resolvedTheme === "dark" ? 58 : 54}>
-            <LinearGradient colors={[...colors.activeGradient]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.heroAccent} />
-            <View style={styles.heroCardTopRow}>
-              <View style={styles.heroBadgeRow}>
-                <View style={[styles.heroBadge, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
-                  <Text style={[styles.heroBadgeLabel, { color: colors.foreground }]}>{notes.length} notatek</Text>
-                </View>
-                <View style={[styles.heroBadge, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
-                  <Text style={[styles.heroBadgeLabel, { color: colors.foreground }]}>źródło {SOURCE_LABELS[source] ?? source}</Text>
-                </View>
+            <View style={[styles.continuePanel, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}>
+              <View style={styles.continueCopy}>
+                <Text style={[styles.continueEyebrow, { color: colors.primary }]}>
+                  {lastOpenedNote ? "Kontynuuj czytanie" : "Vault gotowy"}
+                </Text>
+                <Text style={[styles.continueTitle, { color: colors.foreground }]} numberOfLines={2}>
+                  {lastOpenedNote ? lastOpenedNote.title : "Notatki są już gotowe do pracy offline."}
+                </Text>
+                <Text style={[styles.continueBody, { color: colors.muted }]} numberOfLines={2}>
+                  {lastOpenedNote
+                    ? lastOpenedNote.excerpt
+                    : "Cache otwiera zawartość od razu, bez czekania na API."}
+                </Text>
               </View>
 
               {lastOpenedNote ? (
@@ -287,50 +292,36 @@ export default function HomeScreen() {
                   accessibilityLabel="Kontynuuj ostatnio czytaną notatkę"
                   style={[styles.inlineContinueButton, { backgroundColor: colors.primarySoft, borderColor: colors.border }]}
                 >
-                  <Text style={[styles.inlineContinueLabel, { color: colors.primary }]}>Kontynuuj</Text>
+                  <Text style={[styles.inlineContinueLabel, { color: colors.primary }]}>Otwórz</Text>
                   <ChevronRight size={14} color={colors.primary} />
                 </Pressable>
-              ) : null}
+              ) : (
+                <View style={[styles.heroStatusPill, { backgroundColor: colors.primarySoft, borderColor: colors.border }]}>
+                  <Text style={[styles.heroStatusLabel, { color: colors.primary }]}>offline</Text>
+                </View>
+              )}
             </View>
 
-            {lastOpenedNote ? (
-              <View style={styles.continueCopy}>
-                <Text style={[styles.continueEyebrow, { color: colors.primary }]}>Kontynuuj czytanie</Text>
-                <Text style={[styles.continueTitle, { color: colors.foreground }]} numberOfLines={2}>
-                  {lastOpenedNote.title}
-                </Text>
-                <Text style={[styles.continueBody, { color: colors.muted }]} numberOfLines={2}>
-                  {lastOpenedNote.excerpt}
-                </Text>
-              </View>
-            ) : (
-              <View style={styles.continueCopy}>
-                <Text style={[styles.continueEyebrow, { color: colors.primary }]}>Vault gotowy</Text>
-                <Text style={[styles.continueTitle, { color: colors.foreground }]}>Wszystkie notatki są gotowe offline.</Text>
-                <Text style={[styles.continueBody, { color: colors.muted }]}>Pierwsze wejście ma od razu pokazać zawartość z lokalnego cache.</Text>
-              </View>
-            )}
-          </SurfaceCard>
-
-          <View style={styles.statsRow}>
-            {stats.map((item, index) => (
-              <Animated.View
-                key={item.label}
-                style={styles.statWrap}
-                entering={reduceMotionEnabled ? undefined : FadeInDown.delay(80 + index * 60).duration(320)}
-                layout={layoutTransition}
-              >
-                <SurfaceCard contentStyle={styles.statCardContent}>
-                  <View style={styles.statTopRow}>
+            <View style={styles.heroMetricsRow}>
+              {stats.map((item) => (
+                <View
+                  key={item.label}
+                  style={[styles.heroMetric, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}
+                >
+                  <View style={styles.heroMetricTop}>
                     {item.icon}
-                    <Text style={[styles.statLabel, { color: colors.muted }]}>{item.label}</Text>
+                    <Text style={[styles.heroMetricLabel, { color: colors.muted }]}>{item.label}</Text>
                   </View>
-                  <Text style={[styles.statValue, { color: colors.foreground }]}>{item.value}</Text>
-                  <Text style={[styles.statDescription, { color: colors.subtle }]}>{item.description}</Text>
-                </SurfaceCard>
-              </Animated.View>
-            ))}
-          </View>
+                  <Text style={[styles.heroMetricValue, { color: colors.foreground }]} numberOfLines={1}>
+                    {item.value}
+                  </Text>
+                  <Text style={[styles.heroMetricDescription, { color: colors.subtle }]} numberOfLines={1}>
+                    {item.description}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </SurfaceCard>
         </Animated.View>
 
         <Animated.View layout={layoutTransition} entering={reduceMotionEnabled ? undefined : FadeInDown.delay(120).duration(340)}>
@@ -613,17 +604,33 @@ function HeaderIconButton({
 
 const styles = StyleSheet.create({
   scrollContent: {
-    gap: 16
+    gap: 14
   },
-  heroRow: {
+  heroCard: {
+    marginTop: 2
+  },
+  heroCardContent: {
+    padding: 16,
+    gap: 12
+  },
+  heroAccent: {
+    position: "absolute",
+    top: -52,
+    right: -34,
+    width: 164,
+    height: 164,
+    borderRadius: 999,
+    opacity: 0.24
+  },
+  heroTopBar: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "flex-start",
-    gap: 16
+    justifyContent: "space-between",
+    gap: 12
   },
-  heroCopy: {
-    flex: 1,
-    gap: 6
+  heroActionsRow: {
+    flexDirection: "row",
+    gap: 8
   },
   eyebrowPill: {
     alignSelf: "flex-start",
@@ -633,81 +640,58 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 999,
     paddingHorizontal: 11,
-    paddingVertical: 7,
-    marginBottom: 4
+    paddingVertical: 7
   },
   eyebrowText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "800"
   },
+  heroCopy: {
+    gap: 6
+  },
   heroTitle: {
-    fontSize: 36,
-    lineHeight: 40,
+    fontSize: 31,
+    lineHeight: 35,
     fontWeight: "800",
-    letterSpacing: -1.2
+    letterSpacing: -1
   },
   heroSubtitle: {
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 14,
+    lineHeight: 20,
     fontWeight: "600"
   },
   heroDescription: {
-    fontSize: 12,
-    lineHeight: 18
-  },
-  heroActionsColumn: {
-    gap: 10,
-    paddingTop: 4
-  },
-  headerAction: {
-    width: 46,
-    height: 46,
-    borderRadius: 999,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  headerActionCompact: {
-    width: 40,
-    height: 40
-  },
-  heroCard: {
-    marginTop: 4
-  },
-  heroCardContent: {
-    padding: 18,
-    gap: 14
-  },
-  heroAccent: {
-    position: "absolute",
-    top: -40,
-    right: -40,
-    width: 180,
-    height: 180,
-    borderRadius: 999,
-    opacity: 0.28
-  },
-  heroCardTopRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12
-  },
-  heroBadgeRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    flex: 1
-  },
-  heroBadge: {
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 7
-  },
-  heroBadgeLabel: {
     fontSize: 11,
-    fontWeight: "800"
+    lineHeight: 17
+  },
+  continuePanel: {
+    borderWidth: 1,
+    borderRadius: 24,
+    paddingHorizontal: 14,
+    paddingVertical: 13,
+    flexDirection: "row",
+    gap: 12,
+    alignItems: "center"
+  },
+  continueCopy: {
+    flex: 1,
+    gap: 6
+  },
+  continueEyebrow: {
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 0.7,
+    textTransform: "uppercase"
+  },
+  continueTitle: {
+    fontSize: 18,
+    lineHeight: 24,
+    fontWeight: "800",
+    letterSpacing: -0.5
+  },
+  continueBody: {
+    fontSize: 13,
+    lineHeight: 18
   },
   inlineContinueButton: {
     borderWidth: 1,
@@ -719,73 +703,77 @@ const styles = StyleSheet.create({
     paddingVertical: 9
   },
   inlineContinueLabel: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "800"
   },
-  continueCopy: {
-    gap: 6
+  heroStatusPill: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 11,
+    paddingVertical: 8
   },
-  continueEyebrow: {
+  heroStatusLabel: {
     fontSize: 11,
-    fontWeight: "800",
-    letterSpacing: 0.8,
-    textTransform: "uppercase"
+    fontWeight: "800"
   },
-  continueTitle: {
-    fontSize: 20,
-    lineHeight: 26,
-    fontWeight: "800",
-    letterSpacing: -0.6
-  },
-  continueBody: {
-    fontSize: 14,
-    lineHeight: 20
-  },
-  statsRow: {
+  heroMetricsRow: {
     flexDirection: "row",
-    gap: 12
-  },
-  statWrap: {
-    flex: 1
-  },
-  statCardContent: {
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    gap: 8,
-    minHeight: 120
-  },
-  statTopRow: {
-    flexDirection: "row",
-    alignItems: "center",
     gap: 8
   },
-  statLabel: {
-    fontSize: 12,
+  heroMetric: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 11,
+    minHeight: 86
+  },
+  heroMetricTop: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7
+  },
+  heroMetricLabel: {
+    fontSize: 11,
     fontWeight: "700"
   },
-  statValue: {
-    fontSize: 20,
-    lineHeight: 24,
+  heroMetricValue: {
+    marginTop: 7,
+    fontSize: 17,
+    lineHeight: 20,
     fontWeight: "800",
-    letterSpacing: -0.5
+    letterSpacing: -0.4
   },
-  statDescription: {
-    fontSize: 12,
-    lineHeight: 18
+  heroMetricDescription: {
+    marginTop: 4,
+    fontSize: 11,
+    lineHeight: 15
+  },
+  headerAction: {
+    width: 42,
+    height: 42,
+    borderRadius: 999,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  headerActionCompact: {
+    width: 38,
+    height: 38
   },
   searchCard: {
-    marginTop: 4
+    marginTop: 2
   },
   searchContent: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14
+    paddingHorizontal: 15,
+    paddingVertical: 13
   },
   searchInput: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600"
   },
   searchClear: {
@@ -804,7 +792,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: 12,
-    padding: 16
+    paddingHorizontal: 15,
+    paddingVertical: 14
   },
   activeFiltersCopy: {
     flex: 1,
@@ -817,8 +806,8 @@ const styles = StyleSheet.create({
     textTransform: "uppercase"
   },
   activeFiltersTitle: {
-    fontSize: 15,
-    lineHeight: 21,
+    fontSize: 14,
+    lineHeight: 19,
     fontWeight: "700"
   },
   resetFiltersButton: {
@@ -833,18 +822,18 @@ const styles = StyleSheet.create({
   },
   sectionShell: {},
   sectionShellContent: {
-    paddingVertical: 16,
-    gap: 12
+    paddingVertical: 14,
+    gap: 10
   },
   sectionShellTitle: {
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: "800",
-    letterSpacing: -0.4,
+    letterSpacing: -0.3,
     paddingHorizontal: 16
   },
   sectionShellCaption: {
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: 12,
+    lineHeight: 17,
     paddingHorizontal: 16
   },
   sectionShellBody: {
@@ -872,7 +861,7 @@ const styles = StyleSheet.create({
     marginTop: -2
   },
   errorContent: {
-    padding: 16
+    padding: 15
   },
   errorTitle: {
     fontSize: 14,
@@ -881,45 +870,45 @@ const styles = StyleSheet.create({
   errorText: {
     marginTop: 6,
     fontSize: 13,
-    lineHeight: 19
+    lineHeight: 18
   },
   feedHeader: {
-    marginTop: 6,
+    marginTop: 2,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 12
   },
   feedTitle: {
-    fontSize: 23,
+    fontSize: 20,
     fontWeight: "800",
-    letterSpacing: -0.7
+    letterSpacing: -0.5
   },
   feedCaption: {
     marginTop: 2,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "600"
   },
   feedCountPill: {
-    minWidth: 42,
-    height: 42,
+    minWidth: 38,
+    height: 38,
     borderRadius: 999,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 12
+    paddingHorizontal: 10
   },
   feedCountText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "800"
   },
   emptyCard: {
-    marginTop: 8
+    marginTop: 6
   },
   emptyContent: {
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingVertical: 28,
+    paddingVertical: 26,
     gap: 8
   },
   emptyTitle: {
@@ -932,14 +921,14 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   sectionBlock: {
-    gap: 12
+    gap: 10
   },
   sectionHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 12,
-    marginTop: 4
+    marginTop: 2
   },
   sectionBadge: {
     flexDirection: "row",
@@ -951,18 +940,18 @@ const styles = StyleSheet.create({
     paddingVertical: 8
   },
   sectionTitle: {
-    fontSize: 13,
-    fontWeight: "800"
-  },
-  sectionCount: {
     fontSize: 12,
     fontWeight: "800"
   },
+  sectionCount: {
+    fontSize: 11,
+    fontWeight: "800"
+  },
   noteStack: {
-    gap: 12
+    gap: 10
   },
   footerWrap: {
-    paddingTop: 10,
+    paddingTop: 8,
     paddingBottom: 8,
     alignItems: "center"
   },
@@ -970,7 +959,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 999,
     paddingHorizontal: 18,
-    paddingVertical: 13
+    paddingVertical: 12
   },
   loadMoreLabel: {
     fontSize: 12,
@@ -986,20 +975,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 12
+    paddingHorizontal: 14,
+    paddingVertical: 10
   },
   compactHeaderTitleWrap: {
     flex: 1
   },
   compactHeaderTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "800",
     letterSpacing: -0.4
   },
   compactHeaderMeta: {
-    marginTop: 3,
-    fontSize: 12,
+    marginTop: 2,
+    fontSize: 11,
     fontWeight: "600"
   },
   compactHeaderActions: {

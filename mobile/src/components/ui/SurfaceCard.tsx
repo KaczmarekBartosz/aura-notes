@@ -34,7 +34,7 @@ export function SurfaceCard({
       style={[
         styles.shell,
         {
-          backgroundColor: isGlass ? "transparent" : colors.surfaceElevated,
+          backgroundColor: isGlass ? colors.surface : colors.surfaceElevated,
           borderColor: isGlass ? colors.borderStrong : colors.border,
           borderWidth: visuals.surfaceBorderWidth,
           borderRadius: visuals.surfaceRadius,
@@ -82,6 +82,12 @@ export function SurfaceCard({
               style={styles.prismSweep}
             />
           ) : null}
+          <LinearGradient
+            colors={["rgba(255,255,255,0.18)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0.88, y: 1 }}
+            style={styles.topGlow}
+          />
           <View style={[StyleSheet.absoluteFillObject, styles.overlaySoftener, { backgroundColor: colors.surfaceOverlay }]} />
           <LinearGradient
             colors={["rgba(255,255,255,0.56)", "rgba(255,255,255,0.12)", "rgba(255,255,255,0)"]}
@@ -133,22 +139,26 @@ const styles = StyleSheet.create({
     transform: [{ rotate: "-12deg" }]
   },
   surfaceGradient: {
-    opacity: 0.82
+    opacity: 0.56
   },
   highlightLayer: {
-    opacity: 0.9
+    opacity: 0.72
+  },
+  topGlow: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.58
   },
   overlaySoftener: {
-    opacity: 0.72
+    opacity: 0.28
   },
   specularSweep: {
     ...StyleSheet.absoluteFillObject,
-    opacity: 0.54
+    opacity: 0.42
   },
   edgeSpecular: {
     ...StyleSheet.absoluteFillObject,
     borderWidth: 1,
-    opacity: 0.48
+    opacity: 0.62
   },
   content: {
     position: "relative",

@@ -18,7 +18,7 @@ export function ScreenContainer({
   withHorizontalPadding = true
 }: ScreenContainerProps) {
   const { colors, visuals, isGlass, resolvedTheme } = useAppTheme();
-  const backgroundBlurIntensity = Math.max(18, Math.round(visuals.blurIntensity * 0.6));
+  const backgroundBlurIntensity = Math.max(12, Math.round(visuals.blurIntensity * 0.46));
 
   return (
     <SafeAreaView edges={edges} style={[styles.safeArea, { backgroundColor: colors.background }]}>
@@ -84,28 +84,28 @@ const styles = StyleSheet.create({
   orb: {
     position: "absolute",
     borderRadius: 999,
-    opacity: 1
+    opacity: 0.96
   },
   orbOne: {
-    width: 320,
-    height: 320,
-    top: -88,
-    left: -72
+    width: 356,
+    height: 356,
+    top: -102,
+    left: -94
   },
   orbTwo: {
-    width: 300,
-    height: 300,
-    top: 132,
-    right: -116
+    width: 334,
+    height: 334,
+    top: 104,
+    right: -128
   },
   orbThree: {
-    width: 280,
-    height: 280,
-    bottom: -112,
-    left: 18
+    width: 300,
+    height: 300,
+    bottom: -132,
+    left: 4
   },
   veil: {
     ...StyleSheet.absoluteFillObject,
-    opacity: 0.22
+    opacity: 0.1
   }
 });
