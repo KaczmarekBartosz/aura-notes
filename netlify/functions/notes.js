@@ -9,12 +9,17 @@ function json(statusCode, body) {
   };
 }
 
-async function readNotesIndex() {
-  const { readFile } = await import('node:fs/promises');
-  const { join } = await import('node:path');
-  const filePath = join(__dirname, 'data', 'notes-index.json');
-  const raw = await readFile(filePath, 'utf-8');
-  return JSON.parse(raw);
+// Module-level cache — populated once per Lambda container lifecycle (warm starts reuse it)
+let notesIndexCache = null;
+
+function getNotesIndex() {
+  if (!notesIndexCache) {
+    const { join } = require('node:path');
+    const { readFileSync } = require('node:fs');
+    const filePath = join(__dirname, 'data', 'notes-index.json');
+    notesIndexCache = JSON.parse(readFileSync(filePath, 'utf-8'));
+  }
+  return notesIndexCache;
 }
 
 exports.handler = async (event) => {
@@ -27,7 +32,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const data = await readNotesIndex();
+    const data = getNotesIndex();
     return json(200, { ok: true, data });
   } catch (error) {
     const detail = error instanceof Error ? error.message : 'unknown';

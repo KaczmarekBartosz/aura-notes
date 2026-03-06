@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
+import { readFile } from 'fs/promises';
 import path from 'path';
 
 export async function GET(request: Request) {
@@ -14,7 +14,8 @@ export async function GET(request: Request) {
 
   try {
     const dataPath = path.join(process.cwd(), 'netlify/functions/data/notes-index.json');
-    const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+    const raw = await readFile(dataPath, 'utf-8');
+    const data = JSON.parse(raw);
     return NextResponse.json({ ok: true, data }, { status: 200 });
   } catch (error: unknown) {
     const detail = error instanceof Error ? error.message : 'unknown';

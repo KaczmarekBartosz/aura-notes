@@ -11,11 +11,12 @@ export function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-export function useScrollProgress(ref: React.RefObject<HTMLElement | null>) {
+export function useScrollProgress(ref: React.RefObject<HTMLElement | null>, enabled = true) {
   const [progress, setProgress] = useState(0);
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
+    if (!enabled) return;
     const el = ref.current;
     if (!el) return;
 
@@ -28,23 +29,9 @@ export function useScrollProgress(ref: React.RefObject<HTMLElement | null>) {
 
     el.addEventListener('scroll', handleScroll, { passive: true });
     return () => el.removeEventListener('scroll', handleScroll);
-  }, [ref]);
+  }, [ref, enabled]);
 
   return { progress, scrollY };
-}
-
-export function useRelativeTime(iso?: string | null): string {
-  if (!iso) return '—';
-  const date = new Date(iso);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) return 'dzisiaj';
-  if (diffDays === 1) return 'wczoraj';
-  if (diffDays < 7) return `${diffDays} dni temu`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)} tyg. temu`;
-  return date.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' });
 }
 
 export function useCollapsibleHeader(scrollRef: React.RefObject<HTMLElement | null>, threshold = 10) {

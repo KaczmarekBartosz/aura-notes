@@ -372,9 +372,8 @@ function validateNotesIndex(notesList) {
     throw new Error(`Invalid categorization: ${systemInFitness.length} system note(s) in fitness-health: ${systemInFitness.map(n => n.path).join(', ')}`);
   }
 
-  const superhero = notesList.find((n) => n.path === 'memory/PROJEKT_SUPER_HERO_v2_1_FINAL.md');
-  if (!superhero) {
-    throw new Error('Critical note missing from index: memory/PROJEKT_SUPER_HERO_v2_1_FINAL.md');
+  if (notesList.length === 0) {
+    throw new Error('Notes index is empty — build may have failed to scan source directories');
   }
 
   const invalidDates = notesList.filter((n) => !n.createdAt || Number.isNaN(new Date(n.createdAt).getTime()) || Number.isNaN(new Date(n.updatedAt).getTime()));

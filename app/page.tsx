@@ -14,7 +14,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import type { NotesPayload, Note } from '@/lib/types';
-import { cn, triggerHaptic } from '@/lib/utils';
+import { cn, triggerHaptic, fmtRelative } from '@/lib/utils';
 import {
   useDebounce,
   useScrollProgress,
@@ -67,23 +67,10 @@ const CATEGORY_ICONS: Record<string, LucideIcon> = {
 
 /* ── Helpers ── */
 
-function fmtRelative(iso?: string | null): string {
-  if (!iso) return '—';
-  const date = new Date(iso);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return 'dzisiaj';
-  if (diffDays === 1) return 'wczoraj';
-  if (diffDays < 7) return `${diffDays} dni temu`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)} tyg. temu`;
-  return date.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' });
-}
+// fmtRelative is imported from @/lib/utils
 
-function highlightText(text: string, q: string): React.ReactNode {
-  if (!q.trim()) return text;
-  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regex = new RegExp(`(${escaped})`, 'gi');
+function highlightText(text: string, regex: RegExp | null): React.ReactNode {
+  if (!regex) return text;
   const parts = text.split(regex);
   return parts.map((part, i) =>
     i % 2 === 1 ? <mark key={i} className="bg-primary/30 text-foreground px-0.5 font-bold">{part}</mark> : part
@@ -104,6 +91,22 @@ function sanitizeTag(tag: string): string | null {
   return normalized.length > 0 ? normalized : null;
 }
 
+const FAVORITES_KEY = 'aura-favorites-v1';
+
+function loadFavoriteIds(): Set<string> {
+  try {
+    const raw = localStorage.getItem(FAVORITES_KEY);
+    if (raw) return new Set<string>(JSON.parse(raw) as string[]);
+  } catch { /* localStorage not available */ }
+  return new Set<string>();
+}
+
+function saveFavoriteIds(ids: Set<string>): void {
+  try {
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify([...ids]));
+  } catch { /* localStorage not available */ }
+}
+
 /* ═══════════════════════════════════════════════
    MAIN PAGE COMPONENT
    ═══════════════════════════════════════════════ */
@@ -112,7 +115,6 @@ export default function Page() {
   const { isGlass } = useTheme();
 
   /* ── Auth state ── */
-  const [token, setToken] = useState<string | null>(null);
   const [pass, setPass] = useState('');
   const [loginInput, setLoginInput] = useState('');
   const [loginError, setLoginError] = useState('');
@@ -149,6 +151,7 @@ export default function Page() {
   const appContainerRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef(0);
   const pullActive = useRef(false);
+  const justOpenedSortRef = useRef(false);
 
   /* ── Aura Spotlight (Pointer Tracking) ── */
   useEffect(() => {
@@ -185,8 +188,16 @@ export default function Page() {
 
   /* ── Derived hooks ── */
   const debouncedQuery = useDebounce(query, 150);
+
+  // Memoized RegExp — one instance reused across all highlightText calls per query change
+  const highlightRegex = useMemo(() => {
+    const q = debouncedQuery.trim();
+    if (!q) return null;
+    const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`(${escaped})`, 'gi');
+  }, [debouncedQuery]);
   const { progress: desktopReadProgress, scrollY: desktopScrollY } = useScrollProgress(desktopReaderRef);
-  const { progress: mobileReadProgress, scrollY: mobileScrollY } = useScrollProgress(mobileReaderRef);
+  const { progress: mobileReadProgress, scrollY: mobileScrollY } = useScrollProgress(mobileReaderRef, isReaderOpen);
   const { progress: listProgress } = useScrollProgress(listRef);
   const isHeaderHidden = useCollapsibleHeader(listRef);
 
@@ -234,6 +245,7 @@ export default function Page() {
   /* ── Ink spill Easter egg ── */
   useEffect(() => {
     let lastTime = 0;
+    const timers: ReturnType<typeof setTimeout>[] = [];
 
     function handleMotion(e: DeviceMotionEvent) {
       if (!e.accelerationIncludingGravity) return;
@@ -250,9 +262,10 @@ export default function Page() {
             x: Math.random() * 80 + 10,
             y: Math.random() * 80 + 10,
           }]);
-          setTimeout(() => {
+          const timer = setTimeout(() => {
             setInkSpills(prev => prev.filter(spill => spill.id !== now));
           }, 2500);
+          timers.push(timer);
         }
       }
     }
@@ -263,13 +276,16 @@ export default function Page() {
         return;
       }
       window.addEventListener('devicemotion', handleMotion);
-      return () => window.removeEventListener('devicemotion', handleMotion);
+      return () => {
+        window.removeEventListener('devicemotion', handleMotion);
+        timers.forEach(clearTimeout);
+      };
     }
   }, []);
 
   /* ── Data loading ── */
 
-  async function loadNotes(password: string) {
+  const loadNotes = useCallback(async (password: string) => {
     setLoading(true);
     setLoginError('');
     try {
@@ -280,29 +296,49 @@ export default function Page() {
       if (!res.ok || !json.ok) { setLoginError(json.error || 'Błąd API notatek'); return; }
       setUnlocking(true);
       await new Promise(r => setTimeout(r, 400));
+      // Merge persisted favorites from localStorage into the fresh payload
+      const favs = loadFavoriteIds();
+      const notesWithFavs = (json.data?.notes ?? []).map((n: Note) => ({
+        ...n,
+        isFavorite: favs.has(n.id),
+      }));
       setPass(password);
-      setToken(password);
-      setPayload(json.data);
-      if (json.data?.notes?.length) setSelectedId(json.data.notes[0].id);
+      setPayload({ ...json.data, notes: notesWithFavs });
+      if (notesWithFavs.length) setSelectedId(notesWithFavs[0].id);
     } catch {
       setLoginError('Błąd sieci.');
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   /* ── Derived data ── */
 
   const notes = useMemo(() => payload?.notes ?? [], [payload]);
 
-  const toggleFavorite = useCallback((e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    if (payload) {
-      setPayload({
-        ...payload,
-        notes: payload.notes.map(n => n.id === id ? { ...n, isFavorite: !n.isFavorite } : n),
+  // Pre-compute timestamps once to avoid Date construction in every sort comparison
+  const noteTimestamps = useMemo(() => {
+    const map = new Map<string, { updated: number; created: number }>();
+    for (const n of notes) {
+      map.set(n.id, {
+        updated: new Date(n.updatedAt).getTime(),
+        created: new Date(n.createdAt || n.updatedAt).getTime(),
       });
     }
+    return map;
+  }, [notes]);
+
+  const toggleFavorite = useCallback((e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (!payload) return;
+    const favs = loadFavoriteIds();
+    if (favs.has(id)) favs.delete(id);
+    else favs.add(id);
+    saveFavoriteIds(favs);
+    setPayload({
+      ...payload,
+      notes: payload.notes.map(n => n.id === id ? { ...n, isFavorite: !n.isFavorite } : n),
+    });
   }, [payload]);
 
   const categories = useMemo(() => {
@@ -399,15 +435,17 @@ export default function Page() {
     });
 
     return out.sort((a, b) => {
+      const aTs = noteTimestamps.get(a.id) ?? { updated: 0, created: 0 };
+      const bTs = noteTimestamps.get(b.id) ?? { updated: 0, created: 0 };
       switch (sort) {
-        case 'updated_asc': return +new Date(a.updatedAt) - +new Date(b.updatedAt);
-        case 'created_desc': return +new Date(b.createdAt || b.updatedAt) - +new Date(a.createdAt || a.updatedAt);
-        case 'created_asc': return +new Date(a.createdAt || a.updatedAt) - +new Date(b.createdAt || b.updatedAt);
+        case 'updated_asc': return aTs.updated - bTs.updated;
+        case 'created_desc': return bTs.created - aTs.created;
+        case 'created_asc': return aTs.created - bTs.created;
         case 'title_asc': return a.title.localeCompare(b.title, 'pl');
-        default: return +new Date(b.updatedAt) - +new Date(a.updatedAt);
+        default: return bTs.updated - aTs.updated;
       }
     });
-  }, [notes, activeTab, activeCategory, activeTag, debouncedQuery, sort]);
+  }, [notes, noteTimestamps, activeTab, activeCategory, activeTag, debouncedQuery, sort]);
 
   const selected = filtered.find((n) => n.id === selectedId) || notes.find((n) => n.id === selectedId) || null;
 
@@ -445,8 +483,12 @@ export default function Page() {
   /* ── Close sort menu on outside click ── */
   useEffect(() => {
     if (!showSortMenu) return;
-    const handler = () => setShowSortMenu(false);
-    setTimeout(() => document.addEventListener('click', handler), 0);
+    const handler = () => {
+      // Skip if the menu was just opened by this same click (justOpenedSortRef flag set by sort button)
+      if (justOpenedSortRef.current) { justOpenedSortRef.current = false; return; }
+      setShowSortMenu(false);
+    };
+    document.addEventListener('click', handler);
     return () => document.removeEventListener('click', handler);
   }, [showSortMenu]);
 
@@ -454,7 +496,7 @@ export default function Page() {
      LOGIN SCREEN
      ═══════════════════════════════════════════════ */
 
-  if (!token) {
+  if (!pass) {
     return (
       <div className={cn(
         "aura-theme-scope flex min-h-[100svh] min-h-dvh w-full max-w-full flex-col items-center justify-center p-5 relative overflow-hidden box-border pt-safe transition-all duration-[400ms]",
@@ -702,7 +744,7 @@ export default function Page() {
                 )}
                 {activeTab === 'browse' && (
                   <button
-                    onClick={(e) => { e.stopPropagation(); setShowSortMenu(!showSortMenu); }}
+                    onClick={() => { justOpenedSortRef.current = true; setShowSortMenu(prev => !prev); }}
                     className={cn(
                       'min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors relative',
                       isGlass ? 'hover:bg-[var(--glass-bg-hover)] rounded-full' : 'hover:bg-muted'
@@ -1011,7 +1053,7 @@ export default function Page() {
                           'line-clamp-2 text-[0.95rem] leading-snug flex-1',
                           isGlass ? 'font-semibold tracking-tight' : 'font-bold tracking-tight'
                         )}>
-                          {debouncedQuery ? highlightText(n.title, debouncedQuery.trim()) : n.title}
+                          {highlightRegex ? highlightText(n.title, highlightRegex) : n.title}
                         </span>
                         <div
                           onClick={(e) => { triggerHaptic('light'); e.stopPropagation(); toggleFavorite(e, n.id); }}
@@ -1034,7 +1076,7 @@ export default function Page() {
                         'mt-1 text-[0.82rem] leading-snug line-clamp-2',
                         isGlass ? 'font-normal text-foreground/78' : 'font-medium text-foreground/72'
                       )}>
-                        {snippet ? highlightText(snippet, debouncedQuery.trim()) : excerpt}
+                        {snippet ? highlightText(snippet, highlightRegex) : excerpt}
                       </p>
 
                       <div className={cn(
