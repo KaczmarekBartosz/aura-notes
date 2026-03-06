@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { router } from "expo-router";
 import { Search, X } from "lucide-react-native";
@@ -17,16 +17,17 @@ export default function SearchScreen() {
   const { colors, reduceMotionEnabled } = useAppTheme();
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
 
   const results = useMemo(() => {
-    if (!query.trim()) return [];
+    if (!deferredQuery.trim()) return [];
     return filterAndSortNotes(notes, {
-      query,
+      query: deferredQuery,
       category: null,
       tag: null,
       sort: "updated_desc"
     });
-  }, [notes, query]);
+  }, [notes, deferredQuery]);
 
   return (
     <ScreenContainer edges={["top", "left", "right", "bottom"]}>
@@ -42,7 +43,7 @@ export default function SearchScreen() {
             <View style={[styles.handle, { backgroundColor: colors.borderStrong }]} />
             <View style={styles.header}>
               <View style={styles.headerCopy}>
-                <Text style={[styles.title, { color: colors.foreground }]}>Search Vault</Text>
+                <Text style={[styles.title, { color: colors.foreground }]}>Szukaj w vault</Text>
                 <Text style={[styles.subtitle, { color: colors.muted }]}>Tytuły, treść, tagi i kategorie. Wyniki pojawiają się natychmiast.</Text>
               </View>
               <Pressable
@@ -84,7 +85,7 @@ export default function SearchScreen() {
             </SurfaceCard>
 
             <SurfaceCard style={styles.summaryCard} contentStyle={styles.summaryContent}>
-              <Text style={[styles.summaryEyebrow, { color: colors.primary }]}>Live Search</Text>
+              <Text style={[styles.summaryEyebrow, { color: colors.primary }]}>Wyszukiwanie</Text>
               <Text style={[styles.summaryTitle, { color: colors.foreground }]}>
                 {query.trim() ? `${results.length} dopasowań` : "Wpisz frazę, żeby przeszukać cały vault"}
               </Text>
@@ -96,7 +97,7 @@ export default function SearchScreen() {
           <Animated.View entering={reduceMotionEnabled ? undefined : FadeInDown.delay(50 + index * 18).duration(240)}>
             <NoteCard
               note={item}
-              query={query}
+              query={deferredQuery}
               onPress={(noteId) => {
                 void triggerHaptic("light");
                 router.push(`/reader/${noteId}`);
@@ -111,7 +112,7 @@ export default function SearchScreen() {
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
         ListEmptyComponent={
           <SurfaceCard style={styles.emptyCard} contentStyle={styles.emptyContent}>
-            <Text style={[styles.emptyTitle, { color: colors.foreground }]}> {query.trim() ? "Brak wyników" : "Zacznij od frazy"}</Text>
+            <Text style={[styles.emptyTitle, { color: colors.foreground }]}>{query.trim() ? "Brak wyników" : "Zacznij od frazy"}</Text>
             <Text style={[styles.emptyText, { color: colors.muted }]}>
               {query.trim()
                 ? "Spróbuj innego słowa, tagu albo kategorii. Search działa na treści całego vaultu."

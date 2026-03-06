@@ -3,6 +3,7 @@ import { AppState, type AppStateStatus } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 import type { Note } from "../types/note";
 import { bootstrapNotes, clearLocalCache, readCacheInfo, syncNotes, toggleFavorite } from "../services/notesRepository";
+import { buildNotesSignature } from "../utils/note-data";
 
 type NotesContextValue = {
   notes: Note[];
@@ -24,6 +25,7 @@ const NotesContext = createContext<NotesContextValue | null>(null);
 export function NotesProvider({ children }: PropsWithChildren) {
   const isMountedRef = useRef(true);
   const refreshInFlightRef = useRef(false);
+  const notesSignatureRef = useRef("");
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -34,12 +36,32 @@ export function NotesProvider({ children }: PropsWithChildren) {
     lastSyncedAt: null
   });
 
+  const applyNotes = useCallback((nextNotes: Note[]) => {
+    const nextSignature = buildNotesSignature(nextNotes);
+    if (nextSignature === notesSignatureRef.current) {
+      return;
+    }
+
+    notesSignatureRef.current = nextSignature;
+    setNotes(nextNotes);
+  }, []);
+
+  const updateCacheInfo = useCallback((nextCacheInfo: { count: number; lastSyncedAt: string | null }) => {
+    setCacheInfo((current) => {
+      if (current.count === nextCacheInfo.count && current.lastSyncedAt === nextCacheInfo.lastSyncedAt) {
+        return current;
+      }
+      return nextCacheInfo;
+    });
+  }, []);
+
   const reloadCacheInfo = useCallback(async () => {
     const next = await readCacheInfo();
     if (isMountedRef.current) {
-      setCacheInfo(next);
+      updateCacheInfo(next);
     }
-  }, []);
+    return next;
+  }, [updateCacheInfo]);
 
   const runRefresh = useCallback(
     async (showSpinner: boolean) => {
@@ -53,10 +75,10 @@ export function NotesProvider({ children }: PropsWithChildren) {
 
       try {
         const result = await syncNotes();
-        if (!isMountedRef.current) return;
-        setNotes(result.notes);
-        setSource(result.source);
         await reloadCacheInfo();
+        if (!isMountedRef.current) return;
+        applyNotes(result.notes);
+        setSource((current) => (current === result.source ? current : result.source));
       } catch (err) {
         if (isMountedRef.current) {
           setError(err instanceof Error ? err.message : "Nie udało się odświeżyć notatek.");
@@ -68,7 +90,7 @@ export function NotesProvider({ children }: PropsWithChildren) {
         }
       }
     },
-    [reloadCacheInfo]
+    [applyNotes, reloadCacheInfo, updateCacheInfo]
   );
 
   const refresh = useCallback(async () => {
@@ -79,29 +101,49 @@ export function NotesProvider({ children }: PropsWithChildren) {
     await runRefresh(false);
   }, [runRefresh]);
 
-  const toggleFavoriteById = useCallback(async (noteId: string) => {
-    setNotes((current) =>
-      current.map((note) => (note.id === noteId ? { ...note, isFavorite: !note.isFavorite } : note))
-    );
+  const toggleFavoriteById = useCallback(
+    async (noteId: string) => {
+      const currentFavorite = Boolean(notes.find((note) => note.id === noteId)?.isFavorite);
+      const optimisticFavorite = !currentFavorite;
 
-    try {
-      const nextNotes = await toggleFavorite(noteId);
-      setNotes(nextNotes);
-      await reloadCacheInfo();
-    } catch {
-      setNotes((current) =>
-        current.map((note) => (note.id === noteId ? { ...note, isFavorite: !note.isFavorite } : note))
-      );
-    }
-  }, [reloadCacheInfo]);
+      setNotes((current) => {
+        const nextNotes = current.map((note) => (note.id === noteId ? { ...note, isFavorite: optimisticFavorite } : note));
+        notesSignatureRef.current = buildNotesSignature(nextNotes);
+        return nextNotes;
+      });
+
+      try {
+        const persistedFavorite = await toggleFavorite(noteId);
+        if (!isMountedRef.current) return;
+
+        if (persistedFavorite !== optimisticFavorite) {
+          setNotes((current) => {
+            const nextNotes = current.map((note) => (note.id === noteId ? { ...note, isFavorite: persistedFavorite } : note));
+            notesSignatureRef.current = buildNotesSignature(nextNotes);
+            return nextNotes;
+          });
+        }
+
+        await reloadCacheInfo();
+      } catch {
+        if (!isMountedRef.current) return;
+        setNotes((current) => {
+          const nextNotes = current.map((note) => (note.id === noteId ? { ...note, isFavorite: currentFavorite } : note));
+          notesSignatureRef.current = buildNotesSignature(nextNotes);
+          return nextNotes;
+        });
+      }
+    },
+    [notes, reloadCacheInfo]
+  );
 
   const resetCache = useCallback(async () => {
     await clearLocalCache();
     const initial = await bootstrapNotes();
-    setNotes(initial.notes);
+    applyNotes(initial.notes);
     setSource(initial.source);
     await reloadCacheInfo();
-  }, [reloadCacheInfo]);
+  }, [applyNotes, reloadCacheInfo]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -110,7 +152,7 @@ export function NotesProvider({ children }: PropsWithChildren) {
       try {
         const initial = await bootstrapNotes();
         if (!mounted) return;
-        setNotes(initial.notes);
+        applyNotes(initial.notes);
         setSource(initial.source);
         await reloadCacheInfo();
       } catch (err) {
@@ -131,7 +173,7 @@ export function NotesProvider({ children }: PropsWithChildren) {
       mounted = false;
       isMountedRef.current = false;
     };
-  }, [backgroundRefresh, reloadCacheInfo]);
+  }, [applyNotes, backgroundRefresh, reloadCacheInfo]);
 
   useEffect(() => {
     let currentAppState: AppStateStatus = AppState.currentState;

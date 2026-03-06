@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useDeferredValue, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -77,6 +77,7 @@ export default function HomeScreen() {
   const [onlyFavorites, setOnlyFavorites] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [lastOpenedId, setLastOpenedId] = useState<string | null>(null);
+  const deferredQuery = useDeferredValue(query);
 
   const scrollY = useSharedValue(0);
   const layoutTransition = reduceMotionEnabled
@@ -110,13 +111,13 @@ export default function HomeScreen() {
   const filteredNotes = useMemo(
     () =>
       filterAndSortNotes(notes, {
-        query,
+        query: deferredQuery,
         category: activeCategory,
         tag: activeTag,
         sort,
         onlyFavorites
       }),
-    [notes, query, activeCategory, activeTag, sort, onlyFavorites]
+    [notes, deferredQuery, activeCategory, activeTag, sort, onlyFavorites]
   );
 
   useEffect(() => {
@@ -151,6 +152,11 @@ export default function HomeScreen() {
   );
 
   const sections = useMemo<NoteSection[]>(() => {
+    const sectionCounts = new Map<string, number>();
+    for (const note of filteredNotes) {
+      sectionCounts.set(note.category, (sectionCounts.get(note.category) ?? 0) + 1);
+    }
+
     const grouped = new Map<string, Note[]>();
     for (const note of visibleNotes) {
       const current = grouped.get(note.category) ?? [];
@@ -163,7 +169,7 @@ export default function HomeScreen() {
       .map(([category, data]) => ({
         key: category,
         title: getCategoryLabel(category),
-        count: filteredNotes.filter((note) => note.category === category).length,
+        count: sectionCounts.get(category) ?? data.length,
         data
       }));
   }, [filteredNotes, visibleNotes]);
@@ -185,7 +191,7 @@ export default function HomeScreen() {
     {
       label: "Sync",
       value: cacheInfo.lastSyncedAt ? formatRelativeDate(cacheInfo.lastSyncedAt) : "brak",
-      description: refreshing ? "odświeżam" : "offline ready",
+      description: refreshing ? "odświeżam" : "offline",
       icon: <RefreshCw size={14} color={colors.primary} />
     }
   ];
@@ -289,7 +295,7 @@ export default function HomeScreen() {
 
             {lastOpenedNote ? (
               <View style={styles.continueCopy}>
-                <Text style={[styles.continueEyebrow, { color: colors.primary }]}>Continue Reading</Text>
+                <Text style={[styles.continueEyebrow, { color: colors.primary }]}>Kontynuuj czytanie</Text>
                 <Text style={[styles.continueTitle, { color: colors.foreground }]} numberOfLines={2}>
                   {lastOpenedNote.title}
                 </Text>
@@ -299,7 +305,7 @@ export default function HomeScreen() {
               </View>
             ) : (
               <View style={styles.continueCopy}>
-                <Text style={[styles.continueEyebrow, { color: colors.primary }]}>Vault Ready</Text>
+                <Text style={[styles.continueEyebrow, { color: colors.primary }]}>Vault gotowy</Text>
                 <Text style={[styles.continueTitle, { color: colors.foreground }]}>Wszystkie notatki są gotowe offline.</Text>
                 <Text style={[styles.continueBody, { color: colors.muted }]}>Pierwsze wejście ma od razu pokazać zawartość z lokalnego cache.</Text>
               </View>
@@ -490,7 +496,7 @@ export default function HomeScreen() {
                     <View key={note.id}>
                       <NoteCard
                         note={note}
-                        query={query}
+                        query={deferredQuery}
                         onPress={(noteId) => {
                           void openNote(noteId);
                         }}

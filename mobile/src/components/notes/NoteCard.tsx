@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { ArrowUpRight, Star } from "lucide-react-native";
@@ -16,7 +17,7 @@ type NoteCardProps = {
   onToggleFavorite: (noteId: string) => void;
 };
 
-export function NoteCard({ note, query, onPress, onToggleFavorite }: NoteCardProps) {
+function NoteCardComponent({ note, query, onPress, onToggleFavorite }: NoteCardProps) {
   const { colors, isGlass } = useAppTheme();
   const CategoryIcon = getCategoryIcon(note.category);
   const preview = getQuerySnippet(note, query);
@@ -130,6 +131,23 @@ export function NoteCard({ note, query, onPress, onToggleFavorite }: NoteCardPro
     </SurfaceCard>
   );
 }
+
+function areEqual(prev: NoteCardProps, next: NoteCardProps) {
+  return (
+    prev.query === next.query &&
+    prev.note.id === next.note.id &&
+    prev.note.category === next.note.category &&
+    prev.note.title === next.note.title &&
+    prev.note.excerpt === next.note.excerpt &&
+    prev.note.updatedAt === next.note.updatedAt &&
+    prev.note.words === next.note.words &&
+    prev.note.readingMinutes === next.note.readingMinutes &&
+    prev.note.isFavorite === next.note.isFavorite &&
+    prev.note.tags.join("|") === next.note.tags.join("|")
+  );
+}
+
+export const NoteCard = memo(NoteCardComponent, areEqual);
 
 const styles = StyleSheet.create({
   content: {

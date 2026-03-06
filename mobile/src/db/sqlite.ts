@@ -50,13 +50,17 @@ export async function readFavoriteIds(): Promise<Set<string>> {
 
 export async function readCachedNotes(): Promise<Note[]> {
   const db = await getDb();
-  const rows = await db.getAllAsync<{ payload: string }>("SELECT payload FROM notes ORDER BY updated_at DESC");
-  const favoriteIds = await readFavoriteIds();
+  const rows = await db.getAllAsync<{ payload: string; favorite_id: string | null }>(`
+    SELECT notes.payload, favorites.note_id as favorite_id
+    FROM notes
+    LEFT JOIN favorites ON favorites.note_id = notes.id
+    ORDER BY notes.updated_at DESC
+  `);
 
-  return rows
-    .map((row) => safeParseNote(row.payload))
-    .filter((note): note is Note => Boolean(note))
-    .map((note) => ({ ...note, isFavorite: favoriteIds.has(note.id) }));
+  return rows.flatMap((row) => {
+      const note = safeParseNote(row.payload);
+      return note ? [{ ...note, isFavorite: Boolean(row.favorite_id) }] : [];
+    });
 }
 
 export async function writeNotesToCache(notes: Note[], generatedAt?: string) {

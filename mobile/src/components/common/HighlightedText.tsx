@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Text, type StyleProp, type TextStyle } from "react-native";
 
 type HighlightedTextProps = {
@@ -9,7 +10,7 @@ type HighlightedTextProps = {
   numberOfLines?: number;
 };
 
-export function HighlightedText({ text, query, className, style, highlightStyle, numberOfLines }: HighlightedTextProps) {
+function HighlightedTextComponent({ text, query, className, style, highlightStyle, numberOfLines }: HighlightedTextProps) {
   const normalizedQuery = query.trim();
   if (!normalizedQuery) {
     return (
@@ -38,3 +39,5 @@ export function HighlightedText({ text, query, className, style, highlightStyle,
     </Text>
   );
 }
+
+export const HighlightedText = memo(HighlightedTextComponent);

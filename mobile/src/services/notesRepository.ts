@@ -1,4 +1,12 @@
-import { clearCache, getCacheStats, initializeDb, readCachedNotes, toggleFavoriteInDb, writeNotesToCache } from "../db/sqlite";
+import {
+  clearCache,
+  getCacheStats,
+  getMeta,
+  initializeDb,
+  readCachedNotes,
+  toggleFavoriteInDb,
+  writeNotesToCache
+} from "../db/sqlite";
 import type { Note } from "../types/note";
 import { fetchNotesIndex } from "./api";
 import { readBundledNotes } from "./bundled-notes";
@@ -46,15 +54,20 @@ export async function syncNotes(): Promise<NotesLoadResult> {
     return hydrateFromBundledOrSeed();
   }
 
+  const [cached, lastGeneratedAt] = await Promise.all([readCachedNotes(), getMeta("last_generated_at")]);
+
+  if (cached.length > 0 && payload.generatedAt && lastGeneratedAt === payload.generatedAt) {
+    return { notes: cached, source: "cache" };
+  }
+
   await writeNotesToCache(payload.notes, payload.generatedAt);
-  const cached = await readCachedNotes();
-  return { notes: cached, source: "api" };
+  const nextCached = await readCachedNotes();
+  return { notes: nextCached, source: "api" };
 }
 
-export async function toggleFavorite(noteId: string): Promise<Note[]> {
+export async function toggleFavorite(noteId: string): Promise<boolean> {
   await initializeDb();
-  await toggleFavoriteInDb(noteId);
-  return readCachedNotes();
+  return toggleFavoriteInDb(noteId);
 }
 
 export async function readCacheInfo() {

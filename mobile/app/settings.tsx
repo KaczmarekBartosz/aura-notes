@@ -75,7 +75,7 @@ export default function SettingsScreen() {
 
         <View style={styles.header}>
           <View style={styles.headerCopy}>
-            <Text style={[styles.title, { color: colors.foreground }]}>Settings</Text>
+            <Text style={[styles.title, { color: colors.foreground }]}>Ustawienia</Text>
             <Text style={[styles.subtitle, { color: colors.muted }]}>Motywy, cache, synchronizacja i zachowanie aplikacji na iPhone.</Text>
           </View>
           <Pressable
@@ -93,7 +93,7 @@ export default function SettingsScreen() {
 
         <Animated.View entering={reduceMotionEnabled ? undefined : FadeInDown.duration(280)}>
           <SurfaceCard style={styles.section} contentStyle={styles.sectionInner} intensity={resolvedTheme === "dark" ? 60 : 56}>
-            <Text style={[styles.sectionEyebrow, { color: colors.primary }]}>Current Theme</Text>
+            <Text style={[styles.sectionEyebrow, { color: colors.primary }]}>Aktywny motyw</Text>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>{themeLabel}</Text>
             <Text style={[styles.sectionDescription, { color: colors.muted }]}>{themeDescription}</Text>
             <Text style={[styles.sectionCaption, { color: colors.subtle }]}>
@@ -103,7 +103,7 @@ export default function SettingsScreen() {
         </Animated.View>
 
         <SurfaceCard style={styles.section} contentStyle={styles.sectionInner}>
-          <Text style={[styles.sectionEyebrow, { color: colors.primary }]}>Core Modes</Text>
+          <Text style={[styles.sectionEyebrow, { color: colors.primary }]}>Tryby główne</Text>
           <Text style={[styles.sectionTitleSmall, { color: colors.foreground }]}>System, Light, Dark, Crystal Line</Text>
           <Text style={[styles.sectionCaption, { color: colors.muted }]}>Tryby bazowe oraz najnowszy premium motyw jako główna ścieżka wizualna.</Text>
           <View style={styles.grid}>{primaryThemes.map(renderThemeCard)}</View>
@@ -145,7 +145,7 @@ export default function SettingsScreen() {
               style={[styles.actionButton, { backgroundColor: colors.primarySoft, borderColor: colors.border }]}
             >
               <RefreshCw size={14} color={colors.primary} />
-              <Text style={[styles.actionLabel, { color: colors.primary }]}>{refreshing ? "Sync..." : "Sync now"}</Text>
+              <Text style={[styles.actionLabel, { color: colors.primary }]}>{refreshing ? "Sync..." : "Synchronizuj"}</Text>
             </Pressable>
 
             <Pressable
@@ -165,7 +165,7 @@ export default function SettingsScreen() {
               style={[styles.actionButton, { backgroundColor: "rgba(219,78,109,0.1)", borderColor: "rgba(219,78,109,0.22)" }]}
             >
               <Trash2 size={14} color={colors.destructive} />
-              <Text style={[styles.actionLabel, { color: colors.destructive }]}>Clear cache</Text>
+              <Text style={[styles.actionLabel, { color: colors.destructive }]}>Wyczyść cache</Text>
             </Pressable>
           </View>
         </SurfaceCard>

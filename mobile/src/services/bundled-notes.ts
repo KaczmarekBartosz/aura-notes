@@ -1,4 +1,5 @@
 import type { Note } from "../types/note";
+import { normalizeNotePayload } from "../utils/note-data";
 
 type BundledPayload = {
   generatedAt?: string;
@@ -9,7 +10,9 @@ type BundledPayload = {
 let cachedPayload: BundledPayload | null = null;
 
 function parseBundledPayload(raw: any): BundledPayload {
-  const notes = Array.isArray(raw?.notes) ? raw.notes : [];
+  const notes = Array.isArray(raw?.notes)
+    ? raw.notes.map(normalizeNotePayload).filter((note: Note | null): note is Note => Boolean(note))
+    : [];
   return {
     generatedAt: typeof raw?.generatedAt === "string" ? raw.generatedAt : new Date().toISOString(),
     latestUpdatedAt: raw?.latestUpdatedAt ?? null,
@@ -35,4 +38,3 @@ export function readBundledNotes(): { notes: Note[]; generatedAt: string } | nul
     return null;
   }
 }
-

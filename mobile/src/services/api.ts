@@ -1,27 +1,9 @@
 import type { Note, NotesPayload } from "../types/note";
+import { normalizeNotePayload } from "../utils/note-data";
 
 const API_URL = process.env.EXPO_PUBLIC_NOTES_API_URL;
 const API_PASSWORD = process.env.EXPO_PUBLIC_NOTES_PASSWORD;
-
-function normalizeNote(raw: any): Note | null {
-  if (!raw || typeof raw.id !== "string" || typeof raw.title !== "string") return null;
-
-  return {
-    id: raw.id,
-    path: String(raw.path ?? ""),
-    folder: String(raw.folder ?? ""),
-    category: String(raw.category ?? "other"),
-    title: String(raw.title ?? ""),
-    excerpt: String(raw.excerpt ?? ""),
-    createdAt: raw.createdAt ? String(raw.createdAt) : undefined,
-    updatedAt: String(raw.updatedAt ?? new Date().toISOString()),
-    readingMinutes: Number(raw.readingMinutes ?? 1),
-    words: Number(raw.words ?? 0),
-    tags: Array.isArray(raw.tags) ? raw.tags.map((tag: unknown) => String(tag)) : [],
-    content: String(raw.content ?? ""),
-    isFavorite: Boolean(raw.isFavorite)
-  };
-}
+const API_TIMEOUT_MS = 8000;
 
 function parsePayload(json: any): NotesPayload | null {
   if (!json) return null;
@@ -34,7 +16,7 @@ function parsePayload(json: any): NotesPayload | null {
 
   if (!notesSource) return null;
 
-  const notes = notesSource.map(normalizeNote).filter((note: Note | null): note is Note => Boolean(note));
+  const notes = notesSource.map(normalizeNotePayload).filter((note: Note | null): note is Note => Boolean(note));
 
   return {
     notes,
@@ -52,10 +34,16 @@ export async function fetchNotesIndex(): Promise<NotesPayload | null> {
   }
 
   try {
-    const response = await fetch(API_URL, { headers });
-    if (!response.ok) return null;
-    const json = await response.json();
-    return parsePayload(json);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+    try {
+      const response = await fetch(API_URL, { headers, signal: controller.signal });
+      if (!response.ok) return null;
+      const json = await response.json();
+      return parsePayload(json);
+    } finally {
+      clearTimeout(timeoutId);
+    }
   } catch {
     return null;
   }

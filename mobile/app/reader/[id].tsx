@@ -44,7 +44,7 @@ export default function ReaderScreen() {
   const { notes, toggleFavoriteById } = useNotes();
   const { colors, resolvedTheme, reduceMotionEnabled } = useAppTheme();
   const insets = useSafeAreaInsets();
-  const [progress, setProgress] = useState(0);
+  const [progressPercent, setProgressPercent] = useState(0);
   const [fontScale, setFontScale] = useState(DEFAULT_FONT_SCALE);
   const [isReady, setIsReady] = useState(false);
   const scrollViewRef = useRef<any>(null);
@@ -53,10 +53,12 @@ export default function ReaderScreen() {
   const shouldRestoreScrollRef = useRef(false);
   const lastSavedAtRef = useRef(0);
   const fontScaleRef = useRef(DEFAULT_FONT_SCALE);
+  const progressPercentRef = useRef(0);
 
   const note = useMemo(() => notes.find((item) => item.id === id) ?? null, [id, notes]);
 
   const scrollY = useSharedValue(0);
+  const progressValue = useSharedValue(0);
   const pinchPreviewScale = useSharedValue(1);
   const edgeSwipeActive = useSharedValue(false);
 
@@ -123,6 +125,10 @@ export default function ReaderScreen() {
     transform: [{ scale: pinchPreviewScale.value }]
   }));
 
+  const progressFillStyle = useAnimatedStyle(() => ({
+    width: `${Math.round(progressValue.value * 100)}%`
+  }));
+
   const markdownRules = useMemo(
     () => ({
       fence: (node: any) => {
@@ -160,8 +166,89 @@ export default function ReaderScreen() {
     [fontScale, resolvedTheme]
   );
 
+  const markdownStyles = useMemo(
+    () => ({
+      body: {
+        color: colors.foreground,
+        fontSize: 17 * fontScale,
+        lineHeight: 29 * fontScale,
+        fontWeight: "500" as const
+      },
+      heading1: {
+        color: colors.foreground,
+        fontSize: 32 * fontScale,
+        lineHeight: 36 * fontScale,
+        marginTop: 12,
+        marginBottom: 14,
+        fontWeight: "800" as const
+      },
+      heading2: {
+        color: colors.foreground,
+        fontSize: 26 * fontScale,
+        lineHeight: 31 * fontScale,
+        marginTop: 20,
+        marginBottom: 10,
+        fontWeight: "800" as const
+      },
+      heading3: {
+        color: colors.foreground,
+        fontSize: 21 * fontScale,
+        lineHeight: 26 * fontScale,
+        marginTop: 18,
+        marginBottom: 8,
+        fontWeight: "700" as const
+      },
+      paragraph: {
+        marginTop: 0,
+        marginBottom: 14
+      },
+      bullet_list: {
+        marginBottom: 14
+      },
+      ordered_list: {
+        marginBottom: 14
+      },
+      list_item: {
+        color: colors.foreground
+      },
+      code_inline: {
+        backgroundColor: colors.codeBackground,
+        borderRadius: 8,
+        paddingHorizontal: 6,
+        paddingVertical: 2,
+        color: colors.codeForeground
+      },
+      blockquote: {
+        borderLeftWidth: 3,
+        borderLeftColor: colors.quoteBorder,
+        paddingLeft: 14,
+        paddingVertical: 8,
+        marginBottom: 14,
+        color: colors.muted,
+        backgroundColor: colors.quoteBackground,
+        borderTopRightRadius: 12,
+        borderBottomRightRadius: 12
+      },
+      link: {
+        color: colors.primary,
+        textDecorationLine: "underline" as const
+      },
+      hr: {
+        backgroundColor: colors.border,
+        height: 1,
+        marginTop: 8,
+        marginBottom: 16
+      }
+    }),
+    [colors, fontScale]
+  );
+
   useEffect(() => {
     if (!note?.id) return;
+    setIsReady(false);
+    setProgressPercent(0);
+    progressPercentRef.current = 0;
+    progressValue.value = 0;
     let mounted = true;
     (async () => {
       await saveLastOpenedNoteId(note.id);
@@ -218,7 +305,13 @@ export default function ReaderScreen() {
             const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
             scrollY.value = contentOffset.y;
             const maxScroll = contentSize.height - layoutMeasurement.height;
-            setProgress(maxScroll <= 0 ? 0 : contentOffset.y / maxScroll);
+            const nextProgress = maxScroll <= 0 ? 0 : contentOffset.y / maxScroll;
+            progressValue.value = nextProgress;
+            const nextPercent = Math.round(nextProgress * 100);
+            if (nextPercent !== progressPercentRef.current) {
+              progressPercentRef.current = nextPercent;
+              setProgressPercent(nextPercent);
+            }
             currentScrollYRef.current = contentOffset.y;
 
             const now = Date.now();
@@ -234,7 +327,7 @@ export default function ReaderScreen() {
             <SurfaceCard style={styles.heroCard} contentStyle={styles.heroContent} intensity={resolvedTheme === "dark" ? 62 : 56}>
               <Text style={[styles.heroEyebrow, { color: colors.primary }]}>{getCategoryLabel(note.category)}</Text>
               <Text style={[styles.heroTitle, { color: colors.foreground }]}>{note.title}</Text>
-              <Text style={[styles.heroSummary, { color: colors.muted }]}>Luksusowy reader z lokalnym restore scrolla, markdownem i code highlightingiem.</Text>
+              <Text style={[styles.heroSummary, { color: colors.muted }]}>{note.excerpt}</Text>
 
               <View style={styles.metaGrid}>
                 <View style={[styles.metaChip, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
@@ -253,7 +346,7 @@ export default function ReaderScreen() {
 
               <View style={styles.heroFooter}>
                 <Text style={[styles.heroFooterText, { color: colors.subtle }]}>Aktualizacja {formatRelativeDate(note.updatedAt)}</Text>
-                <Text style={[styles.heroFooterText, { color: colors.subtle }]}>{Math.round(progress * 100)}% przeczytane</Text>
+                <Text style={[styles.heroFooterText, { color: colors.subtle }]}>{progressPercent}% przeczytane</Text>
               </View>
 
               {!!note.tags.length ? (
@@ -279,79 +372,7 @@ export default function ReaderScreen() {
               <Animated.View style={pinchPreviewStyle}>
                 <Markdown
                   rules={markdownRules}
-                  style={{
-                    body: {
-                      color: colors.foreground,
-                      fontSize: 17 * fontScale,
-                      lineHeight: 29 * fontScale,
-                      fontWeight: "500"
-                    },
-                    heading1: {
-                      color: colors.foreground,
-                      fontSize: 32 * fontScale,
-                      lineHeight: 36 * fontScale,
-                      marginTop: 12,
-                      marginBottom: 14,
-                      fontWeight: "800"
-                    },
-                    heading2: {
-                      color: colors.foreground,
-                      fontSize: 26 * fontScale,
-                      lineHeight: 31 * fontScale,
-                      marginTop: 20,
-                      marginBottom: 10,
-                      fontWeight: "800"
-                    },
-                    heading3: {
-                      color: colors.foreground,
-                      fontSize: 21 * fontScale,
-                      lineHeight: 26 * fontScale,
-                      marginTop: 18,
-                      marginBottom: 8,
-                      fontWeight: "700"
-                    },
-                    paragraph: {
-                      marginTop: 0,
-                      marginBottom: 14
-                    },
-                    bullet_list: {
-                      marginBottom: 14
-                    },
-                    ordered_list: {
-                      marginBottom: 14
-                    },
-                    list_item: {
-                      color: colors.foreground
-                    },
-                    code_inline: {
-                      backgroundColor: colors.codeBackground,
-                      borderRadius: 8,
-                      paddingHorizontal: 6,
-                      paddingVertical: 2,
-                      color: colors.codeForeground
-                    },
-                    blockquote: {
-                      borderLeftWidth: 3,
-                      borderLeftColor: colors.quoteBorder,
-                      paddingLeft: 14,
-                      paddingVertical: 8,
-                      marginBottom: 14,
-                      color: colors.muted,
-                      backgroundColor: colors.quoteBackground,
-                      borderTopRightRadius: 12,
-                      borderBottomRightRadius: 12
-                    },
-                    link: {
-                      color: colors.primary,
-                      textDecorationLine: "underline"
-                    },
-                    hr: {
-                      backgroundColor: colors.border,
-                      height: 1,
-                      marginTop: 8,
-                      marginBottom: 16
-                    }
-                  }}
+                  style={markdownStyles}
                   onLinkPress={(url) => {
                     void triggerHaptic("light");
                     void Linking.openURL(url);
@@ -366,8 +387,8 @@ export default function ReaderScreen() {
         </Animated.ScrollView>
       </GestureDetector>
 
-      <View style={[styles.progressTrack, { backgroundColor: colors.progressTrack, top: insets.top + 84 }]}> 
-        <View style={[styles.progressFill, { backgroundColor: colors.primary, width: `${Math.round(progress * 100)}%` }]} />
+      <View style={[styles.progressTrack, { backgroundColor: colors.progressTrack, top: insets.top + 84 }]}>
+        <Animated.View style={[styles.progressFill, { backgroundColor: colors.primary }, progressFillStyle]} />
       </View>
 
       <Animated.View
@@ -389,7 +410,7 @@ export default function ReaderScreen() {
               {note.title}
             </Text>
             <Text style={[styles.floatingMeta, { color: colors.muted }]}>
-              {Math.round(progress * 100)}% • {fontScale.toFixed(2)}x
+              {progressPercent}% • {fontScale.toFixed(2)}x
             </Text>
           </View>
 
