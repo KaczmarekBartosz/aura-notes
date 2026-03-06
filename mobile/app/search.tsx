@@ -1,5 +1,5 @@
 import { useDeferredValue, useMemo, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { router } from "expo-router";
 import { Search, X } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -62,7 +62,7 @@ export default function SearchScreen() {
             <SurfaceCard style={styles.searchCard} contentStyle={styles.searchInner} intensity={56}>
               <Search size={18} color={colors.muted} />
               <TextInput
-                autoFocus
+                autoFocus={Platform.OS !== "web"}
                 value={query}
                 onChangeText={setQuery}
                 placeholder="Szukaj w całym vault..."

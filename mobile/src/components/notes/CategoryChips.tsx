@@ -104,19 +104,20 @@ function CategoryChip({
 
 const styles = StyleSheet.create({
   scrollContent: {
-    paddingRight: 16
+    paddingHorizontal: 16,
+    paddingRight: 24
   },
   row: {
     flexDirection: "row",
-    gap: 10
+    gap: 8
   },
   chip: {
     overflow: "hidden",
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 13,
-    paddingVertical: 10,
-    minHeight: 42,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    minHeight: 38,
     justifyContent: "center"
   },
   content: {
@@ -127,19 +128,19 @@ const styles = StyleSheet.create({
     gap: 8
   },
   label: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "700"
   },
   countBubble: {
-    minWidth: 24,
-    height: 24,
+    minWidth: 22,
+    height: 22,
     borderRadius: 999,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 7
+    paddingHorizontal: 6
   },
   countText: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "800"
   }
 });

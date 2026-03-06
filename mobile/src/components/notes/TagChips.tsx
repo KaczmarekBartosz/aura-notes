@@ -63,25 +63,26 @@ function TagChip({
 
 const styles = StyleSheet.create({
   scrollContent: {
-    paddingRight: 16
+    paddingHorizontal: 16,
+    paddingRight: 24
   },
   row: {
     flexDirection: "row",
-    gap: 10
+    gap: 8
   },
   chip: {
     overflow: "hidden",
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 13,
-    paddingVertical: 10,
-    minHeight: 40,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    minHeight: 36,
     justifyContent: "center"
   },
   label: {
     position: "relative",
     zIndex: 1,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "700"
   }
 });

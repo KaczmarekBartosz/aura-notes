@@ -350,64 +350,61 @@ export default function HomeScreen() {
           </SurfaceCard>
         </Animated.View>
 
-        {activeFilterCount > 0 ? (
-          <Animated.View layout={layoutTransition} entering={reduceMotionEnabled ? undefined : FadeInDown.delay(140).duration(340)}>
-            <SurfaceCard style={styles.activeFiltersCard} contentStyle={styles.activeFiltersContent}>
-              <View style={styles.activeFiltersCopy}>
-                <Text style={[styles.activeFiltersEyebrow, { color: colors.primary }]}>Aktywne filtry</Text>
-                <Text style={[styles.activeFiltersTitle, { color: colors.foreground }]}>
-                  {filteredNotes.length} wyników po zastosowaniu {activeFilterCount} filtrów
-                </Text>
+        <Animated.View layout={layoutTransition} entering={reduceMotionEnabled ? undefined : FadeInDown.delay(150).duration(340)}>
+          <SurfaceCard style={styles.browserCard} contentStyle={styles.browserContent}>
+            <View style={styles.browserHeader}>
+              <View style={styles.browserHeaderCopy}>
+                <Text style={[styles.browserEyebrow, { color: colors.primary }]}>Przeglądaj</Text>
+                <Text style={[styles.browserTitle, { color: colors.foreground }]}>Kategorie, tagi i sortowanie</Text>
               </View>
-              <Pressable
-                onPress={clearFilters}
-                accessibilityRole="button"
-                accessibilityLabel="Wyczyść wszystkie filtry"
-                style={[styles.resetFiltersButton, { backgroundColor: colors.primarySoft, borderColor: colors.border }]}
-              >
-                <Text style={[styles.resetFiltersLabel, { color: colors.primary }]}>Resetuj</Text>
-              </Pressable>
-            </SurfaceCard>
-          </Animated.View>
-        ) : null}
+              {activeFilterCount > 0 ? (
+                <Pressable
+                  onPress={clearFilters}
+                  accessibilityRole="button"
+                  accessibilityLabel="Wyczyść wszystkie filtry"
+                  style={[styles.resetFiltersButton, { backgroundColor: colors.primarySoft, borderColor: colors.border }]}
+                >
+                  <Text style={[styles.resetFiltersLabel, { color: colors.primary }]}>Resetuj</Text>
+                </Pressable>
+              ) : null}
+            </View>
 
-        <Animated.View layout={layoutTransition} entering={reduceMotionEnabled ? undefined : FadeInDown.delay(160).duration(340)}>
-          <SectionShell title="Kategorie" caption="Przesuwaj poziomo, żeby szybko zawęzić vault.">
-            <CategoryChips
-              notes={notes}
-              activeCategory={activeCategory}
-              onSelect={(category) => {
-                void triggerHaptic("selection");
-                setActiveCategory(category);
-                setActiveTag(null);
-              }}
-            />
-          </SectionShell>
-        </Animated.View>
+            {activeFilterCount > 0 ? (
+              <View style={[styles.filterNotice, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}>
+                <Text style={[styles.filterNoticeText, { color: colors.foreground }]}>Aktywnych filtrów: {activeFilterCount}</Text>
+                <Text style={[styles.filterNoticeMeta, { color: colors.muted }]}>{filteredNotes.length} wyników</Text>
+              </View>
+            ) : null}
 
-        <Animated.View layout={layoutTransition} entering={reduceMotionEnabled ? undefined : FadeInDown.delay(180).duration(340)}>
-          <SectionShell title="Tagi" caption="Filtr pełnotekstowy i tagi działają razem.">
-            <TagChips
-              tags={availableTags}
-              activeTag={activeTag}
-              onSelect={(nextTag) => {
-                void triggerHaptic("selection");
-                setActiveTag(nextTag);
-              }}
-            />
-          </SectionShell>
-        </Animated.View>
-
-        <Animated.View layout={layoutTransition} entering={reduceMotionEnabled ? undefined : FadeInDown.delay(200).duration(340)}>
-          <SectionShell title="Widok" caption="Sortowanie i ulubione bez resetu scrolla.">
-            <View style={styles.utilityStack}>
-              <SortSelector
-                value={sort}
-                onChange={(nextSort) => {
+            <View style={styles.browserSection}>
+              <Text style={[styles.browserSectionLabel, { color: colors.muted }]}>Kategorie</Text>
+              <CategoryChips
+                notes={notes}
+                activeCategory={activeCategory}
+                onSelect={(category) => {
                   void triggerHaptic("selection");
-                  setSort(nextSort);
+                  setActiveCategory(category);
+                  setActiveTag(null);
                 }}
               />
+            </View>
+
+            {availableTags.length > 0 ? (
+              <View style={styles.browserSection}>
+                <Text style={[styles.browserSectionLabel, { color: colors.muted }]}>Tagi</Text>
+                <TagChips
+                  tags={availableTags}
+                  activeTag={activeTag}
+                  onSelect={(nextTag) => {
+                    void triggerHaptic("selection");
+                    setActiveTag(nextTag);
+                  }}
+                />
+              </View>
+            ) : null}
+
+            <View style={styles.browserToolbar}>
+              <Text style={[styles.browserSectionLabel, styles.browserToolbarLabel, { color: colors.muted }]}>Sortowanie</Text>
               <Pressable
                 onPress={() => {
                   void triggerHaptic(onlyFavorites ? "soft" : "rigid");
@@ -428,10 +425,18 @@ export default function HomeScreen() {
                   color={onlyFavorites ? colors.primary : colors.foreground}
                   fill={onlyFavorites ? colors.primary : "none"}
                 />
-                <Text style={[styles.favoriteLabel, { color: onlyFavorites ? colors.primary : colors.foreground }]}>Tylko ulubione</Text>
+                <Text style={[styles.favoriteLabel, { color: onlyFavorites ? colors.primary : colors.foreground }]}>Ulubione</Text>
               </Pressable>
             </View>
-          </SectionShell>
+
+            <SortSelector
+              value={sort}
+              onChange={(nextSort) => {
+                void triggerHaptic("selection");
+                setSort(nextSort);
+              }}
+            />
+          </SurfaceCard>
         </Animated.View>
 
         {!!error ? (
@@ -549,25 +554,6 @@ export default function HomeScreen() {
         </SurfaceCard>
       </Animated.View>
     </ScreenContainer>
-  );
-}
-
-function SectionShell({
-  title,
-  caption,
-  children
-}: {
-  title: string;
-  caption: string;
-  children: ReactNode;
-}) {
-  const { colors } = useAppTheme();
-  return (
-    <SurfaceCard style={styles.sectionShell} contentStyle={styles.sectionShellContent}>
-      <Text style={[styles.sectionShellTitle, { color: colors.foreground }]}>{title}</Text>
-      <Text style={[styles.sectionShellCaption, { color: colors.muted }]}>{caption}</Text>
-      <View style={styles.sectionShellBody}>{children}</View>
-    </SurfaceCard>
   );
 }
 
@@ -784,31 +770,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  activeFiltersCard: {
-    marginTop: -2
+  browserCard: {},
+  browserContent: {
+    paddingVertical: 14,
+    gap: 14
   },
-  activeFiltersContent: {
+  browserHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 12,
-    paddingHorizontal: 15,
-    paddingVertical: 14
+    paddingHorizontal: 16
   },
-  activeFiltersCopy: {
+  browserHeaderCopy: {
     flex: 1,
     gap: 4
   },
-  activeFiltersEyebrow: {
-    fontSize: 11,
+  browserEyebrow: {
+    fontSize: 10,
     fontWeight: "800",
     letterSpacing: 0.7,
     textTransform: "uppercase"
   },
-  activeFiltersTitle: {
-    fontSize: 14,
-    lineHeight: 19,
-    fontWeight: "700"
+  browserTitle: {
+    fontSize: 16,
+    lineHeight: 20,
+    fontWeight: "800",
+    letterSpacing: -0.35
   },
   resetFiltersButton: {
     borderWidth: 1,
@@ -817,44 +805,57 @@ const styles = StyleSheet.create({
     paddingVertical: 10
   },
   resetFiltersLabel: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "800"
   },
-  sectionShell: {},
-  sectionShellContent: {
-    paddingVertical: 14,
-    gap: 10
-  },
-  sectionShellTitle: {
-    fontSize: 15,
-    fontWeight: "800",
-    letterSpacing: -0.3,
-    paddingHorizontal: 16
-  },
-  sectionShellCaption: {
-    fontSize: 12,
-    lineHeight: 17,
-    paddingHorizontal: 16
-  },
-  sectionShellBody: {
-    gap: 2
-  },
-  utilityStack: {
+  filterNotice: {
+    marginHorizontal: 16,
+    borderWidth: 1,
+    borderRadius: 18,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     gap: 12
   },
+  filterNoticeText: {
+    fontSize: 12,
+    fontWeight: "700"
+  },
+  filterNoticeMeta: {
+    fontSize: 12,
+    fontWeight: "600"
+  },
+  browserSection: {
+    gap: 8
+  },
+  browserSectionLabel: {
+    fontSize: 12,
+    fontWeight: "700",
+    paddingHorizontal: 16
+  },
+  browserToolbar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    paddingHorizontal: 16
+  },
+  browserToolbarLabel: {
+    paddingHorizontal: 0
+  },
   favoriteFilter: {
-    alignSelf: "flex-start",
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 11,
-    marginLeft: 16
+    paddingHorizontal: 12,
+    paddingVertical: 9
   },
   favoriteLabel: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "800"
   },
   errorCard: {
