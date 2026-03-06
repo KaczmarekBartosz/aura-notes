@@ -16,6 +16,7 @@ type SurfaceCardProps = PropsWithChildren<{
   accessibilityHint?: PressableProps["accessibilityHint"];
   preset?: SurfacePreset;
   contentPreset?: SurfacePreset | "none";
+  materialVariant?: "full" | "lite";
 }>;
 
 export function SurfaceCard({
@@ -28,7 +29,8 @@ export function SurfaceCard({
   accessibilityLabel,
   accessibilityHint,
   preset = "section",
-  contentPreset
+  contentPreset,
+  materialVariant = "full"
 }: SurfaceCardProps) {
   const { colors, visuals, isGlass, resolvedTheme } = useAppTheme();
   const blurIntensity = intensity ?? visuals.heavyBlurIntensity;
@@ -36,6 +38,8 @@ export function SurfaceCard({
   const shellPreset = uiCard[preset];
   const resolvedContentPreset = contentPreset ?? preset;
   const bodyPadding = resolvedContentPreset === "none" ? null : uiCard[resolvedContentPreset];
+  const useLiteMaterial = isGlass && materialVariant === "lite";
+  const renderFullGlass = isGlass && !useLiteMaterial;
 
   const body = (
     <View
@@ -57,7 +61,7 @@ export function SurfaceCard({
         style
       ]}
     >
-      {isGlass ? (
+      {renderFullGlass ? (
         <>
           {useNativeGlass ? (
             <GlassView
@@ -104,6 +108,20 @@ export function SurfaceCard({
             style={styles.specularSweep}
           />
           <View style={[styles.edgeSpecular, { borderColor: colors.borderStrong, borderRadius: shellPreset.radius }]} />
+        </>
+      ) : useLiteMaterial ? (
+        <>
+          <LinearGradient
+            colors={[
+              "rgba(255,255,255,0.2)",
+              colors.surfaceOverlay,
+              "rgba(255,255,255,0.05)"
+            ]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[StyleSheet.absoluteFillObject, styles.liteGradient]}
+          />
+          <View style={[styles.edgeSpecular, { borderColor: colors.borderStrong, borderRadius: shellPreset.radius, opacity: 0.22 }]} />
         </>
       ) : null}
       <View
@@ -181,6 +199,9 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderWidth: 1,
     opacity: 0.48
+  },
+  liteGradient: {
+    opacity: 0.78
   },
   content: {
     position: "relative",

@@ -406,12 +406,8 @@ export default function HomeScreen() {
           </SurfaceCard>
         ) : (
           <View style={styles.noteStack}>
-            {visibleNotes.map((note, index) => (
-              <Animated.View
-                key={note.id}
-                layout={layoutTransition}
-                entering={reduceMotionEnabled ? undefined : FadeInDown.delay(220 + index * 18).duration(280)}
-              >
+            {visibleNotes.map((note) => (
+              <View key={note.id}>
                 <NoteCard
                   note={note}
                   query={deferredQuery}
@@ -423,7 +419,7 @@ export default function HomeScreen() {
                     void toggleFavoriteById(noteId);
                   }}
                 />
-              </Animated.View>
+              </View>
             ))}
           </View>
         )}

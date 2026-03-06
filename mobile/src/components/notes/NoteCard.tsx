@@ -35,7 +35,8 @@ function NoteCardComponent({ note, query, onPress, onToggleFavorite }: NoteCardP
         borderColor: isGlass ? colors.borderStrong : colors.border,
         shadowColor: colors.shadow
       }}
-      intensity={isGlass ? 52 : undefined}
+      intensity={isGlass ? 32 : undefined}
+      materialVariant="lite"
     >
       <View style={styles.headerRow}>
         <View style={styles.metaLeading}>
