@@ -100,6 +100,15 @@ export async function toggleFavoriteInDb(noteId: string): Promise<boolean> {
   return true;
 }
 
+export async function deleteNoteFromCache(noteId: string) {
+  const notes = await readNotesMap();
+  const favorites = await readFavorites();
+  delete notes[noteId];
+  favorites.delete(noteId);
+  await Promise.all([writeNotesMap(notes), writeFavorites(favorites)]);
+  await setMeta("last_synced_at", new Date().toISOString());
+}
+
 export async function setMeta(key: string, value: string) {
   const meta = await readMetaMap();
   meta[key] = value;

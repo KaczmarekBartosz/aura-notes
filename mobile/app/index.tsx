@@ -1,5 +1,5 @@
 import { useDeferredValue, useEffect, useMemo, useState, type ReactNode } from "react";
-import { ActivityIndicator, Pressable, RefreshControl, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, RefreshControl, StyleSheet, Text, TextInput, View } from "react-native";
 import { router } from "expo-router";
 import {
   BookOpenText,
@@ -44,14 +44,13 @@ const HERO_TOP_SPACING = uiSpacing.md;
 
 const SOURCE_LABELS: Record<string, string> = {
   boot: "start",
-  api: "api",
-  cache: "cache",
-  bundled: "bundled",
+  imported: "lokalny",
   seed: "seed"
 };
 
 export default function HomeScreen() {
-  const { notes, loading, refreshing, refresh, toggleFavoriteById, source, error, cacheInfo } = useNotes();
+  const { notes, loading, refreshing, importing, refresh, importNotes, deleteNoteById, toggleFavoriteById, source, error, cacheInfo } =
+    useNotes();
   const { colors, themeLabel, themeDescription, resolvedTheme, reduceMotionEnabled } = useAppTheme();
   const insets = useSafeAreaInsets();
 
@@ -148,9 +147,9 @@ export default function HomeScreen() {
       icon: <BookOpenText size={16} color={colors.primary} />
     },
     {
-      label: "Sync",
+      label: "Import",
       value: cacheInfo.lastSyncedAt ? formatRelativeDate(cacheInfo.lastSyncedAt) : "brak",
-      description: refreshing ? "odświeżam" : "offline",
+      description: importing ? "import..." : refreshing ? "reload" : "offline",
       icon: <RefreshCw size={16} color={colors.primary} />
     }
   ];
@@ -186,7 +185,43 @@ export default function HomeScreen() {
     }
   }, [sort]);
 
-  const browseDescription = activeFilterCount > 0 ? `${filteredNotes.length} wyników przy ${activeFilterCount} aktywnych filtrach.` : "Najpierw wybierz kategorię, potem dopracuj widok sortowaniem lub filtrem ulubionych.";
+  const browseDescription =
+    activeFilterCount > 0
+      ? `${filteredNotes.length} wyników przy ${activeFilterCount} aktywnych filtrach.`
+      : "Najpierw wybierz kategorię, potem dopracuj widok sortowaniem lub filtrem ulubionych.";
+
+  const handleImport = async () => {
+    const result = await importNotes();
+    if (result.totalSelected === 0) {
+      return;
+    }
+
+    const summary = [
+      result.imported > 0 ? `Dodano: ${result.imported}` : null,
+      result.updated > 0 ? `Zaktualizowano: ${result.updated}` : null,
+      result.skipped > 0 ? `Bez zmian: ${result.skipped}` : null,
+      result.failed.length > 0 ? `Pominięto: ${result.failed.join(", ")}` : null
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    Alert.alert("Import zakończony", summary || "Nie wykryto zmian w wybranych plikach.");
+  };
+
+  const handleDeleteRequest = (noteId: string, title: string, closeSwipe: () => void) => {
+    Alert.alert("Usunąć notatkę?", `Usunę lokalną kopię "${title}" z iPhone'a.`, [
+      { text: "Anuluj", style: "cancel", onPress: closeSwipe },
+      {
+        text: "Usuń",
+        style: "destructive",
+        onPress: () => {
+          void triggerHaptic("warning");
+          void deleteNoteById(noteId);
+          closeSwipe();
+        }
+      }
+    ]);
+  };
 
   return (
     <ScreenContainer edges={["top", "left", "right"]} withHorizontalPadding={false}>
@@ -274,7 +309,7 @@ export default function HomeScreen() {
                     </Pressable>
                   </View>
                 ) : (
-                  <Text style={[uiType.bodyStrong, { color: colors.muted, marginTop: 4 }]}>Synchronizacja ukończona. Wszystkie notatki są gotowe do czytania.</Text>
+                  <Text style={[uiType.bodyStrong, { color: colors.muted, marginTop: 4 }]}>Lokalny vault jest gotowy. Wszystkie notatki są dostępne offline.</Text>
                 )}
               </View>
             </SurfaceCard>
@@ -383,7 +418,7 @@ export default function HomeScreen() {
 
         {!!error ? (
           <Animated.View layout={layoutTransition}>
-            <SectionBlock title="Synchronizacja nie powiodła się" description={error} preset="compact" />
+            <SectionBlock title="Vault wymaga uwagi" description={error} preset="compact" />
           </Animated.View>
         ) : null}
 
@@ -401,7 +436,26 @@ export default function HomeScreen() {
           <SurfaceCard preset="compact" contentPreset="compact" style={styles.emptyCard}>
             <ActivityIndicator color={colors.primary} />
             <Text style={[uiType.sectionTitle, styles.emptyTitle, { color: colors.foreground }]}>Ładowanie vaultu</Text>
-            <Text style={[uiType.body, styles.emptyText, { color: colors.muted }]}>Pobieram notatki z lokalnego cache lub API.</Text>
+            <Text style={[uiType.body, styles.emptyText, { color: colors.muted }]}>Przywracam lokalny vault i notatki startowe.</Text>
+          </SurfaceCard>
+        ) : notes.length === 0 ? (
+          <SurfaceCard preset="compact" contentPreset="compact" style={styles.emptyCard}>
+            <Text style={[uiType.sectionTitle, styles.emptyTitle, { color: colors.foreground }]}>Vault jest pusty</Text>
+            <Text style={[uiType.body, styles.emptyText, { color: colors.muted }]}>
+              Zaimportuj pliki .md z Plików, iCloud Drive albo AirDrop i zbuduj własny lokalny vault.
+            </Text>
+            <View style={styles.emptyActions}>
+              <Pressable
+                onPress={() => {
+                  void triggerHaptic("light");
+                  void handleImport();
+                }}
+                style={[styles.emptyActionButton, { backgroundColor: colors.primarySoft, borderColor: colors.border }]}
+              >
+                <DatabaseBackup size={16} color={colors.primary} />
+                <Text style={[uiType.meta, styles.emptyActionLabel, { color: colors.primary }]}>{importing ? "Import..." : "Importuj notatki"}</Text>
+              </Pressable>
+            </View>
           </SurfaceCard>
         ) : visibleNotes.length === 0 ? (
           <SurfaceCard preset="compact" contentPreset="compact" style={styles.emptyCard}>
@@ -421,6 +475,9 @@ export default function HomeScreen() {
                   onToggleFavorite={(noteId) => {
                     void triggerHaptic("medium");
                     void toggleFavoriteById(noteId);
+                  }}
+                  onDeleteRequest={(targetNote, closeSwipe) => {
+                    handleDeleteRequest(targetNote.id, targetNote.title, closeSwipe);
                   }}
                 />
               </View>
@@ -671,6 +728,24 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: "center"
+  },
+  emptyActions: {
+    width: "100%",
+    marginTop: uiSpacing.sm
+  },
+  emptyActionButton: {
+    minHeight: uiControl.minTouch,
+    borderWidth: 1,
+    borderRadius: uiRadius.pill,
+    paddingHorizontal: uiSpacing.lg,
+    paddingVertical: uiSpacing.sm,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: uiSpacing.xs
+  },
+  emptyActionLabel: {
+    fontWeight: "700"
   },
   noteStack: {
     gap: uiSpacing.md

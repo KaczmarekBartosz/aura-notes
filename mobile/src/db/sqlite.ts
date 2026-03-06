@@ -117,6 +117,15 @@ export async function toggleFavoriteInDb(noteId: string): Promise<boolean> {
   return true;
 }
 
+export async function deleteNoteFromCache(noteId: string) {
+  const db = await getDb();
+  await db.withTransactionAsync(async () => {
+    await db.runAsync("DELETE FROM notes WHERE id = ?", noteId);
+    await db.runAsync("DELETE FROM favorites WHERE note_id = ?", noteId);
+  });
+  await setMeta("last_synced_at", new Date().toISOString());
+}
+
 export async function setMeta(key: string, value: string) {
   const db = await getDb();
   await db.runAsync(

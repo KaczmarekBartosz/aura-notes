@@ -1,6 +1,7 @@
-import { memo } from "react";
+import { memo, useRef } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { ArrowUpRight, Star } from "lucide-react-native";
+import Swipeable from "react-native-gesture-handler/Swipeable";
+import { ArrowUpRight, Star, Trash2 } from "lucide-react-native";
 import type { Note } from "../../types/note";
 import { HighlightedText } from "../common/HighlightedText";
 import { formatRelativeDate } from "../../utils/date";
@@ -15,15 +16,17 @@ type NoteCardProps = {
   query: string;
   onPress: (noteId: string) => void;
   onToggleFavorite: (noteId: string) => void;
+  onDeleteRequest?: (note: Note, closeSwipe: () => void) => void;
 };
 
-function NoteCardComponent({ note, query, onPress, onToggleFavorite }: NoteCardProps) {
+function NoteCardComponent({ note, query, onPress, onToggleFavorite, onDeleteRequest }: NoteCardProps) {
   const { colors, isGlass } = useAppTheme();
+  const swipeableRef = useRef<Swipeable | null>(null);
   const CategoryIcon = getCategoryIcon(note.category);
   const preview = getQuerySnippet(note, query);
   const primaryTag = note.tags[0];
 
-  return (
+  const card = (
     <SurfaceCard
       preset="list"
       contentPreset="list"
@@ -113,6 +116,31 @@ function NoteCardComponent({ note, query, onPress, onToggleFavorite }: NoteCardP
       </View>
     </SurfaceCard>
   );
+
+  if (!onDeleteRequest) {
+    return card;
+  }
+
+  return (
+    <Swipeable
+      ref={swipeableRef}
+      overshootRight={false}
+      rightThreshold={40}
+      renderRightActions={() => (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Usuń notatkę ${note.title}`}
+          onPress={() => onDeleteRequest(note, () => swipeableRef.current?.close())}
+          style={[styles.deleteAction, { backgroundColor: colors.destructive }]}
+        >
+          <Trash2 size={18} color={colors.primaryForeground} />
+          <Text style={[uiType.meta, styles.deleteActionLabel, { color: colors.primaryForeground }]}>Usuń</Text>
+        </Pressable>
+      )}
+    >
+      {card}
+    </Swipeable>
+  );
 }
 
 function areEqual(prev: NoteCardProps, next: NoteCardProps) {
@@ -201,5 +229,16 @@ const styles = StyleSheet.create({
     width: uiControl.minTouch,
     alignItems: "flex-end",
     justifyContent: "center"
+  },
+  deleteAction: {
+    width: 92,
+    marginLeft: uiSpacing.sm,
+    borderRadius: uiRadius.inner,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: uiSpacing.xs
+  },
+  deleteActionLabel: {
+    fontWeight: "800"
   }
 });

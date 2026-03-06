@@ -1,5 +1,5 @@
 import { useDeferredValue, useMemo, useState } from "react";
-import { FlatList, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, FlatList, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { router } from "expo-router";
 import { Search, X } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -16,7 +16,7 @@ import { filterAndSortNotes } from "../src/utils/noteFilters";
 import { triggerHaptic } from "../src/utils/haptics";
 
 export default function SearchScreen() {
-  const { notes, toggleFavoriteById } = useNotes();
+  const { notes, deleteNoteById, toggleFavoriteById } = useNotes();
   const { colors, reduceMotionEnabled } = useAppTheme();
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
@@ -102,6 +102,20 @@ export default function SearchScreen() {
               onToggleFavorite={(noteId) => {
                 void triggerHaptic("medium");
                 void toggleFavoriteById(noteId);
+              }}
+              onDeleteRequest={(note, closeSwipe) => {
+                Alert.alert("Usunąć notatkę?", `Usunę lokalną kopię "${note.title}" z iPhone'a.`, [
+                  { text: "Anuluj", style: "cancel", onPress: closeSwipe },
+                  {
+                    text: "Usuń",
+                    style: "destructive",
+                    onPress: () => {
+                      void triggerHaptic("warning");
+                      void deleteNoteById(note.id);
+                      closeSwipe();
+                    }
+                  }
+                ]);
               }}
             />
           </Animated.View>

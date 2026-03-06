@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react-native";
 import {
   Activity,
   Archive,
+  BookOpenText,
   Bookmark,
   Calendar,
   ChefHat,
@@ -22,7 +23,8 @@ export const CATEGORY_META: Record<string, { label: string; icon: LucideIcon }> 
   "growth-marketing": { label: "Marketing", icon: TrendingUp },
   "outputs": { label: "Outputs", icon: Archive },
   "recipes": { label: "Przepisy", icon: ChefHat },
-  "taste": { label: "Taste", icon: Sparkles }
+  "taste": { label: "Taste", icon: Sparkles },
+  "knowledge": { label: "Knowledge", icon: BookOpenText }
 };
 
 export function getCategoryLabel(category: string): string {

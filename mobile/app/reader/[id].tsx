@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Linking, Pressable, StyleSheet, Text, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import Markdown from "react-native-markdown-display";
-import { ArrowLeft, Clock3, Folder, Hash, Minus, Plus, Star } from "lucide-react-native";
+import { ArrowLeft, Clock3, Folder, Hash, Minus, Plus, Star, Trash2 } from "lucide-react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, {
@@ -58,7 +58,7 @@ const DEFAULT_FONT_SCALE = 1;
 
 export default function ReaderScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { notes, toggleFavoriteById } = useNotes();
+  const { notes, deleteNoteById, toggleFavoriteById } = useNotes();
   const { colors, resolvedTheme, reduceMotionEnabled } = useAppTheme();
   const insets = useSafeAreaInsets();
   const [progressPercent, setProgressPercent] = useState(0);
@@ -450,6 +450,27 @@ export default function ReaderScreen() {
               onPress={() => {
                 void triggerHaptic("medium");
                 void toggleFavoriteById(note.id);
+              }}
+            />
+            <HeaderControlButton
+              icon={<Trash2 size={14} color={colors.destructive} />}
+              label="Usuń lokalną notatkę"
+              onPress={() => {
+                Alert.alert("Usunąć notatkę?", `Usunę lokalną kopię "${note.title}" z iPhone'a.`, [
+                  { text: "Anuluj", style: "cancel" },
+                  {
+                    text: "Usuń",
+                    style: "destructive",
+                    onPress: () => {
+                      void triggerHaptic("warning");
+                      void deleteNoteById(note.id).then((deleted) => {
+                        if (deleted) {
+                          router.back();
+                        }
+                      });
+                    }
+                  }
+                ]);
               }}
             />
           </View>

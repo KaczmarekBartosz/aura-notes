@@ -58,3 +58,16 @@ export async function readReaderFontScale(): Promise<number> {
     return 1;
   }
 }
+
+export async function clearReaderState(noteId: string) {
+  try {
+    const currentLastOpened = await AsyncStorage.getItem(LAST_NOTE_KEY);
+    const removals = [`${NOTE_SCROLL_PREFIX}${noteId}`];
+    if (currentLastOpened === noteId) {
+      removals.push(LAST_NOTE_KEY);
+    }
+    await AsyncStorage.multiRemove(removals);
+  } catch {
+    // Best-effort.
+  }
+}

@@ -1,35 +1,53 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
-import { AppState, type AppStateStatus } from "react-native";
-import NetInfo from "@react-native-community/netinfo";
-import type { Note } from "../types/note";
-import { bootstrapNotes, clearLocalCache, readCacheInfo, syncNotes, toggleFavorite } from "../services/notesRepository";
+import {
+  bootstrapNotes,
+  clearLocalCache,
+  deleteImportedNote,
+  importNotesFromDevice,
+  readCacheInfo,
+  syncNotes,
+  toggleFavorite
+} from "../services/notesRepository";
+import type { ImportNotesResult, Note } from "../types/note";
 import { buildNotesSignature } from "../utils/note-data";
 
 type NotesContextValue = {
   notes: Note[];
   loading: boolean;
   refreshing: boolean;
-  source: "api" | "cache" | "bundled" | "seed" | "boot";
+  importing: boolean;
+  source: "imported" | "seed" | "boot";
   error: string | null;
   cacheInfo: {
     count: number;
     lastSyncedAt: string | null;
   };
   refresh: () => Promise<void>;
+  importNotes: () => Promise<ImportNotesResult>;
+  deleteNoteById: (noteId: string) => Promise<boolean>;
   toggleFavoriteById: (noteId: string) => Promise<void>;
   resetCache: () => Promise<void>;
 };
 
 const NotesContext = createContext<NotesContextValue | null>(null);
 
+const EMPTY_IMPORT_RESULT: ImportNotesResult = {
+  imported: 0,
+  updated: 0,
+  skipped: 0,
+  failed: [],
+  totalSelected: 0
+};
+
 export function NotesProvider({ children }: PropsWithChildren) {
   const isMountedRef = useRef(true);
-  const refreshInFlightRef = useRef(false);
+  const busyRef = useRef(false);
   const notesSignatureRef = useRef("");
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [source, setSource] = useState<"api" | "cache" | "bundled" | "seed" | "boot">("boot");
+  const [importing, setImporting] = useState(false);
+  const [source, setSource] = useState<"imported" | "seed" | "boot">("boot");
   const [error, setError] = useState<string | null>(null);
   const [cacheInfo, setCacheInfo] = useState<{ count: number; lastSyncedAt: string | null }>({
     count: 0,
@@ -63,43 +81,85 @@ export function NotesProvider({ children }: PropsWithChildren) {
     return next;
   }, [updateCacheInfo]);
 
-  const runRefresh = useCallback(
-    async (showSpinner: boolean) => {
-      if (!isMountedRef.current || refreshInFlightRef.current) return;
+  const refresh = useCallback(async () => {
+    if (!isMountedRef.current || busyRef.current) return;
 
-      refreshInFlightRef.current = true;
-      if (showSpinner && isMountedRef.current) {
-        setRefreshing(true);
+    busyRef.current = true;
+    setRefreshing(true);
+    setError(null);
+
+    try {
+      const result = await syncNotes();
+      await reloadCacheInfo();
+      if (!isMountedRef.current) return;
+      applyNotes(result.notes);
+      setSource(result.source);
+    } catch (err) {
+      if (isMountedRef.current) {
+        setError(err instanceof Error ? err.message : "Nie udało się odświeżyć lokalnego vaultu.");
       }
+    } finally {
+      busyRef.current = false;
+      if (isMountedRef.current) {
+        setRefreshing(false);
+      }
+    }
+  }, [applyNotes, reloadCacheInfo]);
+
+  const importNotes = useCallback(async () => {
+    if (!isMountedRef.current || busyRef.current) return EMPTY_IMPORT_RESULT;
+
+    busyRef.current = true;
+    setImporting(true);
+    setError(null);
+
+    try {
+      const result = await importNotesFromDevice();
+      const reloaded = await syncNotes();
+      await reloadCacheInfo();
+      if (!isMountedRef.current) return result;
+      applyNotes(reloaded.notes);
+      setSource(reloaded.source);
+      return result;
+    } catch (err) {
+      if (isMountedRef.current) {
+        setError(err instanceof Error ? err.message : "Nie udało się zaimportować notatek.");
+      }
+      return EMPTY_IMPORT_RESULT;
+    } finally {
+      busyRef.current = false;
+      if (isMountedRef.current) {
+        setImporting(false);
+      }
+    }
+  }, [applyNotes, reloadCacheInfo]);
+
+  const deleteNoteById = useCallback(
+    async (noteId: string) => {
+      if (!isMountedRef.current || busyRef.current) return false;
+
+      busyRef.current = true;
       setError(null);
 
       try {
-        const result = await syncNotes();
+        const deleted = await deleteImportedNote(noteId);
+        const reloaded = await syncNotes();
         await reloadCacheInfo();
-        if (!isMountedRef.current) return;
-        applyNotes(result.notes);
-        setSource((current) => (current === result.source ? current : result.source));
+        if (!isMountedRef.current) return deleted;
+        applyNotes(reloaded.notes);
+        setSource(reloaded.source);
+        return deleted;
       } catch (err) {
         if (isMountedRef.current) {
-          setError(err instanceof Error ? err.message : "Nie udało się odświeżyć notatek.");
+          setError(err instanceof Error ? err.message : "Nie udało się usunąć notatki.");
         }
+        return false;
       } finally {
-        refreshInFlightRef.current = false;
-        if (showSpinner && isMountedRef.current) {
-          setRefreshing(false);
-        }
+        busyRef.current = false;
       }
     },
-    [applyNotes, reloadCacheInfo, updateCacheInfo]
+    [applyNotes, reloadCacheInfo]
   );
-
-  const refresh = useCallback(async () => {
-    await runRefresh(true);
-  }, [runRefresh]);
-
-  const backgroundRefresh = useCallback(async () => {
-    await runRefresh(false);
-  }, [runRefresh]);
 
   const toggleFavoriteById = useCallback(
     async (noteId: string) => {
@@ -138,16 +198,35 @@ export function NotesProvider({ children }: PropsWithChildren) {
   );
 
   const resetCache = useCallback(async () => {
-    await clearLocalCache();
-    const initial = await bootstrapNotes();
-    applyNotes(initial.notes);
-    setSource(initial.source);
-    await reloadCacheInfo();
+    if (!isMountedRef.current || busyRef.current) return;
+
+    busyRef.current = true;
+    setRefreshing(true);
+    setError(null);
+
+    try {
+      await clearLocalCache();
+      const initial = await bootstrapNotes();
+      if (!isMountedRef.current) return;
+      applyNotes(initial.notes);
+      setSource(initial.source);
+      await reloadCacheInfo();
+    } catch (err) {
+      if (isMountedRef.current) {
+        setError(err instanceof Error ? err.message : "Nie udało się przywrócić lokalnego vaultu.");
+      }
+    } finally {
+      busyRef.current = false;
+      if (isMountedRef.current) {
+        setRefreshing(false);
+      }
+    }
   }, [applyNotes, reloadCacheInfo]);
 
   useEffect(() => {
     isMountedRef.current = true;
     let mounted = true;
+
     (async () => {
       try {
         const initial = await bootstrapNotes();
@@ -164,62 +243,31 @@ export function NotesProvider({ children }: PropsWithChildren) {
           setLoading(false);
         }
       }
-
-      if (!mounted) return;
-      await backgroundRefresh();
     })();
 
     return () => {
       mounted = false;
       isMountedRef.current = false;
     };
-  }, [applyNotes, backgroundRefresh, reloadCacheInfo]);
+  }, [applyNotes, reloadCacheInfo]);
 
-  useEffect(() => {
-    let currentAppState: AppStateStatus = AppState.currentState;
-    let online = false;
-
-    const triggerSyncIfReady = async () => {
-      if (!online) return;
-      await backgroundRefresh();
-    };
-
-    const unsubscribeNetInfo = NetInfo.addEventListener((state) => {
-      const nextOnline = Boolean(state.isConnected) && state.isInternetReachable !== false;
-      const justRecovered = !online && nextOnline;
-      online = nextOnline;
-      if (justRecovered) {
-        void triggerSyncIfReady();
-      }
-    });
-
-    const appStateSubscription = AppState.addEventListener("change", (nextState) => {
-      const movedToForeground = currentAppState.match(/inactive|background/) && nextState === "active";
-      currentAppState = nextState;
-      if (movedToForeground) {
-        void triggerSyncIfReady();
-      }
-    });
-
-    return () => {
-      unsubscribeNetInfo();
-      appStateSubscription.remove();
-    };
-  }, [backgroundRefresh]);
-
-  const value = useMemo<NotesContextValue>(() => {
-    return {
+  const value = useMemo<NotesContextValue>(
+    () => ({
       notes,
       loading,
       refreshing,
+      importing,
       source,
       error,
       cacheInfo,
       refresh,
+      importNotes,
+      deleteNoteById,
       toggleFavoriteById,
       resetCache
-    };
-  }, [notes, loading, refreshing, source, error, cacheInfo, refresh, toggleFavoriteById, resetCache]);
+    }),
+    [notes, loading, refreshing, importing, source, error, cacheInfo, refresh, importNotes, deleteNoteById, toggleFavoriteById, resetCache]
+  );
 
   return <NotesContext.Provider value={value}>{children}</NotesContext.Provider>;
 }

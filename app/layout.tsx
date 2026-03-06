@@ -15,14 +15,20 @@ export const metadata: Metadata = {
   description: 'Private Knowledge Vault',
   applicationName: 'Aura Notes',
   manifest: '/manifest.webmanifest',
+
+export const metadata: Metadata = {
+  title: 'Aura Notes',
+  description: 'Private Knowledge Vault',
+  applicationName: 'Aura Notes',
+  manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
     title: 'Aura Notes',
     statusBarStyle: 'black-translucent',
   },
   icons: {
-    icon: [{ url: '/duck_hunt_dog.png', type: 'image/png' }],
-    apple: [{ url: '/duck_hunt_dog.png', type: 'image/png' }],
+    icon: [{ url: '/icon.png', type: 'image/png' }],
+    apple: [{ url: '/icon.png', type: 'image/png' }],
   },
   formatDetection: {
     telephone: false,

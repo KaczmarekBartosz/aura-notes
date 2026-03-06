@@ -16,13 +16,13 @@ export default function manifest(): MetadataRoute.Manifest {
     categories: ['productivity', 'utilities'],
     icons: [
       {
-        src: '/duck_hunt_dog.png',
+        src: '/icon.png',
         sizes: '640x640',
         type: 'image/png',
         purpose: 'any',
       },
       {
-        src: '/duck_hunt_dog.png',
+        src: '/icon.png',
         sizes: '640x640',
         type: 'image/png',
         purpose: 'maskable',

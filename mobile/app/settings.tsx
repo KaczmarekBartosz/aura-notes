@@ -16,11 +16,30 @@ import { triggerHaptic } from "../src/utils/haptics";
 
 export default function SettingsScreen() {
   const { theme, themes, setTheme, colors, themeLabel, themeDescription, resolvedTheme, reduceMotionEnabled } = useAppTheme();
-  const { cacheInfo, resetCache, refresh, refreshing } = useNotes();
+  const { cacheInfo, importNotes, importing, notes, resetCache, refresh, refreshing } = useNotes();
   const insets = useSafeAreaInsets();
   const coreThemeIds = new Set(["system", "light", "dark", "crystal-line"]);
   const primaryThemes = themes.filter((entry) => coreThemeIds.has(entry.id));
   const otherThemes = themes.filter((entry) => !coreThemeIds.has(entry.id));
+
+  const handleImport = async () => {
+    void triggerHaptic("light");
+    const result = await importNotes();
+    if (result.totalSelected === 0) {
+      return;
+    }
+
+    const summary = [
+      result.imported > 0 ? `Dodano: ${result.imported}` : null,
+      result.updated > 0 ? `Zaktualizowano: ${result.updated}` : null,
+      result.skipped > 0 ? `Bez zmian: ${result.skipped}` : null,
+      result.failed.length > 0 ? `Pominięto: ${result.failed.join(", ")}` : null
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    Alert.alert("Import zakończony", summary || "Nie wykryto zmian w wybranych plikach.");
+  };
 
   const renderThemeCard = (entry: (typeof themes)[number], index: number) => {
     const active = theme === entry.id;
@@ -79,7 +98,7 @@ export default function SettingsScreen() {
       >
         <ScreenHeader
           title="Ustawienia"
-          subtitle="Motywy, cache, synchronizacja i zachowanie aplikacji na iPhone w jednym spokojnym panelu."
+          subtitle="Motywy, lokalny vault i import plików Markdown w jednym spokojnym panelu."
           closeLabel="Zamknij ustawienia"
           onClose={() => {
             void triggerHaptic("light");
@@ -117,17 +136,17 @@ export default function SettingsScreen() {
         ) : null}
 
         <SectionBlock
-          title="Offline Cache"
+          title="Lokalny Vault"
           accessory={<DatabaseBackup size={18} color={colors.primary} />}
-          description="Lokalna baza trzyma notatki offline i odtwarza je natychmiast po starcie aplikacji."
+          description="Notatki siedzą lokalnie na iPhonie. Importujesz pliki .md z Plików, iCloud Drive albo AirDrop, a appka działa offline."
         >
           <View style={styles.statsList}>
             <View style={styles.statRow}>
-              <Text style={[uiType.meta, { color: colors.muted }]}>Notatek w SQLite</Text>
-              <Text style={[uiType.meta, styles.statValue, { color: colors.foreground }]}>{cacheInfo.count}</Text>
+              <Text style={[uiType.meta, { color: colors.muted }]}>Notatek w vaultcie</Text>
+              <Text style={[uiType.meta, styles.statValue, { color: colors.foreground }]}>{notes.length || cacheInfo.count}</Text>
             </View>
             <View style={styles.statRow}>
-              <Text style={[uiType.meta, { color: colors.muted }]}>Ostatnia synchronizacja</Text>
+              <Text style={[uiType.meta, { color: colors.muted }]}>Ostatnia aktualizacja vaultu</Text>
               <Text style={[uiType.meta, styles.statValue, { color: colors.foreground }]}>
                 {cacheInfo.lastSyncedAt ? formatRelativeDate(cacheInfo.lastSyncedAt) : "brak"}
               </Text>
@@ -137,21 +156,31 @@ export default function SettingsScreen() {
           <View style={styles.buttonRow}>
             <Pressable
               onPress={() => {
-                void triggerHaptic("light");
-                void refresh();
+                void handleImport();
               }}
               style={[styles.actionButton, { backgroundColor: colors.primarySoft, borderColor: colors.border }]}
             >
-              <RefreshCw size={14} color={colors.primary} />
-              <Text style={[uiType.meta, styles.actionLabel, { color: colors.primary }]}>{refreshing ? "Sync..." : "Synchronizuj"}</Text>
+              <DatabaseBackup size={14} color={colors.primary} />
+              <Text style={[uiType.meta, styles.actionLabel, { color: colors.primary }]}>{importing ? "Import..." : "Importuj .md"}</Text>
             </Pressable>
 
             <Pressable
               onPress={() => {
-                Alert.alert("Wyczyścić cache?", "Usunę lokalny cache i odbuduję notatki z danych startowych.", [
+                void triggerHaptic("light");
+                void refresh();
+              }}
+              style={[styles.actionButton, { backgroundColor: colors.surfaceElevated, borderColor: colors.borderStrong }]}
+            >
+              <RefreshCw size={14} color={colors.foreground} />
+              <Text style={[uiType.meta, styles.actionLabel, { color: colors.foreground }]}>{refreshing ? "Ładuję..." : "Odśwież vault"}</Text>
+            </Pressable>
+
+            <Pressable
+              onPress={() => {
+                Alert.alert("Przywrócić vault startowy?", "Usunę lokalne importy i odbuduję notatki z obecnego zestawu startowego.", [
                   { text: "Anuluj", style: "cancel" },
                   {
-                    text: "Wyczyść",
+                    text: "Przywróć",
                     style: "destructive",
                     onPress: () => {
                       void triggerHaptic("warning");
@@ -163,7 +192,7 @@ export default function SettingsScreen() {
               style={[styles.actionButton, { backgroundColor: "rgba(219,78,109,0.1)", borderColor: "rgba(219,78,109,0.22)" }]}
             >
               <Trash2 size={14} color={colors.destructive} />
-              <Text style={[uiType.meta, styles.actionLabel, { color: colors.destructive }]}>Wyczyść cache</Text>
+              <Text style={[uiType.meta, styles.actionLabel, { color: colors.destructive }]}>Przywróć startowe</Text>
             </Pressable>
           </View>
         </SectionBlock>

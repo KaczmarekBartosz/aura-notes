@@ -12,6 +12,11 @@ export type Note = {
   tags: string[];
   content: string;
   isFavorite?: boolean;
+  fileName?: string;
+  localUri?: string;
+  checksum?: string;
+  importedAt?: string;
+  source?: "imported" | "bundled" | "seed" | "api";
 };
 
 export type NotesPayload = {
@@ -22,3 +27,10 @@ export type NotesPayload = {
 
 export type SortMode = "updated_desc" | "updated_asc" | "title_asc" | "created_desc" | "created_asc";
 
+export type ImportNotesResult = {
+  imported: number;
+  updated: number;
+  skipped: number;
+  failed: string[];
+  totalSelected: number;
+};
