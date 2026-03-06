@@ -5,9 +5,11 @@ import path from 'path';
 export async function GET(request: Request) {
   // Dla dewelopmentu lokalnego ustawiane jest hasło na sztywno "local" by ułatwić pracę.
   // Jeśli zmienna systemowa jest dostępna, użyje jej.
-  const expected = process.env.NOTEBOOK_PASSWORD || 'local';
+  const expected = String(process.env.NOTEBOOK_PASSWORD || 'local').trim();
 
-  const headerPass = request.headers.get('x-aura-pass') || request.headers.get('X-Aura-Pass') || '';
+  const headerPass = String(
+    request.headers.get('x-aura-pass') || request.headers.get('X-Aura-Pass') || ''
+  ).trim();
   if (!headerPass || headerPass !== expected) {
     return NextResponse.json({ ok: false, authRequired: true }, { status: 401 });
   }

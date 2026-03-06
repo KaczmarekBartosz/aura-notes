@@ -23,10 +23,12 @@ function getNotesIndex() {
 }
 
 exports.handler = async (event) => {
-  const expected = process.env.NOTEBOOK_PASSWORD || '';
+  const expected = String(process.env.NOTEBOOK_PASSWORD || '').trim();
   if (!expected) return json(500, { ok: false, error: 'Password not configured' });
 
-  const headerPass = event.headers['x-aura-pass'] || event.headers['X-Aura-Pass'] || '';
+  const headers = event.headers || {};
+  const headerPassRaw = headers['x-aura-pass'] || headers['X-Aura-Pass'] || '';
+  const headerPass = String(headerPassRaw).trim();
   if (!headerPass || headerPass !== expected) {
     return json(401, { ok: false, authRequired: true });
   }
