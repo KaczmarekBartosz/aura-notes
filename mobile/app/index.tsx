@@ -34,16 +34,14 @@ import Animated, {
 import { CategoryChips } from "../src/components/notes/CategoryChips";
 import { NoteCard } from "../src/components/notes/NoteCard";
 import { SortSelector } from "../src/components/notes/SortSelector";
-import { TagChips } from "../src/components/notes/TagChips";
 import { ScreenContainer } from "../src/components/ui/ScreenContainer";
 import { SurfaceCard } from "../src/components/ui/SurfaceCard";
-import { getCategoryIcon, getCategoryLabel } from "../src/constants/categories";
 import { useNotes } from "../src/state/NotesProvider";
 import { readLastOpenedNoteId, saveLastOpenedNoteId } from "../src/state/readerState";
 import { useAppTheme } from "../src/theme/ThemeProvider";
-import type { Note, SortMode } from "../src/types/note";
+import type { SortMode } from "../src/types/note";
 import { formatRelativeDate } from "../src/utils/date";
-import { filterAndSortNotes, getAllTags } from "../src/utils/noteFilters";
+import { filterAndSortNotes } from "../src/utils/noteFilters";
 import { triggerHaptic } from "../src/utils/haptics";
 
 const PAGE_SIZE = 18;
@@ -58,13 +56,6 @@ const SOURCE_LABELS: Record<string, string> = {
   seed: "seed"
 };
 
-type NoteSection = {
-  key: string;
-  title: string;
-  count: number;
-  data: Note[];
-};
-
 export default function HomeScreen() {
   const { notes, loading, refreshing, refresh, toggleFavoriteById, source, error, cacheInfo } = useNotes();
   const { colors, themeLabel, themeDescription, resolvedTheme, reduceMotionEnabled } = useAppTheme();
@@ -72,7 +63,6 @@ export default function HomeScreen() {
 
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [activeTag, setActiveTag] = useState<string | null>(null);
   const [sort, setSort] = useState<SortMode>("updated_desc");
   const [onlyFavorites, setOnlyFavorites] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -106,23 +96,21 @@ export default function HomeScreen() {
     };
   });
 
-  const availableTags = useMemo(() => getAllTags(notes, activeCategory), [notes, activeCategory]);
-
   const filteredNotes = useMemo(
     () =>
       filterAndSortNotes(notes, {
         query: deferredQuery,
         category: activeCategory,
-        tag: activeTag,
+        tag: null,
         sort,
         onlyFavorites
       }),
-    [notes, deferredQuery, activeCategory, activeTag, sort, onlyFavorites]
+    [notes, deferredQuery, activeCategory, sort, onlyFavorites]
   );
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [query, activeCategory, activeTag, sort, onlyFavorites]);
+  }, [query, activeCategory, sort, onlyFavorites]);
 
   useEffect(() => {
     let mounted = true;
@@ -151,30 +139,7 @@ export default function HomeScreen() {
     [lastOpenedId, notes]
   );
 
-  const sections = useMemo<NoteSection[]>(() => {
-    const sectionCounts = new Map<string, number>();
-    for (const note of filteredNotes) {
-      sectionCounts.set(note.category, (sectionCounts.get(note.category) ?? 0) + 1);
-    }
-
-    const grouped = new Map<string, Note[]>();
-    for (const note of visibleNotes) {
-      const current = grouped.get(note.category) ?? [];
-      current.push(note);
-      grouped.set(note.category, current);
-    }
-
-    return [...grouped.entries()]
-      .sort((a, b) => getCategoryLabel(a[0]).localeCompare(getCategoryLabel(b[0]), "pl"))
-      .map(([category, data]) => ({
-        key: category,
-        title: getCategoryLabel(category),
-        count: sectionCounts.get(category) ?? data.length,
-        data
-      }));
-  }, [filteredNotes, visibleNotes]);
-
-  const activeFilterCount = Number(Boolean(activeCategory)) + Number(Boolean(activeTag)) + Number(onlyFavorites) + Number(Boolean(query.trim()));
+  const activeFilterCount = Number(Boolean(activeCategory)) + Number(onlyFavorites) + Number(Boolean(query.trim()));
   const stats = [
     {
       label: "Vault",
@@ -207,10 +172,25 @@ export default function HomeScreen() {
     void triggerHaptic("soft");
     setQuery("");
     setActiveCategory(null);
-    setActiveTag(null);
     setOnlyFavorites(false);
     setSort("updated_desc");
   };
+
+  const sortDescription = useMemo(() => {
+    switch (sort) {
+      case "updated_asc":
+        return "Najstarsze aktualizacje na górze.";
+      case "title_asc":
+        return "Notatki uporządkowane alfabetycznie.";
+      case "created_desc":
+        return "Najnowsze utworzone notatki na górze.";
+      case "created_asc":
+        return "Najstarsze utworzone notatki na górze.";
+      case "updated_desc":
+      default:
+        return "Najnowsze zmiany i aktualizacje na górze.";
+    }
+  }, [sort]);
 
   return (
     <ScreenContainer edges={["top", "left", "right", "bottom"]} withHorizontalPadding={false}>
@@ -330,7 +310,7 @@ export default function HomeScreen() {
             <TextInput
               value={query}
               onChangeText={setQuery}
-              placeholder="Szukaj w tytułach, treści, tagach i kategoriach..."
+              placeholder="Szukaj w tytułach, treści i kategoriach..."
               placeholderTextColor={colors.searchPlaceholder}
               style={[styles.searchInput, { color: colors.foreground }]}
               returnKeyType="search"
@@ -355,7 +335,7 @@ export default function HomeScreen() {
             <View style={styles.browserHeader}>
               <View style={styles.browserHeaderCopy}>
                 <Text style={[styles.browserEyebrow, { color: colors.primary }]}>Przeglądaj</Text>
-                <Text style={[styles.browserTitle, { color: colors.foreground }]}>Kategorie, tagi i sortowanie</Text>
+                <Text style={[styles.browserTitle, { color: colors.foreground }]}>Kategorie i sortowanie</Text>
               </View>
               {activeFilterCount > 0 ? (
                 <Pressable
@@ -384,24 +364,9 @@ export default function HomeScreen() {
                 onSelect={(category) => {
                   void triggerHaptic("selection");
                   setActiveCategory(category);
-                  setActiveTag(null);
                 }}
               />
             </View>
-
-            {availableTags.length > 0 ? (
-              <View style={styles.browserSection}>
-                <Text style={[styles.browserSectionLabel, { color: colors.muted }]}>Tagi</Text>
-                <TagChips
-                  tags={availableTags}
-                  activeTag={activeTag}
-                  onSelect={(nextTag) => {
-                    void triggerHaptic("selection");
-                    setActiveTag(nextTag);
-                  }}
-                />
-              </View>
-            ) : null}
 
             <View style={styles.browserToolbar}>
               <Text style={[styles.browserSectionLabel, styles.browserToolbarLabel, { color: colors.muted }]}>Sortowanie</Text>
@@ -451,7 +416,7 @@ export default function HomeScreen() {
         <View style={styles.feedHeader}>
           <View>
             <Text style={[styles.feedTitle, { color: colors.foreground }]}>Twoje notatki</Text>
-            <Text style={[styles.feedCaption, { color: colors.muted }]}>Grupowane po kategoriach, gotowe offline.</Text>
+            <Text style={[styles.feedCaption, { color: colors.muted }]}>{sortDescription}</Text>
           </View>
           <View style={[styles.feedCountPill, { backgroundColor: colors.tagBackground, borderColor: colors.border }]}> 
             <Text style={[styles.feedCountText, { color: colors.foreground }]}>{filteredNotes.length}</Text>
@@ -464,49 +429,35 @@ export default function HomeScreen() {
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Ładowanie vaultu</Text>
             <Text style={[styles.emptyText, { color: colors.muted }]}>Pobieram notatki z lokalnego cache lub API.</Text>
           </SurfaceCard>
-        ) : sections.length === 0 ? (
+        ) : visibleNotes.length === 0 ? (
           <SurfaceCard style={styles.emptyCard} contentStyle={styles.emptyContent}>
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Brak wyników</Text>
-            <Text style={[styles.emptyText, { color: colors.muted }]}>Zmień frazę, kategorię, tag lub sortowanie, aby zobaczyć notatki.</Text>
+            <Text style={[styles.emptyText, { color: colors.muted }]}>
+              Zmień frazę, kategorię lub sortowanie, aby zobaczyć notatki.
+            </Text>
           </SurfaceCard>
         ) : (
-          sections.map((section, sectionIndex) => {
-            const Icon = getCategoryIcon(section.key);
-            return (
+          <View style={styles.noteStack}>
+            {visibleNotes.map((note, index) => (
               <Animated.View
-                key={section.key}
+                key={note.id}
                 layout={layoutTransition}
-                entering={reduceMotionEnabled ? undefined : FadeInDown.delay(220 + sectionIndex * 40).duration(340)}
-                style={styles.sectionBlock}
+                entering={reduceMotionEnabled ? undefined : FadeInDown.delay(220 + index * 18).duration(280)}
               >
-                <View style={styles.sectionHeader}>
-                  <View style={[styles.sectionBadge, { backgroundColor: colors.tagBackground, borderColor: colors.borderStrong }]}> 
-                    <Icon size={14} color={colors.primary} />
-                    <Text style={[styles.sectionTitle, { color: colors.foreground }]}>{section.title}</Text>
-                  </View>
-                  <Text style={[styles.sectionCount, { color: colors.subtle }]}>{section.count}</Text>
-                </View>
-
-                <View style={styles.noteStack}>
-                  {section.data.map((note) => (
-                    <View key={note.id}>
-                      <NoteCard
-                        note={note}
-                        query={deferredQuery}
-                        onPress={(noteId) => {
-                          void openNote(noteId);
-                        }}
-                        onToggleFavorite={(noteId) => {
-                          void triggerHaptic("medium");
-                          void toggleFavoriteById(noteId);
-                        }}
-                      />
-                    </View>
-                  ))}
-                </View>
+                <NoteCard
+                  note={note}
+                  query={deferredQuery}
+                  onPress={(noteId) => {
+                    void openNote(noteId);
+                  }}
+                  onToggleFavorite={(noteId) => {
+                    void triggerHaptic("medium");
+                    void toggleFavoriteById(noteId);
+                  }}
+                />
               </Animated.View>
-            );
-          })
+            ))}
+          </View>
         )}
 
         {hasMore ? (
@@ -920,33 +871,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     textAlign: "center"
-  },
-  sectionBlock: {
-    gap: 10
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
-    marginTop: 2
-  },
-  sectionBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 8
-  },
-  sectionTitle: {
-    fontSize: 12,
-    fontWeight: "800"
-  },
-  sectionCount: {
-    fontSize: 11,
-    fontWeight: "800"
   },
   noteStack: {
     gap: 10

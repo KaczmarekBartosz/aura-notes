@@ -20,13 +20,23 @@ function walk(dir) {
   return files;
 }
 
+function stripFrontmatter(content) {
+  return content.replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/, '');
+}
+
 function titleFrom(content, fallback) {
-  const m = content.match(/^#\s+(.+)$/m);
+  const fm = parseFrontmatter(content);
+  if (fm.title) return fm.title.trim();
+  const m = stripFrontmatter(content).match(/^#\s+(.+)$/m);
   return m ? m[1].trim() : fallback.replace(/\.md$/i, '');
 }
 
 function excerptFrom(content) {
-  const plain = content
+  const fm = parseFrontmatter(content);
+  if (fm.excerpt) return String(fm.excerpt).trim().slice(0, 260);
+
+  const body = stripFrontmatter(content);
+  const plain = body
     .replace(/```[\s\S]*?```/g, ' ')
     .replace(/`[^`]*`/g, ' ')
     .replace(/!\[[^\]]*\]\([^\)]*\)/g, ' ')
@@ -40,6 +50,43 @@ function excerptFrom(content) {
 function readFrontmatter(content) {
   const frontmatter = content.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
   return frontmatter?.[1] ?? '';
+}
+
+function parseFrontmatterList(content, key) {
+  const raw = readFrontmatter(content);
+  if (!raw) return [];
+
+  const inline = raw.match(new RegExp(`^\\s*${key}\\s*:\\s*\\[(.*?)\\]\\s*$`, 'm'))?.[1];
+  if (inline) {
+    return inline
+      .split(',')
+      .map((item) => item.replace(/^['"\s]+|['"\s]+$/g, '').trim())
+      .filter(Boolean);
+  }
+
+  const lines = raw.split(/\r?\n/);
+  const collected = [];
+  let inList = false;
+
+  for (const line of lines) {
+    if (!inList) {
+      if (new RegExp(`^\\s*${key}\\s*:\\s*$`).test(line)) {
+        inList = true;
+      }
+      continue;
+    }
+
+    const item = line.match(/^\s*-\s*(.*?)\s*$/)?.[1];
+    if (item) {
+      collected.push(item.replace(/^['"]|['"]$/g, '').trim());
+      continue;
+    }
+
+    if (!line.trim()) continue;
+    break;
+  }
+
+  return collected.filter(Boolean);
 }
 
 function parseFrontmatter(content) {
@@ -133,6 +180,12 @@ function classify(rel, content) {
 function detectTags(rel, content) {
   const lower = (rel + ' ' + content.slice(0, 2200)).toLowerCase();
   const tags = new Set();
+  const frontmatterTags = parseFrontmatterList(content, 'tags');
+
+  for (const rawTag of frontmatterTags) {
+    const normalized = rawTag.trim().toLowerCase();
+    if (normalized) tags.add(normalized);
+  }
 
   const dictionary = [
     ['openclaw', /\bopenclaw\b/],
@@ -283,10 +336,10 @@ for (const src of sources) {
     const gitCreated = gitCreatedAtFor(rel, stat.mtime);
     const gitUpdated = gitUpdatedAtFor(rel, stat.mtime);
 
-    const createdAt = oldestIso([gitCreated, ...createdCandidates], fallbackIso);
-    const updatedAt = newestIso([gitUpdated, ...updatedCandidates], fallbackIso);
+    const createdAt = oldestIso([gitCreated, ...createdCandidates, fallbackIso], fallbackIso);
+    const updatedAt = newestIso([fallbackIso, gitUpdated, ...updatedCandidates], fallbackIso);
 
-    const words = content
+    const words = stripFrontmatter(content)
       .replace(/```[\s\S]*?```/g, ' ')
       .replace(/\s+/g, ' ')
       .trim()
