@@ -85,6 +85,19 @@ const THEME_REGISTRY = [
       accent: '#123f7a',
     },
   },
+  {
+    id: 'obsidian-gold',
+    label: 'Obsidian Gold',
+    description: 'Luksusowy onyks, grafit i złoto z metalicznym połyskiem',
+    className: 'theme-obsidian-gold',
+    isGlass: true,
+    appearance: 'dark',
+    preview: {
+      bg: 'linear-gradient(145deg, #050505 0%, #171717 42%, #2b2516 100%)',
+      card: 'rgba(22, 20, 15, 0.62)',
+      accent: '#d9b66c',
+    },
+  },
 ] as const satisfies readonly ThemeMeta[];
 
 export type ThemeMode = (typeof THEME_REGISTRY)[number]['id'];

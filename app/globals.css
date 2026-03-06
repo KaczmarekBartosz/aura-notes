@@ -2,7 +2,10 @@
 @import 'highlight.js/styles/github-dark.css';
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "./themes/index.css";
+@import "./themes/glass.css";
+@import "./themes/air-power.css";
+@import "./themes/crystal-line.css";
+@import "./themes/obsidiangold.css";
 
 
 @custom-variant dark (&:is(.dark *));
@@ -14,7 +17,14 @@
   --font-sans-theme: -apple-system, BlinkMacSystemFont, "helvetica neue", helvetica, ubuntu, roboto, noto, "segoe ui", arial, sans-serif;
   --font-heading-theme: "Arial Black", "Segoe UI", sans-serif;
   --font-mono-theme: "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --safe-area-bottom-capped: min(env(safe-area-inset-bottom, 0px), 2.25rem);
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-bottom-capped: min(var(--safe-area-bottom), 2.25rem);
+  --mobile-bottom-nav-base-height: 5.25rem;
+  --mobile-bottom-nav-offset-bottom: 0px;
+  --mobile-bottom-nav-clearance: calc(var(--mobile-bottom-nav-base-height) + var(--mobile-bottom-nav-offset-bottom));
   
   /* Złamana biel (off-white) dla papieru, chłodny/neutralny odcień */
   --background: oklch(0.97 0.005 260); 
@@ -434,24 +444,24 @@ body {
 
 
 .pt-safe {
-  padding-top: env(safe-area-inset-top, 0px);
+  padding-top: var(--safe-area-top);
 }
 
 .pb-safe {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-bottom: var(--safe-area-bottom);
 }
 
 .px-safe {
-  padding-left: calc(1rem + env(safe-area-inset-left, 0px));
-  padding-right: calc(1rem + env(safe-area-inset-right, 0px));
+  padding-left: calc(1rem + var(--safe-area-left));
+  padding-right: calc(1rem + var(--safe-area-right));
 }
 
 .pb-nav-safe {
-  padding-bottom: calc(3.75rem + var(--safe-area-bottom-capped));
+  padding-bottom: var(--mobile-bottom-nav-clearance);
 }
 
 .reader-header-safe {
-  padding-top: calc(0.5rem + env(safe-area-inset-top, 0px));
+  padding-top: calc(0.5rem + var(--safe-area-top));
 }
 
 @media (min-width: 768px) {
@@ -685,15 +695,28 @@ body.theme-picker-open .aura-theme-scope main.glass-card:hover {
   padding: 0.5rem;
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   box-sizing: border-box;
+  min-height: calc(var(--mobile-bottom-nav-base-height) - 0.375rem);
 }
 
 /* Standard mobile (non-glass): include safe area inside nav bar */
 .mobile-bottom-nav[data-glass="false"] .bottom-nav-v2 {
-  padding-bottom: calc(0.375rem + var(--safe-area-bottom-capped));
+  padding-bottom: calc(0.375rem + var(--safe-area-bottom));
 }
 
 /* Glass mode baseline: no extra offset outside the nav container */
+.mobile-bottom-nav {
+  bottom: var(--mobile-bottom-nav-offset-bottom) !important;
+  padding-inline: max(0.75rem, calc(0.75rem + (var(--safe-area-left) * 0.35))) !important;
+  padding-top: 0.35rem !important;
+  padding-bottom: 0 !important;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
 .mobile-bottom-nav[data-glass="true"] .bottom-nav-v2 {
+  width: 100%;
+  margin: 0;
   padding-bottom: 0.5rem;
   /* Darken the background of the glass floating island to improve icon contrast */
   background: rgba(15, 23, 42, 0.2) !important;
@@ -706,24 +729,29 @@ body.theme-picker-open .aura-theme-scope main.glass-card:hover {
 @supports (-webkit-touch-callout: none) {
   /* Fill top safe-area strip in iOS standalone so header doesn't look cut off. */
   @media (max-width: 767px) {
+    html.ios-standalone {
+      --mobile-bottom-nav-base-height: 4.55rem;
+      --mobile-bottom-nav-offset-bottom: calc(var(--safe-area-bottom) - 0.2rem);
+    }
+
     html.ios-standalone .aura-theme-scope::before {
       content: '';
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      height: env(safe-area-inset-top, 0px);
+      height: var(--safe-area-top);
       background: var(--background);
       z-index: 12;
       pointer-events: none;
     }
 
     html.ios-standalone .mobile-bottom-nav {
-      bottom: 0 !important;
+      bottom: var(--mobile-bottom-nav-offset-bottom) !important;
       left: 0 !important;
       right: 0 !important;
-      padding-inline: 1rem !important;
-      padding-top: 0.25rem !important;
+      padding-inline: max(0.75rem, calc(0.75rem + (var(--safe-area-left) * 0.35))) !important;
+      padding-top: 0.2rem !important;
       padding-bottom: 0 !important;
     }
 
@@ -732,26 +760,31 @@ body.theme-picker-open .aura-theme-scope main.glass-card:hover {
       margin: 0;
       border-radius: 1.2rem !important;
       padding-inline: 0.9rem;
-      padding-top: 0.5rem;
-      padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+      padding-top: 0.42rem;
+      padding-bottom: 0.38rem;
       box-shadow:
         inset 0 1px 1px rgba(255, 255, 255, 0.12),
         0 -6px 26px rgba(0, 0, 0, 0.14);
     }
 
     html.ios-standalone .mobile-bottom-nav[data-glass="false"] .bottom-nav-v2 {
-      padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+      padding-bottom: calc(0.5rem + var(--safe-area-bottom));
     }
   }
 
   /* Standards path for browsers where display-mode media query is available. */
   @media (max-width: 767px) and (display-mode: standalone) {
+    :root {
+      --mobile-bottom-nav-base-height: 4.55rem;
+      --mobile-bottom-nav-offset-bottom: calc(var(--safe-area-bottom) - 0.2rem);
+    }
+
     .mobile-bottom-nav {
-      bottom: 0 !important;
+      bottom: var(--mobile-bottom-nav-offset-bottom) !important;
       left: 0 !important;
       right: 0 !important;
-      padding-inline: 1rem !important;
-      padding-top: 0.25rem !important;
+      padding-inline: max(0.75rem, calc(0.75rem + (var(--safe-area-left) * 0.35))) !important;
+      padding-top: 0.2rem !important;
       padding-bottom: 0 !important;
     }
 
@@ -760,15 +793,15 @@ body.theme-picker-open .aura-theme-scope main.glass-card:hover {
       margin: 0;
       border-radius: 1.2rem !important;
       padding-inline: 0.9rem;
-      padding-top: 0.5rem;
-      padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+      padding-top: 0.42rem;
+      padding-bottom: 0.38rem;
       box-shadow:
         inset 0 1px 1px rgba(255, 255, 255, 0.12),
         0 -6px 26px rgba(0, 0, 0, 0.14);
     }
 
     .mobile-bottom-nav[data-glass="false"] .bottom-nav-v2 {
-      padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+      padding-bottom: calc(0.5rem + var(--safe-area-bottom));
     }
   }
 }
