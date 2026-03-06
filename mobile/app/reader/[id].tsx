@@ -141,8 +141,6 @@ export default function ReaderScreen() {
           style={resolvedTheme === "dark" ? atomOneDark : atomOneLight}
           fontSize={12 * fontScale}
           highlighter="highlightjs"
-          PreTag={View}
-          CodeTag={View}
         >
           {content}
         </SyntaxHighlighter>
@@ -306,7 +304,7 @@ export default function ReaderScreen() {
 
   if (!note) {
     return (
-      <ScreenContainer edges={["top", "left", "right", "bottom"]}>
+      <ScreenContainer edges={["top", "left", "right"]}>
         <View style={styles.missingWrap}>
           <Text style={[uiType.title3, { color: colors.foreground }]}>Nie znaleziono notatki</Text>
           <Pressable
@@ -321,7 +319,7 @@ export default function ReaderScreen() {
   }
 
   return (
-    <ScreenContainer edges={["top", "left", "right", "bottom"]} withHorizontalPadding={false}>
+    <ScreenContainer edges={["top", "left", "right"]} withHorizontalPadding={false}>
       <GestureDetector gesture={pinch}>
         <Animated.ScrollView
           ref={scrollViewRef}
@@ -415,11 +413,11 @@ export default function ReaderScreen() {
 
       <Animated.View
         pointerEvents="box-none"
-        style={[styles.floatingHeaderWrap, { top: Math.max(uiSpacing.xs, insets.top + uiSpacing.xxs), left: uiSpacing.lg, right: uiSpacing.lg }, compactHeaderStyle]}
+        style={[styles.floatingHeaderWrap, { top: Math.max(8, insets.top - 8), left: uiSpacing.md, right: uiSpacing.md }, compactHeaderStyle]}
       >
-        <SurfaceCard preset="toolbar" contentPreset="toolbar" intensity={resolvedTheme === "dark" ? 64 : 58}>
+        <SurfaceCard preset="compact" contentPreset="compact" intensity={resolvedTheme === "dark" ? 72 : 64} style={styles.slimHeaderCard} contentStyle={styles.slimHeaderContent}>
           <HeaderControlButton
-            icon={<ArrowLeft size={18} color={colors.foreground} />}
+            icon={<ArrowLeft size={16} color={colors.foreground} />}
             label="Wróć do listy notatek"
             onPress={() => {
               void triggerHaptic("light");
@@ -428,29 +426,26 @@ export default function ReaderScreen() {
           />
 
           <View style={styles.floatingTitleWrap}>
-            <Text numberOfLines={1} style={[uiType.meta, styles.floatingTitle, { color: colors.foreground }]}>
+            <Text numberOfLines={1} style={[uiType.bodyStrong, styles.floatingTitle, { color: colors.foreground }]}>
               {note.title}
-            </Text>
-            <Text style={[uiType.caption, { color: colors.muted }]}>
-              {progressPercent}% • {fontScale.toFixed(2)}x
             </Text>
           </View>
 
           <View style={styles.controlRow}>
             <HeaderControlButton
-              icon={<Minus size={15} color={colors.foreground} />}
+              icon={<Minus size={14} color={colors.foreground} />}
               label="Zmniejsz rozmiar tekstu"
               onPress={() => adjustFontScale(-0.05)}
               disabled={fontScale <= MIN_FONT_SCALE + 0.01}
             />
             <HeaderControlButton
-              icon={<Plus size={15} color={colors.foreground} />}
+              icon={<Plus size={14} color={colors.foreground} />}
               label="Powiększ rozmiar tekstu"
               onPress={() => adjustFontScale(0.05)}
               disabled={fontScale >= MAX_FONT_SCALE - 0.01}
             />
             <HeaderControlButton
-              icon={<Star size={16} color={note.isFavorite ? colors.warning : colors.foreground} fill={note.isFavorite ? colors.warning : "none"} />}
+              icon={<Star size={14} color={note.isFavorite ? colors.warning : colors.foreground} fill={note.isFavorite ? colors.warning : "none"} />}
               label={note.isFavorite ? "Usuń z ulubionych" : "Dodaj do ulubionych"}
               onPress={() => {
                 void triggerHaptic("medium");
@@ -586,23 +581,38 @@ const styles = StyleSheet.create({
   floatingTitleWrap: {
     flex: 1,
     minWidth: 0,
-    gap: 2
+    alignItems: "center",
+    justifyContent: "center"
   },
   floatingTitle: {
-    fontWeight: "700"
+    fontWeight: "700",
+    textAlign: "center"
   },
   controlRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: uiSpacing.xs
+    gap: 4
   },
   controlButton: {
-    width: uiControl.minTouch,
-    height: uiControl.minTouch,
+    width: 34,
+    height: 34,
     borderRadius: uiRadius.pill,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center"
+  },
+  slimHeaderCard: {
+    borderRadius: uiRadius.pill,
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 }
+  },
+  slimHeaderContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    gap: 8
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,

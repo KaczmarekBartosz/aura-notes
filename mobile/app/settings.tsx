@@ -72,7 +72,7 @@ export default function SettingsScreen() {
   };
 
   return (
-    <ScreenContainer edges={["top", "left", "right", "bottom"]}>
+    <ScreenContainer edges={["top", "left", "right"]}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.content, { paddingBottom: Math.max(uiControl.minTouch, insets.bottom + uiSpacing.xl) }]}

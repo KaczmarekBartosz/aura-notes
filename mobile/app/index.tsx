@@ -12,7 +12,7 @@ import {
   Star,
   X
 } from "lucide-react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import Svg, { Defs, RadialGradient as SvgRadialGradient, Rect, Stop } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, {
   Extrapolation,
@@ -23,6 +23,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue
 } from "react-native-reanimated";
+import { AuraCrystalLogo } from "../src/components/ui/AuraCrystalLogo";
 import { CategoryChips } from "../src/components/notes/CategoryChips";
 import { NoteCard } from "../src/components/notes/NoteCard";
 import { SortSelector } from "../src/components/notes/SortSelector";
@@ -188,7 +189,7 @@ export default function HomeScreen() {
   const browseDescription = activeFilterCount > 0 ? `${filteredNotes.length} wyników przy ${activeFilterCount} aktywnych filtrach.` : "Najpierw wybierz kategorię, potem dopracuj widok sortowaniem lub filtrem ulubionych.";
 
   return (
-    <ScreenContainer edges={["top", "left", "right", "bottom"]} withHorizontalPadding={false}>
+    <ScreenContainer edges={["top", "left", "right"]} withHorizontalPadding={false}>
       <Animated.ScrollView
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="interactive"
@@ -217,8 +218,20 @@ export default function HomeScreen() {
       >
         <Animated.View style={heroStyle}>
           <View style={styles.heroStack}>
-            <SurfaceCard preset="hero" contentPreset="hero" style={styles.leadCard} intensity={resolvedTheme === "dark" ? 56 : 50}>
-              <LinearGradient colors={[...colors.activeGradient]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.heroAccent} />
+            <SurfaceCard preset="hero" contentPreset="hero" style={styles.leadCard} intensity={resolvedTheme === "dark" ? 64 : 52}>
+              <View style={[StyleSheet.absoluteFill, { borderRadius: uiRadius.card, overflow: 'hidden' }]} pointerEvents="none">
+                <Svg width="100%" height="100%">
+                  <Defs>
+                    <SvgRadialGradient id="heroGlow" cx="90%" cy="10%" rx="120%" ry="120%">
+                      <Stop offset="0%" stopColor={colors.activeGradient[0]} stopOpacity={0.35} />
+                      <Stop offset="40%" stopColor={colors.activeGradient[1]} stopOpacity={0.1} />
+                      <Stop offset="100%" stopColor={colors.activeGradient[1]} stopOpacity={0} />
+                    </SvgRadialGradient>
+                  </Defs>
+                  <Rect width="100%" height="100%" fill="url(#heroGlow)" />
+                </Svg>
+              </View>
+
               <View style={styles.heroTopBar}>
                 <View style={[styles.eyebrowPill, { backgroundColor: colors.tagBackground, borderColor: colors.borderStrong }]}>
                   <Sparkles size={12} color={colors.primary} />
@@ -239,38 +252,29 @@ export default function HomeScreen() {
               </View>
 
               <View style={styles.heroCopy}>
-                <Text style={[uiType.display, styles.heroTitle, { color: colors.foreground }]}>Aura Notes</Text>
-                <Text style={[uiType.bodyStrong, { color: colors.muted }]}>Lokalny vault markdown, szybkie czytanie i pełne działanie offline.</Text>
-                <Text style={[uiType.caption, { color: colors.subtle }]}>{themeDescription}</Text>
-              </View>
-            </SurfaceCard>
-
-            <SurfaceCard preset="section" contentPreset="section" intensity={resolvedTheme === "dark" ? 54 : 48}>
-              <View style={styles.continueRow}>
-                <View style={styles.continueCopy}>
-                  <Text style={[uiType.eyebrow, { color: colors.primary }]}>{lastOpenedNote ? "Kontynuuj czytanie" : "Vault gotowy"}</Text>
-                  <Text style={[uiType.sectionTitle, { color: colors.foreground }]} numberOfLines={2}>
-                    {lastOpenedNote ? lastOpenedNote.title : "Notatki są już gotowe do pracy offline."}
-                  </Text>
-                  <Text style={[uiType.body, { color: colors.muted }]} numberOfLines={2}>
-                    {lastOpenedNote ? lastOpenedNote.excerpt : "Cache otwiera zawartość od razu, bez czekania na API."}
-                  </Text>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                  <AuraCrystalLogo size={32} />
+                  <Text style={[uiType.display, styles.heroTitle, { color: colors.foreground }]}>Aura Notes</Text>
                 </View>
-
+                
                 {lastOpenedNote ? (
-                  <Pressable
-                    onPress={() => void openNote(lastOpenedNote.id)}
-                    accessibilityRole="button"
-                    accessibilityLabel="Kontynuuj ostatnio czytaną notatkę"
-                    style={[styles.inlineContinueButton, { backgroundColor: colors.primarySoft, borderColor: colors.border }]}
-                  >
-                    <Text style={[uiType.meta, styles.inlineContinueLabel, { color: colors.primary }]}>Otwórz</Text>
-                    <ChevronRight size={15} color={colors.primary} />
-                  </Pressable>
-                ) : (
-                  <View style={[styles.heroStatusPill, { backgroundColor: colors.primarySoft }]}> 
-                    <Text style={[uiType.meta, styles.heroStatusLabel, { color: colors.primary }]}>offline</Text>
+                  <View style={{ marginTop: 8 }}>
+                    <Text style={[uiType.meta, { color: colors.primary, marginBottom: 4 }]}>Kontynuuj czytanie</Text>
+                    <Pressable
+                      onPress={() => void openNote(lastOpenedNote.id)}
+                      style={[styles.resumeButton, { backgroundColor: colors.surfaceElevated, borderColor: colors.border }]}
+                    >
+                      <View style={{ flex: 1, gap: 2 }}>
+                        <Text style={[uiType.bodyStrong, { color: colors.foreground }]} numberOfLines={1}>{lastOpenedNote.title}</Text>
+                        <Text style={[uiType.caption, { color: colors.muted }]} numberOfLines={1}>{lastOpenedNote.folder}</Text>
+                      </View>
+                      <View style={[styles.resumeIconBadge, { backgroundColor: colors.primarySoft }]}>
+                        <ChevronRight size={16} color={colors.primary} />
+                      </View>
+                    </Pressable>
                   </View>
+                ) : (
+                  <Text style={[uiType.bodyStrong, { color: colors.muted, marginTop: 4 }]}>Synchronizacja ukończona. Wszystkie notatki są gotowe do czytania.</Text>
                 )}
               </View>
             </SurfaceCard>
@@ -448,13 +452,16 @@ export default function HomeScreen() {
           contentPreset="toolbar"
           intensity={resolvedTheme === "dark" ? 84 : 78}
           style={styles.compactHeaderCard}
-          contentStyle={styles.compactHeaderContent}
+          contentStyle={[styles.compactHeaderContent, { flexDirection: "row", alignItems: "center" }]}
         >
-          <View style={styles.compactHeaderTitleWrap}>
-            <Text style={[uiType.meta, styles.compactHeaderTitle, { color: colors.foreground }]}>Aura Notes</Text>
-            <Text style={[uiType.caption, { color: colors.muted }]}>
-              {filteredNotes.length} notatek • {themeLabel}
-            </Text>
+          <View style={[styles.compactHeaderTitleWrap, { flexDirection: "row", alignItems: "center", gap: 8 }]}>
+            <AuraCrystalLogo size={28} />
+            <View style={{ flex: 1, gap: 0 }}>
+              <Text style={[uiType.meta, styles.compactHeaderTitle, { color: colors.foreground, fontSize: 13, lineHeight: 18 }]}>Aura Notes</Text>
+              <Text style={[uiType.caption, { color: colors.muted, fontSize: 11, lineHeight: 14 }]}>
+                {filteredNotes.length} notatek • {themeLabel}
+              </Text>
+            </View>
           </View>
           <View style={styles.compactHeaderActions}>
             <HeaderIconButton
@@ -517,15 +524,6 @@ const styles = StyleSheet.create({
   leadCard: {
     marginTop: uiSpacing.xxs
   },
-  heroAccent: {
-    position: "absolute",
-    top: -58,
-    right: -42,
-    width: 180,
-    height: 180,
-    borderRadius: uiRadius.pill,
-    opacity: 0.22
-  },
   heroTopBar: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -553,40 +551,24 @@ const styles = StyleSheet.create({
     gap: uiSpacing.xs
   },
   heroTitle: {
-    fontSize: 34,
-    lineHeight: 40
+    fontSize: 30,
+    lineHeight: 36
   },
-  continueRow: {
+  resumeButton: {
     flexDirection: "row",
     alignItems: "center",
-    gap: uiSpacing.md
-  },
-  continueCopy: {
-    flex: 1,
-    gap: uiSpacing.xs
-  },
-  inlineContinueButton: {
-    minHeight: uiControl.minTouch,
+    padding: 12,
+    borderRadius: 16,
     borderWidth: 1,
-    borderRadius: uiRadius.pill,
-    flexDirection: "row",
+    marginTop: 4
+  },
+  resumeIconBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: "center",
-    gap: uiSpacing.xs,
-    paddingHorizontal: uiSpacing.md,
-    paddingVertical: uiSpacing.sm
-  },
-  inlineContinueLabel: {
-    fontWeight: "700"
-  },
-  heroStatusPill: {
-    minHeight: uiControl.minTouch,
-    borderRadius: uiRadius.pill,
-    paddingHorizontal: uiSpacing.md,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  heroStatusLabel: {
-    fontWeight: "700"
+    justifyContent: "center",
+    marginLeft: 12
   },
   statsRow: {
     flexDirection: "row",
@@ -719,11 +701,13 @@ const styles = StyleSheet.create({
   },
   compactHeaderContent: {
     paddingHorizontal: uiSpacing.sm,
-    paddingVertical: 10
+    paddingVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
   compactHeaderTitleWrap: {
-    flex: 1,
-    gap: 1
+    flex: 1
   },
   compactHeaderTitle: {
     fontWeight: "700"

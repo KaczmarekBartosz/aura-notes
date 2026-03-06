@@ -105,7 +105,7 @@ const crystalLight: ThemePalette = {
   tagBackground: "rgba(255,255,255,0.50)",
   screenGradient: ["#F8FAFC", "#F1F5F9", "#E2E8F0", "#CBD5E1"],
   surfaceGradient: ["rgba(255,255,255,0.6)", "rgba(255,255,255,0)", "rgba(255,255,255,0.15)"],
-  activeGradient: ["#3B82F6", "#8B5CF6", "#EC4899"],
+  activeGradient: ["#0B1530", "#1A2B4C"],
   orbOne: "rgba(56,189,248,0.65)",
   orbTwo: "rgba(236,72,153,0.55)",
   orbThree: "rgba(139,92,246,0.60)"
@@ -139,7 +139,7 @@ const defaultLight: ThemePalette = {
   tagBackground: "#F8FAFC",
   screenGradient: ["#F6F8FC", "#F3F6FB", "#EEF2F8"],
   surfaceGradient: ["#FFFFFF", "#FFFFFF"],
-  activeGradient: ["#2563EB", "#60A5FA"],
+  activeGradient: ["#2A2F38", "#131924"],
   orbOne: "rgba(0,0,0,0)",
   orbTwo: "rgba(0,0,0,0)",
   orbThree: "rgba(0,0,0,0)"
@@ -173,7 +173,7 @@ const defaultDark: ThemePalette = {
   tagBackground: "#101827",
   screenGradient: ["#0D111B", "#101624", "#111827"],
   surfaceGradient: ["#182132", "#151C2C"],
-  activeGradient: ["#60A5FA", "#3B82F6"],
+  activeGradient: ["#94A3B8", "#64748B"],
   orbOne: "rgba(0,0,0,0)",
   orbTwo: "rgba(0,0,0,0)",
   orbThree: "rgba(0,0,0,0)"

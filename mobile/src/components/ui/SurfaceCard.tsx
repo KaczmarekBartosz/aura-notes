@@ -64,8 +64,8 @@ export function SurfaceCard({
         <>
           <BlurView
             {...blurPlatformProps}
-            intensity={blurIntensity}
-            tint={resolvedTheme === "dark" ? "dark" : "light"}
+            intensity={Platform.OS === "ios" ? 100 : blurIntensity}
+            tint={Platform.OS === "ios" ? (resolvedTheme === "dark" ? "systemThinMaterialDark" : "systemThinMaterialLight") : (resolvedTheme === "dark" ? "dark" : "light")}
             style={StyleSheet.absoluteFillObject}
           />
           <View style={[StyleSheet.absoluteFillObject, { backgroundColor: colors.surface }]} />

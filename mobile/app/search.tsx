@@ -33,7 +33,7 @@ export default function SearchScreen() {
   }, [notes, deferredQuery]);
 
   return (
-    <ScreenContainer edges={["top", "left", "right", "bottom"]}>
+    <ScreenContainer edges={["top", "left", "right"]}>
       <FlatList
         keyboardDismissMode="interactive"
         keyboardShouldPersistTaps="handled"

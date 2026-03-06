@@ -1,4 +1,5 @@
 import { BlurView } from "expo-blur";
+import Svg, { Defs, RadialGradient, Stop, Circle } from "react-native-svg";
 import { Platform, StyleSheet, View, type ViewStyle } from "react-native";
 import { SafeAreaView, type Edge } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -22,15 +23,63 @@ export function ScreenContainer({
   const blurPlatformProps = Platform.OS === "android" ? { experimentalBlurMethod: "dimezisBlurView" as const } : {};
 
   return (
-    <SafeAreaView edges={edges} style={[styles.safeArea, { backgroundColor: isGlass ? "transparent" : colors.background }]}>
-      <View style={styles.container}>
+    <View style={[styles.rootContainer, { backgroundColor: isGlass ? colors.background : colors.background }]}>
+      <View style={StyleSheet.absoluteFillObject}>
         <LinearGradient colors={[...colors.screenGradient]} style={StyleSheet.absoluteFillObject} />
         {isGlass ? (
           <>
-            <View pointerEvents="none" style={[styles.orb, styles.orbOne, { backgroundColor: colors.orbOne }]} />
-            <View pointerEvents="none" style={[styles.orb, styles.orbTwo, { backgroundColor: colors.orbTwo }]} />
-            <View pointerEvents="none" style={[styles.orb, styles.orbThree, { backgroundColor: colors.orbThree }]} />
-            <View pointerEvents="none" style={[styles.orb, styles.orbFour, { backgroundColor: colors.orbTwo }]} />
+            <View pointerEvents="none" style={[styles.orb, styles.orbOne]}>
+              <Svg width="100%" height="100%">
+                <Defs>
+                  <RadialGradient id="orb1" cx="50%" cy="50%" rx="50%" ry="50%">
+                    <Stop offset="0%" stopColor={colors.orbOne} stopOpacity="0.8" />
+                    <Stop offset="30%" stopColor={colors.orbOne} stopOpacity="0.5" />
+                    <Stop offset="70%" stopColor={colors.orbOne} stopOpacity="0.15" />
+                    <Stop offset="100%" stopColor={colors.orbOne} stopOpacity="0" />
+                  </RadialGradient>
+                </Defs>
+                <Circle cx="50%" cy="50%" r="50%" fill="url(#orb1)" />
+              </Svg>
+            </View>
+            <View pointerEvents="none" style={[styles.orb, styles.orbTwo]}>
+              <Svg width="100%" height="100%">
+                <Defs>
+                  <RadialGradient id="orb2" cx="50%" cy="50%" rx="50%" ry="50%">
+                    <Stop offset="0%" stopColor={colors.orbTwo} stopOpacity="0.9" />
+                    <Stop offset="40%" stopColor={colors.orbTwo} stopOpacity="0.6" />
+                    <Stop offset="80%" stopColor={colors.orbTwo} stopOpacity="0.15" />
+                    <Stop offset="100%" stopColor={colors.orbTwo} stopOpacity="0" />
+                  </RadialGradient>
+                </Defs>
+                <Circle cx="50%" cy="50%" r="50%" fill="url(#orb2)" />
+              </Svg>
+            </View>
+            <View pointerEvents="none" style={[styles.orb, styles.orbThree]}>
+              <Svg width="100%" height="100%">
+                <Defs>
+                  <RadialGradient id="orb3" cx="50%" cy="50%" rx="50%" ry="50%">
+                    <Stop offset="0%" stopColor={colors.orbThree} stopOpacity="0.85" />
+                    <Stop offset="35%" stopColor={colors.orbThree} stopOpacity="0.5" />
+                    <Stop offset="75%" stopColor={colors.orbThree} stopOpacity="0.15" />
+                    <Stop offset="100%" stopColor={colors.orbThree} stopOpacity="0" />
+                  </RadialGradient>
+                </Defs>
+                <Circle cx="50%" cy="50%" r="50%" fill="url(#orb3)" />
+              </Svg>
+            </View>
+            <View pointerEvents="none" style={[styles.orb, styles.orbFour]}>
+              <Svg width="100%" height="100%">
+                <Defs>
+                  <RadialGradient id="orb4" cx="50%" cy="50%" rx="50%" ry="50%">
+                    <Stop offset="0%" stopColor={colors.orbTwo} stopOpacity="0.7" />
+                    <Stop offset="40%" stopColor={colors.orbTwo} stopOpacity="0.4" />
+                    <Stop offset="80%" stopColor={colors.orbTwo} stopOpacity="0.1" />
+                    <Stop offset="100%" stopColor={colors.orbTwo} stopOpacity="0" />
+                  </RadialGradient>
+                </Defs>
+                <Circle cx="50%" cy="50%" r="50%" fill="url(#orb4)" />
+              </Svg>
+            </View>
             <LinearGradient
               pointerEvents="none"
               colors={["rgba(255,255,255,0.16)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
@@ -45,15 +94,6 @@ export function ScreenContainer({
               end={{ x: 0.9, y: 1 }}
               style={styles.bottomAura}
             />
-            {primaryBackgroundBlurIntensity > 0 ? (
-              <BlurView
-                pointerEvents="none"
-                {...blurPlatformProps}
-                intensity={primaryBackgroundBlurIntensity}
-                tint={resolvedTheme === "dark" ? "dark" : "light"}
-                style={StyleSheet.absoluteFillObject}
-              />
-            ) : null}
             <LinearGradient
               pointerEvents="none"
               colors={[...visuals.ambientOverlay]}
@@ -71,22 +111,27 @@ export function ScreenContainer({
             style={StyleSheet.absoluteFillObject}
           />
         )}
+      </View>
+
+      <SafeAreaView edges={edges} style={styles.safeArea}>
         <View
           style={[
             styles.content,
             withHorizontalPadding && styles.padded,
-            { backgroundColor: isGlass ? "transparent" : colors.background },
             contentStyle
           ]}
         >
           {children}
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  rootContainer: {
+    flex: 1
+  },
   safeArea: {
     flex: 1
   },
@@ -102,7 +147,6 @@ const styles = StyleSheet.create({
   },
   orb: {
     position: "absolute",
-    borderRadius: 999,
     opacity: 0.78
   },
   orbOne: {
@@ -132,18 +176,18 @@ const styles = StyleSheet.create({
   },
   topAura: {
     position: "absolute",
-    top: -36,
+    top: -50,
     left: -28,
     right: -20,
-    height: 248,
+    height: 300,
     opacity: 0.54
   },
   bottomAura: {
     position: "absolute",
     left: -24,
     right: -24,
-    bottom: -48,
-    height: 240,
+    bottom: -60,
+    height: 300,
     opacity: 0.4
   },
   veil: {

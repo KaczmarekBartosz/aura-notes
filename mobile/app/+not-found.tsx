@@ -7,7 +7,7 @@ export default function NotFoundScreen() {
   const { colors } = useAppTheme();
 
   return (
-    <ScreenContainer edges={["top", "left", "right", "bottom"]}>
+    <ScreenContainer edges={["top", "left", "right"]}>
       <View style={styles.wrap}>
         <Text style={[styles.code, { color: colors.foreground }]}>404</Text>
         <Text style={[styles.title, { color: colors.foreground }]}>Ten ekran nie istnieje.</Text>
